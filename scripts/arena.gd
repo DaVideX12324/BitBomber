@@ -68,12 +68,22 @@ func _is_solid(cell: Vector2i) -> bool:
 
 
 ## Zniszczalne: wolne komórki które nie są w bezpiecznej strefie spawnow
+## ORAZ mają niezniszczalne bloki z góry/dołu lub z lewej/prawej.
 func _should_be_breakable(cell: Vector2i) -> bool:
 	if _is_solid(cell): return false
+	
 	# Zostaw wolną strefę wokół P1 i P2
 	if _near_spawn(cell, SPAWN_P1): return false
 	if _near_spawn(cell, SPAWN_P2): return false
-	return true
+	
+	# Sprawdzenie sąsiadów w poziomie (po lewej i po prawej)
+	var solid_horizontal = _is_solid(cell + Vector2i(-1, 0)) and _is_solid(cell + Vector2i(1, 0))
+	
+	# Sprawdzenie sąsiadów w pionie (z góry i z dołu)
+	var solid_vertical = _is_solid(cell + Vector2i(0, -1)) and _is_solid(cell + Vector2i(0, 1))
+	
+	# Zwróć true, tylko jeśli blok jest zablokowany niezniszczalnymi ścianami w poziomie LUB w pionie
+	return solid_horizontal or solid_vertical
 
 
 func _near_spawn(cell: Vector2i, spawn: Vector2i) -> bool:
