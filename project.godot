@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 GameManager="*res://autoloads/game_manager.gd"
 RoundManager="*res://autoloads/round_manager.gd"
+SpriteLoader="*res://autoloads/sprite_loader.gd"
 
 [display]
 
