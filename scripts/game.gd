@@ -6,7 +6,7 @@ extends Node
 ##   Game
 ##   ├─ HUD1P / HUD2P
 ##   ├─ Players (Node2D)   ← stały, nigdy nie niszczony
-##   └─ CurrentMap (Node2D) ← podmieniana scena mapy/pokoju
+##   └─ CurrentMap (Node)  ← podmieniana scena mapy/pokoju (może być Node lub Node2D)
 ##
 ## Gracze spawnują się RAZ. Przy załadowaniu nowej mapy
 ## są tylko teleportowani na spawn point.
@@ -17,8 +17,8 @@ const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 @onready var hud_2p      : CanvasLayer = $HUD2P
 @onready var players_root: Node2D      = $Players
 
-var _current_map : Node2D = null
-var _players     : Array  = []
+var _current_map : Node  = null   # Node (nie Node2D) — menu też tu trafia
+var _players     : Array = []
 
 
 func _ready() -> void:
@@ -36,19 +36,19 @@ func _load_map(path: String) -> void:
 	if _current_map:
 		_current_map.queue_free()
 		_current_map = null
-	_current_map = load(path).instantiate() as Node2D
+	var scene : Node2D = load(path).instantiate() as Node2D
+	_current_map = scene
 	add_child(_current_map)
 	move_child(_current_map, 0)   # mapa zawsze za graczami i HUDem
 	_teleport_players()
 
 
 func _load_menu() -> void:
-	var menu := load("res://scenes/menus/main_menu.tscn").instantiate()
-	# Menu nie jest mapą — gracze zostają ukryci na czas menu
 	_set_players_visible(false)
 	if _current_map:
 		_current_map.queue_free()
 		_current_map = null
+	var menu : Node = load("res://scenes/menus/main_menu.tscn").instantiate()
 	_current_map = menu
 	add_child(menu)
 	move_child(menu, 0)
@@ -73,7 +73,6 @@ func load_room(path: String) -> void:
 func load_menu() -> void:
 	if RoundManager.last_chance_resolved.get_connections().size() > 0:
 		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
-	_set_players_visible(false)
 	_load_menu()
 
 
