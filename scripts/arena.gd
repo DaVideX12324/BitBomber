@@ -204,7 +204,10 @@ func pixel_to_grid(px: Vector2) -> Vector2i:
 # ---------------------------------------------------------------------------
 
 func _spawn_players() -> void:
-	var hud := GameManager.game_node.get_active_hud() if GameManager.game_node else null
+	# Jawny typ — GDScript nie potrafi wywnioskować typu z ternary zawierającego null
+	var hud: CanvasLayer = null
+	if GameManager.game_node:
+		hud = GameManager.game_node.get_active_hud()
 
 	var p1 = PLAYER_SCENE.instantiate()
 	p1.player_id = 1
@@ -226,16 +229,13 @@ func _spawn_players() -> void:
 		bot.is_bot    = true
 		bot.global_position = p2_spawn.global_position
 		players_root.add_child(bot)
-		# boty nie mają HUD-a
 
 
 ## Podłącza sygnały gracza pod HUD i inicjalizuje serca.
 func _connect_hud(player: CharacterBody2D, hud: CanvasLayer) -> void:
 	if not hud:
 		return
-	# Inicjalizacja serc — pełne przy starcie
 	hud.update_lives(player.player_id, player.lives, player.DEFAULT_LIVES)
-	# Aktualizacja na żywo
 	player.lives_changed.connect(
 		func(pid: int, left: int): hud.update_lives(pid, left, player.DEFAULT_LIVES)
 	)
