@@ -15,3 +15,5 @@ visible = false
 visible = false
 
 [node name="DeathScreen" parent="." unique_id=1397666868 instance=ExtResource("4")]
+
+[node name="Players" type="Node2D" parent="." unique_id=1635090139]
