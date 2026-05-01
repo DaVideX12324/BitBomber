@@ -10,29 +10,68 @@ const COLOR_BG           = Color(0.15, 0.15, 0.17, 1.0)
 const COLOR_GRID_LINE    = Color(0.22, 0.22, 0.25, 1.0)
 const COLOR_SOLID        = Color(0.40, 0.42, 0.50, 1.0)
 const COLOR_SOLID_HL     = Color(0.55, 0.57, 0.68, 1.0)
-const COLOR_BREAKABLE    = Color(0.55, 0.38, 0.22, 1.0)  # brązowy
+const COLOR_BREAKABLE    = Color(0.55, 0.38, 0.22, 1.0)
 const COLOR_BREAKABLE_HL = Color(0.72, 0.52, 0.32, 1.0)
 
-## Niezniszczalne komórki
-var solid_cells: Dictionary = {}      # Vector2i -> true
-## Zniszczalne komórki
-var breakable_cells: Dictionary = {}  # Vector2i -> Node (StaticBody2D)
+var solid_cells: Dictionary = {}
+var breakable_cells: Dictionary = {}
 
-## Bezpieczna strefa wokół spawnow graczów (nie stawiamy tu skrzynek)
 const SAFE_SPAWN_RADIUS : int = 2
 const SPAWN_P1 := Vector2i(1, 1)
 const SPAWN_P2 := Vector2i(11, 11)
 
-@onready var players_root : Node2D = $Players
+@onready var players_root : Node2D  = $Players
 @onready var p1_spawn     : Marker2D = $P1Spawn
 @onready var p2_spawn     : Marker2D = $P2Spawn
 
 
 func _ready() -> void:
+	_setup_camera()
 	_build_map()
 	_spawn_players()
 	RoundManager.start_round()
 	RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
+
+
+# ---------------------------------------------------------------------------
+# Kamera — zawsze wyśrodkowana na mapie
+# ---------------------------------------------------------------------------
+
+func _setup_camera() -> void:
+	var map_pixel_size := Vector2(COLS * GRID_SIZE, ROWS * GRID_SIZE)  # 832 x 832
+	var map_center     := map_pixel_size * 0.5                         # 416, 416
+
+	var cam := Camera2D.new()
+	cam.position = map_center
+	cam.zoom     = _calc_zoom(map_pixel_size)
+	# Wyłączamy limit scrollowania żeby kamera nie uciekała
+	cam.limit_left   = 0
+	cam.limit_top    = 0
+	cam.limit_right  = int(map_pixel_size.x)
+	cam.limit_bottom = int(map_pixel_size.y)
+	cam.position_smoothing_enabled = false
+	add_child(cam)
+	cam.make_current()
+
+	# Odśwież zoom przy zmianie rozmiaru okna
+	get_tree().root.size_changed.connect(_on_window_resized.bind(cam, map_pixel_size, map_center))
+
+
+func _calc_zoom(map_size: Vector2) -> Vector2:
+	# Dostępna przestrzeń — odejmij pasek HUD (48 px) z góry
+	var viewport := get_viewport().get_visible_rect().size
+	var available := Vector2(viewport.x, viewport.y - 48)
+	if available.x <= 0 or available.y <= 0:
+		return Vector2.ONE
+	var scale_x := available.x / map_size.x
+	var scale_y := available.y / map_size.y
+	var s       := minf(scale_x, scale_y)  # zachowaj proporcje
+	return Vector2(s, s)
+
+
+func _on_window_resized(cam: Camera2D, map_size: Vector2, center: Vector2) -> void:
+	cam.zoom     = _calc_zoom(map_size)
+	cam.position = center
 
 
 # ---------------------------------------------------------------------------
@@ -60,29 +99,18 @@ func _build_map() -> void:
 				_spawn_floor_tile(map_node, px)
 
 
-## Niezniszczalne: obramowanie + parzyste-parzyste wnętrze
 func _is_solid(cell: Vector2i) -> bool:
 	if cell.x == 0 or cell.x == COLS - 1: return true
 	if cell.y == 0 or cell.y == ROWS - 1: return true
 	return cell.x % 2 == 0 and cell.y % 2 == 0
 
 
-## Zniszczalne: wolne komórki które nie są w bezpiecznej strefie spawnow
-## ORAZ mają niezniszczalne bloki z góry/dołu lub z lewej/prawej.
 func _should_be_breakable(cell: Vector2i) -> bool:
 	if _is_solid(cell): return false
-	
-	# Zostaw wolną strefę wokół P1 i P2
 	if _near_spawn(cell, SPAWN_P1): return false
 	if _near_spawn(cell, SPAWN_P2): return false
-	
-	# Sprawdzenie sąsiadów w poziomie (po lewej i po prawej)
 	var solid_horizontal = _is_solid(cell + Vector2i(-1, 0)) and _is_solid(cell + Vector2i(1, 0))
-	
-	# Sprawdzenie sąsiadów w pionie (z góry i z dołu)
-	var solid_vertical = _is_solid(cell + Vector2i(0, -1)) and _is_solid(cell + Vector2i(0, 1))
-	
-	# Zwróć true, tylko jeśli blok jest zablokowany niezniszczalnymi ścianami w poziomie LUB w pionie
+	var solid_vertical   = _is_solid(cell + Vector2i(0, -1)) and _is_solid(cell + Vector2i(0, 1))
 	return solid_horizontal or solid_vertical
 
 
@@ -196,7 +224,6 @@ func is_solid(cell: Vector2i) -> bool:
 func is_breakable(cell: Vector2i) -> bool:
 	return breakable_cells.has(cell)
 
-## Niszczy blok i usuwa go z mapy. Zwraca true jeśli był zniszczalny.
 func break_cell(cell: Vector2i) -> bool:
 	if not breakable_cells.has(cell):
 		return false
