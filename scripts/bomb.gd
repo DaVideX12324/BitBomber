@@ -16,6 +16,7 @@ var _timer : float = 0.0
 
 
 func _ready() -> void:
+	add_to_group("bomb")
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/bomb.png")
 
 
@@ -25,6 +26,11 @@ func _process(delta: float) -> void:
 	scale = Vector2(scale_val, scale_val)
 	if _timer >= FUSE_TIME:
 		_explode()
+
+
+## Czas pozostały do wybuchu — używane przez bot_ai.gd
+func time_left() -> float:
+	return maxf(FUSE_TIME - _timer, 0.0)
 
 
 func _explode() -> void:

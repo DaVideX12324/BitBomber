@@ -38,6 +38,9 @@ var _pending_elim      : bool = false
 var _frozen            : bool = false
 var _invincible        : bool = false
 
+## Instancja AI — tworzona w _ready() jeśli is_bot == true
+var _ai : RefCounted = null
+
 signal died(player_id: int)
 signal lives_changed(player_id: int, lives_left: int)
 signal bomb_placed(grid_pos: Vector2i, player_ref: Node)
@@ -54,7 +57,6 @@ const FALLBACK_COLORS : Dictionary = {
 
 
 func _ready() -> void:
-	# Warstwa 2 = gracze; maska 1 = kolizja ze ścianami
 	collision_layer = 2
 	collision_mask  = 1
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
@@ -63,12 +65,49 @@ func _ready() -> void:
 	_pixel_target = _grid_to_pixel(_grid_pos)
 	global_position = _pixel_target
 
+	if is_bot:
+		# AI inicjalizowana z opóźnieniem — żeby arena zdążyła się zbudować
+		await get_tree().process_frame
+		_init_ai()
+
+
+func _init_ai() -> void:
+	var arena := _find_arena()
+	if arena == null:
+		return
+	var BotAI := load("res://scripts/bot_ai.gd")
+	_ai = BotAI.new()
+	_ai.setup(self, arena)
+
+
+func _find_arena() -> Node:
+	var gn := GameManager.game_node
+	if gn and is_instance_valid(gn.get("_current_map")):
+		return gn._current_map
+	return null
+
 
 func _process(delta: float) -> void:
-	if is_bot or not is_alive or _frozen:
+	if not is_alive or _frozen:
 		return
 	if GameManager.is_in_quiz():
 		return
+
+	if _moving:
+		_move_progress += delta * MOVE_SPEED * speed_multiplier
+		if _move_progress >= 1.0:
+			_move_progress = 1.0
+			_moving = false
+		global_position = _move_from.lerp(_pixel_target, _move_progress)
+		if is_bot and _ai != null:
+			_ai.think(delta)
+		return
+
+	if is_bot:
+		if _ai != null:
+			_ai.think(delta)
+		return
+
 	_handle_movement(delta)
 	_handle_bomb_input()
 
@@ -103,7 +142,7 @@ func reset_for_new_game() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Ruch snap
+# Ruch snap (tylko gracze ludzcy)
 # ---------------------------------------------------------------------------
 
 func _handle_movement(delta: float) -> void:
@@ -154,7 +193,6 @@ func _place_bomb() -> void:
 	bomb.explosion_range  = bomb_range
 	bomb.owner_player     = self
 	bomb.exploded.connect(_on_bomb_exploded)
-	# Bomba trafia do _current_map żeby eksplozja widziała mapę
 	var map_root := _get_map_root()
 	map_root.add_child(bomb)
 	_active_bombs += 1
