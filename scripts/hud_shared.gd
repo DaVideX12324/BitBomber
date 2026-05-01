@@ -1,13 +1,36 @@
 extends CanvasLayer
 
 ## Wspólna logika dla hud_1p i hud_2p.
-## Węzły StatsLabel i RoundLabel są pobierane przez ścieżkę
-## — działają zarówno w 1P jak i 2P (2P ma dwa StatsLabele).
+
+const HEART_FULL  := "❤️"
+const HEART_EMPTY := "💔"
 
 
 func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
 
+
+# ---------------------------------------------------------------------------
+# Serca — wywołuj po zmianie lives
+# ---------------------------------------------------------------------------
+
+## Aktualizuje rząd serc dla gracza pid.
+## lives_left  = aktualna liczba pełnych serc
+## max_lives   = maksymalna liczba serc (domyślnie DEFAULT_LIVES z player.gd)
+func update_lives(pid: int, lives_left: int, max_lives: int = 3) -> void:
+	var hearts := PackedStringArray()
+	for i: int in max_lives:
+		hearts.append(HEART_FULL if i < lives_left else HEART_EMPTY)
+	var row := " ".join(hearts)
+	var label_path := "Root/PanelLeft/VBox/HeartsLabel" if pid == 1 else "Root/PanelRight/VBox/HeartsLabel"
+	var lbl := get_node_or_null(label_path)
+	if lbl:
+		lbl.text = row
+
+
+# ---------------------------------------------------------------------------
+# Stats i round
+# ---------------------------------------------------------------------------
 
 func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
 	var txt := "Bomby: %d\nZasięg: %d\nPręd: %.1fx" % [bombs, bomb_range, speed]
@@ -46,4 +69,4 @@ func show_message(msg: String, duration: float = 2.0) -> void:
 
 
 func _on_state_changed(_old, _new) -> void:
-	pass  # widoczność kontroluje game.gd
+	pass
