@@ -1,102 +1,143 @@
 extends Node
 
 ## Persistentny root całej gry.
-## Zarządza podmianą aktywnej subsceny (menu / arena) oraz:
-## - spawnowaniem graczy i botów
-## - podłączeniem HUDu do graczy
-## - obsługą końca rundy (kto zginął, kto wygrał)
+##
+## Architektura Opcja A:
+##   Game
+##   ├─ HUD1P / HUD2P
+##   ├─ Players (Node2D)   ← stały, nigdy nie niszczony
+##   └─ CurrentMap (Node2D) ← podmieniana scena mapy/pokoju
+##
+## Gracze spawnują się RAZ. Przy załadowaniu nowej mapy
+## są tylko teleportowani na spawn point.
 
 const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 
-@onready var hud_1p : CanvasLayer = $HUD1P
-@onready var hud_2p : CanvasLayer = $HUD2P
+@onready var hud_1p      : CanvasLayer = $HUD1P
+@onready var hud_2p      : CanvasLayer = $HUD2P
+@onready var players_root: Node2D      = $Players
 
-var _current_scene : Node  = null
-var _players_root  : Node2D = null
-var _arena         : Node2D = null
-var _players       : Array  = []
+var _current_map : Node2D = null
+var _players     : Array  = []
 
 
 func _ready() -> void:
 	GameManager.game_node = self
 	GameManager.state_changed.connect(_on_state_changed)
-	_load_scene("res://scenes/menus/main_menu.tscn")
+	_spawn_players()   # tylko raz — gracze żyją przez całą grę
+	_load_menu()
 
 
 # ---------------------------------------------------------------------------
-# Podmiana sceny
+# Ładowanie scen
 # ---------------------------------------------------------------------------
 
-func _load_scene(path: String) -> void:
-	if _current_scene:
-		_current_scene.queue_free()
-		_current_scene = null
-	_arena        = null
-	_players_root = null
-	_players.clear()
-	_current_scene = load(path).instantiate()
-	add_child(_current_scene)
-	move_child(_current_scene, 0)
+func _load_map(path: String) -> void:
+	if _current_map:
+		_current_map.queue_free()
+		_current_map = null
+	_current_map = load(path).instantiate() as Node2D
+	add_child(_current_map)
+	move_child(_current_map, 0)   # mapa zawsze za graczami i HUDem
+	_teleport_players()
 
 
+func _load_menu() -> void:
+	var menu := load("res://scenes/menus/main_menu.tscn").instantiate()
+	# Menu nie jest mapą — gracze zostają ukryci na czas menu
+	_set_players_visible(false)
+	if _current_map:
+		_current_map.queue_free()
+		_current_map = null
+	_current_map = menu
+	add_child(menu)
+	move_child(menu, 0)
+
+
+## Wczytaj arenę trybu vs (multiplayer / boty)
 func load_arena() -> void:
-	_load_scene("res://scenes/maps/arena.tscn")
-	_arena        = _current_scene as Node2D
-	_players_root = Node2D.new()
-	_players_root.name = "Players"
-	_current_scene.add_child(_players_root)
-	_spawn_players()
+	_reset_players_for_new_game()
+	_load_map("res://scenes/maps/arena.tscn")
+	_set_players_visible(true)
+	_connect_players_to_hud()
 	RoundManager.start_round()
 	RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 
 
+## Wczytaj pokój trybu adventure
+func load_room(path: String) -> void:
+	_load_map(path)
+	_set_players_visible(true)
+
+
 func load_menu() -> void:
-	RoundManager.last_chance_resolved.disconnect_all() if RoundManager.last_chance_resolved.get_connections().size() > 0 else null
-	_load_scene("res://scenes/menus/main_menu.tscn")
+	if RoundManager.last_chance_resolved.get_connections().size() > 0:
+		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
+	_set_players_visible(false)
+	_load_menu()
 
 
 # ---------------------------------------------------------------------------
-# Spawning graczy i botów
+# Gracze — spawn raz, teleport przy każdej mapie
 # ---------------------------------------------------------------------------
 
 func _spawn_players() -> void:
-	var hud    := get_active_hud()
 	var humans : int = GameManager.num_human_players
-	var idx    : int = 0
-
 	for i in range(humans):
 		var p := PLAYER_SCENE.instantiate() as CharacterBody2D
-		p.player_id       = i + 1
-		p.is_bot          = false
-		p.global_position = _arena.spawn_pixel(idx)
-		idx += 1
-		_players_root.add_child(p)
+		p.player_id = i + 1
+		p.is_bot    = false
+		players_root.add_child(p)
 		_players.append(p)
-		_connect_player(p, hud)
+		p.died.connect(_on_player_died)
 
 	for i in range(GameManager.num_bots):
 		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
-		bot.player_id       = humans + i + 1
-		bot.is_bot          = true
-		bot.global_position = _arena.spawn_pixel(idx)
-		idx += 1
-		_players_root.add_child(bot)
+		bot.player_id = humans + i + 1
+		bot.is_bot    = true
+		players_root.add_child(bot)
 		_players.append(bot)
 		bot.died.connect(_on_player_died)
 
 
-func _connect_player(player: CharacterBody2D, hud: CanvasLayer) -> void:
-	player.died.connect(_on_player_died)
+## Teleportuje graczy na spawn pointy aktualnej mapy
+func _teleport_players() -> void:
+	if not _current_map or not _current_map.has_method("spawn_pixel"):
+		return
+	for i in range(_players.size()):
+		var p = _players[i]
+		if is_instance_valid(p):
+			p.teleport_to(_current_map.spawn_pixel(i))
+
+
+## Resetuje stan gracza przed nową GRĄ (nie pokojem)
+func _reset_players_for_new_game() -> void:
+	for p in _players:
+		if is_instance_valid(p):
+			p.reset_for_new_game()
+
+
+func _set_players_visible(v: bool) -> void:
+	for p in _players:
+		if is_instance_valid(p):
+			p.visible = v
+
+
+func _connect_players_to_hud() -> void:
+	var hud := get_active_hud()
 	if not hud:
 		return
-	hud.update_lives(player.player_id, player.lives, player.DEFAULT_LIVES)
-	player.lives_changed.connect(
-		func(pid: int, left: int): hud.update_lives(pid, left, player.DEFAULT_LIVES)
-	)
+	for p in _players:
+		if is_instance_valid(p) and not p.is_bot:
+			hud.update_lives(p.player_id, p.lives, p.DEFAULT_LIVES)
+			if not p.lives_changed.is_connected(
+					func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES)):
+				p.lives_changed.connect(
+						func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES))
 
 
 # ---------------------------------------------------------------------------
-# Koniec rundy
+# Koniec rundy (tryb vs)
 # ---------------------------------------------------------------------------
 
 func _on_player_died(_pid: int) -> void:
@@ -124,7 +165,7 @@ func _on_last_chance_resolved(dead_player_id: int, respawned: bool) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Widoczność HUDów
+# HUD
 # ---------------------------------------------------------------------------
 
 func _update_huds(state: GameManager.GameState) -> void:
@@ -137,10 +178,6 @@ func _update_huds(state: GameManager.GameState) -> void:
 func _on_state_changed(_old: GameManager.GameState, new_state: GameManager.GameState) -> void:
 	_update_huds(new_state)
 
-
-# ---------------------------------------------------------------------------
-# Publiczne API
-# ---------------------------------------------------------------------------
 
 func get_active_hud() -> CanvasLayer:
 	if hud_1p.visible: return hud_1p
