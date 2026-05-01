@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
-## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system życ.
+## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system żyć.
 ##
-## Stan gracza PRZETRWA między pokojami (adventure mode).
-## reset_for_new_game() wywołuj tylko przy starcie NOWEJ gry.
+## collision_layer = 2  (warstwa graczy — widziana przez eksplozję mask=3)
+## collision_mask  = 1  (warstwa mapy — żeby gracz kolidował ze ścianami)
 
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
@@ -13,9 +13,6 @@ const MOVE_SPEED: float = 5.0
 
 const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
 
-# ---------------------------------------------------------------------------
-# Staty — przetrwają między pokojami w adventure mode
-# ---------------------------------------------------------------------------
 const DEFAULT_LIVES    : int   = 3
 const DEFAULT_BOMBS    : int   = 1
 const DEFAULT_RANGE    : int   = 2
@@ -27,22 +24,15 @@ var bomb_range       : int   = DEFAULT_RANGE
 var speed_multiplier : float = DEFAULT_SPEED
 var _active_bombs    : int   = 0
 
-# --- Adventure upgrades (przetrwają między pokojami) ---
 var has_remote_detonator : bool = false
 var has_bomb_pierce      : bool = false
 
-# ---------------------------------------------------------------------------
-# Ruch snap
-# ---------------------------------------------------------------------------
 var _grid_pos      : Vector2i = Vector2i.ZERO
 var _pixel_target  : Vector2  = Vector2.ZERO
 var _moving        : bool     = false
 var _move_progress : float    = 0.0
 var _move_from     : Vector2  = Vector2.ZERO
 
-# ---------------------------------------------------------------------------
-# Stan
-# ---------------------------------------------------------------------------
 var is_alive           : bool = true
 var _pending_elim      : bool = false
 var _frozen            : bool = false
@@ -64,6 +54,9 @@ const FALLBACK_COLORS : Dictionary = {
 
 
 func _ready() -> void:
+	# Warstwa 2 = gracze; maska 1 = kolizja ze ścianami
+	collision_layer = 2
+	collision_mask  = 1
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
 	_grid_pos     = _pixel_to_grid(global_position)
@@ -81,11 +74,9 @@ func _process(delta: float) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Teleport (wywoływany przez game.gd przy każdym nowym pokoju)
+# Teleport
 # ---------------------------------------------------------------------------
 
-## Natychmiastowa teleportacja na nową pozycję (spawn point pokoju).
-## Resetuje stan ruchu, nie resetuje statów.
 func teleport_to(px: Vector2) -> void:
 	global_position = px
 	_grid_pos       = _pixel_to_grid(px)
@@ -100,7 +91,6 @@ func teleport_to(px: Vector2) -> void:
 	visible         = true
 
 
-## Reset pełny — tylko przy starcie NOWEJ GRY, nie nowego pokoju.
 func reset_for_new_game() -> void:
 	lives            = DEFAULT_LIVES
 	max_bombs        = DEFAULT_BOMBS
@@ -109,7 +99,7 @@ func reset_for_new_game() -> void:
 	_active_bombs    = 0
 	has_remote_detonator = false
 	has_bomb_pierce      = false
-	teleport_to(global_position)   # resetuje też stan ruchu
+	teleport_to(global_position)
 
 
 # ---------------------------------------------------------------------------
@@ -164,7 +154,9 @@ func _place_bomb() -> void:
 	bomb.explosion_range  = bomb_range
 	bomb.owner_player     = self
 	bomb.exploded.connect(_on_bomb_exploded)
-	get_parent().add_child(bomb)
+	# Bomba trafia do _current_map żeby eksplozja widziała mapę
+	var map_root := _get_map_root()
+	map_root.add_child(bomb)
 	_active_bombs += 1
 	bomb_placed.emit(_grid_pos, self)
 
@@ -173,8 +165,15 @@ func _on_bomb_exploded() -> void:
 	_active_bombs = max(_active_bombs - 1, 0)
 
 
+func _get_map_root() -> Node:
+	var gn := GameManager.game_node
+	if gn and gn.get("_current_map") != null:
+		return gn._current_map
+	return get_parent()
+
+
 # ---------------------------------------------------------------------------
-# Obrażenia / system życ
+# Obrażenia / system żyć
 # ---------------------------------------------------------------------------
 
 func take_hit() -> void:
@@ -183,7 +182,7 @@ func take_hit() -> void:
 	lives -= 1
 	lives_changed.emit(player_id, lives)
 	if lives <= 0:
-		is_alive      = true   # tymczasowo true do czasu rozstrzygnięcia
+		is_alive      = true
 		_pending_elim = true
 		if is_bot:
 			_eliminate()
@@ -247,13 +246,12 @@ func _eliminate() -> void:
 
 func apply_powerup(powerup_type: String) -> void:
 	match powerup_type:
-		"range_up":           bomb_range       = min(bomb_range + 1, 8)
-		"bomb_up":            max_bombs        = min(max_bombs + 1, 4)
-		"speed_up":           speed_multiplier = min(speed_multiplier + 0.3, 2.5)
-		"range_max":          bomb_range       = 8
-		# Adventure upgrades:
-		"remote_detonator":   has_remote_detonator = true
-		"bomb_pierce":        has_bomb_pierce      = true
+		"range_up":         bomb_range       = min(bomb_range + 1, 8)
+		"bomb_up":          max_bombs        = min(max_bombs + 1, 4)
+		"speed_up":         speed_multiplier = min(speed_multiplier + 0.3, 2.5)
+		"range_max":        bomb_range       = 8
+		"remote_detonator": has_remote_detonator = true
+		"bomb_pierce":      has_bomb_pierce      = true
 
 
 # ---------------------------------------------------------------------------
@@ -273,7 +271,7 @@ func get_grid_pos() -> Vector2i:
 
 
 func _blink(duration: float, interval: float) -> void:
-	var steps := int(duration / (interval * 2))
-	var tw    := create_tween().set_loops(steps)
+	var steps : int = int(duration / (interval * 2))
+	var tw := create_tween().set_loops(steps)
 	tw.tween_property(self, "modulate:a", 0.2, interval)
 	tw.tween_property(self, "modulate:a", 1.0, interval)

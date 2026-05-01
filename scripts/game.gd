@@ -5,11 +5,12 @@ extends Node
 ## Architektura Opcja A:
 ##   Game
 ##   ├─ HUD1P / HUD2P
-##   ├─ Players (Node2D)   ← stały, nigdy nie niszczony
-##   └─ CurrentMap (Node)  ← podmieniana scena mapy/pokoju (może być Node lub Node2D)
+##   ├─ Players (Node2D)   ← stały kontener, gracze niszczeni/tworzeni przy każdej grze
+##   └─ CurrentMap (Node)  ← podmieniana scena mapy/pokoju
 ##
-## Gracze spawnują się RAZ. Przy załadowaniu nowej mapy
-## są tylko teleportowani na spawn point.
+## WAŻNE: _spawn_players() wywoływany w load_arena(), NIE w _ready(),
+## bo num_human_players/num_bots są ustawiane przez GameManager.start_game()
+## PRZED wywołaniem load_arena().
 
 const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 
@@ -17,14 +18,13 @@ const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 @onready var hud_2p      : CanvasLayer = $HUD2P
 @onready var players_root: Node2D      = $Players
 
-var _current_map : Node  = null   # Node (nie Node2D) — menu też tu trafia
+var _current_map : Node  = null
 var _players     : Array = []
 
 
 func _ready() -> void:
 	GameManager.game_node = self
 	GameManager.state_changed.connect(_on_state_changed)
-	_spawn_players()   # tylko raz — gracze żyją przez całą grę
 	_load_menu()
 
 
@@ -39,7 +39,7 @@ func _load_map(path: String) -> void:
 	var scene : Node2D = load(path).instantiate() as Node2D
 	_current_map = scene
 	add_child(_current_map)
-	move_child(_current_map, 0)   # mapa zawsze za graczami i HUDem
+	move_child(_current_map, 0)
 	_teleport_players()
 
 
@@ -54,30 +54,31 @@ func _load_menu() -> void:
 	move_child(menu, 0)
 
 
-## Wczytaj arenę trybu vs (multiplayer / boty)
+## Wczytaj arenę trybu vs — gracze spawnowani tutaj (już po ustawieniu num_human_players)
 func load_arena() -> void:
-	_reset_players_for_new_game()
+	_clear_players()              # usuń poprzednich graczy
+	_spawn_players()              # stwórz nowych z aktualnymi ustawieniami
 	_load_map("res://scenes/maps/arena.tscn")
 	_set_players_visible(true)
 	_connect_players_to_hud()
 	RoundManager.start_round()
-	RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
+	if not RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
+		RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 
 
-## Wczytaj pokój trybu adventure
 func load_room(path: String) -> void:
 	_load_map(path)
 	_set_players_visible(true)
 
 
 func load_menu() -> void:
-	if RoundManager.last_chance_resolved.get_connections().size() > 0:
+	if RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
 	_load_menu()
 
 
 # ---------------------------------------------------------------------------
-# Gracze — spawn raz, teleport przy każdej mapie
+# Gracze
 # ---------------------------------------------------------------------------
 
 func _spawn_players() -> void:
@@ -99,7 +100,14 @@ func _spawn_players() -> void:
 		bot.died.connect(_on_player_died)
 
 
-## Teleportuje graczy na spawn pointy aktualnej mapy
+## Usuwa wszystkich obecnych graczy (przed nową grą)
+func _clear_players() -> void:
+	for p in _players:
+		if is_instance_valid(p):
+			p.queue_free()
+	_players.clear()
+
+
 func _teleport_players() -> void:
 	if not _current_map or not _current_map.has_method("spawn_pixel"):
 		return
@@ -107,13 +115,6 @@ func _teleport_players() -> void:
 		var p = _players[i]
 		if is_instance_valid(p):
 			p.teleport_to(_current_map.spawn_pixel(i))
-
-
-## Resetuje stan gracza przed nową GRĄ (nie pokojem)
-func _reset_players_for_new_game() -> void:
-	for p in _players:
-		if is_instance_valid(p):
-			p.reset_for_new_game()
 
 
 func _set_players_visible(v: bool) -> void:
@@ -129,14 +130,12 @@ func _connect_players_to_hud() -> void:
 	for p in _players:
 		if is_instance_valid(p) and not p.is_bot:
 			hud.update_lives(p.player_id, p.lives, p.DEFAULT_LIVES)
-			if not p.lives_changed.is_connected(
-					func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES)):
-				p.lives_changed.connect(
-						func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES))
+			p.lives_changed.connect(
+					func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES))
 
 
 # ---------------------------------------------------------------------------
-# Koniec rundy (tryb vs)
+# Koniec rundy
 # ---------------------------------------------------------------------------
 
 func _on_player_died(_pid: int) -> void:
