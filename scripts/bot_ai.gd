@@ -15,43 +15,34 @@ const MAP_W           : int   = 13
 const MAP_H           : int   = 11
 
 # ---- Tabela parametrów według poziomu (wzorowana na BombIt7 XML) ----
-# aiAnswerTime easy=40, medium=30, hard=20  → przeliczone na sekundy /60
-# findRange    easy=4,  medium=5,  hard=7
-# hunt_range   easy=4,  medium=6,  hard=8   (ile pól by wejść w tryb HUNT)
-# attack_pct   easy=0.3,medium=0.4,hard=0.5 (szansa na atak w danej turze)
-# dodge_pct    easy=0.5,medium=0.6,hard=0.9 (szansa na próbę ucieczki)
-# box_pct      easy=0.3,medium=0.5,hard=0.7 (szansa na podejście do skrzynki)
 const DIFF_PARAMS : Dictionary = {
 	Difficulty.EASY: {
-		"think_rate":    0.67,   # ~40/60 s
+		"think_rate":    0.67,
 		"find_range":    4,
 		"hunt_range":    4,
 		"attack_pct":    0.30,
 		"dodge_pct":     0.50,
 		"box_pct":       0.30,
-		"move_speed_mul": 1.0,
 	},
 	Difficulty.MEDIUM: {
-		"think_rate":    0.50,   # ~30/60 s
+		"think_rate":    0.50,
 		"find_range":    5,
 		"hunt_range":    6,
 		"attack_pct":    0.40,
 		"dodge_pct":     0.60,
 		"box_pct":       0.50,
-		"move_speed_mul": 1.0,
 	},
 	Difficulty.HARD: {
-		"think_rate":    0.33,   # ~20/60 s
+		"think_rate":    0.33,
 		"find_range":    7,
 		"hunt_range":    8,
 		"attack_pct":    0.50,
 		"dodge_pct":     0.90,
 		"box_pct":       0.70,
-		"move_speed_mul": 1.0,
 	},
 }
 
-var difficulty     : int     = Difficulty.MEDIUM
+var difficulty     : int        = Difficulty.MEDIUM
 var _params        : Dictionary = {}
 
 var _owner_player  : Node     = null
@@ -118,12 +109,10 @@ func think(delta: float) -> void:
 # ---------------------------------------------------------------------------
 
 func _update_state() -> void:
-	# FLEE — ucieczka, losowość zależy od dodge_pct
 	if _is_danger_nearby():
 		if randf() < _params["dodge_pct"]:
 			_state = State.FLEE
 			return
-		# Easy/medium może zignorować niebezpieczeństwo
 		_state = State.WANDER
 		return
 
@@ -132,10 +121,7 @@ func _update_state() -> void:
 		var my_pos : Vector2i = _owner_player.get_grid_pos()
 		var t_pos  : Vector2i = target.get_grid_pos()
 		var dist   : int      = _grid_dist(my_pos, t_pos)
-		if dist <= _params["hunt_range"]:
-			_state = State.HUNT
-		else:
-			_state = State.WANDER
+		_state = State.HUNT if dist <= _params["hunt_range"] else State.WANDER
 	else:
 		_state = State.WANDER
 
@@ -170,7 +156,6 @@ func _think_hunt() -> void:
 	var t_pos : Vector2i = target.get_grid_pos()
 
 	if _enemy_in_blast_range(my_pos, t_pos):
-		# Hard atakuje prawie zawsze, Easy/Medium może odpuścić
 		if randf() < _params["attack_pct"]:
 			_owner_player._place_bomb()
 		_wander_target = Vector2i(-1, -1)
@@ -197,13 +182,12 @@ func _enemy_in_blast_range(my_pos: Vector2i, t_pos: Vector2i) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# WANDER — losowy cel BFS + bomby przy skrzynkach
+# WANDER
 # ---------------------------------------------------------------------------
 
 func _think_wander() -> void:
 	var my_pos : Vector2i = _owner_player.get_grid_pos()
 
-	# Postaw bombę przy skrzynce tylko z pewnym prawdopodobieństwem (box_pct)
 	if randf() < _params["box_pct"]:
 		for d: Vector2i in _shuffled_dirs():
 			if _arena.is_breakable(my_pos + d):
@@ -250,7 +234,7 @@ func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
 
 
 # ---------------------------------------------------------------------------
-# BFS — opcjonalny limit głębokości (max_depth = -1 oznacza brak limitu)
+# BFS
 # ---------------------------------------------------------------------------
 
 func _bfs(from: Vector2i, to: Vector2i, max_depth: int = -1) -> Array[Vector2i]:
@@ -261,9 +245,9 @@ func _bfs(from: Vector2i, to: Vector2i, max_depth: int = -1) -> Array[Vector2i]:
 	var found   : bool       = false
 
 	while queue.size() > 0:
-		var entry  : Array  = queue.pop_front()
-		var cur    : Vector2i = entry[0]
-		var depth  : int      = entry[1]
+		var entry : Array     = queue.pop_front()
+		var cur   : Vector2i  = entry[0]
+		var depth : int       = entry[1]
 		if max_depth > 0 and depth >= max_depth:
 			continue
 		for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
@@ -409,10 +393,11 @@ func _can_move(from: Vector2i, dir: Vector2i) -> bool:
 	return _is_passable(target) and not _owner_player.is_bomb_blocking(target)
 
 
+## Komórka jest przejezdna gdy nie jest solid ani breakable (wzorowane na arena.gd)
 func _is_passable(cell: Vector2i) -> bool:
 	if cell.x < 0 or cell.x >= MAP_W or cell.y < 0 or cell.y >= MAP_H:
 		return false
-	return _arena.is_passable(cell)
+	return not _arena.is_solid(cell) and not _arena.is_breakable(cell)
 
 
 func _find_nearest_enemy() -> Node:
