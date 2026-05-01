@@ -38,11 +38,8 @@ var _pending_elim : bool = false
 var _frozen       : bool = false
 var _invincible   : bool = false
 
-## Kratki z postawionymi bombami przez TEGO gracza, przez które może jeszcze przejść
-## (dopóki nie wyjdzie z kratki — klasyczny Bomberman)
-var _passable_bombs : Dictionary = {}  # Vector2i -> Node (bomba)
+var _passable_bombs : Dictionary = {}  # Vector2i -> Node
 
-## Instancja AI
 var _ai : RefCounted = null
 
 signal died(player_id: int)
@@ -96,7 +93,6 @@ func _process(delta: float) -> void:
 	if GameManager.is_in_quiz():
 		return
 
-	# Gdy gracz wyszedł z kratki ze swoją bombą — blokujemy wejście z powrotem
 	_update_passable_bombs()
 
 	if _moving:
@@ -118,8 +114,6 @@ func _process(delta: float) -> void:
 	_handle_bomb_input()
 
 
-## Usuwa z _passable_bombs kratki, których gracz już opuścił.
-## Od tego momentu bomba na tej kratce blokuje wejście.
 func _update_passable_bombs() -> void:
 	var to_remove : Array[Vector2i] = []
 	for cell: Vector2i in _passable_bombs:
@@ -129,11 +123,9 @@ func _update_passable_bombs() -> void:
 		_passable_bombs.erase(cell)
 
 
-## Zwraca true jeśli dana kratka jest zablokowana przez bombę (dla TEGO gracza).
 func is_bomb_blocking(cell: Vector2i) -> bool:
 	if _passable_bombs.has(cell):
-		return false  # własna bomba, jeszcze na niej stoimy — przepuszczamy
-	# Sprawdź czy na kratce stoi jakaś bomba (dowolna)
+		return false
 	var map := _get_map_root()
 	for child in map.get_children():
 		if child.is_in_group("bomb"):
@@ -143,6 +135,13 @@ func is_bomb_blocking(cell: Vector2i) -> bool:
 			if b_cell == cell:
 				return true
 	return false
+
+
+## Tile na którym gracz jest większością ciała (na podstawie aktualnej pozycji piksela).
+func _closest_grid_pos() -> Vector2i:
+	return Vector2i(
+		int(roundi(global_position.x / GRID_SIZE)),
+		int(roundi(global_position.y / GRID_SIZE)))
 
 
 # ---------------------------------------------------------------------------
@@ -199,13 +198,9 @@ func _handle_movement(delta: float) -> void:
 		return
 
 	var target_grid : Vector2i = _grid_pos + dir
-
-	# Kolizja ze ścianami/mapą
 	var collision := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
 	if collision:
 		return
-
-	# Kolizja z bombą
 	if is_bomb_blocking(target_grid):
 		return
 
@@ -228,17 +223,25 @@ func _handle_bomb_input() -> void:
 func _place_bomb() -> void:
 	if _active_bombs >= max_bombs:
 		return
+
+	# Użyj tile na którym gracz faktycznie stoi (zaokrąglenie po pixelu),
+	# nie _grid_pos który może wskazywać cel animacji.
+	var bomb_cell : Vector2i = _closest_grid_pos()
+
+	# Nie stawiaj jeśli na tej kratce już jest bomba
+	if is_bomb_blocking(bomb_cell):
+		return
+
 	var bomb := BOMB_SCENE.instantiate()
-	bomb.global_position = _grid_to_pixel(_grid_pos)
+	bomb.global_position = _grid_to_pixel(bomb_cell)
 	bomb.explosion_range = bomb_range
 	bomb.owner_player    = self
 	bomb.exploded.connect(_on_bomb_exploded)
 	var map_root := _get_map_root()
 	map_root.add_child(bomb)
 	_active_bombs += 1
-	# Zapamiętaj że ta kratka jest tymczasowo przeźroczysta dla nas
-	_passable_bombs[_grid_pos] = bomb
-	bomb_placed.emit(_grid_pos, self)
+	_passable_bombs[bomb_cell] = bomb
+	bomb_placed.emit(bomb_cell, self)
 
 
 func _on_bomb_exploded() -> void:
