@@ -6,6 +6,8 @@ extends CanvasLayer
 ##   LAST_CHANCE  — gracz zginął, może odpowiedzieć na quiz aby respawnować
 ##   ROUND_END    — runda skończyła się (tryb wielorundowy, bez botów)
 ##   GAME_OVER    — cała sesja zakończona (lub tryb z botami)
+##
+## Przy ROUND_END i GAME_OVER gra jest automatycznie pauzowana.
 
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
@@ -79,6 +81,7 @@ func show_round_end(winner_id: int) -> void:
 	_btn_cont.visible = true
 	_btn_menu.visible = true
 	_show()
+	_do_pause()
 
 
 func show_round_end_draw() -> void:
@@ -90,6 +93,7 @@ func show_round_end_draw() -> void:
 	_btn_cont.visible = true
 	_btn_menu.visible = true
 	_show()
+	_do_pause()
 
 
 func show_game_over(winner_id: int) -> void:
@@ -99,7 +103,6 @@ func show_game_over(winner_id: int) -> void:
 		_title.text = "Remis!"
 		_subtitle.text = "Obaj gracze zginęli jednocześnie."
 	elif winner_id == 0:
-		# winner_id == 0 oznacza że wygrał bot (ostatni przy życiu)
 		_icon.text = "🤖"
 		_title.text = "Wygrał bot!"
 		_subtitle.text = "Lepiej następnym razem."
@@ -111,6 +114,19 @@ func show_game_over(winner_id: int) -> void:
 	_btn_menu.visible = true
 	_btn_menu.text = "Menu główne"
 	_show()
+	_do_pause()
+
+
+# ---------------------------------------------------------------------------
+# Pauza / wznowienie gry
+# ---------------------------------------------------------------------------
+
+func _do_pause() -> void:
+	get_tree().paused = true
+
+
+func _do_resume() -> void:
+	get_tree().paused = false
 
 
 # ---------------------------------------------------------------------------
@@ -123,6 +139,7 @@ func _on_continue() -> void:
 			RoundManager.resolve_last_chance(true)
 			_hide()
 		Mode.ROUND_END:
+			_do_resume()
 			_hide()
 			if GameManager.game_node:
 				GameManager.game_node.load_arena()
@@ -132,6 +149,7 @@ func _on_continue() -> void:
 
 
 func _on_menu() -> void:
+	_do_resume()
 	_hide()
 	GameManager.go_to_menu()
 
@@ -153,16 +171,14 @@ func _show() -> void:
 	_overlay.modulate.a = 0.0
 	_panel.modulate.a   = 0.0
 	var tw := create_tween()
-	tw.set_parallel(true)
 	tw.tween_property(_overlay, "modulate:a", 1.0, 0.25)
-	tw.tween_property(_panel,   "modulate:a", 1.0, 0.25)
+	tw.parallel().tween_property(_panel, "modulate:a", 1.0, 0.25)
 
 
 func _hide() -> void:
 	var tw := create_tween()
-	tw.set_parallel(true)
 	tw.tween_property(_overlay, "modulate:a", 0.0, 0.2)
-	tw.tween_property(_panel,   "modulate:a", 0.0, 0.2)
+	tw.parallel().tween_property(_panel, "modulate:a", 0.0, 0.2)
 	await tw.finished
 	visible = false
 	_quiz_slot.visible = false
