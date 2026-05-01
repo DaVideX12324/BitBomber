@@ -3,7 +3,7 @@ extends CanvasLayer
 ## Wspólna logika dla hud_1p i hud_2p.
 
 const HEART_FULL  := "❤️"
-const HEART_EMPTY := "💔"
+const HEART_EMPTY := "🖤"
 
 
 func _ready() -> void:

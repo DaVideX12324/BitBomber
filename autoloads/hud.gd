@@ -136,7 +136,7 @@ func _add_stats_label(parent: Control) -> Label:
 # ---------------------------------------------------------------------------
 
 func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
-	var txt := "💣 Bomby: %d\n🎯 Zasięg: %d\n⚡ Pręd: %.1fx" % [bombs, bomb_range, speed]
+	var txt := "💣: %d\n🎯: %d\n⚡: %.1fx" % [bombs, bomb_range, speed]
 	if pid == 1:
 		_p1_label.text = txt
 	else:

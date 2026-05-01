@@ -24,6 +24,7 @@ offset_left = 8.0
 offset_top = -100.0
 offset_right = 160.0
 offset_bottom = 100.0
+grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="Root/PanelLeft" unique_id=689554970]
 layout_mode = 2
@@ -74,6 +75,8 @@ offset_left = -160.0
 offset_top = -100.0
 offset_right = -8.0
 offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="Root/PanelRight" unique_id=655049141]
 layout_mode = 2
@@ -122,6 +125,7 @@ offset_left = -70.0
 offset_top = 6.0
 offset_right = 70.0
 offset_bottom = 38.0
+grow_horizontal = 2
 
 [node name="RoundLabel" type="Label" parent="Root/RoundPanel" unique_id=1071968022]
 layout_mode = 2
