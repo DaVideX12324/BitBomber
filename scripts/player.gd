@@ -8,8 +8,8 @@ extends CharacterBody2D
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
 
-const GRID_SIZE : int   = 64
-const MOVE_SPEED: float = 5.0
+const GRID_SIZE  : int   = 64
+const MOVE_SPEED : float = 5.0
 
 const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
 
@@ -33,12 +33,16 @@ var _moving        : bool     = false
 var _move_progress : float    = 0.0
 var _move_from     : Vector2  = Vector2.ZERO
 
-var is_alive           : bool = true
-var _pending_elim      : bool = false
-var _frozen            : bool = false
-var _invincible        : bool = false
+var is_alive      : bool = true
+var _pending_elim : bool = false
+var _frozen       : bool = false
+var _invincible   : bool = false
 
-## Instancja AI — tworzona w _ready() jeśli is_bot == true
+## Kratki z postawionymi bombami przez TEGO gracza, przez które może jeszcze przejść
+## (dopóki nie wyjdzie z kratki — klasyczny Bomberman)
+var _passable_bombs : Dictionary = {}  # Vector2i -> Node (bomba)
+
+## Instancja AI
 var _ai : RefCounted = null
 
 signal died(player_id: int)
@@ -61,12 +65,11 @@ func _ready() -> void:
 	collision_mask  = 1
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
-	_grid_pos     = _pixel_to_grid(global_position)
-	_pixel_target = _grid_to_pixel(_grid_pos)
+	_grid_pos       = _pixel_to_grid(global_position)
+	_pixel_target   = _grid_to_pixel(_grid_pos)
 	global_position = _pixel_target
 
 	if is_bot:
-		# AI inicjalizowana z opóźnieniem — żeby arena zdążyła się zbudować
 		await get_tree().process_frame
 		_init_ai()
 
@@ -93,6 +96,9 @@ func _process(delta: float) -> void:
 	if GameManager.is_in_quiz():
 		return
 
+	# Gdy gracz wyszedł z kratki ze swoją bombą — blokujemy wejście z powrotem
+	_update_passable_bombs()
+
 	if _moving:
 		_move_progress += delta * MOVE_SPEED * speed_multiplier
 		if _move_progress >= 1.0:
@@ -112,6 +118,33 @@ func _process(delta: float) -> void:
 	_handle_bomb_input()
 
 
+## Usuwa z _passable_bombs kratki, których gracz już opuścił.
+## Od tego momentu bomba na tej kratce blokuje wejście.
+func _update_passable_bombs() -> void:
+	var to_remove : Array[Vector2i] = []
+	for cell: Vector2i in _passable_bombs:
+		if _grid_pos != cell:
+			to_remove.append(cell)
+	for cell: Vector2i in to_remove:
+		_passable_bombs.erase(cell)
+
+
+## Zwraca true jeśli dana kratka jest zablokowana przez bombę (dla TEGO gracza).
+func is_bomb_blocking(cell: Vector2i) -> bool:
+	if _passable_bombs.has(cell):
+		return false  # własna bomba, jeszcze na niej stoimy — przepuszczamy
+	# Sprawdź czy na kratce stoi jakaś bomba (dowolna)
+	var map := _get_map_root()
+	for child in map.get_children():
+		if child.is_in_group("bomb"):
+			var b_cell := Vector2i(
+				int(child.global_position.x / GRID_SIZE),
+				int(child.global_position.y / GRID_SIZE))
+			if b_cell == cell:
+				return true
+	return false
+
+
 # ---------------------------------------------------------------------------
 # Teleport
 # ---------------------------------------------------------------------------
@@ -128,6 +161,7 @@ func teleport_to(px: Vector2) -> void:
 	is_alive        = true
 	_pending_elim   = false
 	visible         = true
+	_passable_bombs.clear()
 
 
 func reset_for_new_game() -> void:
@@ -164,9 +198,15 @@ func _handle_movement(delta: float) -> void:
 	if dir == Vector2i.ZERO:
 		return
 
-	var target_grid := _grid_pos + dir
-	var collision   := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
+	var target_grid : Vector2i = _grid_pos + dir
+
+	# Kolizja ze ścianami/mapą
+	var collision := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
 	if collision:
+		return
+
+	# Kolizja z bombą
+	if is_bomb_blocking(target_grid):
 		return
 
 	_grid_pos      = target_grid
@@ -189,13 +229,15 @@ func _place_bomb() -> void:
 	if _active_bombs >= max_bombs:
 		return
 	var bomb := BOMB_SCENE.instantiate()
-	bomb.global_position  = _grid_to_pixel(_grid_pos)
-	bomb.explosion_range  = bomb_range
-	bomb.owner_player     = self
+	bomb.global_position = _grid_to_pixel(_grid_pos)
+	bomb.explosion_range = bomb_range
+	bomb.owner_player    = self
 	bomb.exploded.connect(_on_bomb_exploded)
 	var map_root := _get_map_root()
 	map_root.add_child(bomb)
 	_active_bombs += 1
+	# Zapamiętaj że ta kratka jest tymczasowo przeźroczysta dla nas
+	_passable_bombs[_grid_pos] = bomb
 	bomb_placed.emit(_grid_pos, self)
 
 
