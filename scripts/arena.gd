@@ -1,10 +1,12 @@
 extends Node2D
 
-const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
+## Scena areny odpowiada TYLKO za mapę:
+## budowanie siatki, kolizje, API dla bomb/eksplozji, spawn pointy.
+## Gracze są spawnowani przez game.gd.
 
-const GRID_SIZE   : int = 64
-const COLS        : int = 13
-const ROWS        : int = 13
+const GRID_SIZE : int = 64
+const COLS      : int = 13
+const ROWS      : int = 13
 
 const COLOR_BG           = Color(0.15, 0.15, 0.17, 1.0)
 const COLOR_GRID_LINE    = Color(0.22, 0.22, 0.25, 1.0)
@@ -13,12 +15,11 @@ const COLOR_SOLID_HL     = Color(0.55, 0.57, 0.68, 1.0)
 const COLOR_BREAKABLE    = Color(0.55, 0.38, 0.22, 1.0)
 const COLOR_BREAKABLE_HL = Color(0.72, 0.52, 0.32, 1.0)
 
-var solid_cells: Dictionary = {}
+var solid_cells    : Dictionary = {}
 var breakable_cells: Dictionary = {}
 
 const SAFE_SPAWN_RADIUS : int = 2
 
-## Typed array[Vector2i] — GDScript może bezpiecznie wywnioskować typ elementu
 const SPAWN_POINTS : Array[Vector2i] = [
 	Vector2i(1,  1),   # P1   — lewy górny
 	Vector2i(11, 11),  # P2   — prawy dolny
@@ -26,18 +27,10 @@ const SPAWN_POINTS : Array[Vector2i] = [
 	Vector2i(1,  11),  # Bot2 — lewy dolny
 ]
 
-@onready var players_root : Node2D = $Players
-
-## Wszyscy gracze (ludzie + boty) — do śledzenia końca gry
-var _players: Array = []
-
 
 func _ready() -> void:
 	_setup_camera()
 	_build_map()
-	_spawn_players()
-	RoundManager.start_round()
-	RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +53,7 @@ func _setup_camera() -> void:
 
 
 func _calc_zoom(map_size: Vector2) -> Vector2:
-	var viewport := get_viewport().get_visible_rect().size
+	var viewport  := get_viewport().get_visible_rect().size
 	var available := Vector2(viewport.x, viewport.y - 48)
 	if available.x <= 0 or available.y <= 0:
 		return Vector2.ONE
@@ -86,7 +79,8 @@ func _build_map() -> void:
 			var cell := Vector2i(col, row)
 			var px   := Vector2(col * GRID_SIZE, row * GRID_SIZE)
 			if _is_solid(cell):
-				solid_cells[cell] = true; _spawn_solid_block(map_node, px)
+				solid_cells[cell] = true
+				_spawn_solid_block(map_node, px)
 			elif _should_be_breakable(cell):
 				breakable_cells[cell] = _spawn_breakable_block(map_node, px)
 			else:
@@ -155,7 +149,7 @@ func _add_color_rect(parent: Node, sz: Vector2, pos: Vector2, col: Color) -> voi
 
 
 # ---------------------------------------------------------------------------
-# API dla bomb.gd i explosion.gd
+# Publiczne API — używane przez bomb.gd, explosion.gd, game.gd
 # ---------------------------------------------------------------------------
 
 func is_solid(cell: Vector2i) -> bool:     return solid_cells.has(cell)
@@ -171,87 +165,7 @@ func break_cell(cell: Vector2i) -> bool:
 func pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))
 
-
-# ---------------------------------------------------------------------------
-# Spawning graczy i botów
-# ---------------------------------------------------------------------------
-
-func _spawn_players() -> void:
-	var hud: CanvasLayer = null
-	if GameManager.game_node:
-		hud = GameManager.game_node.get_active_hud()
-
-	var humans   : int = GameManager.num_human_players
-	var spawn_idx: int = 0
-
-	# Gracze ludzcy (player_id 1..humans)
-	for i in range(humans):
-		var p := PLAYER_SCENE.instantiate() as CharacterBody2D
-		p.player_id       = i + 1
-		p.is_bot          = false
-		p.global_position = _spawn_pixel(spawn_idx)
-		spawn_idx += 1
-		players_root.add_child(p)
-		_players.append(p)
-		_connect_player(p, hud)
-
-	# Boty (player_id humans+1 ..)
-	for i in range(GameManager.num_bots):
-		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
-		bot.player_id       = humans + i + 1
-		bot.is_bot          = true
-		bot.global_position = _spawn_pixel(spawn_idx)
-		spawn_idx += 1
-		players_root.add_child(bot)
-		_players.append(bot)
-		bot.died.connect(_on_player_died)
-
-
-## Zwraca pixel-center dla n-tego spawna
-func _spawn_pixel(idx: int) -> Vector2:
+## Pixel-center n-tego spawna — używane przez game.gd
+func spawn_pixel(idx: int) -> Vector2:
 	var sp : Vector2i = SPAWN_POINTS[idx % SPAWN_POINTS.size()]
 	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2, sp.y * GRID_SIZE + GRID_SIZE / 2)
-
-
-func _connect_player(player: CharacterBody2D, hud: CanvasLayer) -> void:
-	player.died.connect(_on_player_died)
-	if not hud:
-		return
-	hud.update_lives(player.player_id, player.lives, player.DEFAULT_LIVES)
-	player.lives_changed.connect(
-		func(pid: int, left: int): hud.update_lives(pid, left, player.DEFAULT_LIVES)
-	)
-
-
-# ---------------------------------------------------------------------------
-# Koniec gry
-# ---------------------------------------------------------------------------
-
-func _on_player_died(_pid: int) -> void:
-	## Czekamy klatkę — drugi gracz mógł też zginąć w tej samej eksplozji
-	get_tree().process_frame.connect(_deferred_check_round, CONNECT_ONE_SHOT)
-
-
-func _deferred_check_round() -> void:
-	if not RoundManager._round_active:
-		return
-
-	var alive: Array = []
-	for p in _players:
-		if is_instance_valid(p) and p.is_alive:
-			alive.append(p)
-
-	match alive.size():
-		0:
-			RoundManager.end_round(-1)
-		1:
-			RoundManager.end_round(alive[0].player_id)
-		_:
-			pass
-
-
-func _on_last_chance_resolved(dead_player_id: int, respawned: bool) -> void:
-	for p in _players:
-		if is_instance_valid(p) and p.player_id == dead_player_id:
-			p.resolve_last_chance(respawned)
-			return
