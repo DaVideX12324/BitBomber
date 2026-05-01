@@ -137,11 +137,14 @@ func is_bomb_blocking(cell: Vector2i) -> bool:
 	return false
 
 
-## Tile na którym gracz jest większością ciała (na podstawie aktualnej pozycji piksela).
+## Tile na którym gracz jest większością ciała.
+## Gracz stoi na środku tila (pixel = grid * 64 + 32),
+## więc odejmujemy offset 32 przed dzieleniem.
 func _closest_grid_pos() -> Vector2i:
+	var half : int = GRID_SIZE / 2
 	return Vector2i(
-		int(roundi(global_position.x / GRID_SIZE)),
-		int(roundi(global_position.y / GRID_SIZE)))
+		int(roundi((global_position.x - half) / GRID_SIZE)),
+		int(roundi((global_position.y - half) / GRID_SIZE)))
 
 
 # ---------------------------------------------------------------------------
@@ -224,11 +227,8 @@ func _place_bomb() -> void:
 	if _active_bombs >= max_bombs:
 		return
 
-	# Użyj tile na którym gracz faktycznie stoi (zaokrąglenie po pixelu),
-	# nie _grid_pos który może wskazywać cel animacji.
 	var bomb_cell : Vector2i = _closest_grid_pos()
 
-	# Nie stawiaj jeśli na tej kratce już jest bomba
 	if is_bomb_blocking(bomb_cell):
 		return
 
