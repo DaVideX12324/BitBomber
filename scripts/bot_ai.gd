@@ -2,15 +2,12 @@ extends RefCounted
 
 ## AI dla bota Bomberman — BFS na gridzie 13x13.
 ## Stany: WANDER (losowy ruch), HUNT (gonenie gracza), FLEE (ucieczka od bomby).
-##
-## Użycie: stworzyć instancję w player.gd gdy is_bot=true,
-## wywołać think(delta) z _process.
 
 enum State { WANDER, HUNT, FLEE }
 
 const GRID_SIZE  : int   = 64
-const THINK_RATE : float = 0.35   # s — jak często bot liczy nowy krok
-const BOMB_TIMER_SAFE : float = 1.2  # jeśli bomba wybucha za mniej niż tyle sekund — uciekaj
+const THINK_RATE : float = 0.35
+const BOMB_TIMER_SAFE : float = 1.4  # uciekaj jeśli zostaje mniej niż tyle sekund
 
 var _owner_player : Node        = null
 var _arena        : Node        = null
@@ -33,7 +30,6 @@ func think(delta: float) -> void:
 
 	_think_timer -= delta
 	if _think_timer > 0.0:
-		# Wykonaj już zakolejkowany kierunek
 		if _queued_dir != Vector2i.ZERO:
 			_try_move(_queued_dir)
 		return
@@ -64,14 +60,13 @@ func _update_state() -> void:
 
 
 # ---------------------------------------------------------------------------
-# FLEE — uciekaj od bomby
+# FLEE
 # ---------------------------------------------------------------------------
 
 func _think_flee() -> void:
 	var my_pos := _owner_player.get_grid_pos()
 	var safe   := _find_safe_cell(my_pos)
 	if safe == Vector2i(-1, -1):
-		# Brak bezpiecznego pola — stój
 		_queued_dir = Vector2i.ZERO
 		return
 	var path := _bfs(my_pos, safe)
@@ -81,7 +76,7 @@ func _think_flee() -> void:
 
 
 # ---------------------------------------------------------------------------
-# HUNT — gonenie gracza, kładzenie bomby obok
+# HUNT
 # ---------------------------------------------------------------------------
 
 func _think_hunt() -> void:
@@ -94,10 +89,10 @@ func _think_hunt() -> void:
 	var t_pos := target.get_grid_pos()
 	var dist  := _grid_dist(my_pos, t_pos)
 
-	# Jeśli sąsiad — postaw bombę
 	if dist == 1:
 		_owner_player._place_bomb()
 		_queued_dir = _flee_dir_from(t_pos)
+		_try_move(_queued_dir)
 		return
 
 	var path := _bfs(my_pos, t_pos)
@@ -109,13 +104,12 @@ func _think_hunt() -> void:
 
 
 # ---------------------------------------------------------------------------
-# WANDER — losowy spacer, burz skrzynki
+# WANDER
 # ---------------------------------------------------------------------------
 
 func _think_wander() -> void:
 	var my_pos := _owner_player.get_grid_pos()
 
-	# Jeśli obok jest breakable — postaw bombę i uciekaj
 	for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
 		if _arena.is_breakable(my_pos + d):
 			_owner_player._place_bomb()
@@ -123,7 +117,6 @@ func _think_wander() -> void:
 			_try_move(_queued_dir)
 			return
 
-	# Kontynuuj w obecnym kierunku lub wybierz nowy
 	_wander_steps -= 1
 	if _wander_steps <= 0 or not _can_move(my_pos, _queued_dir):
 		var dirs := _shuffled_dirs()
@@ -178,22 +171,22 @@ func _bfs(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 
 
 # ---------------------------------------------------------------------------
-# Helpery bezpieczeństwa
+# Bezpieczeństwo
 # ---------------------------------------------------------------------------
 
 func _is_danger_nearby() -> bool:
 	var my_pos := _owner_player.get_grid_pos()
-	var bombs  := _get_active_bombs()
-	for bomb in bombs:
+	for bomb in _get_active_bombs():
 		if not is_instance_valid(bomb):
 			continue
-		var b_grid := Vector2i(int(bomb.global_position.x / GRID_SIZE),
-								int(bomb.global_position.y / GRID_SIZE))
-		var r      : int   = bomb.explosion_range + 1
-		var t_left : float = bomb.get("_timer_left") if bomb.get("_timer_left") != null else 9.0
+		# Czas pozostały — używamy metody time_left() z bomb.gd
+		var t_left : float = bomb.time_left() if bomb.has_method("time_left") else 9.0
 		if t_left > BOMB_TIMER_SAFE:
 			continue
-		# Sprawdź czy mój grid leży na linii eksplozji
+		var b_grid := Vector2i(
+			int(bomb.global_position.x / GRID_SIZE),
+			int(bomb.global_position.y / GRID_SIZE))
+		var r : int = bomb.explosion_range + 1
 		if b_grid.x == my_pos.x and abs(b_grid.y - my_pos.y) <= r:
 			return true
 		if b_grid.y == my_pos.y and abs(b_grid.x - my_pos.x) <= r:
@@ -221,8 +214,9 @@ func _cell_in_danger(cell: Vector2i, bombs: Array) -> bool:
 	for bomb in bombs:
 		if not is_instance_valid(bomb):
 			continue
-		var b_grid := Vector2i(int(bomb.global_position.x / GRID_SIZE),
-								int(bomb.global_position.y / GRID_SIZE))
+		var b_grid := Vector2i(
+			int(bomb.global_position.x / GRID_SIZE),
+			int(bomb.global_position.y / GRID_SIZE))
 		var r : int = bomb.explosion_range + 1
 		if b_grid.x == cell.x and abs(b_grid.y - cell.y) <= r:
 			return true
@@ -272,15 +266,16 @@ func _flee_dir_from(threat: Vector2i) -> Vector2i:
 func _try_move(dir: Vector2i) -> void:
 	if dir == Vector2i.ZERO or not is_instance_valid(_owner_player):
 		return
-	var my_pos    := _owner_player.get_grid_pos()
-	var target    := my_pos + dir
+	var my_pos := _owner_player.get_grid_pos()
+	var target := my_pos + dir
 	if not _is_passable(target):
 		_queued_dir = Vector2i.ZERO
 		return
 	_owner_player._grid_pos      = target
 	_owner_player._move_from     = _owner_player.global_position
-	_owner_player._pixel_target  = Vector2(target.x * GRID_SIZE + GRID_SIZE / 2,
-											target.y * GRID_SIZE + GRID_SIZE / 2)
+	_owner_player._pixel_target  = Vector2(
+		target.x * GRID_SIZE + GRID_SIZE / 2,
+		target.y * GRID_SIZE + GRID_SIZE / 2)
 	_owner_player._move_progress = 0.0
 	_owner_player._moving        = true
 
@@ -302,7 +297,7 @@ func _is_passable(cell: Vector2i) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Helpery nawigacyjne
+# Helpery
 # ---------------------------------------------------------------------------
 
 func _find_nearest_human() -> Node:
@@ -310,8 +305,8 @@ func _find_nearest_human() -> Node:
 	if not is_instance_valid(gn):
 		return null
 	var my_pos := _owner_player.get_grid_pos()
-	var best   : Node  = null
-	var best_d : int   = 9999
+	var best   : Node = null
+	var best_d : int  = 9999
 	for p in gn._players:
 		if not is_instance_valid(p):
 			continue
