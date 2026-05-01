@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dhc28m5n0t5v7"]
 
-[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1"]
+[ext_resource type="Script" uid="uid://b6860fx2m1im7" path="res://scripts/main_menu.gd" id="1"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1748921173]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,16 +12,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="." unique_id=174068454]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.06, 0.10, 1)
+color = Color(0.06, 0.06, 0.1, 1)
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="." unique_id=1547427281]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,134 +29,136 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="Center"]
-layout_mode = 2
+[node name="Panel" type="PanelContainer" parent="Center" unique_id=719870763]
 custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Center/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Center/Panel" unique_id=1767725691]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Title" type="Label" parent="Center/Panel/VBox"]
+[node name="Title" type="Label" parent="Center/Panel/VBox" unique_id=2128057794]
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "💣 BitBomber"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 48
 
-[node name="Subtitle" type="Label" parent="Center/Panel/VBox"]
+[node name="Subtitle" type="Label" parent="Center/Panel/VBox" unique_id=360151117]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 15
 text = "Edukacyjna gra bomberman"
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 15
 
-[node name="Sep1" type="HSeparator" parent="Center/Panel/VBox"]
+[node name="Sep1" type="HSeparator" parent="Center/Panel/VBox" unique_id=307140480]
 layout_mode = 2
 
-[node name="Controls" type="Label" parent="Center/Panel/VBox"]
+[node name="Controls" type="Label" parent="Center/Panel/VBox" unique_id=23378163]
 layout_mode = 2
-text = "P1: WASD + Spacja\nP2: Strzałki + Num0 / Enter"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(0.65, 0.75, 0.65, 1)
+theme_override_font_sizes/font_size = 13
+text = "P1: WASD + Spacja
+P2: Strzałki + Num0 / Enter"
+horizontal_alignment = 1
 
-[node name="Sep2" type="HSeparator" parent="Center/Panel/VBox"]
+[node name="Sep2" type="HSeparator" parent="Center/Panel/VBox" unique_id=1925169792]
 layout_mode = 2
 
-[node name="Btn1P" type="Button" parent="Center/Panel/VBox"]
+[node name="Btn1P" type="Button" parent="Center/Panel/VBox" unique_id=615722078]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "▶  Graj (1 gracz)"
-custom_minimum_size = Vector2(0, 44)
-theme_override_font_sizes/font_size = 17
 
-[node name="Panel1P" type="PanelContainer" parent="Center/Panel/VBox"]
-layout_mode = 2
+[node name="Panel1P" type="PanelContainer" parent="Center/Panel/VBox" unique_id=207371030]
 visible = false
+layout_mode = 2
 
-[node name="VBox1P" type="VBoxContainer" parent="Center/Panel/VBox/Panel1P"]
+[node name="VBox1P" type="VBoxContainer" parent="Center/Panel/VBox/Panel1P" unique_id=423972456]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P"]
+[node name="Label1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=472920558]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 13
 text = "Liczba botów:"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 
-[node name="HBox1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P"]
+[node name="HBox1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=696020488]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 8
+alignment = 1
 
-[node name="Bot1P_1" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+[node name="Bot1P_1" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=1680287039]
+custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "1 Bot"
-custom_minimum_size = Vector2(80, 36)
-theme_override_font_sizes/font_size = 14
 
-[node name="Bot1P_2" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+[node name="Bot1P_2" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=1864410728]
+custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "2 Boty"
-custom_minimum_size = Vector2(80, 36)
-theme_override_font_sizes/font_size = 14
 
-[node name="Bot1P_3" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+[node name="Bot1P_3" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=211343684]
+custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "3 Boty"
-custom_minimum_size = Vector2(80, 36)
-theme_override_font_sizes/font_size = 14
 
-[node name="Btn2P" type="Button" parent="Center/Panel/VBox"]
-layout_mode = 2
-text = "▶  Graj (2 graczy)"
+[node name="Btn2P" type="Button" parent="Center/Panel/VBox" unique_id=1893811316]
 custom_minimum_size = Vector2(0, 44)
-theme_override_font_sizes/font_size = 17
-
-[node name="Panel2P" type="PanelContainer" parent="Center/Panel/VBox"]
 layout_mode = 2
-visible = false
+theme_override_font_sizes/font_size = 17
+text = "▶  Graj (2 graczy)"
 
-[node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P"]
+[node name="Panel2P" type="PanelContainer" parent="Center/Panel/VBox" unique_id=1806719920]
+visible = false
+layout_mode = 2
+
+[node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P" unique_id=1152984982]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P"]
+[node name="Label2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=1079606127]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 13
 text = "Liczba botów:"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 
-[node name="HBox2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P"]
+[node name="HBox2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=756273401]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 8
+alignment = 1
 
-[node name="Bot2P_1" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P"]
+[node name="Bot2P_1" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=486921655]
+custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "1 Bot"
-custom_minimum_size = Vector2(80, 36)
-theme_override_font_sizes/font_size = 14
 
-[node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P"]
+[node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=1886455927]
+custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "2 Boty"
-custom_minimum_size = Vector2(80, 36)
-theme_override_font_sizes/font_size = 14
 
-[node name="Sep3" type="HSeparator" parent="Center/Panel/VBox"]
+[node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
 layout_mode = 2
 
-[node name="BtnQuit" type="Button" parent="Center/Panel/VBox"]
-layout_mode = 2
-text = "✕  Wyjście"
+[node name="BtnQuit" type="Button" parent="Center/Panel/VBox" unique_id=196722966]
 custom_minimum_size = Vector2(0, 36)
-theme_override_font_sizes/font_size = 15
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 15
+text = "✕  Wyjście"
 
-[node name="VerLabel" type="Label" parent="."]
+[node name="VerLabel" type="Label" parent="." unique_id=899343667]
 layout_mode = 1
+anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -166,7 +169,7 @@ offset_right = -8.0
 offset_bottom = -6.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
+theme_override_font_sizes/font_size = 11
 text = "v0.1-dev"
 horizontal_alignment = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
