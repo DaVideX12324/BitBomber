@@ -31,17 +31,16 @@ func _explode() -> void:
 	set_process(false)
 	exploded.emit()
 
-	var arena  := _get_arena()
-	var origin := _pixel_to_grid(global_position)
+	var arena  : Node     = _get_arena()
+	var origin : Vector2i = _pixel_to_grid(global_position)
 
-	# środek zawsze
 	_spawn_explosion(global_position)
 
-	var directions := [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
-	for dir in directions:
-		for i in range(1, explosion_range + 1):
-			var cell := origin + dir * i
-			var pos  := _grid_to_pixel(cell)
+	var directions : Array[Vector2i] = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
+	for dir : Vector2i in directions:
+		for i : int in range(1, explosion_range + 1):
+			var cell : Vector2i = origin + dir * i
+			var pos  : Vector2  = _grid_to_pixel(cell)
 
 			if arena and arena.is_solid(cell):
 				break
@@ -59,13 +58,10 @@ func _explode() -> void:
 func _spawn_explosion(pos: Vector2) -> void:
 	var exp := EXPLOSION_SCENE.instantiate()
 	exp.global_position = pos
-	# Eksplozja musi być dzieckiem mapy (arena/pokój), żeby Area2D
-	# widziało TileMapLayer i inne obiekty w tej samej scenie.
 	var target := _get_map_root()
 	target.add_child(exp)
 
 
-## Szuka w górę pierwszego węzła z is_solid() — to jest arena/pokój.
 func _get_arena() -> Node:
 	var node := get_parent() as Node
 	while node:
@@ -75,8 +71,6 @@ func _get_arena() -> Node:
 	return null
 
 
-## Zwraca węzeł, do którego powinny trafić eksplozje (=aktywna mapa).
-## Preferuje _current_map z game_node; fallback: get_parent().
 func _get_map_root() -> Node:
 	var gn := GameManager.game_node
 	if gn and gn.get("_current_map") != null:
