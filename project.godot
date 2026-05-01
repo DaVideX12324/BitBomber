@@ -18,7 +18,7 @@ config/name="BitBomber"
 config/description="Edukacyjna gra Bomberman — lokalny multiplayer z quizami"
 run/main_scene="res://scenes/menus/main_menu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="uid://bmkhsto26krxg"
+config/icon="uid://b8r7bhgsmub4e"
 
 [autoload]
 
@@ -26,6 +26,7 @@ GameManager="*res://autoloads/game_manager.gd"
 RoundManager="*res://autoloads/round_manager.gd"
 SpriteLoader="*res://autoloads/sprite_loader.gd"
 WindowManager="*uid://fv2xg3xhx8v5"
+HUD="*uid://cof3totncwsjf"
 
 [display]
 
