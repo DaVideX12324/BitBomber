@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://hud1p" path="res://scenes/hud/hud_1p.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://hud2p" path="res://scenes/hud/hud_2p.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/overlays/death_screen.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/overlays/pause_menu.tscn" id="5"]
 
 [node name="Game" type="Node" unique_id=2111826329]
 script = ExtResource("1")
@@ -15,5 +16,7 @@ visible = false
 visible = false
 
 [node name="DeathScreen" parent="." unique_id=1397666868 instance=ExtResource("4")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("5")]
 
 [node name="Players" type="Node2D" parent="." unique_id=1635090139]
