@@ -95,6 +95,10 @@ func _process(delta: float) -> void:
 
 	_update_passable_bombs()
 
+	# Obsługa bomby zawsze — także podczas animacji ruchu
+	if not is_bot:
+		_handle_bomb_input()
+
 	if _moving:
 		_move_progress += delta * MOVE_SPEED * speed_multiplier
 		if _move_progress >= 1.0:
@@ -111,7 +115,6 @@ func _process(delta: float) -> void:
 		return
 
 	_handle_movement(delta)
-	_handle_bomb_input()
 
 
 func _update_passable_bombs() -> void:
