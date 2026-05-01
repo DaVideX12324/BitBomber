@@ -170,7 +170,7 @@ func resolve_last_chance(respawned: bool) -> void:
 func _start_hit_sequence() -> void:
 	_frozen = true
 	_invincible = true
-	_blink(4.0, 0.15)  # szybkie miganie podczas freeze
+	_blink(3.0, 0.3)  # miganie podczas freeze
 	await get_tree().create_timer(4.0).timeout
 	_frozen = false
 	_blink(2.0, 0.1)   # szybsze miganie podczas iframes
