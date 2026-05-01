@@ -6,8 +6,8 @@ extends Node
 enum GameState {
 	MENU,
 	PLAYING,
-	QUIZ_POWERUP,    # gracz zebrał ? power-up
-	QUIZ_LAST_CHANCE, # gracz zginął — szansa na respawn
+	QUIZ_POWERUP,
+	QUIZ_LAST_CHANCE,
 	ROUND_END,
 	GAME_OVER
 }
@@ -16,10 +16,12 @@ signal state_changed(old_state: GameState, new_state: GameState)
 
 var current_state: GameState = GameState.MENU
 
-## Konfiguracja sesji (ustawiana przed startem gry)
-var num_human_players: int = 1  # 1 lub 2
-var num_bots: int = 1           # dopełnienie do 2+ graczy na planszy
-var rounds_to_win: int = 3      # ile rund wygrywa mecz
+var num_human_players: int = 1
+var num_bots: int = 1
+var rounds_to_win: int = 3
+
+## Referencja do persistentnego roota (ustawiana przez game.gd)
+var game_node: Node = null
 
 
 func change_state(new_state: GameState) -> void:
@@ -41,9 +43,16 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 	num_bots = bots
 	RoundManager.reset_session()
 	change_state(GameState.PLAYING)
-	get_tree().change_scene_to_file("res://scenes/maps/arena.tscn")
+	if game_node:
+		game_node.load_arena()
+	else:
+		# fallback gdyby game_node nie był jeszcze ustawiony
+		get_tree().change_scene_to_file("res://scenes/maps/arena.tscn")
 
 
 func go_to_menu() -> void:
 	change_state(GameState.MENU)
-	get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
+	if game_node:
+		game_node.load_menu()
+	else:
+		get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
