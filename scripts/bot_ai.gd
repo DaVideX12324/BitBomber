@@ -5,16 +5,16 @@ extends RefCounted
 
 enum State { WANDER, HUNT, FLEE }
 
-const GRID_SIZE  : int   = 64
-const THINK_RATE : float = 0.35
-const BOMB_TIMER_SAFE : float = 1.4  # uciekaj jeśli zostaje mniej niż tyle sekund
+const GRID_SIZE       : int   = 64
+const THINK_RATE      : float = 0.35
+const BOMB_TIMER_SAFE : float = 1.4
 
-var _owner_player : Node        = null
-var _arena        : Node        = null
-var _state        : State       = State.WANDER
-var _think_timer  : float       = 0.0
-var _queued_dir   : Vector2i    = Vector2i.ZERO
-var _wander_steps : int         = 0
+var _owner_player : Node     = null
+var _arena        : Node     = null
+var _state        : State    = State.WANDER
+var _think_timer  : float    = 0.0
+var _queued_dir   : Vector2i = Vector2i.ZERO
+var _wander_steps : int      = 0
 
 
 func setup(player: Node, arena: Node) -> void:
@@ -53,7 +53,9 @@ func _update_state() -> void:
 		return
 	var target := _find_nearest_human()
 	if target != null:
-		var dist := _grid_dist(_owner_player.get_grid_pos(), target.get_grid_pos())
+		var my_pos : Vector2i = _owner_player.get_grid_pos()
+		var t_pos  : Vector2i = target.get_grid_pos()
+		var dist : int = _grid_dist(my_pos, t_pos)
 		_state = State.HUNT if dist <= 6 else State.WANDER
 	else:
 		_state = State.WANDER
@@ -64,8 +66,8 @@ func _update_state() -> void:
 # ---------------------------------------------------------------------------
 
 func _think_flee() -> void:
-	var my_pos := _owner_player.get_grid_pos()
-	var safe   := _find_safe_cell(my_pos)
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	var safe   : Vector2i = _find_safe_cell(my_pos)
 	if safe == Vector2i(-1, -1):
 		_queued_dir = Vector2i.ZERO
 		return
@@ -80,14 +82,14 @@ func _think_flee() -> void:
 # ---------------------------------------------------------------------------
 
 func _think_hunt() -> void:
-	var my_pos := _owner_player.get_grid_pos()
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
 	var target := _find_nearest_human()
 	if target == null:
 		_think_wander()
 		return
 
-	var t_pos := target.get_grid_pos()
-	var dist  := _grid_dist(my_pos, t_pos)
+	var t_pos : Vector2i = target.get_grid_pos()
+	var dist  : int      = _grid_dist(my_pos, t_pos)
 
 	if dist == 1:
 		_owner_player._place_bomb()
@@ -108,7 +110,7 @@ func _think_hunt() -> void:
 # ---------------------------------------------------------------------------
 
 func _think_wander() -> void:
-	var my_pos := _owner_player.get_grid_pos()
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
 
 	for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
 		if _arena.is_breakable(my_pos + d):
@@ -161,9 +163,9 @@ func _bfs(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	if not found:
 		return []
 
-	var path : Array[Vector2i] = []
-	var cur  : Vector2i        = to
-	var sentinel               := Vector2i(-9999, -9999)
+	var path     : Array[Vector2i] = []
+	var cur      : Vector2i        = to
+	var sentinel : Vector2i        = Vector2i(-9999, -9999)
 	while cur != sentinel:
 		path.push_front(cur)
 		cur = visited.get(cur, sentinel)
@@ -171,19 +173,18 @@ func _bfs(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 
 
 # ---------------------------------------------------------------------------
-# Bezpieczeństwo
+# Bezpieczenstwo
 # ---------------------------------------------------------------------------
 
 func _is_danger_nearby() -> bool:
-	var my_pos := _owner_player.get_grid_pos()
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
 	for bomb in _get_active_bombs():
 		if not is_instance_valid(bomb):
 			continue
-		# Czas pozostały — używamy metody time_left() z bomb.gd
 		var t_left : float = bomb.time_left() if bomb.has_method("time_left") else 9.0
 		if t_left > BOMB_TIMER_SAFE:
 			continue
-		var b_grid := Vector2i(
+		var b_grid : Vector2i = Vector2i(
 			int(bomb.global_position.x / GRID_SIZE),
 			int(bomb.global_position.y / GRID_SIZE))
 		var r : int = bomb.explosion_range + 1
@@ -196,7 +197,7 @@ func _is_danger_nearby() -> bool:
 
 func _find_safe_cell(from: Vector2i) -> Vector2i:
 	var bombs := _get_active_bombs()
-	var queue : Array = [from]
+	var queue : Array      = [from]
 	var vis   : Dictionary = { from: true }
 	while queue.size() > 0:
 		var cur : Vector2i = queue.pop_front()
@@ -214,7 +215,7 @@ func _cell_in_danger(cell: Vector2i, bombs: Array) -> bool:
 	for bomb in bombs:
 		if not is_instance_valid(bomb):
 			continue
-		var b_grid := Vector2i(
+		var b_grid : Vector2i = Vector2i(
 			int(bomb.global_position.x / GRID_SIZE),
 			int(bomb.global_position.y / GRID_SIZE))
 		var r : int = bomb.explosion_range + 1
@@ -244,8 +245,8 @@ func _get_map() -> Node:
 
 
 func _flee_dir_from(threat: Vector2i) -> Vector2i:
-	var my := _owner_player.get_grid_pos()
-	var diff := my - threat
+	var my   : Vector2i = _owner_player.get_grid_pos()
+	var diff : Vector2i = my - threat
 	var dirs : Array[Vector2i]
 	if abs(diff.x) >= abs(diff.y):
 		dirs = [Vector2i(sign(diff.x), 0), Vector2i(0, sign(diff.y)),
@@ -266,8 +267,8 @@ func _flee_dir_from(threat: Vector2i) -> Vector2i:
 func _try_move(dir: Vector2i) -> void:
 	if dir == Vector2i.ZERO or not is_instance_valid(_owner_player):
 		return
-	var my_pos := _owner_player.get_grid_pos()
-	var target := my_pos + dir
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	var target : Vector2i = my_pos + dir
 	if not _is_passable(target):
 		_queued_dir = Vector2i.ZERO
 		return
@@ -304,15 +305,16 @@ func _find_nearest_human() -> Node:
 	var gn := GameManager.game_node
 	if not is_instance_valid(gn):
 		return null
-	var my_pos := _owner_player.get_grid_pos()
-	var best   : Node = null
-	var best_d : int  = 9999
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	var best   : Node     = null
+	var best_d : int      = 9999
 	for p in gn._players:
 		if not is_instance_valid(p):
 			continue
 		if p == _owner_player or p.is_bot or not p.is_alive:
 			continue
-		var d := _grid_dist(my_pos, p.get_grid_pos())
+		var p_pos : Vector2i = p.get_grid_pos()
+		var d     : int      = _grid_dist(my_pos, p_pos)
 		if d < best_d:
 			best_d = d
 			best   = p
