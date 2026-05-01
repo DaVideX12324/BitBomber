@@ -30,8 +30,8 @@ var _move_from: Vector2 = Vector2.ZERO
 # --- Stan ---
 var is_alive: bool = true
 var _pending_elimination: bool = false
-var _frozen: bool = false       # freeze po trafieniu
-var _invincible: bool = false   # iframes po freeze
+var _frozen: bool = false
+var _invincible: bool = false
 
 signal died(player_id: int)
 signal lives_changed(player_id: int, lives_left: int)
@@ -50,19 +50,16 @@ const FALLBACK_COLORS = {
 
 func _ready() -> void:
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
-	var sprite_path = "players/player_%d.png" % player_id
-	SpriteLoader.apply_or_fallback(_sprite, _fallback, sprite_path)
+	SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
 	_grid_pos = _pixel_to_grid(global_position)
 	_pixel_target = _grid_to_pixel(_grid_pos)
 	global_position = _pixel_target
 
 
 func _process(delta: float) -> void:
-	if is_bot or not is_alive:
+	if is_bot or not is_alive or _frozen:
 		return
 	if GameManager.is_in_quiz():
-		return
-	if _frozen:
 		return
 	_handle_movement(delta)
 	_handle_bomb_input()
@@ -92,14 +89,13 @@ func _handle_movement(delta: float) -> void:
 		return
 
 	var target_grid = _grid_pos + dir
-	var target_pixel = _grid_to_pixel(target_grid)
-	var collision = move_and_collide(target_pixel - global_position, true)
+	var collision = move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
 	if collision:
 		return
 
 	_grid_pos = target_grid
 	_move_from = global_position
-	_pixel_target = target_pixel
+	_pixel_target = _grid_to_pixel(target_grid)
 	_move_progress = 0.0
 	_moving = true
 
@@ -109,8 +105,7 @@ func _handle_movement(delta: float) -> void:
 # ---------------------------------------------------------------------------
 
 func _handle_bomb_input() -> void:
-	var prefix = "p%d_" % player_id
-	if Input.is_action_just_pressed(prefix + "bomb"):
+	if Input.is_action_just_pressed("p%d_bomb" % player_id):
 		_place_bomb()
 
 
@@ -136,6 +131,9 @@ func _on_bomb_exploded() -> void:
 # ---------------------------------------------------------------------------
 
 func take_hit() -> void:
+	## Zawsze odejmuj życie jeśli gracz żyje i nie ma iframes.
+	## NIE sprawdzamy stanu gry — dzięki temu oboje gracze tracą życie
+	## z tej samej eksplozji nawet jeśli jeden z nich właśnie wpadł w eliminację.
 	if not is_alive or _invincible:
 		return
 
@@ -143,37 +141,42 @@ func take_hit() -> void:
 	lives_changed.emit(player_id, lives)
 
 	if lives <= 0:
-		# Brak żyć — eliminacja
 		is_alive = false
+		_pending_elimination = true
 		if is_bot:
 			_eliminate()
 		else:
-			RoundManager.trigger_last_chance(player_id)
-			_pending_elimination = true
+			## Odkładamy trigger_last_chance na następną klatkę —
+			## dzięki temu drugi gracz zdąży również stracić życie
+			## zanim stan gry zostanie zmieniony.
+			get_tree().process_frame.connect(_deferred_last_chance, CONNECT_ONE_SHOT)
 	else:
-		# Zostały życia — freeze + iframes
 		_start_hit_sequence()
 
 
-## Wywoływane przez RoundManager.last_chance_resolved
+func _deferred_last_chance() -> void:
+	if _pending_elimination:
+		RoundManager.trigger_last_chance(player_id)
+
+
+## Wywoływane przez RoundManager po rozstrzygnięciu last-chance
 func resolve_last_chance(respawned: bool) -> void:
 	_pending_elimination = false
 	if respawned:
-		lives = 1  # wraca z 1 życiem
+		lives = 1
 		lives_changed.emit(player_id, lives)
 		_respawn()
 	else:
 		_eliminate()
 
 
-## Freeze 4s → iframes 2s
 func _start_hit_sequence() -> void:
 	_frozen = true
 	_invincible = true
-	_blink(3.0, 0.3)  # miganie podczas freeze
+	_blink(3.0, 0.3)
 	await get_tree().create_timer(4.0).timeout
 	_frozen = false
-	_blink(2.0, 0.1)   # szybsze miganie podczas iframes
+	_blink(2.0, 0.1)
 	await get_tree().create_timer(2.0).timeout
 	_invincible = false
 	modulate.a = 1.0
@@ -195,6 +198,7 @@ func _start_iframes(duration: float) -> void:
 
 func _eliminate() -> void:
 	is_alive = false
+	_pending_elimination = false
 	visible = false
 	died.emit(player_id)
 
@@ -227,7 +231,6 @@ func get_grid_pos() -> Vector2i:
 	return _grid_pos
 
 
-## Miganie przez cały czas trwania (nie blokuje — nie używa await)
 func _blink(duration: float, interval: float) -> void:
 	var steps := int(duration / (interval * 2))
 	var tw := create_tween().set_loops(steps)
