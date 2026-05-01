@@ -24,6 +24,7 @@ offset_left = 8.0
 offset_top = -110.0
 offset_right = 160.0
 offset_bottom = 110.0
+grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="Root/PanelLeft" unique_id=221089840]
 layout_mode = 2
@@ -59,7 +60,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "💣: 1
 📏: 2
-🏃‍➡️: 1.0x"
+⚡: 1.0x"
 horizontal_alignment = 1
 autowrap_mode = 3
 
@@ -72,6 +73,7 @@ offset_left = -70.0
 offset_top = 6.0
 offset_right = 70.0
 offset_bottom = 38.0
+grow_horizontal = 2
 
 [node name="RoundLabel" type="Label" parent="Root/RoundPanel" unique_id=623946848]
 layout_mode = 2
