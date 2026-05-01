@@ -1,7 +1,7 @@
 extends RefCounted
 
 ## AI dla bota Bomberman — BFS na gridzie 13x13.
-## Stany: WANDER (losowy ruch), HUNT (gonenie gracza), FLEE (ucieczka od bomby).
+## Stany: WANDER (losowy cel BFS), HUNT (gonenie gracza), FLEE (ucieczka od bomby).
 ## Bot nie rusza się dopóki żaden gracz ludzki nie wykona pierwszego ruchu.
 
 enum State { WANDER, HUNT, FLEE }
@@ -9,14 +9,16 @@ enum State { WANDER, HUNT, FLEE }
 const GRID_SIZE       : int   = 64
 const THINK_RATE      : float = 0.35
 const BOMB_TIMER_SAFE : float = 1.4
+const MAP_W           : int   = 13
+const MAP_H           : int   = 11
 
-var _owner_player : Node     = null
-var _arena        : Node     = null
-var _state        : State    = State.WANDER
-var _think_timer  : float    = 0.0
-var _queued_dir   : Vector2i = Vector2i.ZERO
-var _wander_steps : int      = 0
-var _game_started : bool     = false
+var _owner_player  : Node     = null
+var _arena         : Node     = null
+var _state         : State    = State.WANDER
+var _think_timer   : float    = 0.0
+var _queued_dir    : Vector2i = Vector2i.ZERO
+var _wander_target : Vector2i = Vector2i(-1, -1)
+var _game_started  : bool     = false
 
 
 func setup(player: Node, arena: Node) -> void:
@@ -126,31 +128,60 @@ func _think_hunt() -> void:
 
 
 # ---------------------------------------------------------------------------
-# WANDER
+# WANDER — losowy cel BFS, nowy cel gdy osiągnięty lub nieosiegalny
 # ---------------------------------------------------------------------------
 
 func _think_wander() -> void:
 	var my_pos : Vector2i = _owner_player.get_grid_pos()
 
-	for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+	# Postaw bombę obok skrzynki jeśli w pobliżu
+	for d: Vector2i in _shuffled_dirs():
 		if _arena.is_breakable(my_pos + d):
 			_owner_player._place_bomb()
-			_queued_dir = -d
+			_queued_dir    = -d
+			_wander_target = Vector2i(-1, -1)
 			_try_move(_queued_dir)
 			return
 
-	_wander_steps -= 1
-	if _wander_steps <= 0 or not _can_move(my_pos, _queued_dir):
-		var dirs := _shuffled_dirs()
-		_queued_dir = Vector2i.ZERO
-		for d: Vector2i in dirs:
-			if _can_move(my_pos, d):
-				_queued_dir   = d
-				_wander_steps = randi_range(2, 5)
-				break
+	# Wybierz nowy losowy cel jeśli go nie mamy lub jesteśmy przy nim
+	if _wander_target == Vector2i(-1, -1) or _wander_target == my_pos:
+		_wander_target = _pick_random_passable(my_pos)
 
-	if _queued_dir != Vector2i.ZERO:
+	if _wander_target == Vector2i(-1, -1):
+		# Fallback: krok w losowym przechodnim kierunku
+		for d: Vector2i in _shuffled_dirs():
+			if _can_move(my_pos, d):
+				_queued_dir = d
+				_try_move(_queued_dir)
+				return
+		return
+
+	var path := _bfs(my_pos, _wander_target)
+	if path.size() >= 2:
+		_queued_dir = path[1] - path[0]
 		_try_move(_queued_dir)
+	else:
+		# Cel nieosiegalny — wybierz nowy
+		_wander_target = Vector2i(-1, -1)
+
+
+## Losuje cel — preferuje miejsca dalsze od aktualnej pozycji (min 3 kroki)
+func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
+	var candidates : Array[Vector2i] = []
+	for x in range(1, MAP_W - 1):
+		for y in range(1, MAP_H - 1):
+			var cell := Vector2i(x, y)
+			if _is_passable(cell) and _grid_dist(cell, my_pos) >= 3:
+				candidates.append(cell)
+	if candidates.is_empty():
+		return Vector2i(-1, -1)
+	candidates.shuffle()
+	# Spróbuj kilku kandydatów, wybierz pierwszego osiągalnego
+	for i in range(min(10, candidates.size())):
+		var path := _bfs(my_pos, candidates[i])
+		if path.size() >= 2:
+			return candidates[i]
+	return Vector2i(-1, -1)
 
 
 # ---------------------------------------------------------------------------
@@ -292,7 +323,6 @@ func _try_move(dir: Vector2i) -> void:
 	if not _is_passable(target):
 		_queued_dir = Vector2i.ZERO
 		return
-	# Kolizja z bombą — bot może wyjść z własnej bomby (jak gracz), ale nie wejść na inną
 	if _owner_player.is_bomb_blocking(target):
 		_queued_dir = Vector2i.ZERO
 		return
