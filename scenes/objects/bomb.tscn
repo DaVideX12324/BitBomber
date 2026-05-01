@@ -1,16 +1,16 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://nxfxhx8egip5"]
 
-[ext_resource type="Script" path="res://scripts/bomb.gd" id="1"]
+[ext_resource type="Script" uid="uid://cw2y2pg21ve0q" path="res://scripts/bomb.gd" id="1"]
 
-[node name="Bomb" type="Node2D"]
+[node name="Bomb" type="Node2D" unique_id=554652414 groups=["bomb"]]
 script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1603069678]
 visible = false
 
-[node name="Fallback" type="ColorRect" parent="."]
+[node name="Fallback" type="ColorRect" parent="." unique_id=1850237114]
 offset_left = -24.0
 offset_top = -24.0
 offset_right = 24.0
 offset_bottom = 24.0
-color = Color(0.1, 0.1, 0.1, 1.0)
+color = Color(0.1, 0.1, 0.1, 1)
