@@ -2,6 +2,7 @@ extends RefCounted
 
 ## AI dla bota Bomberman — BFS na gridzie 13x13.
 ## Stany: WANDER (losowy ruch), HUNT (gonenie gracza), FLEE (ucieczka od bomby).
+## Bot nie rusza się dopóki żaden gracz ludzki nie wykona pierwszego ruchu.
 
 enum State { WANDER, HUNT, FLEE }
 
@@ -9,22 +10,56 @@ const GRID_SIZE       : int   = 64
 const THINK_RATE      : float = 0.35
 const BOMB_TIMER_SAFE : float = 1.4
 
-var _owner_player : Node     = null
-var _arena        : Node     = null
-var _state        : State    = State.WANDER
-var _think_timer  : float    = 0.0
-var _queued_dir   : Vector2i = Vector2i.ZERO
-var _wander_steps : int      = 0
+var _owner_player  : Node     = null
+var _arena         : Node     = null
+var _state         : State    = State.WANDER
+var _think_timer   : float    = 0.0
+var _queued_dir    : Vector2i = Vector2i.ZERO
+var _wander_steps  : int      = 0
+
+## true gdy którykolwiek gracz ludzki wykonał pierwszy ruch
+var _game_started  : bool     = false
+
+## Zapamiętane pozycje startowe graczy ludzkich — porównujemy co klatkę
+var _human_start_positions : Dictionary = {}  # Node -> Vector2i
 
 
 func setup(player: Node, arena: Node) -> void:
 	_owner_player = player
 	_arena        = arena
+	_cache_human_positions()
+
+
+## Zapisz startowe pozycje graczy ludzkich przy inicjalizacji
+func _cache_human_positions() -> void:
+	var gn := GameManager.game_node
+	if not is_instance_valid(gn):
+		return
+	for p in gn._players:
+		if is_instance_valid(p) and not p.is_bot:
+			_human_start_positions[p] = p.get_grid_pos()
+
+
+## Sprawdza czy którykolwiek ludzki gracz zmienił pozycję względem startu
+func _check_game_started() -> void:
+	for p: Node in _human_start_positions:
+		if not is_instance_valid(p):
+			continue
+		var start : Vector2i = _human_start_positions[p]
+		if p.get_grid_pos() != start:
+			_game_started = true
+			return
 
 
 func think(delta: float) -> void:
 	if not is_instance_valid(_owner_player) or not _owner_player.is_alive:
 		return
+
+	# Czekaj na pierwszy ruch gracza
+	if not _game_started:
+		_check_game_started()
+		return
+
 	if _owner_player._moving:
 		return
 
