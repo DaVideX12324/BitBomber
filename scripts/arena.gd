@@ -17,20 +17,16 @@ var solid_cells: Dictionary = {}
 var breakable_cells: Dictionary = {}
 
 const SAFE_SPAWN_RADIUS : int = 2
-const SPAWN_P1 := Vector2i(1, 1)
-const SPAWN_P2 := Vector2i(11, 11)
 
-## Stałe spawny dla maksymalnie 4 graczy (P1..P4 / Bot1..Bot4)
-const SPAWN_POINTS := [
-	Vector2i(1, 1),
-	Vector2i(11, 11),
-	Vector2i(11, 1),
-	Vector2i(1, 11),
+## Typed array[Vector2i] — GDScript może bezpiecznie wywnioskować typ elementu
+const SPAWN_POINTS : Array[Vector2i] = [
+	Vector2i(1,  1),   # P1   — lewy górny
+	Vector2i(11, 11),  # P2   — prawy dolny
+	Vector2i(11, 1),   # Bot1 — prawy górny
+	Vector2i(1,  11),  # Bot2 — lewy dolny
 ]
 
-@onready var players_root : Node2D   = $Players
-@onready var p1_spawn     : Marker2D = $P1Spawn
-@onready var p2_spawn     : Marker2D = $P2Spawn
+@onready var players_root : Node2D = $Players
 
 ## Wszyscy gracze (ludzie + boty) — do śledzenia końca gry
 var _players: Array = []
@@ -81,14 +77,14 @@ func _on_window_resized(cam: Camera2D, map_size: Vector2, center: Vector2) -> vo
 # ---------------------------------------------------------------------------
 
 func _build_map() -> void:
-	var map_node = Node2D.new()
+	var map_node := Node2D.new()
 	map_node.name = "Map"
 	add_child(map_node); move_child(map_node, 0)
 
 	for row in range(ROWS):
 		for col in range(COLS):
-			var cell = Vector2i(col, row)
-			var px   = Vector2(col * GRID_SIZE, row * GRID_SIZE)
+			var cell := Vector2i(col, row)
+			var px   := Vector2(col * GRID_SIZE, row * GRID_SIZE)
 			if _is_solid(cell):
 				solid_cells[cell] = true; _spawn_solid_block(map_node, px)
 			elif _should_be_breakable(cell):
@@ -105,7 +101,7 @@ func _is_solid(cell: Vector2i) -> bool:
 
 func _should_be_breakable(cell: Vector2i) -> bool:
 	if _is_solid(cell): return false
-	for sp in SPAWN_POINTS:
+	for sp: Vector2i in SPAWN_POINTS:
 		if _near_spawn(cell, sp): return false
 	return (_is_solid(cell + Vector2i(-1,0)) and _is_solid(cell + Vector2i(1,0))) \
 		or (_is_solid(cell + Vector2i(0,-1)) and _is_solid(cell + Vector2i(0,1)))
@@ -120,12 +116,12 @@ func _near_spawn(cell: Vector2i, spawn: Vector2i) -> bool:
 # ---------------------------------------------------------------------------
 
 func _spawn_solid_block(parent: Node, px: Vector2) -> void:
-	var body = StaticBody2D.new()
+	var body := StaticBody2D.new()
 	body.position = px + Vector2(GRID_SIZE/2, GRID_SIZE/2)
 	body.collision_layer = 1; body.collision_mask = 2
 	parent.add_child(body)
-	var shape = CollisionShape2D.new()
-	var rect  = RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
+	var shape := CollisionShape2D.new()
+	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
 	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE/2,-GRID_SIZE/2), COLOR_SOLID)
 	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_SOLID_HL)
@@ -133,12 +129,12 @@ func _spawn_solid_block(parent: Node, px: Vector2) -> void:
 
 
 func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
-	var body = StaticBody2D.new()
+	var body := StaticBody2D.new()
 	body.position = px + Vector2(GRID_SIZE/2, GRID_SIZE/2)
 	body.collision_layer = 1; body.collision_mask = 2
 	body.add_to_group("breakable"); parent.add_child(body)
-	var shape = CollisionShape2D.new()
-	var rect  = RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE-2, GRID_SIZE-2)
+	var shape := CollisionShape2D.new()
+	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE-2, GRID_SIZE-2)
 	shape.shape = rect; body.add_child(shape)
 	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE/2,-GRID_SIZE/2), COLOR_BREAKABLE)
 	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_BREAKABLE_HL)
@@ -147,14 +143,14 @@ func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
 
 
 func _spawn_floor_tile(parent: Node, px: Vector2) -> void:
-	var n = Node2D.new(); n.position = px; parent.add_child(n)
+	var n := Node2D.new(); n.position = px; parent.add_child(n)
 	_add_color_rect(n, Vector2(GRID_SIZE, GRID_SIZE), Vector2.ZERO, COLOR_BG)
 	_add_color_rect(n, Vector2(1, GRID_SIZE), Vector2(GRID_SIZE-1, 0), COLOR_GRID_LINE)
 	_add_color_rect(n, Vector2(GRID_SIZE, 1), Vector2(0, GRID_SIZE-1), COLOR_GRID_LINE)
 
 
 func _add_color_rect(parent: Node, sz: Vector2, pos: Vector2, col: Color) -> void:
-	var cr = ColorRect.new(); cr.size = sz; cr.position = pos; cr.color = col
+	var cr := ColorRect.new(); cr.size = sz; cr.position = pos; cr.color = col
 	parent.add_child(cr)
 
 
@@ -185,11 +181,10 @@ func _spawn_players() -> void:
 	if GameManager.game_node:
 		hud = GameManager.game_node.get_active_hud()
 
-	var total    : int = GameManager.total_players()
 	var humans   : int = GameManager.num_human_players
 	var spawn_idx: int = 0
 
-	# Gracze ludzcy (zawsze player_id 1..humans)
+	# Gracze ludzcy (player_id 1..humans)
 	for i in range(humans):
 		var p := PLAYER_SCENE.instantiate() as CharacterBody2D
 		p.player_id       = i + 1
@@ -200,7 +195,7 @@ func _spawn_players() -> void:
 		_players.append(p)
 		_connect_player(p, hud)
 
-	# Boty (player_id humans+1 .. total)
+	# Boty (player_id humans+1 ..)
 	for i in range(GameManager.num_bots):
 		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
 		bot.player_id       = humans + i + 1
@@ -212,9 +207,9 @@ func _spawn_players() -> void:
 		bot.died.connect(_on_player_died)
 
 
-## Zwraca pixel-center dla n-tego spawna (wrap dla bezpieczeństwa)
+## Zwraca pixel-center dla n-tego spawna
 func _spawn_pixel(idx: int) -> Vector2:
-	var sp := SPAWN_POINTS[idx % SPAWN_POINTS.size()]
+	var sp : Vector2i = SPAWN_POINTS[idx % SPAWN_POINTS.size()]
 	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2, sp.y * GRID_SIZE + GRID_SIZE / 2)
 
 
@@ -238,7 +233,6 @@ func _on_player_died(_pid: int) -> void:
 
 
 func _deferred_check_round() -> void:
-	# Jeśli gra już się zakończyła (np. równoczesna śmierć), nie wywołuj ponownie
 	if not RoundManager._round_active:
 		return
 
@@ -249,13 +243,10 @@ func _deferred_check_round() -> void:
 
 	match alive.size():
 		0:
-			# Wszyscy zginęli jednocześnie — remis
 			RoundManager.end_round(-1)
 		1:
-			# Ostatni przy życiu wygrywa
 			RoundManager.end_round(alive[0].player_id)
 		_:
-			# Gra trwa dalej
 			pass
 
 
