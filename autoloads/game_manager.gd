@@ -25,7 +25,7 @@ var game_node: Node = null
 
 
 func change_state(new_state: GameState) -> void:
-	var old = current_state
+	var old := current_state
 	current_state = new_state
 	state_changed.emit(old, new_state)
 
@@ -38,6 +38,10 @@ func is_in_quiz() -> bool:
 	return current_state in [GameState.QUIZ_POWERUP, GameState.QUIZ_LAST_CHANCE]
 
 
+func total_players() -> int:
+	return num_human_players + num_bots
+
+
 func start_game(human_players: int = 1, bots: int = 1) -> void:
 	num_human_players = human_players
 	num_bots = bots
@@ -46,7 +50,6 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 	if game_node:
 		game_node.load_arena()
 	else:
-		# fallback gdyby game_node nie był jeszcze ustawiony
 		get_tree().change_scene_to_file("res://scenes/maps/arena.tscn")
 
 

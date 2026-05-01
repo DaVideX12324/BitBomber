@@ -4,16 +4,12 @@ extends CanvasLayer
 ##
 ## Tryby działania:
 ##   LAST_CHANCE  — gracz zginął, może odpowiedzieć na quiz aby respawnować
-##   ROUND_END    — runda skończyła się
-##   GAME_OVER    — cała sesja zakończona
-##
-## Slot na quiz:
-##   _quiz_slot (VBoxContainer) domyślnie ukryty.
-##   Wypełnij go i ustaw visible=true przed wywołaniem show_*.
+##   ROUND_END    — runda skończyła się (tryb wielorundowy, bez botów)
+##   GAME_OVER    — cała sesja zakończona (lub tryb z botami)
 
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
-@onready var _overlay   : ColorRect     = $Overlay
+@onready var _overlay   : ColorRect      = $Overlay
 @onready var _panel     : PanelContainer = $Panel
 @onready var _icon      : Label          = $Panel/VBox/Icon
 @onready var _title     : Label          = $Panel/VBox/Title
@@ -44,6 +40,10 @@ func _on_last_chance(dead_player_id: int) -> void:
 
 
 func _on_round_ended(winner_id: int) -> void:
+	# W trybie z botami round_ended odpala się razem z session_ended —
+	# obsługę przejmuje _on_session_ended, tutaj ignorujemy.
+	if GameManager.current_state == GameManager.GameState.GAME_OVER:
+		return
 	if winner_id >= 1:
 		show_round_end(winner_id)
 	else:
@@ -67,8 +67,6 @@ func show_last_chance(dead_player_id: int) -> void:
 	_btn_cont.text = "Respawnuj"
 	_btn_cont.visible = true
 	_btn_menu.visible = false
-	## HOOK quizowy — odkomentuj gdy będzie quiz:
-	## _quiz_slot.visible = true
 	_show()
 
 
@@ -96,9 +94,19 @@ func show_round_end_draw() -> void:
 
 func show_game_over(winner_id: int) -> void:
 	_mode = Mode.GAME_OVER
-	_icon.text = "🌟"
-	_title.text = "Gracz %d wygrał mecz!" % winner_id
-	_subtitle.text = _build_score_text()
+	if winner_id == -1:
+		_icon.text = "⏳"
+		_title.text = "Remis!"
+		_subtitle.text = "Obaj gracze zginęli jednocześnie."
+	elif winner_id == 0:
+		# winner_id == 0 oznacza że wygrał bot (ostatni przy życiu)
+		_icon.text = "🤖"
+		_title.text = "Wygrał bot!"
+		_subtitle.text = "Lepiej następnym razem."
+	else:
+		_icon.text = "🏆"
+		_title.text = "Gracz %d wygrał!" % winner_id
+		_subtitle.text = "Gratulacje!"
 	_btn_cont.visible = false
 	_btn_menu.visible = true
 	_btn_menu.text = "Menu główne"
@@ -140,7 +148,6 @@ func _build_score_text() -> String:
 	return "\n".join(lines)
 
 
-## CanvasLayer nie ma modulate — animujemy dzieci bezpośrednio
 func _show() -> void:
 	visible = true
 	_overlay.modulate.a = 0.0

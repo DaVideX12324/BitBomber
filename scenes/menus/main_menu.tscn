@@ -30,7 +30,7 @@ grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 layout_mode = 2
-custom_minimum_size = Vector2(360, 0)
+custom_minimum_size = Vector2(380, 0)
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
@@ -39,7 +39,6 @@ theme_override_constants/separation = 16
 [node name="Title" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2
 text = "💣 BitBomber"
-label_settings = null
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 48
 
@@ -65,22 +64,92 @@ layout_mode = 2
 
 [node name="Btn1P" type="Button" parent="Center/Panel/VBox"]
 layout_mode = 2
-text = "▶  Graj (1P + Bot)"
-name = "Btn1P"
+text = "▶  Graj (1 gracz)"
 custom_minimum_size = Vector2(0, 44)
 theme_override_font_sizes/font_size = 17
 
+[node name="Panel1P" type="PanelContainer" parent="Center/Panel/VBox"]
+layout_mode = 2
+visible = false
+
+[node name="VBox1P" type="VBoxContainer" parent="Center/Panel/VBox/Panel1P"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P"]
+layout_mode = 2
+text = "Liczba botów:"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+
+[node name="HBox1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="Bot1P_1" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+layout_mode = 2
+text = "1 Bot"
+custom_minimum_size = Vector2(80, 36)
+theme_override_font_sizes/font_size = 14
+
+[node name="Bot1P_2" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+layout_mode = 2
+text = "2 Boty"
+custom_minimum_size = Vector2(80, 36)
+theme_override_font_sizes/font_size = 14
+
+[node name="Bot1P_3" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P"]
+layout_mode = 2
+text = "3 Boty"
+custom_minimum_size = Vector2(80, 36)
+theme_override_font_sizes/font_size = 14
+
 [node name="Btn2P" type="Button" parent="Center/Panel/VBox"]
 layout_mode = 2
-text = "▶  Graj (2P)"
-name = "Btn2P"
+text = "▶  Graj (2 graczy)"
 custom_minimum_size = Vector2(0, 44)
 theme_override_font_sizes/font_size = 17
+
+[node name="Panel2P" type="PanelContainer" parent="Center/Panel/VBox"]
+layout_mode = 2
+visible = false
+
+[node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P"]
+layout_mode = 2
+text = "Liczba botów:"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+
+[node name="HBox2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="Bot2P_1" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P"]
+layout_mode = 2
+text = "1 Bot"
+custom_minimum_size = Vector2(80, 36)
+theme_override_font_sizes/font_size = 14
+
+[node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P"]
+layout_mode = 2
+text = "2 Boty"
+custom_minimum_size = Vector2(80, 36)
+theme_override_font_sizes/font_size = 14
+
+[node name="Sep3" type="HSeparator" parent="Center/Panel/VBox"]
+layout_mode = 2
 
 [node name="BtnQuit" type="Button" parent="Center/Panel/VBox"]
 layout_mode = 2
 text = "✕  Wyjście"
-name = "BtnQuit"
 custom_minimum_size = Vector2(0, 36)
 theme_override_font_sizes/font_size = 15
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)

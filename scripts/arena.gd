@@ -20,11 +20,19 @@ const SAFE_SPAWN_RADIUS : int = 2
 const SPAWN_P1 := Vector2i(1, 1)
 const SPAWN_P2 := Vector2i(11, 11)
 
+## Stałe spawny dla maksymalnie 4 graczy (P1..P4 / Bot1..Bot4)
+const SPAWN_POINTS := [
+	Vector2i(1, 1),
+	Vector2i(11, 11),
+	Vector2i(11, 1),
+	Vector2i(1, 11),
+]
+
 @onready var players_root : Node2D   = $Players
 @onready var p1_spawn     : Marker2D = $P1Spawn
 @onready var p2_spawn     : Marker2D = $P2Spawn
 
-## Śledź graczy — potrzebne do _check_round_end()
+## Wszyscy gracze (ludzie + boty) — do śledzenia końca gry
 var _players: Array = []
 
 
@@ -96,7 +104,9 @@ func _is_solid(cell: Vector2i) -> bool:
 
 
 func _should_be_breakable(cell: Vector2i) -> bool:
-	if _is_solid(cell) or _near_spawn(cell, SPAWN_P1) or _near_spawn(cell, SPAWN_P2): return false
+	if _is_solid(cell): return false
+	for sp in SPAWN_POINTS:
+		if _near_spawn(cell, sp): return false
 	return (_is_solid(cell + Vector2i(-1,0)) and _is_solid(cell + Vector2i(1,0))) \
 		or (_is_solid(cell + Vector2i(0,-1)) and _is_solid(cell + Vector2i(0,1)))
 
@@ -167,7 +177,7 @@ func pixel_to_grid(px: Vector2) -> Vector2i:
 
 
 # ---------------------------------------------------------------------------
-# Gracze
+# Spawning graczy i botów
 # ---------------------------------------------------------------------------
 
 func _spawn_players() -> void:
@@ -175,30 +185,39 @@ func _spawn_players() -> void:
 	if GameManager.game_node:
 		hud = GameManager.game_node.get_active_hud()
 
-	var p1 = PLAYER_SCENE.instantiate()
-	p1.player_id = 1; p1.is_bot = false
-	p1.global_position = p1_spawn.global_position
-	players_root.add_child(p1)
-	_players.append(p1)
-	_connect_player(p1, hud)
+	var total    : int = GameManager.total_players()
+	var humans   : int = GameManager.num_human_players
+	var spawn_idx: int = 0
 
-	if GameManager.num_human_players >= 2:
-		var p2 = PLAYER_SCENE.instantiate()
-		p2.player_id = 2; p2.is_bot = false
-		p2.global_position = p2_spawn.global_position
-		players_root.add_child(p2)
-		_players.append(p2)
-		_connect_player(p2, hud)
-	else:
-		var bot = PLAYER_SCENE.instantiate()
-		bot.player_id = 2; bot.is_bot = true
-		bot.global_position = p2_spawn.global_position
+	# Gracze ludzcy (zawsze player_id 1..humans)
+	for i in range(humans):
+		var p := PLAYER_SCENE.instantiate() as CharacterBody2D
+		p.player_id       = i + 1
+		p.is_bot          = false
+		p.global_position = _spawn_pixel(spawn_idx)
+		spawn_idx += 1
+		players_root.add_child(p)
+		_players.append(p)
+		_connect_player(p, hud)
+
+	# Boty (player_id humans+1 .. total)
+	for i in range(GameManager.num_bots):
+		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
+		bot.player_id       = humans + i + 1
+		bot.is_bot          = true
+		bot.global_position = _spawn_pixel(spawn_idx)
+		spawn_idx += 1
 		players_root.add_child(bot)
 		_players.append(bot)
 		bot.died.connect(_on_player_died)
 
 
-## Podłącza HUD i sygnał died dla graczy ludzkich.
+## Zwraca pixel-center dla n-tego spawna (wrap dla bezpieczeństwa)
+func _spawn_pixel(idx: int) -> Vector2:
+	var sp := SPAWN_POINTS[idx % SPAWN_POINTS.size()]
+	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2, sp.y * GRID_SIZE + GRID_SIZE / 2)
+
+
 func _connect_player(player: CharacterBody2D, hud: CanvasLayer) -> void:
 	player.died.connect(_on_player_died)
 	if not hud:
@@ -209,27 +228,34 @@ func _connect_player(player: CharacterBody2D, hud: CanvasLayer) -> void:
 	)
 
 
-## Wołane gdy gracz (lub bot) ostatecznie ginie.
-func _on_player_died(dead_pid: int) -> void:
-	# Poczekaj klatkę — drugi gracz mógł też zginąć w tej samej eksplozji
-	get_tree().process_frame.connect(_deferred_check_round.bind(dead_pid), CONNECT_ONE_SHOT)
+# ---------------------------------------------------------------------------
+# Koniec gry
+# ---------------------------------------------------------------------------
+
+func _on_player_died(_pid: int) -> void:
+	## Czekamy klatkę — drugi gracz mógł też zginąć w tej samej eksplozji
+	get_tree().process_frame.connect(_deferred_check_round, CONNECT_ONE_SHOT)
 
 
-func _deferred_check_round(dead_pid: int) -> void:
-	var alive_players: Array = []
+func _deferred_check_round() -> void:
+	# Jeśli gra już się zakończyła (np. równoczesna śmierć), nie wywołuj ponownie
+	if not RoundManager._round_active:
+		return
+
+	var alive: Array = []
 	for p in _players:
 		if is_instance_valid(p) and p.is_alive:
-			alive_players.append(p)
+			alive.append(p)
 
-	match alive_players.size():
+	match alive.size():
 		0:
-			# Oboje zginęli jednocześnie — remis
+			# Wszyscy zginęli jednocześnie — remis
 			RoundManager.end_round(-1)
 		1:
-			# Jeden przeżył — wygrywa
-			RoundManager.end_round(alive_players[0].player_id)
+			# Ostatni przy życiu wygrywa
+			RoundManager.end_round(alive[0].player_id)
 		_:
-			# Więcej niż jeden żyje — gra trwa
+			# Gra trwa dalej
 			pass
 
 

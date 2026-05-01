@@ -19,6 +19,10 @@ var round_time_limit: float = 180.0
 var _round_timer: float = 0.0
 var _round_active: bool = false
 
+## Czy rozgrywka to tryb "do X wygranych rund" czy "jedno życie = koniec"
+## Ustawiane automatycznie w reset_session().
+var _single_round_mode: bool = true
+
 
 func _process(delta: float) -> void:
 	if not _round_active or round_time_limit <= 0.0:
@@ -37,6 +41,9 @@ func reset_session() -> void:
 	current_round = 0
 	_round_active = false
 	_round_timer = 0.0
+	# W trybie z botami gramy do momentu aż jeden gracz zostanie —
+	# nie ma tur "runda po rundzie", więc ekran końcowy to zawsze GAME_OVER.
+	_single_round_mode = GameManager.num_bots > 0
 
 
 # ---------------------------------------------------------------------------
@@ -51,33 +58,38 @@ func start_round() -> void:
 
 
 func end_round(winner_id: int) -> void:
+	if not _round_active:
+		return
 	_round_active = false
-	if winner_id >= 0:
+
+	if winner_id >= 1:
 		round_wins[winner_id] = round_wins.get(winner_id, 0) + 1
+
 	round_ended.emit(winner_id)
-	GameManager.change_state(GameManager.GameState.ROUND_END)
-	_check_session_winner()
+
+	if _single_round_mode:
+		# Tryb z botami: jedna runda = cała gra → od razu GAME_OVER
+		GameManager.change_state(GameManager.GameState.GAME_OVER)
+		session_ended.emit(winner_id)
+	else:
+		GameManager.change_state(GameManager.GameState.ROUND_END)
+		_check_session_winner(winner_id)
 
 
 func _timeout_round() -> void:
 	_round_active = false
-	# Remis — nikt nie dostaje punktu
 	end_round(-1)
 
 
-func _check_session_winner() -> void:
-	for player_id in round_wins:
-		if round_wins[player_id] >= GameManager.rounds_to_win:
-			session_ended.emit(player_id)
-			return
+func _check_session_winner(winner_id: int) -> void:
+	if winner_id >= 1 and round_wins.get(winner_id, 0) >= GameManager.rounds_to_win:
+		session_ended.emit(winner_id)
 
 
 # ---------------------------------------------------------------------------
 # Quiz — power-up
 # ---------------------------------------------------------------------------
 
-## Wywołaj gdy gracz wejdzie na kafelek z ? power-upem.
-## Pauzuje grę i triggeruje ekran quizu.
 func trigger_powerup_quiz(collector_id: int) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
 		return
@@ -89,9 +101,6 @@ func trigger_powerup_quiz(collector_id: int) -> void:
 # Quiz — last chance
 # ---------------------------------------------------------------------------
 
-## Wywołaj gdy ludzki gracz ginie.
-## Pauzuje grę i triggeruje quiz last-chance.
-## Boty NIE triggerują last-chance — giną od razu.
 func trigger_last_chance(dead_player_id: int) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
 		return
@@ -100,16 +109,13 @@ func trigger_last_chance(dead_player_id: int) -> void:
 	last_chance_triggered.emit(dead_player_id)
 
 
-## Wywołaj z UI quizu po zakończeniu pytania last-chance.
-## respawned=true  → gracz wraca; respawned=false → eliminacja.
 func resolve_last_chance(respawned: bool) -> void:
-	var pid = _last_chance_player_id
+	var pid := _last_chance_player_id
 	_last_chance_player_id = -1
 	last_chance_resolved.emit(pid, respawned)
 	GameManager.change_state(GameManager.GameState.PLAYING)
 
 
-## Wywołaj z UI quizu po zakończeniu pytania power-up.
 func resolve_powerup_quiz() -> void:
 	GameManager.change_state(GameManager.GameState.PLAYING)
 
