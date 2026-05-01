@@ -73,12 +73,12 @@ func _update_state() -> void:
 	if _is_danger_nearby():
 		_state = State.FLEE
 		return
-	var target := _find_nearest_human()
+	var target := _find_nearest_enemy()
 	if target != null:
 		var my_pos : Vector2i = _owner_player.get_grid_pos()
 		var t_pos  : Vector2i = target.get_grid_pos()
 		var dist : int = _grid_dist(my_pos, t_pos)
-		_state = State.HUNT if dist <= 6 else State.WANDER
+		_state = State.HUNT if dist <= 8 else State.WANDER
 	else:
 		_state = State.WANDER
 
@@ -100,25 +100,29 @@ func _think_flee() -> void:
 
 
 # ---------------------------------------------------------------------------
-# HUNT
+# HUNT — podójdł do wroga i postaw bombę gdy jest w zasięgu eksplozji
 # ---------------------------------------------------------------------------
 
 func _think_hunt() -> void:
 	var my_pos : Vector2i = _owner_player.get_grid_pos()
-	var target := _find_nearest_human()
+	var target := _find_nearest_enemy()
 	if target == null:
 		_think_wander()
 		return
 
 	var t_pos : Vector2i = target.get_grid_pos()
-	var dist  : int      = _grid_dist(my_pos, t_pos)
 
-	if dist == 1:
+	# Jeśli wrog jest w zasięgu bomby (ten sam rząd/kolumna w odległości <= bomb_range)
+	if _enemy_in_blast_range(my_pos, t_pos):
 		_owner_player._place_bomb()
+		_wander_target = Vector2i(-1, -1)
+		# Uciekaj w kierunku przeciwnym do wroga
 		_queued_dir = _flee_dir_from(t_pos)
-		_try_move(_queued_dir)
+		if _queued_dir != Vector2i.ZERO:
+			_try_move(_queued_dir)
 		return
 
+	# Idź w stronę wroga
 	var path := _bfs(my_pos, t_pos)
 	if path.size() >= 2:
 		_queued_dir = path[1] - path[0]
@@ -127,14 +131,24 @@ func _think_hunt() -> void:
 		_think_wander()
 
 
+## Zwraca true jeśli cel jest w tym samym rzędzie lub kolumnie i w zasięgu eksplozji
+func _enemy_in_blast_range(my_pos: Vector2i, t_pos: Vector2i) -> bool:
+	var r : int = _owner_player.bomb_range
+	if my_pos.x == t_pos.x and abs(my_pos.y - t_pos.y) <= r:
+		return true
+	if my_pos.y == t_pos.y and abs(my_pos.x - t_pos.x) <= r:
+		return true
+	return false
+
+
 # ---------------------------------------------------------------------------
-# WANDER — losowy cel BFS, nowy cel gdy osiągnięty lub nieosiegalny
+# WANDER — losowy cel BFS + bomby przy skrzynkach po drodze
 # ---------------------------------------------------------------------------
 
 func _think_wander() -> void:
 	var my_pos : Vector2i = _owner_player.get_grid_pos()
 
-	# Postaw bombę obok skrzynki jeśli w pobliżu
+	# Postaw bombę jeśli obok jest skrzynka
 	for d: Vector2i in _shuffled_dirs():
 		if _arena.is_breakable(my_pos + d):
 			_owner_player._place_bomb()
@@ -143,12 +157,10 @@ func _think_wander() -> void:
 			_try_move(_queued_dir)
 			return
 
-	# Wybierz nowy losowy cel jeśli go nie mamy lub jesteśmy przy nim
 	if _wander_target == Vector2i(-1, -1) or _wander_target == my_pos:
 		_wander_target = _pick_random_passable(my_pos)
 
 	if _wander_target == Vector2i(-1, -1):
-		# Fallback: krok w losowym przechodnim kierunku
 		for d: Vector2i in _shuffled_dirs():
 			if _can_move(my_pos, d):
 				_queued_dir = d
@@ -161,11 +173,9 @@ func _think_wander() -> void:
 		_queued_dir = path[1] - path[0]
 		_try_move(_queued_dir)
 	else:
-		# Cel nieosiegalny — wybierz nowy
 		_wander_target = Vector2i(-1, -1)
 
 
-## Losuje cel — preferuje miejsca dalsze od aktualnej pozycji (min 3 kroki)
 func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
 	var candidates : Array[Vector2i] = []
 	for x in range(1, MAP_W - 1):
@@ -176,7 +186,6 @@ func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
 	if candidates.is_empty():
 		return Vector2i(-1, -1)
 	candidates.shuffle()
-	# Spróbuj kilku kandydatów, wybierz pierwszego osiągalnego
 	for i in range(min(10, candidates.size())):
 		var path := _bfs(my_pos, candidates[i])
 		if path.size() >= 2:
@@ -360,7 +369,8 @@ func _is_passable(cell: Vector2i) -> bool:
 # Helpery
 # ---------------------------------------------------------------------------
 
-func _find_nearest_human() -> Node:
+## Znajdź najbliższego wroga (gracza lub innego bota, nie siebie)
+func _find_nearest_enemy() -> Node:
 	var gn := GameManager.game_node
 	if not is_instance_valid(gn):
 		return null
@@ -370,7 +380,7 @@ func _find_nearest_human() -> Node:
 	for p in gn._players:
 		if not is_instance_valid(p):
 			continue
-		if p == _owner_player or p.is_bot or not p.is_alive:
+		if p == _owner_player or not p.is_alive:
 			continue
 		var p_pos : Vector2i = p.get_grid_pos()
 		var d     : int      = _grid_dist(my_pos, p_pos)
