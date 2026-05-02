@@ -1,18 +1,17 @@
 extends Area2D
 
 ## Power-up leżący na planszy.
-## Typy: range_up, bomb_up, speed_up
-## collision_layer = 4  (osobna warstwa — nie koliduje z niczym fizycznie)
-## collision_mask  = 2  (warstwa graczy)
+## Typy: range_up, bomb_up, speed_up, life_up
+## collision_layer = 16 (power-upy — oddzielna warstwa)
+## collision_mask  = 2  (gracze)
 
 const GRID_SIZE : int = 64
 
-## Kolory fallback per typ
 const COLORS : Dictionary = {
-	"range_up":  Color(1.0, 0.8, 0.1),   # żółty  — zasięg
-	"bomb_up":   Color(1.0, 0.4, 0.1),   # pomarańczowy — liczba bomb
-	"speed_up":  Color(0.2, 0.9, 0.4),   # zielony — prędkość
-	"life_up":   Color(1.0, 0.2, 0.4),   # różowy  — życie
+	"range_up":  Color(1.0, 0.8, 0.1),
+	"bomb_up":   Color(1.0, 0.4, 0.1),
+	"speed_up":  Color(0.2, 0.9, 0.4),
+	"life_up":   Color(1.0, 0.2, 0.4),
 }
 
 const ICONS : Dictionary = {
@@ -33,7 +32,7 @@ signal collected(powerup_type: String)
 
 func _ready() -> void:
 	add_to_group("powerup")
-	collision_layer = 4
+	collision_layer = 16
 	collision_mask  = 2
 	monitoring = true
 	var col : Color = COLORS.get(powerup_type, Color.WHITE)

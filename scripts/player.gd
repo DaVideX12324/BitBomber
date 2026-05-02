@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system żyć.
 ##
 ## collision_layer = 2  (warstwa graczy)
-## collision_mask  = 5  (warstwa mapy + bomby)
+## collision_mask  = 1  (tylko warstwa mapy — bomby nie blokują gracza fizycznie)
 
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
@@ -63,7 +63,7 @@ const FALLBACK_COLORS : Dictionary = {
 
 func _ready() -> void:
 	collision_layer = 2
-	collision_mask  = 5
+	collision_mask  = 1
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
 	_grid_pos       = _pixel_to_grid(global_position)
@@ -106,8 +106,6 @@ func _process(delta: float) -> void:
 			_move_progress = 1.0
 			_moving = false
 		global_position = _move_from.lerp(_pixel_target, _move_progress)
-		if is_bot and _ai != null:
-			_ai.think(delta)
 		return
 
 	if is_bot:
@@ -204,15 +202,13 @@ func _place_bomb() -> void:
 		return
 
 	var bomb_cell : Vector2i = _closest_grid_pos()
-	var map_root := _get_map_root()
-	for child in map_root.get_children():
-		if child.is_in_group("bomb"):
-			var b_cell := Vector2i(
-				int(child.global_position.x / GRID_SIZE),
-				int(child.global_position.y / GRID_SIZE))
-			if b_cell == bomb_cell:
-				return
 
+	# Sprawdź czy bomba już leży na tej celli
+	for b in get_tree().get_nodes_in_group("bomb"):
+		if Vector2i(int(b.global_position.x / GRID_SIZE), int(b.global_position.y / GRID_SIZE)) == bomb_cell:
+			return
+
+	var map_root := _get_map_root()
 	var bomb := BOMB_SCENE.instantiate()
 	bomb.global_position = _grid_to_pixel(bomb_cell)
 	bomb.explosion_range = bomb_range
@@ -221,15 +217,6 @@ func _place_bomb() -> void:
 	map_root.add_child(bomb)
 	_active_bombs += 1
 	bomb_placed.emit(bomb_cell, self)
-	bomb.collision_layer = 0
-	_wait_and_enable_bomb(bomb, bomb_cell)
-
-
-func _wait_and_enable_bomb(bomb: Node, bomb_cell: Vector2i) -> void:
-	while is_instance_valid(bomb) and _grid_pos == bomb_cell:
-		await get_tree().process_frame
-	if is_instance_valid(bomb):
-		bomb.collision_layer = 4
 
 
 func _on_bomb_exploded() -> void:
@@ -336,7 +323,8 @@ func _grid_to_pixel(gp: Vector2i) -> Vector2:
 
 func _pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))
-	
+
+
 ## Używane przez bot_ai — wykonuje jeden krok w danym kierunku.
 func _move_grid(dir: Vector2i) -> void:
 	if _moving:
@@ -350,6 +338,7 @@ func _move_grid(dir: Vector2i) -> void:
 	_pixel_target  = _grid_to_pixel(target_grid)
 	_move_progress = 0.0
 	_moving        = true
+
 
 func get_grid_pos() -> Vector2i:
 	return _grid_pos

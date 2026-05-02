@@ -1,7 +1,8 @@
 extends Area2D
 
 ## Eksplozja — krótki flash, zadaje obrażenia graczom.
-## collision_mask = 2 (gracze)
+## collision_layer = 8  (eksplozje)
+## collision_mask  = 2  (gracze)
 
 const LIFETIME: float = 0.5
 
@@ -13,7 +14,8 @@ var _timer: float = 0.0
 
 func _ready() -> void:
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/explosion.png")
-	collision_mask = 2
+	collision_layer = 8
+	collision_mask  = 2
 	monitoring = true
 	body_entered.connect(_on_body_entered)
 
