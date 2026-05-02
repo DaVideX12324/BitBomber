@@ -21,6 +21,7 @@ const DEFAULT_LIVES    : int   = 3
 const DEFAULT_BOMBS    : int   = 1
 const DEFAULT_RANGE    : int   = 2
 const DEFAULT_SPEED    : float = 1.0
+const MAX_LIVES        : int   = 5
 
 var lives            : int   = DEFAULT_LIVES
 var max_bombs        : int   = DEFAULT_BOMBS
@@ -49,6 +50,7 @@ var _ai : RefCounted = null
 signal died(player_id: int)
 signal lives_changed(player_id: int, lives_left: int)
 signal bomb_placed(grid_pos: Vector2i, player_ref: Node)
+signal powerup_collected(player_id: int, powerup_type: String)
 
 @onready var _sprite   : Sprite2D  = $Sprite2D
 @onready var _fallback : ColorRect = $Fallback
@@ -81,7 +83,7 @@ func _init_ai() -> void:
 		return
 	var BotAI := load("res://scripts/bot_ai.gd")
 	_ai = BotAI.new()
-	_ai.setup(self, arena, bot_difficulty)  # <-- przekazuj trudność
+	_ai.setup(self, arena, bot_difficulty)
 
 
 func _find_arena() -> Node:
@@ -145,8 +147,6 @@ func is_bomb_blocking(cell: Vector2i) -> bool:
 
 
 ## Tile na którym gracz jest większością ciała.
-## Gracz stoi na środku tila (pixel = grid * 64 + 32),
-## więc odejmujemy offset 32 przed dzieleniem.
 func _closest_grid_pos() -> Vector2i:
 	var half : int = GRID_SIZE / 2
 	return Vector2i(
@@ -334,14 +334,15 @@ func _eliminate() -> void:
 # Power-upy
 # ---------------------------------------------------------------------------
 
-func apply_powerup(powerup_type: String) -> void:
-	match powerup_type:
-		"range_up":         bomb_range       = min(bomb_range + 1, 8)
-		"bomb_up":          max_bombs        = min(max_bombs + 1, 4)
-		"speed_up":         speed_multiplier = min(speed_multiplier + 0.3, 2.5)
-		"range_max":        bomb_range       = 8
-		"remote_detonator": has_remote_detonator = true
-		"bomb_pierce":      has_bomb_pierce      = true
+func apply_powerup(type: String) -> void:
+	match type:
+		"range_up":  bomb_range       = min(bomb_range + 1, 8)
+		"bomb_up":   max_bombs        = min(max_bombs + 1, 4)
+		"speed_up":  speed_multiplier = min(speed_multiplier + 0.25, 2.5)
+		"life_up":   lives            = min(lives + 1, MAX_LIVES)
+	if type == "life_up":
+		lives_changed.emit(player_id, lives)
+	powerup_collected.emit(player_id, type)
 
 
 # ---------------------------------------------------------------------------

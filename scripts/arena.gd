@@ -17,6 +17,7 @@ const COLOR_BREAKABLE_HL = Color(0.72, 0.52, 0.32, 1.0)
 
 var solid_cells    : Dictionary = {}
 var breakable_cells: Dictionary = {}
+var powerup_cells  : Dictionary = {}   # Vector2i → Node (power-up leżący na planszy)
 
 const SAFE_SPAWN_RADIUS : int = 2
 
@@ -25,6 +26,19 @@ const SPAWN_POINTS : Array[Vector2i] = [
 	Vector2i(11, 11),  # P2   — prawy dolny
 	Vector2i(11, 1),   # Bot1 — prawy górny
 	Vector2i(1,  11),  # Bot2 — lewy dolny
+]
+
+## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
+const POWERUP_CHANCE : float = 0.40
+
+const POWERUP_SCENE = preload("res://scenes/objects/powerup.tscn")
+
+## Pula typów (wagi: range_up 3×, bomb_up 3×, speed_up 2×, life_up 1×)
+const POWERUP_POOL : Array[String] = [
+	"range_up", "range_up", "range_up",
+	"bomb_up",  "bomb_up",  "bomb_up",
+	"speed_up", "speed_up",
+	"life_up",
 ]
 
 
@@ -154,13 +168,32 @@ func _add_color_rect(parent: Node, sz: Vector2, pos: Vector2, col: Color) -> voi
 
 func is_solid(cell: Vector2i) -> bool:     return solid_cells.has(cell)
 func is_breakable(cell: Vector2i) -> bool: return breakable_cells.has(cell)
+func has_powerup(cell: Vector2i) -> bool:  return powerup_cells.has(cell)
 
 func break_cell(cell: Vector2i) -> bool:
 	if not breakable_cells.has(cell): return false
 	var node = breakable_cells[cell]
 	breakable_cells.erase(cell)
 	if is_instance_valid(node): node.queue_free()
+	# Szansa na spawn power-upa
+	if randf() < POWERUP_CHANCE:
+		_spawn_powerup(cell)
 	return true
+
+
+func _spawn_powerup(cell: Vector2i) -> void:
+	var pu   := POWERUP_SCENE.instantiate()
+	var type : String = POWERUP_POOL[randi() % POWERUP_POOL.size()]
+	pu.powerup_type    = type
+	pu.position        = Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
+	pu.collected.connect(_on_powerup_collected.bind(cell))
+	add_child(pu)
+	powerup_cells[cell] = pu
+
+
+func _on_powerup_collected(type: String, cell: Vector2i) -> void:
+	powerup_cells.erase(cell)
+
 
 func pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))

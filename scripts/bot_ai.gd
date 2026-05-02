@@ -1,11 +1,11 @@
 extends RefCounted
 
 ## AI dla bota Bomberman — BFS na gridzie 13x13.
-## Stany: WANDER (losowy cel BFS), HUNT (gon­ienie gracza), FLEE (ucieczka od bomby).
+## Stany: WANDER (losowy cel BFS), HUNT (gonienie gracza), FLEE (ucieczka od bomby),
+##        GET_ITEM (zbieranie power-upów).
 ## Bot nie rusza się dopóki żaden gracz ludzki nie wykona pierwszego ruchu.
-## Poziomy trudności wzorowane na wartościach z Bomb It 7 (AIControl XML config).
 
-enum State { WANDER, HUNT, FLEE }
+enum State { WANDER, HUNT, FLEE, GET_ITEM }
 
 enum Difficulty { EASY, MEDIUM, HARD }
 
@@ -14,7 +14,7 @@ const BOMB_TIMER_SAFE : float = 1.4
 const MAP_W           : int   = 13
 const MAP_H           : int   = 11
 
-# ---- Tabela parametrów według poziomu (wzorowana na BombIt7 XML) ----
+# ---- Tabela parametrów według poziomu ----
 const DIFF_PARAMS : Dictionary = {
 	Difficulty.EASY: {
 		"think_rate":    0.67,
@@ -23,6 +23,7 @@ const DIFF_PARAMS : Dictionary = {
 		"attack_pct":    0.30,
 		"dodge_pct":     0.50,
 		"box_pct":       0.30,
+		"item_pct":      0.50,   # prawdopodobieństwo wejścia w GET_ITEM
 	},
 	Difficulty.MEDIUM: {
 		"think_rate":    0.50,
@@ -31,6 +32,7 @@ const DIFF_PARAMS : Dictionary = {
 		"attack_pct":    0.40,
 		"dodge_pct":     0.60,
 		"box_pct":       0.50,
+		"item_pct":      0.75,
 	},
 	Difficulty.HARD: {
 		"think_rate":    0.33,
@@ -39,6 +41,7 @@ const DIFF_PARAMS : Dictionary = {
 		"attack_pct":    0.50,
 		"dodge_pct":     0.90,
 		"box_pct":       0.70,
+		"item_pct":      0.95,
 	},
 }
 
@@ -51,6 +54,7 @@ var _state         : State    = State.WANDER
 var _think_timer   : float    = 0.0
 var _queued_dir    : Vector2i = Vector2i.ZERO
 var _wander_target : Vector2i = Vector2i(-1, -1)
+var _item_target   : Vector2i = Vector2i(-1, -1)
 var _game_started  : bool     = false
 
 
@@ -99,9 +103,10 @@ func think(delta: float) -> void:
 	_update_state()
 
 	match _state:
-		State.FLEE:   _think_flee()
-		State.HUNT:   _think_hunt()
-		State.WANDER: _think_wander()
+		State.FLEE:     _think_flee()
+		State.HUNT:     _think_hunt()
+		State.GET_ITEM: _think_get_item()
+		State.WANDER:   _think_wander()
 
 
 # ---------------------------------------------------------------------------
@@ -109,6 +114,7 @@ func think(delta: float) -> void:
 # ---------------------------------------------------------------------------
 
 func _update_state() -> void:
+	# 1. Ucieczka ma najwyższy priorytet
 	if _is_danger_nearby():
 		if randf() < _params["dodge_pct"]:
 			_state = State.FLEE
@@ -116,6 +122,15 @@ func _update_state() -> void:
 		_state = State.WANDER
 		return
 
+	# 2. Zbieranie power-upów (jeśli są widoczne)
+	if randf() < _params["item_pct"]:
+		var item := _find_nearest_item()
+		if item != Vector2i(-1, -1):
+			_item_target = item
+			_state = State.GET_ITEM
+			return
+
+	# 3. Polowanie na gracza
 	var target := _find_nearest_enemy()
 	if target != null:
 		var my_pos : Vector2i = _owner_player.get_grid_pos()
@@ -172,13 +187,32 @@ func _think_hunt() -> void:
 		_think_wander()
 
 
-func _enemy_in_blast_range(my_pos: Vector2i, t_pos: Vector2i) -> bool:
-	var r : int = _owner_player.bomb_range
-	if my_pos.x == t_pos.x and abs(my_pos.y - t_pos.y) <= r:
-		return true
-	if my_pos.y == t_pos.y and abs(my_pos.x - t_pos.x) <= r:
-		return true
-	return false
+# ---------------------------------------------------------------------------
+# GET_ITEM
+# ---------------------------------------------------------------------------
+
+func _think_get_item() -> void:
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+
+	# Jeśli power-up już nie istnieje — szukaj następnego
+	if _item_target == Vector2i(-1, -1) or not _arena.has_powerup(_item_target):
+		_item_target = _find_nearest_item()
+	if _item_target == Vector2i(-1, -1):
+		_state = State.WANDER
+		return
+
+	if my_pos == _item_target:
+		_item_target = Vector2i(-1, -1)
+		_state = State.WANDER
+		return
+
+	var path := _bfs(my_pos, _item_target, _params["find_range"] + 3)
+	if path.size() >= 2:
+		_queued_dir = path[1] - path[0]
+		_try_move(_queued_dir)
+	else:
+		_item_target = Vector2i(-1, -1)
+		_state = State.WANDER
 
 
 # ---------------------------------------------------------------------------
@@ -216,21 +250,25 @@ func _think_wander() -> void:
 		_wander_target = Vector2i(-1, -1)
 
 
-func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
-	var candidates : Array[Vector2i] = []
-	for x in range(1, MAP_W - 1):
-		for y in range(1, MAP_H - 1):
-			var cell := Vector2i(x, y)
-			if _is_passable(cell) and _grid_dist(cell, my_pos) >= 3:
-				candidates.append(cell)
-	if candidates.is_empty():
+# ---------------------------------------------------------------------------
+# Szukanie power-upów
+# ---------------------------------------------------------------------------
+
+func _find_nearest_item() -> Vector2i:
+	if not _arena.has_method("has_powerup"):
 		return Vector2i(-1, -1)
-	candidates.shuffle()
-	for i in range(min(10, candidates.size())):
-		var path := _bfs(my_pos, candidates[i], _params["find_range"])
-		if path.size() >= 2:
-			return candidates[i]
-	return Vector2i(-1, -1)
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	var best   : Vector2i = Vector2i(-1, -1)
+	var best_d : int      = 999
+	for cell in _arena.powerup_cells:
+		var d := _grid_dist(my_pos, cell)
+		if d < best_d:
+			# tylko jeśli istnieje ścieżka
+			var path := _bfs(my_pos, cell, _params["find_range"] + 4)
+			if path.size() >= 2:
+				best_d = d
+				best   = cell
+	return best
 
 
 # ---------------------------------------------------------------------------
@@ -359,58 +397,70 @@ func _flee_dir_from(threat: Vector2i) -> Vector2i:
 		dirs = [Vector2i(0, sign(diff.y)), Vector2i(sign(diff.x), 0),
 				Vector2i(0, -sign(diff.y)), Vector2i(-sign(diff.x), 0)]
 	for d: Vector2i in dirs:
-		if _can_move(my, d):
+		if d != Vector2i.ZERO and _can_move(my, d):
 			return d
 	return Vector2i.ZERO
 
 
 # ---------------------------------------------------------------------------
-# Ruch
+# Pathfinding helpery
 # ---------------------------------------------------------------------------
 
-func _try_move(dir: Vector2i) -> void:
-	if dir == Vector2i.ZERO or not is_instance_valid(_owner_player):
-		return
-	var my_pos : Vector2i = _owner_player.get_grid_pos()
-	var target : Vector2i = my_pos + dir
-	if not _is_passable(target):
-		_queued_dir = Vector2i.ZERO
-		return
-	if _owner_player.is_bomb_blocking(target):
-		_queued_dir = Vector2i.ZERO
-		return
-	_owner_player._grid_pos      = target
-	_owner_player._move_from     = _owner_player.global_position
-	_owner_player._pixel_target  = Vector2(
-		target.x * GRID_SIZE + GRID_SIZE / 2,
-		target.y * GRID_SIZE + GRID_SIZE / 2)
-	_owner_player._move_progress = 0.0
-	_owner_player._moving        = true
+func _pick_random_passable(my_pos: Vector2i) -> Vector2i:
+	var candidates : Array[Vector2i] = []
+	for x in range(1, MAP_W - 1):
+		for y in range(1, MAP_H - 1):
+			var cell := Vector2i(x, y)
+			if _is_passable(cell) and _grid_dist(cell, my_pos) >= 3:
+				candidates.append(cell)
+	if candidates.is_empty():
+		return Vector2i(-1, -1)
+	candidates.shuffle()
+	for i in range(min(10, candidates.size())):
+		var path := _bfs(my_pos, candidates[i], _params["find_range"])
+		if path.size() >= 2:
+			return candidates[i]
+	return Vector2i(-1, -1)
 
 
-func _can_move(from: Vector2i, dir: Vector2i) -> bool:
-	var target : Vector2i = from + dir
-	return _is_passable(target) and not _owner_player.is_bomb_blocking(target)
-
-
-## Komórka jest przejezdna gdy nie jest solid ani breakable (wzorowane na arena.gd)
 func _is_passable(cell: Vector2i) -> bool:
 	if cell.x < 0 or cell.x >= MAP_W or cell.y < 0 or cell.y >= MAP_H:
 		return false
-	return not _arena.is_solid(cell) and not _arena.is_breakable(cell)
+	if _arena.is_solid(cell):
+		return false
+	if _arena.is_breakable(cell):
+		return false
+	if _owner_player.is_bomb_blocking(cell):
+		return false
+	return true
+
+
+func _can_move(from: Vector2i, dir: Vector2i) -> bool:
+	return _is_passable(from + dir)
+
+
+func _enemy_in_blast_range(my_pos: Vector2i, t_pos: Vector2i) -> bool:
+	var r : int = _owner_player.bomb_range
+	if my_pos.x == t_pos.x and abs(my_pos.y - t_pos.y) <= r:
+		return true
+	if my_pos.y == t_pos.y and abs(my_pos.x - t_pos.x) <= r:
+		return true
+	return false
 
 
 func _find_nearest_enemy() -> Node:
 	var gn := GameManager.game_node
 	if not is_instance_valid(gn):
 		return null
-	var my_pos  : Vector2i = _owner_player.get_grid_pos()
-	var best    : Node     = null
-	var best_d  : int      = 99999
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	var best   : Node     = null
+	var best_d : int      = 999
 	for p in gn._players:
-		if not is_instance_valid(p) or p == _owner_player or not p.is_alive:
+		if not is_instance_valid(p):
 			continue
-		var d : int = _grid_dist(my_pos, p.get_grid_pos())
+		if p == _owner_player or not p.is_alive:
+			continue
+		var d := _grid_dist(my_pos, p.get_grid_pos())
 		if d < best_d:
 			best_d = d
 			best   = p
