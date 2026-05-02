@@ -489,14 +489,6 @@ func _is_passable(cell: Vector2i) -> bool:
 		return false
 	if _arena.is_breakable(cell):
 		return false
-	for bomb in _owner_player.get_tree().get_nodes_in_group("bomb"):
-		if bomb.collision_layer == 0:
-			continue
-		var bc := Vector2i(
-			int(bomb.global_position.x / GRID_SIZE),
-			int(bomb.global_position.y / GRID_SIZE))
-		if bc == cell:
-			return false
 	return true
 
 
