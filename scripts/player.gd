@@ -336,7 +336,20 @@ func _grid_to_pixel(gp: Vector2i) -> Vector2:
 
 func _pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))
-
+	
+## Używane przez bot_ai — wykonuje jeden krok w danym kierunku.
+func _move_grid(dir: Vector2i) -> void:
+	if _moving:
+		return
+	var target_grid : Vector2i = _grid_pos + dir
+	var collision := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
+	if collision:
+		return
+	_grid_pos      = target_grid
+	_move_from     = global_position
+	_pixel_target  = _grid_to_pixel(target_grid)
+	_move_progress = 0.0
+	_moving        = true
 
 func get_grid_pos() -> Vector2i:
 	return _grid_pos

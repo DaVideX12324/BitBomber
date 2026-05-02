@@ -430,8 +430,13 @@ func _is_passable(cell: Vector2i) -> bool:
 		return false
 	if _arena.is_breakable(cell):
 		return false
-	if _owner_player.is_bomb_blocking(cell):
-		return false
+	for bomb in _owner_player.get_tree().get_nodes_in_group("bomb"):
+		if bomb.collision_layer == 0:
+			continue
+		var bc := Vector2i(int(bomb.global_position.x / GRID_SIZE),
+			int(bomb.global_position.y / GRID_SIZE))
+		if bc == cell:
+			return false
 	return true
 
 
@@ -470,7 +475,13 @@ func _find_nearest_enemy() -> Node:
 func _grid_dist(a: Vector2i, b: Vector2i) -> int:
 	return abs(a.x - b.x) + abs(a.y - b.y)
 
-
+func _try_move(dir: Vector2i) -> void:
+	if dir == Vector2i.ZERO:
+		return
+	var my_pos : Vector2i = _owner_player.get_grid_pos()
+	if _can_move(my_pos, dir):
+		_owner_player._move_grid(dir)
+		
 func _shuffled_dirs() -> Array[Vector2i]:
 	var dirs : Array[Vector2i] = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
 	dirs.shuffle()
