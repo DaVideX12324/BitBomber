@@ -36,9 +36,10 @@ func _ready() -> void:
 	collision_layer = 4
 	collision_mask  = 2
 	monitoring = true
-	var col := COLORS.get(powerup_type, Color.WHITE)
+	var col : Color = COLORS.get(powerup_type, Color.WHITE)
 	_fallback.color = col
-	_label.text = ICONS.get(powerup_type, "?")
+	var icon : String = ICONS.get(powerup_type, "?")
+	_label.text = icon
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
 	body_entered.connect(_on_body_entered)
 	_bob()
