@@ -178,13 +178,20 @@ layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
+[node name="Bot2P_0" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=200000001]
+custom_minimum_size = Vector2(80, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "0 Botów"
+toggle_mode = true
+button_pressed = true
+
 [node name="Bot2P_1" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=486921655]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "1 Bot"
 toggle_mode = true
-button_pressed = true
 
 [node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=1886455927]
 custom_minimum_size = Vector2(80, 36)
