@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 ## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system żyć.
 ##
-## collision_layer = 2  (warstwa graczy — widziana przez eksplozję mask=3)
-## collision_mask  = 1  (warstwa mapy — żeby gracz kolidował ze ścianami)
+## collision_layer = 2  (warstwa graczy)
+## collision_mask  = 5  (warstwa mapy + bomby)
 
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
@@ -43,8 +43,6 @@ var _pending_elim : bool = false
 var _frozen       : bool = false
 var _invincible   : bool = false
 
-var _passable_bombs : Dictionary = {}  # Vector2i -> Node
-
 var _ai : RefCounted = null
 
 signal died(player_id: int)
@@ -65,7 +63,7 @@ const FALLBACK_COLORS : Dictionary = {
 
 func _ready() -> void:
 	collision_layer = 2
-	collision_mask  = 1
+	collision_mask  = 5
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
 	_grid_pos       = _pixel_to_grid(global_position)
@@ -99,9 +97,6 @@ func _process(delta: float) -> void:
 	if GameManager.is_in_quiz():
 		return
 
-	_update_passable_bombs()
-
-	# Obsługa bomby zawsze — także podczas animacji ruchu
 	if not is_bot:
 		_handle_bomb_input()
 
@@ -121,29 +116,6 @@ func _process(delta: float) -> void:
 		return
 
 	_handle_movement(delta)
-
-
-func _update_passable_bombs() -> void:
-	var to_remove : Array[Vector2i] = []
-	for cell: Vector2i in _passable_bombs:
-		if _grid_pos != cell:
-			to_remove.append(cell)
-	for cell: Vector2i in to_remove:
-		_passable_bombs.erase(cell)
-
-
-func is_bomb_blocking(cell: Vector2i) -> bool:
-	if _passable_bombs.has(cell):
-		return false
-	var map := _get_map_root()
-	for child in map.get_children():
-		if child.is_in_group("bomb"):
-			var b_cell := Vector2i(
-				int(child.global_position.x / GRID_SIZE),
-				int(child.global_position.y / GRID_SIZE))
-			if b_cell == cell:
-				return true
-	return false
 
 
 ## Tile na którym gracz jest większością ciała.
@@ -170,7 +142,6 @@ func teleport_to(px: Vector2) -> void:
 	is_alive        = true
 	_pending_elim   = false
 	visible         = true
-	_passable_bombs.clear()
 
 
 func reset_for_new_game() -> void:
@@ -211,8 +182,6 @@ func _handle_movement(delta: float) -> void:
 	var collision := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
 	if collision:
 		return
-	if is_bomb_blocking(target_grid):
-		return
 
 	_grid_pos      = target_grid
 	_move_from     = global_position
@@ -235,20 +204,32 @@ func _place_bomb() -> void:
 		return
 
 	var bomb_cell : Vector2i = _closest_grid_pos()
-
-	if is_bomb_blocking(bomb_cell):
-		return
+	var map_root := _get_map_root()
+	for child in map_root.get_children():
+		if child.is_in_group("bomb"):
+			var b_cell := Vector2i(
+				int(child.global_position.x / GRID_SIZE),
+				int(child.global_position.y / GRID_SIZE))
+			if b_cell == bomb_cell:
+				return
 
 	var bomb := BOMB_SCENE.instantiate()
 	bomb.global_position = _grid_to_pixel(bomb_cell)
 	bomb.explosion_range = bomb_range
 	bomb.owner_player    = self
 	bomb.exploded.connect(_on_bomb_exploded)
-	var map_root := _get_map_root()
 	map_root.add_child(bomb)
 	_active_bombs += 1
-	_passable_bombs[bomb_cell] = bomb
 	bomb_placed.emit(bomb_cell, self)
+	bomb.collision_layer = 0
+	_wait_and_enable_bomb(bomb, bomb_cell)
+
+
+func _wait_and_enable_bomb(bomb: Node, bomb_cell: Vector2i) -> void:
+	while is_instance_valid(bomb) and _grid_pos == bomb_cell:
+		await get_tree().process_frame
+	if is_instance_valid(bomb):
+		bomb.collision_layer = 4
 
 
 func _on_bomb_exploded() -> void:

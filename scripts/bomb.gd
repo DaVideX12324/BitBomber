@@ -1,4 +1,4 @@
-extends Node2D
+extends StaticBody2D
 
 const EXPLOSION_SCENE = preload("res://scenes/objects/explosion.tscn")
 const GRID_SIZE : int   = 64
@@ -17,6 +17,8 @@ var _timer : float = 0.0
 
 func _ready() -> void:
 	add_to_group("bomb")
+	collision_layer = 4
+	collision_mask  = 0
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/bomb.png")
 
 
