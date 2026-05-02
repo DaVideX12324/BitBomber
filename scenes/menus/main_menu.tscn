@@ -75,7 +75,7 @@ layout_mode = 2
 
 [node name="VBox1P" type="VBoxContainer" parent="Center/Panel/VBox/Panel1P" unique_id=423972456]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="Label1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=472920558]
 layout_mode = 2
@@ -94,18 +94,22 @@ custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "1 Bot"
+toggle_mode = true
+button_pressed = true
 
 [node name="Bot1P_2" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=1864410728]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "2 Boty"
+toggle_mode = true
 
 [node name="Bot1P_3" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=211343684]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "3 Boty"
+toggle_mode = true
 
 [node name="DiffLabel1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000001]
 layout_mode = 2
@@ -141,6 +145,13 @@ theme_override_font_sizes/font_size = 13
 text = "🔴 Trudny"
 toggle_mode = true
 
+[node name="BtnStart1P" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000006]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1.0, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "▶  Zagraj!"
+
 [node name="Btn2P" type="Button" parent="Center/Panel/VBox" unique_id=1893811316]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
@@ -153,7 +164,7 @@ layout_mode = 2
 
 [node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P" unique_id=1152984982]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="Label2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=1079606127]
 layout_mode = 2
@@ -172,12 +183,15 @@ custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "1 Bot"
+toggle_mode = true
+button_pressed = true
 
 [node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=1886455927]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "2 Boty"
+toggle_mode = true
 
 [node name="DiffLabel2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000011]
 layout_mode = 2
@@ -212,6 +226,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "🔴 Trudny"
 toggle_mode = true
+
+[node name="BtnStart2P" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000016]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1.0, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "▶  Zagraj!"
 
 [node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
 layout_mode = 2
