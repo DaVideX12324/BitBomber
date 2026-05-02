@@ -93,8 +93,9 @@ func _spawn_players() -> void:
 
 	for i in range(GameManager.num_bots):
 		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
-		bot.player_id = humans + i + 1
-		bot.is_bot    = true
+		bot.player_id    = humans + i + 1
+		bot.is_bot       = true
+		bot.bot_difficulty = GameManager.bot_difficulty  # <-- przekazuj trudność
 		players_root.add_child(bot)
 		_players.append(bot)
 		bot.died.connect(_on_player_died)

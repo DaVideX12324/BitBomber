@@ -8,6 +8,10 @@ extends CharacterBody2D
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
 
+## Trudność AI — ustawialna z zewnątrz przed add_child().
+## 0 = Easy, 1 = Medium, 2 = Hard (odpowiada BotAI.Difficulty)
+var bot_difficulty : int = 1
+
 const GRID_SIZE  : int   = 64
 const MOVE_SPEED : float = 5.0
 
@@ -77,7 +81,7 @@ func _init_ai() -> void:
 		return
 	var BotAI := load("res://scripts/bot_ai.gd")
 	_ai = BotAI.new()
-	_ai.setup(self, arena)
+	_ai.setup(self, arena, bot_difficulty)  # <-- przekazuj trudność
 
 
 func _find_arena() -> Node:
