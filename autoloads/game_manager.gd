@@ -20,6 +20,9 @@ var num_human_players: int = 1
 var num_bots: int = 1
 var rounds_to_win: int = 3
 
+## Poziom trudności botów: 0=Easy 1=Medium 2=Hard (mapowane na BotAI.Difficulty)
+var bot_difficulty: int = 0
+
 ## Referencja do persistentnego roota (ustawiana przez game.gd)
 var game_node: Node = null
 
