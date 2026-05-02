@@ -208,7 +208,7 @@ func _think_hunt() -> void:
 	if _enemy_in_blast_range(my_pos, t_pos):
 		if randf() < _params["attack_pct"]:
 			_owner_player._place_bomb()
-		# Uciekaj od WŁASNEJ pozycji (fix z BombIt StateAttack — _escapePosArr)
+		# Uciekaj symulując danger_map z nową bombą
 		_wander_target = Vector2i(-1, -1)
 		_queued_dir = _best_escape_dir(my_pos)
 		if _queued_dir != Vector2i.ZERO:
@@ -257,18 +257,16 @@ func _think_get_item() -> void:
 func _think_wander() -> void:
 	var my_pos : Vector2i = _owner_player.get_grid_pos()
 
-	# StateBox — kładź bombę przy skrzynce i uciekaj
+	# StateBox — kładź bombę przy skrzynce i uciekaj (bez dodatkowego check — _best_escape_dir sam symuluje)
 	if randf() < _params["box_pct"]:
 		for d: Vector2i in _shuffled_dirs():
 			if _arena.is_breakable(my_pos + d):
-				# Sprawdź czy po eksplozji będzie dokąd uciec
-				if _has_escape_after_bomb(my_pos):
-					_owner_player._place_bomb()
-					_wander_target = Vector2i(-1, -1)
-					_queued_dir = _best_escape_dir(my_pos)
-					if _queued_dir != Vector2i.ZERO:
-						_try_move(_queued_dir)
-					return
+				_owner_player._place_bomb()
+				_wander_target = Vector2i(-1, -1)
+				_queued_dir = _best_escape_dir(my_pos)
+				if _queued_dir != Vector2i.ZERO:
+					_try_move(_queued_dir)
+				return
 
 	# StateFree — idź do losowego wolnego cella
 	if _wander_target == Vector2i(-1, -1) or _wander_target == my_pos:
@@ -294,21 +292,44 @@ func _think_wander() -> void:
 # Ucieczka po bombie — _best_escape_dir (jak _escapePosArr w BombIt StateAttack)
 # ---------------------------------------------------------------------------
 
-## Zwraca kierunek do najbliższego bezpiecznego cella po postawieniu bomby.
-## Symuluje danger_map z dodaną bombą na my_pos.
+## Symuluje danger_map z nową bombą na my_pos i szuka bezpiecznego cella przez BFS.
+## Zwraca pierwszy krok w kierunku ucieczki.
 func _best_escape_dir(my_pos: Vector2i) -> Vector2i:
-	var safe : Vector2i = _find_safe_cell(my_pos)
-	if safe == Vector2i(-1, -1):
-		return Vector2i.ZERO
-	var path := _bfs(my_pos, safe, _params["find_range"] + 4)
-	if path.size() >= 2:
-		return path[1] - path[0]
+	var r : int = _owner_player.bomb_range
+	var sim : Dictionary = _danger_map.duplicate()
+	sim[my_pos] = true
+	for dir: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+		for i in range(1, r + 1):
+			var c : Vector2i = my_pos + dir * i
+			if _arena.is_solid(c):
+				break
+			sim[c] = true
+			if _arena.is_breakable(c):
+				break
+	# BFS do pierwszego bezpiecznego cella (poza sim), ignorując punkt startowy
+	var queue : Array      = [my_pos]
+	var vis   : Dictionary = { my_pos: true }
+	var prev  : Dictionary = { my_pos: Vector2i(-9999, -9999) }
+	while queue.size() > 0:
+		var cur : Vector2i = queue.pop_front()
+		if not sim.has(cur) and cur != my_pos:
+			# Odtwórz ścieżkę i zwróć pierwszy krok od my_pos
+			var step : Vector2i = cur
+			while prev.get(step, Vector2i(-9999,-9999)) != my_pos \
+					and prev.get(step, Vector2i(-9999,-9999)) != Vector2i(-9999,-9999):
+				step = prev[step]
+			return step - my_pos
+		for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+			var nb : Vector2i = cur + d
+			if not vis.has(nb) and _is_passable(nb):
+				vis[nb] = true
+				prev[nb] = cur
+				queue.append(nb)
 	return Vector2i.ZERO
 
 
 ## Sprawdza czy po postawieniu bomby na my_pos bot ma dokąd uciec.
 func _has_escape_after_bomb(my_pos: Vector2i) -> bool:
-	# Symuluj danger_map z bombą na my_pos
 	var sim_range : int = _owner_player.bomb_range
 	var sim_danger : Dictionary = _danger_map.duplicate()
 	sim_danger[my_pos] = true
@@ -320,7 +341,6 @@ func _has_escape_after_bomb(my_pos: Vector2i) -> bool:
 			sim_danger[c] = true
 			if _arena.is_breakable(c):
 				break
-	# BFS z tej mapy zagrożeń
 	var queue : Array      = [my_pos]
 	var vis   : Dictionary = { my_pos: true }
 	while queue.size() > 0:
@@ -408,12 +428,12 @@ func _is_danger_nearby() -> bool:
 
 
 func _find_safe_cell(from: Vector2i) -> Vector2i:
-	# BFS — szuka pierwszego cella poza _danger_map, respektuje ściany
+	# BFS — szuka pierwszego cella poza _danger_map, zawsze ignoruje punkt startowy
 	var queue : Array      = [from]
 	var vis   : Dictionary = { from: true }
 	while queue.size() > 0:
 		var cur : Vector2i = queue.pop_front()
-		if not _in_danger(cur):
+		if not _in_danger(cur) and cur != from:
 			return cur
 		for d: Vector2i in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
 			var nb : Vector2i = cur + d
