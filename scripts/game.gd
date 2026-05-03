@@ -4,7 +4,7 @@ extends Node
 ##
 ## Architektura Opcja A:
 ##   Game
-##   ├─ HUD1P / HUD2P
+##   ├─ HUD (CanvasLayer)  ← jeden węzeł HUD dla wszystkich graczy
 ##   ├─ Players (Node2D)   ← stały kontener, gracze niszczeni/tworzeni przy każdej grze
 ##   └─ CurrentMap (Node)  ← podmieniana scena mapy/pokoju
 ##
@@ -14,8 +14,7 @@ extends Node
 
 const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 
-@onready var hud_1p      : CanvasLayer = $HUD1P
-@onready var hud_2p      : CanvasLayer = $HUD2P
+@onready var hud         : CanvasLayer = $HUD
 @onready var players_root: Node2D      = $Players
 
 var _current_map : Node  = null
@@ -56,8 +55,8 @@ func _load_menu() -> void:
 
 ## Wczytaj arenę trybu vs — gracze spawnowani tutaj (już po ustawieniu num_human_players)
 func load_arena() -> void:
-	_clear_players()              # usuń poprzednich graczy
-	_spawn_players()              # stwórz nowych z aktualnymi ustawieniami
+	_clear_players()
+	_spawn_players()
 	_load_map("res://scenes/maps/arena.tscn")
 	_set_players_visible(true)
 	_connect_players_to_hud()
@@ -93,15 +92,14 @@ func _spawn_players() -> void:
 
 	for i in range(GameManager.num_bots):
 		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
-		bot.player_id    = humans + i + 1
-		bot.is_bot       = true
-		bot.bot_difficulty = GameManager.bot_difficulty  # <-- przekazuj trudność
+		bot.player_id      = humans + i + 1
+		bot.is_bot         = true
+		bot.bot_difficulty = GameManager.bot_difficulty
 		players_root.add_child(bot)
 		_players.append(bot)
 		bot.died.connect(_on_player_died)
 
 
-## Usuwa wszystkich obecnych graczy (przed nową grą)
 func _clear_players() -> void:
 	for p in _players:
 		if is_instance_valid(p):
@@ -125,14 +123,30 @@ func _set_players_visible(v: bool) -> void:
 
 
 func _connect_players_to_hud() -> void:
-	var hud := get_active_hud()
 	if not hud:
 		return
+
+	# Przekaż listę graczy do HUD (inicjuje karty)
+	var player_list: Array = []
 	for p in _players:
-		if is_instance_valid(p) and not p.is_bot:
-			hud.update_lives(p.player_id, p.lives, p.DEFAULT_LIVES)
-			p.lives_changed.connect(
-					func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES))
+		if is_instance_valid(p):
+			player_list.append({ "id": p.player_id, "is_bot": p.is_bot })
+	hud.setup_players(player_list)
+
+	# Podłącz sygnały wszystkich graczy do HUD
+	for p in _players:
+		if not is_instance_valid(p):
+			continue
+		# Inicjalne wartości
+		hud.update_lives(p.player_id, p.lives, p.DEFAULT_LIVES)
+		hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_multiplier)
+		# Sygnał zmiany żyć
+		p.lives_changed.connect(
+				func(pid: int, left: int): hud.update_lives(pid, left, p.DEFAULT_LIVES))
+		# Sygnał zebrania powerupa → odśwież statsy
+		p.powerup_collected.connect(
+				func(_pid: int, _type: String): hud.update_player(
+					p.player_id, p.max_bombs, p.bomb_range, p.speed_multiplier))
 
 
 # ---------------------------------------------------------------------------
@@ -164,21 +178,8 @@ func _on_last_chance_resolved(dead_player_id: int, respawned: bool) -> void:
 
 
 # ---------------------------------------------------------------------------
-# HUD
+# Reakcja na zmianę stanu
 # ---------------------------------------------------------------------------
 
-func _update_huds(state: GameManager.GameState) -> void:
-	var playing : bool = state == GameManager.GameState.PLAYING
-	var two_p   : bool = GameManager.num_human_players >= 2
-	hud_1p.visible = playing and not two_p
-	hud_2p.visible = playing and two_p
-
-
 func _on_state_changed(_old: GameManager.GameState, new_state: GameManager.GameState) -> void:
-	_update_huds(new_state)
-
-
-func get_active_hud() -> CanvasLayer:
-	if hud_1p.visible: return hud_1p
-	if hud_2p.visible: return hud_2p
-	return null
+	hud.visible = new_state == GameManager.GameState.PLAYING
