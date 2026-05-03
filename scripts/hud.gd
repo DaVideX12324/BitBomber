@@ -81,10 +81,10 @@ func setup_players(player_list: Array) -> void:
 		_create_player_card(pid, i)
 
 
- func _create_player_card(pid: int, index: int) -> void:
-	var color_idx: int   = clamp(pid - 1, 0, PLAYER_COLORS.size() - 1)
+func _create_player_card(pid: int, index: int) -> void:
+	var color_idx: int    = clamp(pid - 1, 0, PLAYER_COLORS.size() - 1)
 	var card_color: Color = PLAYER_COLORS[color_idx]
-	var y_offset: int    = CARD_MARGIN + index * (CARD_HEIGHT + CARD_MARGIN)
+	var y_offset: int     = CARD_MARGIN + index * (CARD_HEIGHT + CARD_MARGIN)
 
 	var outer: PanelContainer = PanelContainer.new()
 	outer.set_anchor_and_offset(SIDE_LEFT,   0.0, CARD_MARGIN)
