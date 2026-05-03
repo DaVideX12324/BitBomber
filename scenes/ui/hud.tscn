@@ -11,6 +11,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 1.0
+offset_right = 5.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -37,10 +41,9 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 8.0
-offset_top = -292.0
-offset_right = 168.0
-offset_bottom = 292.0
+offset_top = -351.0
+offset_right = 291.0
+offset_bottom = 351.0
 grow_vertical = 2
 theme_override_constants/separation = 6
 
@@ -63,7 +66,7 @@ color = Color(0.18, 0.45, 0.85, 1)
 
 [node name="Title" type="Label" parent="Root/Cards/Card1/VBox/Header" unique_id=1191967536]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 22
 text = "Gracz 1"
 
 [node name="Sep" type="HSeparator" parent="Root/Cards/Card1/VBox" unique_id=1785792493]
@@ -71,16 +74,18 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card1/VBox" unique_id=675905781]
 layout_mode = 2
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card1/VBox" unique_id=1892766415]
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "💣: 1  
 ↔️: 2 
-⚡: 1.0x"
+⚡: 1
+"
+horizontal_alignment = 1
 
 [node name="Card2" type="PanelContainer" parent="Root/Cards" unique_id=1793614447]
 layout_mode = 2
@@ -101,7 +106,7 @@ color = Color(0.88, 0.25, 0.55, 1)
 
 [node name="Title" type="Label" parent="Root/Cards/Card2/VBox/Header" unique_id=2032645397]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 22
 text = "Gracz 2"
 
 [node name="Sep" type="HSeparator" parent="Root/Cards/Card2/VBox" unique_id=2083608158]
@@ -109,16 +114,18 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card2/VBox" unique_id=1352109728]
 layout_mode = 2
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card2/VBox" unique_id=1808684752]
+[node name="StatsLabel" type="Label" parent="Root/Cards/Card2/VBox" unique_id=2005615640]
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "💣: 1  
 ↔️: 2 
-⚡: 1.0x"
+⚡: 1
+"
+horizontal_alignment = 1
 
 [node name="Card3" type="PanelContainer" parent="Root/Cards" unique_id=1452550029]
 layout_mode = 2
@@ -139,7 +146,7 @@ color = Color(0.2, 0.65, 0.25, 1)
 
 [node name="Title" type="Label" parent="Root/Cards/Card3/VBox/Header" unique_id=777050914]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 22
 text = "Gracz 3"
 
 [node name="Sep" type="HSeparator" parent="Root/Cards/Card3/VBox" unique_id=553739822]
@@ -147,16 +154,18 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card3/VBox" unique_id=704109207]
 layout_mode = 2
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card3/VBox" unique_id=404706321]
+[node name="StatsLabel" type="Label" parent="Root/Cards/Card3/VBox" unique_id=803527938]
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "💣: 1  
 ↔️: 2 
-⚡: 1.0x"
+⚡: 1
+"
+horizontal_alignment = 1
 
 [node name="Card4" type="PanelContainer" parent="Root/Cards" unique_id=221313777]
 layout_mode = 2
@@ -177,7 +186,7 @@ color = Color(0.55, 0.82, 0.2, 1)
 
 [node name="Title" type="Label" parent="Root/Cards/Card4/VBox/Header" unique_id=1749957368]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 22
 text = "Gracz 4"
 
 [node name="Sep" type="HSeparator" parent="Root/Cards/Card4/VBox" unique_id=1523887994]
@@ -185,16 +194,18 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card4/VBox" unique_id=948097430]
 layout_mode = 2
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card4/VBox" unique_id=992346420]
+[node name="StatsLabel" type="Label" parent="Root/Cards/Card4/VBox" unique_id=1668993246]
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "💣: 1  
 ↔️: 2 
-⚡: 1.0x"
+⚡: 1
+"
+horizontal_alignment = 1
 
 [node name="ToastLabel" type="Label" parent="Root" unique_id=1020413542]
 modulate = Color(1, 1, 1, 0)

@@ -66,8 +66,9 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
+	var speed_level := int((speed - 1.0) / 50.0) + 1
 	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"\uD83D\uDCA3:%d  \uD83C\uDFAF:%d  \u26A1:%.1fx" % [bombs, bomb_range, speed]
+		"\uD83D\uDCA3:%d\n\uD83C\uDFAF:%d\n\u26A1:%d\n" % [bombs, bomb_range, speed_level]
 
 
 ## Aktualizuje numer rundy.

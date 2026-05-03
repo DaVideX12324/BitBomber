@@ -2,8 +2,6 @@ extends Sprite2D
 
 ## Power-up leżący na planszy.
 ## Typy: range_up, bomb_up, speed_up, life_up
-## collision_layer = 16 (power-upy — oddzielna warstwa)
-## collision_mask  = 2  (gracze)
 
 const GRID_SIZE : int = 64
 

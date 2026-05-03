@@ -5,8 +5,8 @@ extends Node2D
 ## Gracze są spawnowani przez game.gd.
 
 const GRID_SIZE : int = 64
-const COLS      : int = 17
-const ROWS      : int = 17
+const COLS      : int = 7
+const ROWS      : int = 7
 
 const COLOR_BG           = Color(0.15, 0.15, 0.17, 1.0)
 const COLOR_GRID_LINE    = Color(0.22, 0.22, 0.25, 1.0)
@@ -23,9 +23,9 @@ const SAFE_SPAWN_RADIUS : int = 2
 
 const SPAWN_POINTS : Array[Vector2i] = [
 	Vector2i(1,  1),   # P1   — lewy górny
-	Vector2i(ROWS-2, COLS-1),  # P2   — prawy dolny
-	Vector2i(ROWS-1, 1),   # Bot1 — prawy górny
-	Vector2i(1,  COLS-1),  # Bot2 — lewy dolny
+	Vector2i(ROWS-2, COLS-2),  # P2   — prawy dolny
+	Vector2i(ROWS-2, 1),   # Bot1 — prawy górny
+	Vector2i(1,  COLS-2),  # Bot2 — lewy dolny
 ]
 
 ## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
@@ -35,9 +35,9 @@ const POWERUP_SCENE = preload("res://scenes/objects/powerup.tscn")
 
 ## Pula typów (wagi: range_up 3×, bomb_up 3×, speed_up 2×, life_up 1×)
 const POWERUP_POOL : Array[String] = [
-	"range_up", "range_up", "range_up",
-	"bomb_up",  "bomb_up",  "bomb_up",
-	"speed_up", "speed_up",
+	"range_up", "range_up", "range_up", "range_up",
+	"bomb_up",  "bomb_up",  "bomb_up",  "bomb_up",
+	"speed_up", "speed_up", "speed_up",
 	"life_up",
 ]
 

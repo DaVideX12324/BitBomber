@@ -25,6 +25,7 @@ var _dead_player_id: int = -1
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS  # ← to
 	_btn_cont.pressed.connect(_on_continue)
 	_btn_menu.pressed.connect(_on_menu)
 	RoundManager.last_chance_triggered.connect(_on_last_chance)

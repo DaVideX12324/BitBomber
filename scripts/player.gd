@@ -17,7 +17,7 @@ const CORNER_SLIDE_SPEED : float = 150.0
 
 const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
 
-const DEFAULT_LIVES    : int   = 3
+const DEFAULT_LIVES    : int   = 1
 const DEFAULT_BOMBS    : int   = 1
 const DEFAULT_RANGE    : int   = 2
 const DEFAULT_SPEED    : float = 1.0
