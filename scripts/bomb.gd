@@ -57,8 +57,7 @@ func _explode() -> void:
 
 	var directions : Array[Vector2i] = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
 	for dir : Vector2i in directions:
-		# Zmieniłem na explosion_range + 1, żeby zasięg 1 = 1 kratka wybuchu (standard GDScript range)
-		for i : int in range(1, explosion_range + 1):
+		for i : int in range(1, explosion_range):
 			var cell : Vector2i = origin + dir * i
 			var pos  : Vector2  = _grid_to_pixel(cell)
 

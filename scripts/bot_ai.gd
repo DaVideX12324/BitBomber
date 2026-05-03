@@ -249,7 +249,7 @@ func _update_sense():
 func _mark_danger(bpos: Vector2i, power: int):
 	danger_map[bpos] = true
 	for dir in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
-		for i in range(1, power + 1):
+		for i in range(1, power):
 			var cp : Vector2i = bpos + dir * i
 			if _out_of_bounds(cp):
 				break
