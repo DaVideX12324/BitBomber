@@ -8,12 +8,18 @@ extends CharacterBody2D
 @export var player_id : int  = 1
 @export var is_bot    : bool = false
 
+## Maksymalne odchylenie od środka wolnej kratki (w pikselach), przy którym gracz zostanie
+## ześlizgnięty. Jeśli grid to 64px, to 32px oznacza krawędź. Im mniejsza wartość,
+## tym gracz musi dokładniej celować w wolne przejście.
+@export var corner_assist_tolerance : float = 24.0
+
 ## Trudność AI — ustawialna z zewnątrz przed add_child().
 ## 0 = Easy, 1 = Medium, 2 = Hard (odpowiada BotAI.Difficulty)
 var bot_difficulty : int = 1
 
 const GRID_SIZE  : int   = 64
 const MOVE_SPEED : float = 250
+const CORNER_SLIDE_SPEED : float = 150.0
 
 const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
 
@@ -60,7 +66,6 @@ const FALLBACK_COLORS : Dictionary = {
 	4: Color(0.9, 0.2, 0.9),
 }
 
-
 func _ready() -> void:
 	collision_layer = 2
 	collision_mask  = 1
@@ -74,7 +79,6 @@ func _ready() -> void:
 		await get_tree().process_frame
 		_init_ai()
 
-
 func _init_ai() -> void:
 	var arena := _find_arena()
 	if arena == null:
@@ -83,13 +87,11 @@ func _init_ai() -> void:
 	_ai = BotAI.new()
 	_ai.setup(self, arena, bot_difficulty)
 
-
 func _find_arena() -> Node:
 	var gn := GameManager.game_node
 	if gn and is_instance_valid(gn.get("_current_map")):
 		return gn._current_map
 	return null
-
 
 func _process(delta: float) -> void:
 	if not is_alive or _frozen:
@@ -115,14 +117,12 @@ func _process(delta: float) -> void:
 
 	_handle_movement(delta)
 
-
 ## Tile na którym gracz jest większością ciała.
 func _closest_grid_pos() -> Vector2i:
 	var half : int = GRID_SIZE / 2
 	return Vector2i(
 		int(roundi((global_position.x - half) / GRID_SIZE)),
 		int(roundi((global_position.y - half) / GRID_SIZE)))
-
 
 # ---------------------------------------------------------------------------
 # Teleport
@@ -141,7 +141,6 @@ func teleport_to(px: Vector2) -> void:
 	_pending_elim   = false
 	visible         = true
 
-
 func reset_for_new_game() -> void:
 	lives            = DEFAULT_LIVES
 	max_bombs        = DEFAULT_BOMBS
@@ -152,17 +151,95 @@ func reset_for_new_game() -> void:
 	has_bomb_pierce      = false
 	teleport_to(global_position)
 
+# ---------------------------------------------------------------------------
+# Ruch snap (tylko gracze ludzcy)
+# ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # Ruch snap (tylko gracze ludzcy)
 # ---------------------------------------------------------------------------
 
 func _handle_movement(delta: float) -> void:
-	
 	var prefix := "p%d_" % player_id
-	var direction = Input.get_vector(prefix + "left", prefix + "right", prefix + "up", prefix + "down").normalized()
-	velocity = direction * MOVE_SPEED * speed_multiplier
-	move_and_slide()
+	var raw_dir = Input.get_vector(prefix + "left", prefix + "right", prefix + "up", prefix + "down")
+	var direction = raw_dir
+
+	if raw_dir != Vector2.ZERO:
+		# --- INTELIGENTNE ROZWIĄZYWANIE RUCHU PO SKOSIE ---
+		# Jeśli gracz wciska dwa kierunki naraz (np. Lewo i Dół)
+		if raw_dir.x != 0 and raw_dir.y != 0:
+			var test_dist = 4.0
+			# Wirtualnie sprawdzamy krótki dystans w obu kierunkach
+			var test_x = test_move(global_transform, Vector2(sign(raw_dir.x) * test_dist, 0))
+			var test_y = test_move(global_transform, Vector2(0, sign(raw_dir.y) * test_dist))
+
+			if test_y and not test_x:
+				# Przeszkoda na Y (np. blok na dole), ale X (lewo) jest wolny -> idziemy w X
+				direction.y = 0
+			elif test_x and not test_y:
+				# Przeszkoda na X, ale Y wolny -> idziemy w Y
+				direction.x = 0
+			else:
+				# Obie drogi wolne lub obie zablokowane - standardowe odcięcie
+				if abs(raw_dir.x) > abs(raw_dir.y):
+					direction.y = 0
+				else:
+					direction.x = 0
+		else:
+			# Wciśnięty tylko jeden klawisz, upewniamy się, że odcinamy skosy (na padzie)
+			if abs(direction.x) > abs(direction.y):
+				direction.y = 0
+			else:
+				direction.x = 0
+		
+		direction = direction.normalized()
+		velocity = direction * MOVE_SPEED * speed_multiplier
+		move_and_slide()
+
+		# --- LOGIKA CORNER ASSIST ---
+		if get_slide_collision_count() > 0:
+			var collision = get_slide_collision(0)
+			var normal = collision.get_normal()
+
+			if direction.x != 0 and abs(normal.x) > 0.1:
+				_apply_corner_assist("y", direction, delta)
+			elif direction.y != 0 and abs(normal.y) > 0.1:
+				_apply_corner_assist("x", direction, delta)
+	else:
+		# Bardzo ważne - jeśli nic nie wciskamy, całkowicie się zatrzymujemy
+		velocity = Vector2.ZERO
+		move_and_slide()
+
+func _apply_corner_assist(axis: String, direction: Vector2, delta: float) -> void:
+	var current_pos = global_position.y if axis == "y" else global_position.x
+	
+	# fposmod sprawdza pozycję na kafelku (korzysta z GRID_SIZE = 64)
+	var offset = fposmod(current_pos, GRID_SIZE)
+	var center_dist = offset - (GRID_SIZE / 2.0)
+	
+	# Tolerancja: ignorujemy, jeśli gracz jest bardzo blisko środka lub wychylony bardziej niż pozwala corner_assist_tolerance
+	if abs(center_dist) > 1.0 and abs(center_dist) <= corner_assist_tolerance:
+		
+		# Tworzymy testowy punkt (środek kratki, do którego chcemy zsunąć gracza)
+		var test_trans = global_transform
+		if axis == "y":
+			test_trans.origin.y -= center_dist
+		else:
+			test_trans.origin.x -= center_dist
+			
+		# Sprawdzamy, czy ze środka gridu można w ogóle iść w pożądanym kierunku
+		# Zwróci 'false', jeśli nic tam nie ma (czyli przejście jest wolne).
+		if not test_move(test_trans, direction * 4.0):
+			var slide_amount = sign(center_dist) * CORNER_SLIDE_SPEED * delta
+			
+			# Zabezpieczenie przed "przeskakiwaniem" idealnego środka (drganiami)
+			if abs(slide_amount) > abs(center_dist):
+				slide_amount = center_dist
+			
+			if axis == "y":
+				global_position.y -= slide_amount
+			else:
+				global_position.x -= slide_amount
 
 # ---------------------------------------------------------------------------
 # Bomby
@@ -171,7 +248,6 @@ func _handle_movement(delta: float) -> void:
 func _handle_bomb_input() -> void:
 	if Input.is_action_just_pressed("p%d_bomb" % player_id):
 		_place_bomb()
-
 
 func _place_bomb() -> void:
 	if _active_bombs >= max_bombs:
@@ -194,17 +270,14 @@ func _place_bomb() -> void:
 	_active_bombs += 1
 	bomb_placed.emit(bomb_cell, self)
 
-
 func _on_bomb_exploded() -> void:
 	_active_bombs = max(_active_bombs - 1, 0)
-
 
 func _get_map_root() -> Node:
 	var gn := GameManager.game_node
 	if gn and gn.get("_current_map") != null:
 		return gn._current_map
 	return get_parent()
-
 
 # ---------------------------------------------------------------------------
 # Obrażenia / system żyć
@@ -225,11 +298,9 @@ func take_hit() -> void:
 	else:
 		_start_hit_sequence()
 
-
 func _deferred_last_chance() -> void:
 	if _pending_elim:
 		RoundManager.trigger_last_chance(player_id)
-
 
 func resolve_last_chance(respawned: bool) -> void:
 	_pending_elim = false
@@ -239,7 +310,6 @@ func resolve_last_chance(respawned: bool) -> void:
 		_respawn()
 	else:
 		_eliminate()
-
 
 func _start_hit_sequence() -> void:
 	_frozen     = true
@@ -252,12 +322,10 @@ func _start_hit_sequence() -> void:
 	_invincible = false
 	modulate.a  = 1.0
 
-
 func _respawn() -> void:
 	is_alive = true
 	global_position = _pixel_target
 	_start_iframes(2.0)
-
 
 func _start_iframes(duration: float) -> void:
 	_invincible = true
@@ -266,13 +334,11 @@ func _start_iframes(duration: float) -> void:
 	_invincible = false
 	modulate.a  = 1.0
 
-
 func _eliminate() -> void:
 	is_alive      = false
 	_pending_elim = false
 	visible       = false
 	died.emit(player_id)
-
 
 # ---------------------------------------------------------------------------
 # Power-upy
@@ -288,7 +354,6 @@ func apply_powerup(type: String) -> void:
 		lives_changed.emit(player_id, lives)
 	powerup_collected.emit(player_id, type)
 
-
 # ---------------------------------------------------------------------------
 # Helpery
 # ---------------------------------------------------------------------------
@@ -296,10 +361,8 @@ func apply_powerup(type: String) -> void:
 func _grid_to_pixel(gp: Vector2i) -> Vector2:
 	return Vector2(gp.x * GRID_SIZE + GRID_SIZE / 2, gp.y * GRID_SIZE + GRID_SIZE / 2)
 
-
 func _pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))
-
 
 ## Używane przez bot_ai — wykonuje jeden krok w danym kierunku.
 func _move_grid(dir: Vector2i) -> void:
@@ -315,10 +378,8 @@ func _move_grid(dir: Vector2i) -> void:
 	_move_progress = 0.0
 	_moving        = true
 
-
 func get_grid_pos() -> Vector2i:
 	return _grid_pos
-
 
 func _blink(duration: float, interval: float) -> void:
 	var steps : int = int(duration / (interval * 2))
