@@ -1,15 +1,3 @@
-# bot_ai.gd
-# AI wzorowane 1:1 na architekturze Bomb It 7 (ActionScript):
-#   - FSM ze stanami: IDLE, ESCAPE, ATTACK, BOX, GET_ITEM
-#   - Każdy stan ma checkTransitions(), enter(), update(), exit()
-#   - actionComplete (bool) blokuje re-enter dopóki trwa akcja
-#   - stateRepeat: jeśli stan utknął przez 5 cykli -> reset do IDLE
-#   - aiAnswerTime: opóźnienie odpowiedzi (per difficulty)
-#   - findRange: zasięg percepcji (per difficulty)
-#   - plantBombPossible -> escapeRouteAnalysis: BFS, czy po bombie istnieje ucieczka
-#   - onStep: sprawdzenie danger_map w trakcie ścieżki (stepDodge + stepAttack)
-#   - StateSettings: percentage + params per stan per difficulty (jak settings.precentage w BombIt7)
-#
 # ======================================================
 # INSTRUKCJA PODPIĘCIA:
 # Zastąp właściwości bota w sekcji "BOT NODE INTERFACE"
@@ -97,9 +85,9 @@ func _make_settings(state_name: String) -> StateSettings:
 				"get_item":
 					s.percentage = 0.0   # EASY nie szuka powerupów
 				"attack":
-					s.percentage = 0.0   # EASY nie atakuje celowo
+					s.percentage = 0.10   # EASY rzadko atakuje celowo
 				"idle":
-					s.percentage = 0.95  # EASY często stoi
+					s.percentage = 0.80  # EASY często stoi
 
 		Difficulty.MEDIUM:
 			match state_name:
