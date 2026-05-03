@@ -5,7 +5,7 @@ extends CanvasLayer
 ## Publiczne API:
 ##   hud.setup_players(player_list: Array)
 ##     player_list = [{ "id":1, "is_bot":false }, ...]
-##   hud.update_lives(pid, lives_left, max_lives)
+##   hud.update_lives(pid, lives_left)
 ##   hud.update_player(pid, bombs, bomb_range, speed)
 ##   hud.update_round(round_num)
 ##   hud.show_message(text, duration)
@@ -17,7 +17,6 @@ const PLAYER_COLORS: Array[Color] = [
 	Color(0.55, 0.82, 0.20),
 ]
 
-# Karty w kolejności P1..P4
 @onready var _cards_nodes: Array[Control] = [
 	$Root/Cards/Card1,
 	$Root/Cards/Card2,
@@ -30,7 +29,6 @@ const PLAYER_COLORS: Array[Color] = [
 
 func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
-	# Ukryj wszystkie karty — setup_players pokaże potrzebne
 	for card: Control in _cards_nodes:
 		card.visible = false
 
@@ -39,7 +37,6 @@ func _ready() -> void:
 # Publiczne API
 # ---------------------------------------------------------------------------
 
-## Włącza widoczność kart dla graczy z listy i ustawia ich kolory/tytuły.
 func setup_players(player_list: Array) -> void:
 	for card: Control in _cards_nodes:
 		card.visible = false
@@ -51,21 +48,17 @@ func setup_players(player_list: Array) -> void:
 			continue
 		var card: Control = _cards_nodes[idx]
 		card.visible = true
-
 		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
 		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
 		(card.get_node("VBox/Header/Title") as Label).text = "Gracz %d" % pid
 
 
-## Aktualizuje serca gracza pid.
-func update_lives(pid: int, lives_left: int, max_lives: int = 3) -> void:
+## Aktualizuje serca gracza — format: "❤️:N"
+func update_lives(pid: int, lives_left: int) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
-	var hearts: PackedStringArray = PackedStringArray()
-	for i: int in max_lives:
-		hearts.append("\u2764\uFE0F" if i < lives_left else "\uD83D\uDDA4")
-	(card.get_node("VBox/HeartsLabel") as Label).text = " ".join(hearts)
+	(card.get_node("VBox/HeartsLabel") as Label).text = "\u2764\ufe0f:%d" % lives_left
 
 
 ## Aktualizuje statystyki gracza pid.
@@ -74,7 +67,7 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
 	if not card:
 		return
 	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"\uD83D\uDCA3 : %d\n\uD83C\uDFAF : %d\n\u26A1 : %.1fx" % [bombs, bomb_range, speed]
+		"\uD83D\uDCA3:%d  \uD83C\uDFAF:%d  \u26A1:%.1fx" % [bombs, bomb_range, speed]
 
 
 ## Aktualizuje numer rundy.
