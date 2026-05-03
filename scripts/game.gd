@@ -139,14 +139,14 @@ func _connect_players_to_hud() -> void:
 			continue
 		# Inicjalne wartości
 		hud.update_lives(p.player_id, p.lives)
-		hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_multiplier)
+		hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_addition)
 		# Sygnał zmiany żyć
 		p.lives_changed.connect(
 				func(pid: int, left: int): hud.update_lives(pid, left))
 		# Sygnał zebrania powerupa → odśwież statsy
 		p.powerup_collected.connect(
 				func(_pid: int, _type: String): hud.update_player(
-					p.player_id, p.max_bombs, p.bomb_range, p.speed_multiplier))
+					p.player_id, p.max_bombs, p.bomb_range, p.speed_addition))
 
 
 # ---------------------------------------------------------------------------

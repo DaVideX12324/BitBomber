@@ -26,7 +26,7 @@ const MAX_LIVES        : int   = 5
 var lives            : int   = DEFAULT_LIVES
 var max_bombs        : int   = DEFAULT_BOMBS
 var bomb_range       : int   = DEFAULT_RANGE
-var speed_multiplier : float = DEFAULT_SPEED
+var speed_addition : float = DEFAULT_SPEED
 var _active_bombs    : int   = 0
 
 var has_remote_detonator : bool = false
@@ -130,8 +130,11 @@ func _check_bomb_exits() -> void:
 			_bombs_inside.remove_at(i)
 			continue
 		
-		# Rozmiar gracza to ~62px. Dystans > 63 zapobiega zakleszczeniu się fizyki (clipping)
-		if global_position.distance_to(b.global_position) > 63.0:
+		# Zmniejszony dystans! 
+		# Gdy gracz wyjdzie nieco ponad połowę kratki (32px + margines),
+		# kolizja zostaje przywrócona. Jeśli minimalnie haczy o bombę, 
+		# silnik łagodnie wypchnie go do końca i zamknie "drzwi" za nim.
+		if global_position.distance_to(b.global_position) > 42.0:
 			remove_collision_exception_with(b)
 			b.remove_collision_exception_with(self)
 			_bombs_inside.remove_at(i)
@@ -158,7 +161,7 @@ func reset_for_new_game() -> void:
 	lives            = DEFAULT_LIVES
 	max_bombs        = DEFAULT_BOMBS
 	bomb_range       = DEFAULT_RANGE
-	speed_multiplier = DEFAULT_SPEED
+	speed_addition = DEFAULT_SPEED
 	_active_bombs    = 0
 	has_remote_detonator = false
 	has_bomb_pierce      = false
@@ -189,7 +192,7 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 				direction.x = 0
 		
 		direction = direction.normalized()
-		velocity = direction * MOVE_SPEED * speed_multiplier
+		velocity = direction * (MOVE_SPEED + speed_addition)
 		move_and_slide()
 
 		if get_slide_collision_count() > 0:
@@ -231,6 +234,7 @@ func _place_bomb() -> void:
 
 	var bomb_cell : Vector2i = _closest_grid_pos()
 
+	# Nie pozwól postawić bomby, jeśli na tym polu już jakaś jest
 	for b in get_tree().get_nodes_in_group("bomb"):
 		if Vector2i(int(b.global_position.x / GRID_SIZE), int(b.global_position.y / GRID_SIZE)) == bomb_cell:
 			return
@@ -242,9 +246,11 @@ func _place_bomb() -> void:
 	bomb.owner_player    = self
 	bomb.add_to_group("bomb")
 	
-	# Wyjątek od kolizji - aż gracz z niej nie zejdzie
+	# POPRAWA: Dodajemy wyjątek dla KAŻDEGO gracza (w tym bota),
+	# który jest blisko środka bomby w momencie jej postawienia.
+	# Zapobiega to brutalnemu wypychaniu.
 	for p in get_tree().get_nodes_in_group("players"):
-		if p._closest_grid_pos() == bomb_cell:
+		if p.global_position.distance_to(bomb.global_position) < (GRID_SIZE * 0.75):
 			bomb.add_collision_exception_with(p)
 			p.add_collision_exception_with(bomb)
 			p._bombs_inside.append(bomb)
@@ -295,7 +301,7 @@ func _start_hit_sequence() -> void:
 	_frozen     = true
 	_invincible = true
 	_blink(3.0, 0.3)
-	await get_tree().create_timer(4.0).timeout
+	await get_tree().create_timer(2.0).timeout
 	_frozen = false
 	_blink(2.0, 0.1)
 	await get_tree().create_timer(2.0).timeout
@@ -324,7 +330,7 @@ func apply_powerup(type: String) -> void:
 	match type:
 		"range_up":  bomb_range       = min(bomb_range + 1, 8)
 		"bomb_up":   max_bombs        = min(max_bombs + 1, 4)
-		"speed_up":  speed_multiplier = min(speed_multiplier + 0.25, 2.5)
+		"speed_up":  speed_addition = min(speed_addition + 50, 500)
 		"life_up":   lives            = min(lives + 1, MAX_LIVES)
 	if type == "life_up":
 		lives_changed.emit(player_id, lives)

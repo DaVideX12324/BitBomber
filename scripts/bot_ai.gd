@@ -53,9 +53,13 @@ var arena: Node = null
 # ---------------------------------------------------
 
 # =====================
-# TIMING (aiAnswerTime z BombIt7)
+# TIMING (Przedziały czasowe na reakcję: x = min, y = max w sekundach)
 # =====================
-const ANSWER_TIME: Array[float] = [0.55, 0.22, 0.08]
+const ANSWER_TIME_RANGE: Array[Vector2] = [
+	Vector2(0.40, 0.80), # EASY   - powolne i mocno nieregularne decyzje
+	Vector2(0.15, 0.35), # MEDIUM - standardowy, lekko zróżnicowany czas
+	Vector2(0.05, 0.12)  # HARD   - błyskawiczne reakcje z mikroskopijną tolerancją
+]
 
 # =====================
 # ZASIĘG PERCEPCJI (findRange z BombIt7)
@@ -145,8 +149,22 @@ func _ready():
 	var gm = get_node_or_null("/root/GameManager")
 	if gm and gm.get("bot_difficulty") != null:
 		difficulty = gm.bot_difficulty as Difficulty
-	ai_answer_time = ANSWER_TIME[int(difficulty)]
+		
+	randomize()
+	_roll_next_answer_time()
+	# Ustawiamy startowy timer losowo, żeby boty nie obudziły się równocześnie
+	ai_think_timer = randf_range(0.0, ai_answer_time)
 	arena = _find_arena()
+	# FETCH DIMENSIONS FROM ARENA
+	if arena != null:
+		if "COLS" in arena:
+			grid_width = arena.COLS
+		if "ROWS" in arena:
+			grid_height = arena.ROWS
+		# Also update grid size if it exists in arena to ensure perfect sync
+		if "GRID_SIZE" in arena:
+			grid_size = arena.GRID_SIZE
+			
 	_init_astar()
 	_settings[BotState.IDLE]     = _make_settings("idle")
 	_settings[BotState.ESCAPE]   = _make_settings("escape")
@@ -155,27 +173,6 @@ func _ready():
 	_settings[BotState.ATTACK]   = _make_settings("attack")
 	_dbg("=== AI gotowy [%s] ===" % Difficulty.keys()[int(difficulty)])
 
-func _dbg(msg: String):
-	var alive = "LIVING"
-	if bot_node and bot_node.get(BOT_IS_ALIVE) == false:
-		alive = "DEAD"
-	var state_str = BotState.keys()[current_state] if current_state != null else "NONE"
-	#print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
-
-func _find_arena() -> Node:
-	var arenas = get_tree().get_nodes_in_group("arena")
-	if arenas.size() > 0:
-		return arenas[0]
-	var gm = get_node_or_null("/root/GameManager")
-	if gm and gm.get("game_node") and is_instance_valid(gm.game_node):
-		var gn = gm.game_node
-		if gn.get("_current_map") and is_instance_valid(gn._current_map):
-			return gn._current_map
-	return bot_node.get_parent() if bot_node else null
-
-# =====================
-# PHYSICS PROCESS
-# =====================
 func _physics_process(delta: float):
 	if not is_instance_valid(bot_node):
 		return
@@ -189,11 +186,34 @@ func _physics_process(delta: float):
 	ai_think_timer += delta
 	if ai_think_timer >= ai_answer_time:
 		ai_think_timer = 0.0
+		# Bot podejmuje decyzję, więc od razu losujemy ile zajmie mu następna
+		_roll_next_answer_time() 
 		_update_sense()
 		_machine_update()
 
-	# Dodaliśmy podawanie 'delta' do poruszania się
 	_execute_move(delta)
+	
+func _roll_next_answer_time():
+	var range_vec = ANSWER_TIME_RANGE[int(difficulty)]
+	ai_answer_time = randf_range(range_vec.x, range_vec.y)
+	
+func _dbg(msg: String):
+	var alive = "LIVING"
+	if bot_node and bot_node.get(BOT_IS_ALIVE) == false:
+		alive = "DEAD"
+	var state_str = BotState.keys()[current_state] if current_state != null else "NONE"
+	print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
+
+func _find_arena() -> Node:
+	var arenas = get_tree().get_nodes_in_group("arena")
+	if arenas.size() > 0:
+		return arenas[0]
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and gm.get("game_node") and is_instance_valid(gm.game_node):
+		var gn = gm.game_node
+		if gn.get("_current_map") and is_instance_valid(gn._current_map):
+			return gn._current_map
+	return bot_node.get_parent() if bot_node else null
 
 # =====================
 # A* GRID
@@ -337,6 +357,15 @@ func _enter_state(state: BotState):
 	
 	match state:
 		BotState.IDLE:
+			var s: StateSettings = _settings[BotState.IDLE]
+			if randf() < s.noise_chance:
+				# Zamiast po prostu stać, robimy pojedynczy losowy i BEZPIECZNY krok w bok!
+				var junk_dir := _random_free_dir(pos)
+				if junk_dir != Vector2.ZERO:
+					var target_cell = pos + Vector2i(int(junk_dir.x), int(junk_dir.y))
+					current_path = [target_cell]
+					_dbg("Z powodu IDLE-noise, wykonuję losowy krok w stronę %s" % target_cell)
+					return # Zakończ _enter_state i pozwól _execute_move na realizacje kroku
 			_action_complete = true
 			_dbg("Odpoczywam (IDLE).")
 		BotState.ESCAPE:
@@ -525,6 +554,7 @@ func _plant_bomb_possible(pos: Vector2i) -> bool:
 	var queue := [pos]
 	var visited := {pos: true}
 	var dirs := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
+	dirs.shuffle() # Sprawi, że przy każdym zapytaniu priorytety będą inne!
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
 		if not sim.has(cur) and not astar_grid.is_point_solid(cur):
@@ -544,6 +574,7 @@ func _best_escape(start: Vector2i) -> Vector2i:
 	var queue := [start]
 	var visited := {start: true}
 	var dirs := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
+	dirs.shuffle() # Sprawi, że przy każdym zapytaniu priorytety będą inne!
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
 		if not danger_map.has(cur) and not astar_grid.is_point_solid(cur):
@@ -565,6 +596,7 @@ func _nearest_box(start: Vector2i) -> Vector2i:
 	var queue := [start]
 	var visited := {start: true}
 	var dirs := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
+	dirs.shuffle() # Sprawi, że przy każdym zapytaniu priorytety będą inne!
 	var rlimit := float(FIND_RANGE[int(difficulty)])
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
@@ -590,6 +622,7 @@ func _nearest_item(start: Vector2i) -> Vector2i:
 	var queue := [start]
 	var visited := {start: true}
 	var dirs := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
+	dirs.shuffle() # Sprawi, że przy każdym zapytaniu priorytety będą inne!
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
 		if cells.has(cur) and not danger_map.has(cur): return cur

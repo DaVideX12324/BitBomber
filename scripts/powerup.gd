@@ -38,7 +38,9 @@ func _ready() -> void:
 	_label.text = icon
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
 	_bob()
-
+	Hitbox.disabled = 1
+	await get_tree().create_timer(0.21).timeout
+	Hitbox.disabled = 0
 
 func _bob() -> void:
 	var tw := create_tween().set_loops()
