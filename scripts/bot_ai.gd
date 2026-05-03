@@ -237,8 +237,6 @@ func execute_move():
 	elif abs(diff.y) > 4.0:
 		bot_node.bot_input_direction = Vector2(0, sign(diff.y))
 	else:
-		# Snapnij dokładnie do środka kratki
-		bot_node.global_position = target_global_pos
 		bot_node.bot_input_direction = Vector2.ZERO
 		current_path.pop_front()
 
@@ -362,7 +360,7 @@ func _is_bot_in_danger() -> bool:
 			cell.x * grid_size + grid_size * 0.5,
 			cell.y * grid_size + grid_size * 0.5
 		)
-		if center.distance_to(cell_center) < 60.0:
+		if center.distance_to(cell_center) < 20.0:
 			return true
 	return false
 	
