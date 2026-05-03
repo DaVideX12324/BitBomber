@@ -39,6 +39,9 @@ var ai_answer_time : float = 0.2  # nadpisywane w _ready() wg difficulty
 var arena: Node
 var _last_logged_state: State = State.IDLE
 
+## Flaga: bot jest w trakcie wykonywania ścieżki — nie przerywaj stanu
+var _executing_action: bool = false
+
 func _ready():
 	# Wczytaj parametry odpowiednie dla poziomu trudności
 	ai_answer_time = ANSWER_TIME[difficulty]
@@ -134,6 +137,16 @@ func _mark_danger(bomb_pos: Vector2i, power: int):
 # MASZYNA STANÓW (AIEngine.as)
 # ==========================================
 func machine_update():
+	# Jeśli bot jest w trakcie wykonywania ścieżki — nie przerywaj stanu,
+	# chyba że wpadł w niebezpieczeństwo (ESCAPE ma zawsze priorytet)
+	if _executing_action:
+		if _is_bot_in_danger():
+			_executing_action = false
+			current_path.clear()
+			current_state = State.ESCAPE
+			enter_state(State.ESCAPE)
+		return
+
 	var next_state = check_transitions()
 
 	if next_state != current_state or current_path.is_empty():
@@ -173,6 +186,7 @@ func check_transitions() -> State:
 
 func enter_state(new_state: State):
 	current_path.clear()
+	_executing_action = false
 	var bot_pos = _get_grid_pos(bot_node.global_position)
 	bot_node.bot_input_direction = Vector2.ZERO
 
@@ -181,6 +195,7 @@ func enter_state(new_state: State):
 			var safe_node = _find_best_escape_position(bot_pos)
 			if safe_node != Vector2i(-1, -1) and safe_node != bot_pos:
 				current_path = astar_grid.get_id_path(bot_pos, safe_node)
+				_executing_action = true
 
 		State.BOX:
 			var target_box = _find_nearest_destroyable_box(bot_pos)
@@ -188,6 +203,7 @@ func enter_state(new_state: State):
 				var path = astar_grid.get_id_path(bot_pos, target_box)
 				if _is_path_safe(path):
 					current_path = path
+					_executing_action = true
 				else:
 					current_state = State.IDLE
 
@@ -197,6 +213,7 @@ func enter_state(new_state: State):
 				var path = astar_grid.get_id_path(bot_pos, target_item)
 				if _is_path_safe(path):
 					current_path = path
+					_executing_action = true
 				else:
 					current_state = State.IDLE
 
@@ -215,15 +232,18 @@ func execute_move():
 	)
 	var diff = target_global_pos - bot_node.global_position
 
-	if abs(diff.x) > 2.0:
+	if abs(diff.x) > 4.0:
 		bot_node.bot_input_direction = Vector2(sign(diff.x), 0)
-	elif abs(diff.y) > 2.0:
+	elif abs(diff.y) > 4.0:
 		bot_node.bot_input_direction = Vector2(0, sign(diff.y))
 	else:
+		# Snapnij dokładnie do środka kratki
+		bot_node.global_position = target_global_pos
 		bot_node.bot_input_direction = Vector2.ZERO
 		current_path.pop_front()
 
 		if current_path.is_empty():
+			_executing_action = false
 			if current_state == State.BOX:
 				# BOMB_CHANCE: Easy czasem nie kładzie bomby
 				if randf() <= BOMB_CHANCE[difficulty]:
