@@ -137,3 +137,4 @@ quiz_p2_d={
 2d_physics/layer_1="mapCollision"
 2d_physics/layer_2="PlayerCollision"
 2d_physics/layer_3="BombCollision"
+2d_physics/layer_4="explosionCollision"

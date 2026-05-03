@@ -15,7 +15,6 @@ var _timer: float = 0.0
 func _ready() -> void:
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/explosion.png")
 	monitoring = true
-	body_entered.connect(_on_body_entered)
 
 
 func _process(delta: float) -> void:
@@ -25,6 +24,7 @@ func _process(delta: float) -> void:
 		queue_free()
 
 
-func _on_body_entered(body: Node) -> void:
-	if body.has_method("take_hit"):
-		body.take_hit()
+func _on_area_entered(area: Area2D) -> void:
+	var player = area.get_parent()
+	if player.has_method("take_hit"):
+		player.take_hit()

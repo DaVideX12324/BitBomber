@@ -148,7 +148,7 @@ func check_transitions() -> State:
 	var bot_pos = _get_grid_pos(bot_node.global_position)
 
 	# 1. Ucieczka — zawsze priorytet na każdym poziomie
-	if danger_map.has(bot_pos):
+	if _is_bot_in_danger():
 		return State.ESCAPE
 
 	if bot_node._active_bombs < bot_node.max_bombs:
@@ -304,21 +304,48 @@ func _find_nearest_destroyable_box(start_pos: Vector2i) -> Vector2i:
 
 func _find_nearest_item(start_pos: Vector2i) -> Vector2i:
 	var powerups = get_tree().get_nodes_in_group("powerup")
-	if powerups.is_empty(): return Vector2i(-1, -1)
+	if powerups.is_empty():
+		return Vector2i(-1, -1)
 
-	var best_node = Vector2i(-1, -1)
-	var min_dist = 9999
-
+	# Zbierz pozycje wszystkich powerupów
+	var pu_cells: Dictionary = {}
 	for p in powerups:
-		var p_pos = _get_grid_pos(p.global_position)
-		if not astar_grid.is_point_solid(p_pos) and not danger_map.has(p_pos):
-			var path = astar_grid.get_id_path(start_pos, p_pos)
-			if not path.is_empty() and path.size() < min_dist:
-				min_dist = path.size()
-				best_node = p_pos
+		pu_cells[_get_grid_pos(p.global_position)] = true
 
-	return best_node
+	# BFS — szukamy kratki z której można wejść na powerup
+	# (czyli samej kratki powerupa, bo jest przejezdna)
+	var queue = [start_pos]
+	var visited = {start_pos: true}
+	var dirs = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 
+	while not queue.is_empty():
+		var current = queue.pop_front()
+
+		if pu_cells.has(current) and not danger_map.has(current):
+			return current
+
+		for dir in dirs:
+			var neighbor = current + dir
+			if neighbor.x < 0 or neighbor.y < 0 or neighbor.x >= astar_grid.region.size.x or neighbor.y >= astar_grid.region.size.y:
+				continue
+			if not visited.has(neighbor) and not astar_grid.is_point_solid(neighbor):
+				visited[neighbor] = true
+				queue.push_back(neighbor)
+
+	return Vector2i(-1, -1)
+
+	
+func _is_bot_in_danger() -> bool:
+	var center := bot_node.global_position
+	for cell in danger_map:
+		var cell_center := Vector2(
+			cell.x * grid_size + grid_size * 0.5,
+			cell.y * grid_size + grid_size * 0.5
+		)
+		if center.distance_to(cell_center) < 60.0:
+			return true
+	return false
+	
 func _has_boxes_nearby() -> bool:
 	if not arena: return false
 	return arena.breakable_cells.size() > 0
