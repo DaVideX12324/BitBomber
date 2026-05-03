@@ -25,6 +25,8 @@ func _process(delta: float) -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
-	var player = area.get_parent()
-	if player.has_method("take_hit"):
-		player.take_hit()
+	var stuff = area.get_parent()
+	if stuff.has_method("take_hit"):
+		stuff.take_hit()
+	elif stuff.is_in_group("powerup"):
+		stuff.queue_free()

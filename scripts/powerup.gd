@@ -1,4 +1,4 @@
-extends Area2D
+extends Sprite2D
 
 ## Power-up leżący na planszy.
 ## Typy: range_up, bomb_up, speed_up, life_up
@@ -15,9 +15,9 @@ const COLORS : Dictionary = {
 }
 
 const ICONS : Dictionary = {
-	"range_up":  "⬥",
-	"bomb_up":   "✦",
-	"speed_up":  "▶",
+	"range_up":  "🏹",
+	"bomb_up":   "🧨",
+	"speed_up":  "👟",
 	"life_up":   "♥",
 }
 
@@ -26,21 +26,18 @@ var powerup_type : String = "range_up"
 @onready var _fallback : ColorRect = $Fallback
 @onready var _label    : Label     = $Label
 @onready var _sprite   : Sprite2D  = $Sprite2D
+@onready var Hitbox    : CollisionShape2D    =$Hitbox/CollisionShape2D
 
 signal collected(powerup_type: String)
 
 
 func _ready() -> void:
 	add_to_group("powerup")
-	collision_layer = 16
-	collision_mask  = 2
-	monitoring = true
 	var col : Color = COLORS.get(powerup_type, Color.WHITE)
 	_fallback.color = col
 	var icon : String = ICONS.get(powerup_type, "?")
 	_label.text = icon
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
-	body_entered.connect(_on_body_entered)
 	_bob()
 
 
@@ -50,8 +47,9 @@ func _bob() -> void:
 	tw.tween_property(self, "position:y", position.y,     0.6).set_ease(Tween.EASE_IN_OUT)
 
 
-func _on_body_entered(body: Node) -> void:
-	if body.has_method("apply_powerup"):
-		body.apply_powerup(powerup_type)
+func _on_hitbox_area_entered(area: Area2D) -> void:	
+	var stuff = area.get_parent()
+	if stuff.has_method("apply_powerup"):
+		stuff.apply_powerup(powerup_type)
 		collected.emit(powerup_type)
 		queue_free()

@@ -283,18 +283,31 @@ func _check_transitions() -> BotState:
 	if _check_box():      return BotState.BOX
 	return BotState.IDLE
 
-func _check_escape() -> bool:
-	var s: StateSettings = _settings[BotState.ESCAPE]
-	if randf() > s.percentage: return false
-	return _bot_in_danger()
-
 func _check_attack() -> bool:
 	var s: StateSettings = _settings[BotState.ATTACK]
 	if randf() > s.percentage: return false
 	if _active_bombs() >= _max_bombs(): return false
 	var pos := _cell(bot_node.global_position)
-	if _nearest_enemy(pos) == Vector2i(-1, -1): return false
-	return _plant_bomb_possible(pos)
+	var enemy := _nearest_enemy(pos)
+	if enemy == Vector2i(-1, -1): return false
+	
+	# BARDZO WAŻNE: Najpierw szukamy miejsca do ataku.
+	var apos := _find_attack_pos(enemy, pos)
+	if apos == Vector2i(-1, -1): return false # Brak możliwości dojazdu by zaatakować
+	
+	# Upewniamy się, że w docelowym miejscu ataku da się posadzić bombę i uciec!
+	return _plant_bomb_possible(apos)
+
+func _check_escape() -> bool:
+	var s: StateSettings = _settings[BotState.ESCAPE]
+	if randf() > s.percentage: return false
+	if not _bot_in_danger(): return false
+	
+	var pos := _cell(bot_node.global_position)
+	var safe := _best_escape(pos)
+	# Jeśli nie ma drogi ucieczki (bot w potrzasku), nie ma sensu go zawieszać w pętli.
+	# Zamiast tego zablokujemy ESCAPE, co sprawi, że bot z rozpaczy poszuka innej akcji (np. ATTACK).
+	return safe != Vector2i(-1, -1)
 
 func _check_get_item() -> bool:
 	var s: StateSettings = _settings[BotState.GET_ITEM]
@@ -349,9 +362,16 @@ func _enter_state(state: BotState):
 			_try_set_path(pos, item)
 
 func _try_set_path(from: Vector2i, to: Vector2i):
-	if to == Vector2i(-1, -1) or to == from:
-		_dbg("Anulowano szukanie ścieżki: cel to -1/-1 lub tożsamy z obecną pozycją.")
+	if to == Vector2i(-1, -1):
+		_dbg("Anulowano szukanie ścieżki: brak bezpiecznego celu.")
 		_action_complete = true
+		return
+	
+	if to == from:
+		_dbg("Cel to obecna kratka! Centruję pozycję bota.")
+		# Zamiast odpuszczać, każemy mu dojść idealnie do środka jego obecnego pola.
+		# Pozwoli to na fizyczne zebranie przedmiotu lub postawienie bomby.
+		current_path = [from]
 		return
 	
 	astar_grid.set_point_solid(from, false)
@@ -361,7 +381,12 @@ func _try_set_path(from: Vector2i, to: Vector2i):
 		if path[0] == from: 
 			path.remove_at(0)
 		
-		if path.size() > 0 and _path_safe(path):
+		# Jeśli po usunięciu startu ścieżka jest pusta (cel był obok i A* głupieje)
+		if path.size() == 0:
+			current_path = [from]
+			return
+			
+		if _path_safe(path):
 			current_path = path
 			_dbg("Ścieżka ustalona pomyślnie. Długość w kratkach: %d" % current_path.size())
 		else:
@@ -599,7 +624,8 @@ func _find_attack_pos(enemy: Vector2i, bot_pos: Vector2i) -> Vector2i:
 			if danger_map.has(cand): continue
 			if _can_hit(cand, enemy):
 				var path := astar_grid.get_id_path(bot_pos, cand)
-				if path.size() > 0 and _path_safe(path):
+				# Zmiana: Akceptujemy ścieżkę jeśli jest >0 ALBO gdy już stoimy na docelowym miejscu
+				if (path.size() > 0 or bot_pos == cand) and _path_safe(path):
 					return cand
 	return Vector2i(-1, -1)
 
