@@ -71,13 +71,13 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card1/VBox"]
 layout_mode = 2
-text = "\u2764\uFE0F \u2764\uFE0F \u2764\uFE0F"
+text = "HP: 3"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 16
 
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card1/VBox"]
 layout_mode = 2
-text = "\uD83D\uDCA3 : 1\n\uD83C\uDFAF : 2\n\u26A1 : 1.0x"
+text = "B: 1  R: 2  S: 1.0x"
 theme_override_font_sizes/font_size = 12
 
 [node name="Card2" type="PanelContainer" parent="Root/Cards"]
@@ -107,13 +107,13 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card2/VBox"]
 layout_mode = 2
-text = "\u2764\uFE0F \u2764\uFE0F \u2764\uFE0F"
+text = "HP: 3"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 16
 
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card2/VBox"]
 layout_mode = 2
-text = "\uD83D\uDCA3 : 1\n\uD83C\uDFAF : 2\n\u26A1 : 1.0x"
+text = "B: 1  R: 2  S: 1.0x"
 theme_override_font_sizes/font_size = 12
 
 [node name="Card3" type="PanelContainer" parent="Root/Cards"]
@@ -143,13 +143,13 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card3/VBox"]
 layout_mode = 2
-text = "\u2764\uFE0F \u2764\uFE0F \u2764\uFE0F"
+text = "HP: 3"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 16
 
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card3/VBox"]
 layout_mode = 2
-text = "\uD83D\uDCA3 : 1\n\uD83C\uDFAF : 2\n\u26A1 : 1.0x"
+text = "B: 1  R: 2  S: 1.0x"
 theme_override_font_sizes/font_size = 12
 
 [node name="Card4" type="PanelContainer" parent="Root/Cards"]
@@ -179,13 +179,13 @@ layout_mode = 2
 
 [node name="HeartsLabel" type="Label" parent="Root/Cards/Card4/VBox"]
 layout_mode = 2
-text = "\u2764\uFE0F \u2764\uFE0F \u2764\uFE0F"
+text = "HP: 3"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 16
 
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card4/VBox"]
 layout_mode = 2
-text = "\uD83D\uDCA3 : 1\n\uD83C\uDFAF : 2\n\u26A1 : 1.0x"
+text = "B: 1  R: 2  S: 1.0x"
 theme_override_font_sizes/font_size = 12
 
 [node name="ToastLabel" type="Label" parent="Root"]
