@@ -5,6 +5,9 @@
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(62, 62)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plyga"]
+size = Vector2(44, 44)
+
 [node name="Player" type="CharacterBody2D" unique_id=1185387632]
 collision_layer = 2
 collision_mask = 5
@@ -23,3 +26,8 @@ color = Color(0.2, 0.6, 1, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1240847043]
 shape = SubResource("1")
+
+[node name="PlayerHitbox" type="StaticBody2D" parent="." unique_id=1231177398]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerHitbox" unique_id=1036556740]
+shape = SubResource("RectangleShape2D_plyga")
