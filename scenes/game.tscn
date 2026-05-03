@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://cgv1i5mt2jggp"]
 
 [ext_resource type="Script" uid="uid://ky1a233wsr1s" path="res://scripts/game.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/hud/hud.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/overlays/death_screen.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/overlays/pause_menu.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://bvhud000001" path="res://scenes/ui/hud.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/death_screen.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="4"]
+
 
 [node name="Game" type="Node"]
 script = ExtResource("1")
