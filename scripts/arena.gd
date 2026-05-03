@@ -5,8 +5,8 @@ extends Node2D
 ## Gracze są spawnowani przez game.gd.
 
 const GRID_SIZE : int = 64
-const COLS      : int = 7
-const ROWS      : int = 7
+const COLS      : int = 17
+const ROWS      : int = 17
 
 const COLOR_BG           = Color(0.15, 0.15, 0.17, 1.0)
 const COLOR_GRID_LINE    = Color(0.22, 0.22, 0.25, 1.0)
