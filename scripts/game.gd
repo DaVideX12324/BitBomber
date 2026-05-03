@@ -47,7 +47,7 @@ func _load_menu() -> void:
 	if _current_map:
 		_current_map.queue_free()
 		_current_map = null
-	var menu : Node = load("res://scenes/menus/main_menu.tscn").instantiate()
+	var menu : Node = load("res://scenes/ui/main_menu.tscn").instantiate()
 	_current_map = menu
 	add_child(menu)
 	move_child(menu, 0)

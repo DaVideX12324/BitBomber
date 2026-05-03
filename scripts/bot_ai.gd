@@ -160,7 +160,7 @@ func _dbg(msg: String):
 	if bot_node and bot_node.get(BOT_IS_ALIVE) == false:
 		alive = "DEAD"
 	var state_str = BotState.keys()[current_state] if current_state != null else "NONE"
-	print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
+	#print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
 
 func _find_arena() -> Node:
 	var arenas = get_tree().get_nodes_in_group("arena")
