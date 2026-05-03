@@ -74,7 +74,6 @@ func _ready() -> void:
 
 	_refresh_bots(true);  _refresh_bots(false)
 	_refresh_diff(true);  _refresh_diff(false)
-	_update_diff_visibility()
 
 
 # ---------------------------------------------------------------------------
@@ -88,8 +87,6 @@ func _set_bots(idx: int, is_1p: bool) -> void:
 	if is_1p: _sel_bot_1p = idx
 	else:      _sel_bot_2p = idx
 	_refresh_bots(is_1p)
-	if not is_1p:
-		_update_diff_visibility()
 
 
 func _set_diff(idx: int, is_1p: bool) -> void:
@@ -110,13 +107,6 @@ func _refresh_diff(is_1p: bool) -> void:
 	var btns := _diff1p      if is_1p else _diff2p
 	for i in btns.size():
 		btns[i].button_pressed = (i == sel)
-
-
-## Ukryj sekcję trudności w 2P gdy wybrano 0 botów
-func _update_diff_visibility() -> void:
-	var show := _sel_bot_2p > 0
-	_diff_label2p.visible = show
-	_diff_hbox2p.visible  = show
 
 
 func _start(humans: int, bots: int, diff: int) -> void:

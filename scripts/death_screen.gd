@@ -3,11 +3,11 @@ extends CanvasLayer
 ## Death / Round-end / Game-over overlay.
 ##
 ## Tryby działania:
-##   LAST_CHANCE  — gracz zginął, może odpowiedzieć na quiz aby respawnować
-##   ROUND_END    — runda skończyła się (tryb wielorundowy, bez botów)
-##   GAME_OVER    — cała sesja zakończona (lub tryb z botami)
+##   LAST_CHANCE  — gracz zginął, quiz daje szansę na respawn
+##   ROUND_END    — runda skończyła się
+##   GAME_OVER    — cała sesja zakończona
 ##
-## Przy ROUND_END i GAME_OVER gra jest automatycznie pauzowana.
+## Quiz wbudowany jako sub-flow przed decyzją o respawnie.
 
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
@@ -19,18 +19,25 @@ enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 @onready var _quiz_slot : VBoxContainer  = $Panel/VBox/QuizSlot
 @onready var _btn_cont  : Button         = $Panel/VBox/Buttons/BtnContinue
 @onready var _btn_menu  : Button         = $Panel/VBox/Buttons/BtnMenu
+@onready var _quiz_overlay : CanvasLayer = $QuizOverlay
 
-var _mode: Mode = Mode.ROUND_END
-var _dead_player_id: int = -1
+var _mode           : Mode = Mode.ROUND_END
+var _dead_player_id : int  = -1
+
+# Stan turnieju quizowego (tryb 2P, pytania złożone)
+var _duel_active    : bool = false
+var _duel_p1_score  : int  = 0   # ile razy P1 odpowiedział poprawnie z rzędu
 
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS  # ← to
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_btn_cont.pressed.connect(_on_continue)
 	_btn_menu.pressed.connect(_on_menu)
 	RoundManager.last_chance_triggered.connect(_on_last_chance)
 	RoundManager.round_ended.connect(_on_round_ended)
 	RoundManager.session_ended.connect(_on_session_ended)
+	_quiz_overlay.quiz_result.connect(_on_quiz_result)
+	_quiz_overlay.visible = false
 
 
 # ---------------------------------------------------------------------------
@@ -39,12 +46,10 @@ func _ready() -> void:
 
 func _on_last_chance(dead_player_id: int) -> void:
 	_dead_player_id = dead_player_id
-	show_last_chance(dead_player_id)
+	_start_quiz_flow(dead_player_id)
 
 
 func _on_round_ended(winner_id: int) -> void:
-	# W trybie z botami round_ended odpala się razem z session_ended —
-	# obsługę przejmuje _on_session_ended, tutaj ignorujemy.
 	if GameManager.current_state == GameManager.GameState.GAME_OVER:
 		return
 	if winner_id >= 1:
@@ -58,20 +63,140 @@ func _on_session_ended(winner_id: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Publiczne show_*
+# Quiz flow
 # ---------------------------------------------------------------------------
 
-func show_last_chance(dead_player_id: int) -> void:
-	_mode = Mode.LAST_CHANCE
-	_dead_player_id = dead_player_id
-	_icon.text = "💥"
-	_title.text = "Gracz %d zginął!" % dead_player_id
-	_subtitle.text = "Ostatnia szansa na respawn."
-	_btn_cont.text = "Respawnuj"
-	_btn_cont.visible = true
-	_btn_menu.visible = false
-	_show()
+func _start_quiz_flow(dead_player_id: int) -> void:
+	_duel_active   = false
+	_duel_p1_score = 0
+	_do_pause()
+	_ask_question_p1()
 
+
+func _get_time_limit() -> float:
+	match GameManager.bot_difficulty:
+		0: return 20.0
+		2: return 10.0
+		_: return 15.0
+
+
+func _get_diff_range() -> Vector2i:
+	match GameManager.bot_difficulty:
+		0: return Vector2i(1, 3)
+		2: return Vector2i(3, 5)
+		_: return Vector2i(2, 4)
+
+
+func _get_weighted_question() -> Dictionary:
+	var range_v : Vector2i = _get_diff_range()  # ← dodaj tę linię
+	# wagi: [najczęstsza, średnia, rzadka] dla diff base, base+1, base+2
+	var weights : Array[int]
+	match GameManager.bot_difficulty:
+		0: weights = [2, 3, 1]   # diff 1,2,3
+		2: weights = [2, 3, 1]   # diff 3,4,5
+		_: weights = [2, 3, 1]   # diff 2,3,4
+
+	var pool : Array = []
+	var all_ids := QuizManager.get_quiz_ids()
+	if all_ids.is_empty():
+		return {}
+
+	for quiz_id in all_ids:
+		for q in QuizManager._quizzes[quiz_id]:
+			var d : int = q.get("difficulty", 1)
+			if d < range_v.x or d > range_v.y:
+				continue
+			var w_idx := d - range_v.x
+			var w : int = weights[w_idx] if w_idx < weights.size() else 1
+			for _i in range(w):
+				pool.append(q)
+
+	if pool.is_empty():
+		return {}
+	pool.shuffle()
+	return pool[0]
+
+
+func _is_simple_type(q: Dictionary) -> bool:
+	var t : String = q.get("type", "multiple_choice")
+	return t == "multiple_choice" or t == "true_false"
+
+
+func _ask_question_p1() -> void:
+	var q := _get_weighted_question()
+	if q.is_empty():
+		# Brak pytań — daj respawn z automatu
+		_on_quiz_result(1)
+		return
+
+	var two_player := GameManager.num_human_players >= 2
+	var simple     := _is_simple_type(q)
+
+	QuizManager.start_quiz(
+		q.get("_quiz_id", QuizManager.get_quiz_ids()[0]),
+		_get_diff_range(), 1, []
+	)
+	# Nadpisz bieżące pytanie bezpośrednio (start_quiz losuje, chcemy konkretne)
+	QuizManager._current_questions = [q]
+	QuizManager._current_question_index = 0
+
+	if two_player and simple:
+		_quiz_overlay.show_quiz(q, _quiz_overlay.RivalMode.VERSUS, _get_time_limit())
+	else:
+		_quiz_overlay.show_quiz(q, _quiz_overlay.RivalMode.DUEL_P1, _get_time_limit())
+
+
+func _ask_question_p2() -> void:
+	var q := _get_weighted_question()
+	if q.is_empty():
+		# Brak pytań — P2 "odpada" → P1 wygrywa (respawn)
+		_on_quiz_result(1)
+		return
+
+	QuizManager._current_questions = [q]
+	QuizManager._current_question_index = 0
+
+	_quiz_overlay.show_quiz(q, _quiz_overlay.RivalMode.DUEL_P2, _get_time_limit())
+
+
+# ---------------------------------------------------------------------------
+# Wynik quizu
+# ---------------------------------------------------------------------------
+# winner_id:
+#   1  — P1 wygrał tę rundę quizową (respawn lub P2 odpada)
+#   2  — P2 wygrał / P1 odpada
+#   0  — P2 odpowiedział poprawnie → turniej trwa, kolej P1
+
+func _on_quiz_result(winner_id: int) -> void:
+	var two_player := GameManager.num_human_players >= 2
+
+	if winner_id == 1:
+		# P1 respawn — koniec quizu
+		_duel_active = false
+		_do_resume()
+		RoundManager.resolve_last_chance(true)
+		return
+
+	if winner_id == 2:
+		if two_player:
+			# P2 wygrywa całą sesję
+			_duel_active = false
+			show_game_over(2)
+		else:
+			# Solo — P1 odpada (bot wygrywa)
+			_duel_active = false
+			show_game_over(0)
+		return
+
+	if winner_id == 0:
+		# Tryb turnieju: P2 odpowiedział poprawnie → P1 musi znowu
+		_duel_active = true
+		_ask_question_p1()
+
+
+# ---------------------------------------------------------------------------
+# Show helpers
+# ---------------------------------------------------------------------------
 
 func show_round_end(winner_id: int) -> void:
 	_mode = Mode.ROUND_END
@@ -119,7 +244,7 @@ func show_game_over(winner_id: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Pauza / wznowienie gry
+# Pauza / wznowienie
 # ---------------------------------------------------------------------------
 
 func _do_pause() -> void:
@@ -136,9 +261,6 @@ func _do_resume() -> void:
 
 func _on_continue() -> void:
 	match _mode:
-		Mode.LAST_CHANCE:
-			RoundManager.resolve_last_chance(true)
-			_hide()
 		Mode.ROUND_END:
 			_do_resume()
 			_hide()
@@ -160,8 +282,8 @@ func _on_menu() -> void:
 # ---------------------------------------------------------------------------
 
 func _build_score_text() -> String:
-	var lines: PackedStringArray = []
-	for pid: int in [1, 2]:
+	var lines : PackedStringArray = []
+	for pid : int in [1, 2]:
 		var w := RoundManager.get_wins(pid)
 		lines.append("Gracz %d: %d rund" % [pid, w])
 	return "\n".join(lines)

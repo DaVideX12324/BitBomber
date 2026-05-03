@@ -54,5 +54,4 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 		queue_free()
 
 func take_hit() -> void:
-	print("adsfrgdsfsdghfr")
 	queue_free()

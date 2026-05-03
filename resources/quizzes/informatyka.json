@@ -1,0 +1,625 @@
+{
+  "name": "Informatyka – technikum/studia",
+  "description": "Pytania z informatyki na poziomie technikum (diff 1-3) i studiów (diff 4-5).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "Ile bitów ma jeden bajt?",
+      "answers": [
+        "4",
+        "8",
+        "16",
+        "32"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "systemy_liczbowe",
+      "question": "Ile wynosi 1010₂ w systemie dziesiętnym?",
+      "answers": [
+        "8",
+        "10",
+        "12",
+        "14"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sieci",
+      "question": "Który protokół odpowiada za przydzielanie adresów IP?",
+      "answers": [
+        "DNS",
+        "HTTP",
+        "DHCP",
+        "FTP"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "question": "Który algorytm sortowania ma złożoność O(n²) w najgorszym przypadku?",
+      "answers": [
+        "Merge sort",
+        "Quick sort",
+        "Heap sort",
+        "Insertion sort"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "struktury_danych",
+      "question": "Która struktura danych działa na zasadzie FIFO?",
+      "answers": [
+        "Stos",
+        "Kolejka",
+        "Drzewo",
+        "Graf"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sieci",
+      "question": "W modelu OSI na której warstwie działa protokół IP?",
+      "answers": [
+        "Fizycznej",
+        "Łącza danych",
+        "Sieciowej",
+        "Transportowej"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "question": "Jaka jest złożoność czasowa wyszukiwania w drzewie BST w średnim przypadku?",
+      "answers": [
+        "O(1)",
+        "O(log n)",
+        "O(n)",
+        "O(n log n)"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "programowanie",
+      "question": "Co zwraca funkcja rekurencyjna bez warunku bazowego?",
+      "answers": [
+        "None",
+        "0",
+        "Stack overflow",
+        "Nieskończoną pętlę"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "question": "Która postać normalna eliminuje zależności przechodnie?",
+      "answers": [
+        "1NF",
+        "2NF",
+        "3NF",
+        "BCNF"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "question": "Algorytm Dijkstry nie działa poprawnie gdy graf zawiera:",
+      "answers": [
+        "Cykle",
+        "Krawędzie skierowane",
+        "Krawędzie o ujemnej wadze",
+        "Wierzchołki izolowane"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "question": "Które zjawisko opisuje sytuację, gdy procesy czekają na siebie nawzajem w nieskończoność?",
+      "answers": [
+        "Race condition",
+        "Deadlock",
+        "Starvation",
+        "Livelock"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "kryptografia",
+      "question": "Algorytm RSA opiera się na trudności:",
+      "answers": [
+        "Problemu plecakowego",
+        "Faktoryzacji dużych liczb",
+        "Logarytmu dyskretnego",
+        "Problemu grafu hamiltonowskiego"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "question": "Protokół Diffie-Hellman służy do:",
+      "answers": [
+        "Szyfrowania symetrycznego",
+        "Podpisów cyfrowych",
+        "Bezpiecznej wymiany klucza",
+        "Hashowania haseł"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "question": "Problem P vs NP dotyczy:",
+      "answers": [
+        "Czy każdy problem NP jest rozwiązywalny w czasie wielomianowym",
+        "Porównania wydajności procesorów P i NP",
+        "Złożoności pamięciowej algorytmów",
+        "Równoległości obliczeń"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "systemy_operacyjne",
+      "question": "Które twierdzenie opisuje teoretyczne granice możliwości maszyn Turinga?",
+      "answers": [
+        "Twierdzenie Rice'a",
+        "Twierdzenie Goedla",
+        "Twierdzenie Churcha-Turinga",
+        "Twierdzenie Bayesa"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "podstawy",
+      "statement": "Adres IPv4 składa się z 32 bitów.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "podstawy",
+      "statement": "Plik o rozmiarze 1 KB ma dokładnie 1000 bajtów.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "statement": "Algorytm bąbelkowy ma złożoność O(n log n) w każdym przypadku.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sieci",
+      "statement": "Protokół TCP gwarantuje dostarczenie pakietów w odpowiedniej kolejności.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "statement": "Klucz główny w tabeli relacyjnej może przyjmować wartość NULL.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "programowanie",
+      "statement": "W języku Python lista jest strukturą mutowalną.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "kryptografia",
+      "statement": "Algorytm SHA-256 jest algorytmem szyfrującym z kluczem symetrycznym.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "statement": "Semafory binarne mogą służyć do implementacji wzajemnego wykluczenia.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "statement": "Każdy problem NP-zupełny jest też NP-trudny.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "systemy_operacyjne",
+      "statement": "W architekturze mikrojądra sterowniki urządzeń działają w przestrzeni jądra.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "text_with_gaps": "Algorytm ___ sortuje dane przez wielokrotne znajdowanie ___ elementu.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "przez wybieranie"
+        },
+        {
+          "index": 1,
+          "correct": "najmniejszego"
+        }
+      ],
+      "tiles": [
+        "przez wybieranie",
+        "bąbelkowy",
+        "najmniejszego",
+        "największego",
+        "środkowego"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "sieci",
+      "text_with_gaps": "Model ___ składa się z ___ warstw.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "OSI"
+        },
+        {
+          "index": 1,
+          "correct": "siedmiu"
+        }
+      ],
+      "tiles": [
+        "OSI",
+        "TCP/IP",
+        "czterech",
+        "siedmiu",
+        "pięciu"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "text_with_gaps": "Algorytm ___ wyznacza najkrótsze ścieżki od ___ źródła w grafie ważonym.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Dijkstry"
+        },
+        {
+          "index": 1,
+          "correct": "jednego"
+        }
+      ],
+      "tiles": [
+        "Dijkstry",
+        "Bellmana-Forda",
+        "jednego",
+        "każdego",
+        "wybranego"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "text_with_gaps": "Szyfrowanie ___ używa dwóch kluczy: ___ do szyfrowania i ___ do deszyfrowania.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "asymetryczne"
+        },
+        {
+          "index": 1,
+          "correct": "publicznego"
+        },
+        {
+          "index": 2,
+          "correct": "prywatnego"
+        }
+      ],
+      "tiles": [
+        "asymetryczne",
+        "symetryczne",
+        "publicznego",
+        "prywatnego",
+        "sesyjnego",
+        "tajnego"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "struktury_danych",
+      "prompt": "Jak nazywa się struktura danych działająca na zasadzie LIFO?",
+      "answer": "stos",
+      "prefilled_pattern": "s__s",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "sieci",
+      "prompt": "Jak nazywa się urządzenie łączące sieci i kierujące ruchem między nimi?",
+      "answer": "router",
+      "prefilled_pattern": "r____r",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "prompt": "Jak nazywa się właściwość transakcji DB mówiąca, że operacja wykonuje się w całości lub wcale?",
+      "answer": "atomowość",
+      "prefilled_pattern": "a_______ść",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "atomicity"
+      ]
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "prompt": "Jak nazywa się technika optymalizacji polegająca na zapamiętywaniu wyników podproblemów?",
+      "answer": "memoizacja",
+      "prefilled_pattern": "m________a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "memoization"
+      ]
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "prompt": "Jak nazywa się atak polegający na przechwyceniu komunikacji między dwiema stronami?",
+      "answer": "man in the middle",
+      "prefilled_pattern": "m__ in the m_____",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "mitm",
+        "man-in-the-middle"
+      ]
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "podstawy",
+      "left_items": [
+        "RAM",
+        "ROM",
+        "HDD"
+      ],
+      "right_items": [
+        "Tylko do odczytu",
+        "Pamięć operacyjna",
+        "Dysk twardy"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "left_items": [
+        "O(1)",
+        "O(log n)",
+        "O(n²)"
+      ],
+      "right_items": [
+        "Sortowanie bąbelkowe",
+        "Wyszukiwanie binarne",
+        "Dostęp do tablicy"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "sieci",
+      "left_items": [
+        "HTTP",
+        "SSH",
+        "DNS",
+        "FTP"
+      ],
+      "right_items": [
+        "Port 21",
+        "Port 22",
+        "Port 53",
+        "Port 80"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "bazy_danych",
+      "left_items": [
+        "SELECT",
+        "INSERT",
+        "DELETE",
+        "UPDATE"
+      ],
+      "right_items": [
+        "Modyfikacja rekordu",
+        "Odczyt danych",
+        "Usunięcie rekordu",
+        "Dodanie rekordu"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 3
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_005",
+      "type": "matching",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "left_items": [
+        "AES",
+        "RSA",
+        "SHA-256",
+        "ECDH"
+      ],
+      "right_items": [
+        "Wymiana klucza",
+        "Haszowanie",
+        "Szyfrowanie asymetryczne",
+        "Szyfrowanie symetryczne"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    }
+  ]
+}

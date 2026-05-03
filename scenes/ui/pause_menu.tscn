@@ -1,60 +1,60 @@
-[gd_scene format=3 uid="uid://pause_menu"]
+[gd_scene format=3 uid="uid://dnu7tdv6y78we"]
 
-[ext_resource type="Script" uid="uid://pause_menu_script" path="res://scripts/pause_menu.gd" id="1"]
+[ext_resource type="Script" uid="uid://cof3tbida8ufx" path="res://scripts/pause_menu.gd" id="1"]
 
-[node name="PauseMenu" type="CanvasLayer"]
+[node name="PauseMenu" type="CanvasLayer" unique_id=1431945732]
+process_mode = 3
 layer = 10
 visible = false
-process_mode = 3
 script = ExtResource("1")
 
-[node name="Overlay" type="ColorRect" parent="."]
-layout_mode = 3
+[node name="Overlay" type="ColorRect" parent="." unique_id=421584204]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.72)
-mouse_filter = 0
 
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 1
+[node name="Panel" type="PanelContainer" parent="." unique_id=403337824]
+anchors_preset = 8
 anchor_left = 0.5
-anchor_right = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -220
-offset_right = 220
-offset_top = -160
-offset_bottom = 160
+offset_left = -220.0
+offset_top = -160.0
+offset_right = 220.0
+offset_bottom = 160.0
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=833131621]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="Icon" type="Label" parent="Panel/VBox"]
+[node name="Icon" type="Label" parent="Panel/VBox" unique_id=572912928]
 layout_mode = 2
-horizontal_alignment = 1
 theme_override_font_sizes/font_size = 52
 text = "⏸"
-
-[node name="Title" type="Label" parent="Panel/VBox"]
-layout_mode = 2
 horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=491972599]
+layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Pauza"
+horizontal_alignment = 1
 
-[node name="Sep" type="HSeparator" parent="Panel/VBox"]
+[node name="Sep" type="HSeparator" parent="Panel/VBox" unique_id=1167784971]
 layout_mode = 2
 
-[node name="BtnResume" type="Button" parent="Panel/VBox"]
-layout_mode = 2
+[node name="BtnResume" type="Button" parent="Panel/VBox" unique_id=141895807]
 custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Wznów grę"
 
-[node name="BtnMenu" type="Button" parent="Panel/VBox"]
-layout_mode = 2
+[node name="BtnMenu" type="Button" parent="Panel/VBox" unique_id=1036077389]
 custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Menu główne"
