@@ -38,6 +38,7 @@ window/stretch/mode="canvas_items"
 
 bomb=""
 explosion=""
+powerup=""
 
 [input]
 

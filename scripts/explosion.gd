@@ -28,5 +28,3 @@ func _on_area_entered(area: Area2D) -> void:
 	var stuff = area.get_parent()
 	if stuff.has_method("take_hit"):
 		stuff.take_hit()
-	elif stuff.is_in_group("powerup"):
-		stuff.queue_free()

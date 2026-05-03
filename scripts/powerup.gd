@@ -23,16 +23,15 @@ const ICONS : Dictionary = {
 
 var powerup_type : String = "range_up"
 
-@onready var _fallback : ColorRect = $Fallback
-@onready var _label    : Label     = $Label
-@onready var _sprite   : Sprite2D  = $Sprite2D
-@onready var Hitbox    : CollisionShape2D    =$Hitbox/CollisionShape2D
+@onready var _fallback : ColorRect        = $Fallback
+@onready var _label    : Label            = $Label
+@onready var _sprite   : Sprite2D         = $Sprite2D
+@onready var Hitbox    : CollisionShape2D =$Hitbox/CollisionShape2D
 
 signal collected(powerup_type: String)
 
 
 func _ready() -> void:
-	add_to_group("powerup")
 	var col : Color = COLORS.get(powerup_type, Color.WHITE)
 	_fallback.color = col
 	var icon : String = ICONS.get(powerup_type, "?")
@@ -53,3 +52,7 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 		stuff.apply_powerup(powerup_type)
 		collected.emit(powerup_type)
 		queue_free()
+
+func take_hit() -> void:
+	print("adsfrgdsfsdghfr")
+	queue_free()
