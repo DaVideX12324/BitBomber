@@ -4,7 +4,7 @@ extends Area2D
 ## collision_layer = 8  (eksplozje)
 ## collision_mask  = 2  (gracze)
 
-const LIFETIME: float = 0.5
+const LIFETIME: float = 0.2
 
 @onready var _sprite  : Sprite2D  = $Sprite2D
 @onready var _fallback: ColorRect = $Fallback

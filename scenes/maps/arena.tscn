@@ -1,14 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b677x2ai7vbp7"]
+[gd_scene format=3 uid="uid://b677x2ai7vbp7"]
 
 [ext_resource type="Script" uid="uid://c740eci0tefh" path="res://scripts/arena.gd" id="1"]
 
-[node name="Arena" type="Node2D"]
+[node name="Arena" type="Node2D" unique_id=817979173]
 script = ExtResource("1")
 
-[node name="P1Spawn" type="Marker2D" parent="."]
+[node name="P1Spawn" type="Marker2D" parent="." unique_id=1782716851]
 position = Vector2(96, 96)
 
-[node name="P2Spawn" type="Marker2D" parent="."]
+[node name="P2Spawn" type="Marker2D" parent="." unique_id=1291778577]
 position = Vector2(736, 736)
 
-[node name="Players" type="Node2D" parent="."]
+[node name="Players" type="Node2D" parent="." unique_id=1612245683]

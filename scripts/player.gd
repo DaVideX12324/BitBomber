@@ -13,7 +13,7 @@ extends CharacterBody2D
 var bot_difficulty : int = 1
 
 const GRID_SIZE  : int   = 64
-const MOVE_SPEED : float = 5.0
+const MOVE_SPEED : float = 250
 
 const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
 
@@ -158,35 +158,11 @@ func reset_for_new_game() -> void:
 # ---------------------------------------------------------------------------
 
 func _handle_movement(delta: float) -> void:
-	if _moving:
-		_move_progress += delta * MOVE_SPEED * speed_multiplier
-		if _move_progress >= 1.0:
-			_move_progress = 1.0
-			_moving = false
-		global_position = _move_from.lerp(_pixel_target, _move_progress)
-		return
-
+	
 	var prefix := "p%d_" % player_id
-	var dir := Vector2i.ZERO
-	if   Input.is_action_pressed(prefix + "up"):    dir = Vector2i(0, -1)
-	elif Input.is_action_pressed(prefix + "down"):  dir = Vector2i(0,  1)
-	elif Input.is_action_pressed(prefix + "left"):  dir = Vector2i(-1, 0)
-	elif Input.is_action_pressed(prefix + "right"): dir = Vector2i(1,  0)
-
-	if dir == Vector2i.ZERO:
-		return
-
-	var target_grid : Vector2i = _grid_pos + dir
-	var collision := move_and_collide(_grid_to_pixel(target_grid) - global_position, true)
-	if collision:
-		return
-
-	_grid_pos      = target_grid
-	_move_from     = global_position
-	_pixel_target  = _grid_to_pixel(target_grid)
-	_move_progress = 0.0
-	_moving        = true
-
+	var direction = Input.get_vector(prefix + "left", prefix + "right", prefix + "up", prefix + "down").normalized()
+	velocity = direction * MOVE_SPEED * speed_multiplier
+	move_and_slide()
 
 # ---------------------------------------------------------------------------
 # Bomby

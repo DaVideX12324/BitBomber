@@ -2,9 +2,9 @@ extends StaticBody2D
 
 const EXPLOSION_SCENE = preload("res://scenes/objects/explosion.tscn")
 const GRID_SIZE : int   = 64
-const FUSE_TIME : float = 2.5
+const FUSE_TIME : float = 2
 
-@export var explosion_range : int  = 2
+@export var explosion_range : int  = 1
 var owner_player            : Node = null
 
 signal exploded
@@ -46,7 +46,7 @@ func _explode() -> void:
 
 	var directions : Array[Vector2i] = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
 	for dir : Vector2i in directions:
-		for i : int in range(1, explosion_range + 1):
+		for i : int in range(1, explosion_range):
 			var cell : Vector2i = origin + dir * i
 			var pos  : Vector2  = _grid_to_pixel(cell)
 

@@ -142,7 +142,7 @@ func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
 	body.collision_layer = 1; body.collision_mask = 2
 	body.add_to_group("breakable"); parent.add_child(body)
 	var shape := CollisionShape2D.new()
-	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE-2, GRID_SIZE-2)
+	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
 	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE/2,-GRID_SIZE/2), COLOR_BREAKABLE)
 	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_BREAKABLE_HL)
