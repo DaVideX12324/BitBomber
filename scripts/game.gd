@@ -5,12 +5,11 @@ extends Node
 ## Architektura Opcja A:
 ##   Game
 ##   ├─ HUD (CanvasLayer)  ← jeden węzeł HUD dla wszystkich graczy
-##   ├─ Players (Node2D)   ← stały kontener, gracze niszczeni/tworzeni przy każdej grze
+##   ├─ Players (Node2D)   ← stały kontener, gracze niszczeni/tworzeni przy nowej SESJI
 ##   └─ CurrentMap (Node)  ← podmieniana scena mapy/pokoju
 ##
-## WAŻNE: _spawn_players() wywoływany w load_arena(), NIE w _ready(),
-## bo num_human_players/num_bots są ustawiane przez GameManager.start_game()
-## PRZED wywołaniem load_arena().
+## load_arena()    — nowa sesja (tworzy graczy od nowa)
+## next_round()    — kolejna runda (gracze zostają, reset statsy + nowa mapa)
 
 const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
 
@@ -53,7 +52,7 @@ func _load_menu() -> void:
 	move_child(menu, 0)
 
 
-## Wczytaj arenę trybu vs — gracze spawnowani tutaj (już po ustawieniu num_human_players)
+## Nowa sesja — tworzy graczy od nowa, ładuje arenę, startuje rundę 1
 func load_arena() -> void:
 	_clear_players()
 	_spawn_players()
@@ -65,6 +64,14 @@ func load_arena() -> void:
 		RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 
 
+## Kolejna runda — gracze zostają, resetuje statsy i ładuje nową arenę
+func next_round() -> void:
+	_reset_players()
+	_load_map("res://scenes/maps/arena.tscn")
+	_set_players_visible(true)
+	RoundManager.start_round()
+
+
 func load_room(path: String) -> void:
 	_load_map(path)
 	_set_players_visible(true)
@@ -73,7 +80,7 @@ func load_room(path: String) -> void:
 func load_menu() -> void:
 	if RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
-		_clear_players()
+	_clear_players()
 	_load_menu()
 
 
@@ -101,6 +108,13 @@ func _spawn_players() -> void:
 		bot.died.connect(_on_player_died)
 
 
+## Resetuje wszystkich graczy na początek rundy (pełne życia, domyślne statsy)
+func _reset_players() -> void:
+	for p in _players:
+		if is_instance_valid(p):
+			p.reset_for_new_round()
+
+
 func _clear_players() -> void:
 	for p in _players:
 		if is_instance_valid(p):
@@ -126,25 +140,19 @@ func _set_players_visible(v: bool) -> void:
 func _connect_players_to_hud() -> void:
 	if not hud:
 		return
-
-	# Przekaż listę graczy do HUD (inicjuje karty)
 	var player_list: Array = []
 	for p in _players:
 		if is_instance_valid(p):
 			player_list.append({ "id": p.player_id, "is_bot": p.is_bot })
 	hud.setup_players(player_list)
 
-	# Podłącz sygnały wszystkich graczy do HUD
 	for p in _players:
 		if not is_instance_valid(p):
 			continue
-		# Inicjalne wartości
 		hud.update_lives(p.player_id, p.lives)
 		hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_addition)
-		# Sygnał zmiany żyć
 		p.lives_changed.connect(
 				func(pid: int, left: int): hud.update_lives(pid, left))
-		# Sygnał zebrania powerupa → odśwież statsy
 		p.powerup_collected.connect(
 				func(_pid: int, _type: String): hud.update_player(
 					p.player_id, p.max_bombs, p.bomb_range, p.speed_addition))

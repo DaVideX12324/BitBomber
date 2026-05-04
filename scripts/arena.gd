@@ -21,19 +21,23 @@ var powerup_cells  : Dictionary = {}   # Vector2i → Node (power-up leżący na
 
 const SAFE_SPAWN_RADIUS : int = 2
 
-const SPAWN_POINTS : Array[Vector2i] = [
-	Vector2i(1,  1),   # P1   — lewy górny
-	Vector2i(ROWS-2, COLS-2),  # P2   — prawy dolny
-	Vector2i(ROWS-2, 1),   # Bot1 — prawy górny
-	Vector2i(1,  COLS-2),  # Bot2 — lewy dolny
+## Cztery rogi areny (stałe pozycje)
+const _CORNER_SPAWNS : Array[Vector2i] = [
+	Vector2i(1,        1),
+	Vector2i(ROWS - 2, COLS - 2),
+	Vector2i(ROWS - 2, 1),
+	Vector2i(1,        COLS - 2),
 ]
+
+## Losowa permutacja na tę rundę — ustawiana w _ready()
+var spawn_points : Array[Vector2i] = []
 
 ## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
 const POWERUP_CHANCE : float = 0.40
 
 const POWERUP_SCENE = preload("res://scenes/objects/powerup.tscn")
 
-## Pula typów (wagi: range_up 3×, bomb_up 3×, speed_up 2×, life_up 1×)
+## Pula typów (wagi: range_up 4×, bomb_up 4×, speed_up 3×, life_up 1×)
 const POWERUP_POOL : Array[String] = [
 	"range_up", "range_up", "range_up", "range_up",
 	"bomb_up",  "bomb_up",  "bomb_up",  "bomb_up",
@@ -43,8 +47,19 @@ const POWERUP_POOL : Array[String] = [
 
 
 func _ready() -> void:
+	_randomize_spawns()
 	_setup_camera()
 	_build_map()
+
+
+# ---------------------------------------------------------------------------
+# Randomizacja spawnpointów
+# ---------------------------------------------------------------------------
+
+func _randomize_spawns() -> void:
+	var corners : Array[Vector2i] = _CORNER_SPAWNS.duplicate()
+	corners.shuffle()
+	spawn_points = corners
 
 
 # ---------------------------------------------------------------------------
@@ -109,7 +124,7 @@ func _is_solid(cell: Vector2i) -> bool:
 
 func _should_be_breakable(cell: Vector2i) -> bool:
 	if _is_solid(cell): return false
-	for sp: Vector2i in SPAWN_POINTS:
+	for sp: Vector2i in spawn_points:
 		if _near_spawn(cell, sp): return false
 	return (_is_solid(cell + Vector2i(-1,0)) and _is_solid(cell + Vector2i(1,0))) \
 		or (_is_solid(cell + Vector2i(0,-1)) and _is_solid(cell + Vector2i(0,1)))
@@ -175,7 +190,6 @@ func break_cell(cell: Vector2i) -> bool:
 	var node = breakable_cells[cell]
 	breakable_cells.erase(cell)
 	if is_instance_valid(node): node.queue_free()
-	# Szansa na spawn power-upa
 	if randf() < POWERUP_CHANCE:
 		_spawn_powerup(cell)
 	return true
@@ -191,14 +205,14 @@ func _spawn_powerup(cell: Vector2i) -> void:
 	powerup_cells[cell] = pu
 
 
-func _on_powerup_collected(type: String, cell: Vector2i) -> void:
+func _on_powerup_collected(_type: String, cell: Vector2i) -> void:
 	powerup_cells.erase(cell)
 
 
 func pixel_to_grid(px: Vector2) -> Vector2i:
 	return Vector2i(int(px.x / GRID_SIZE), int(px.y / GRID_SIZE))
 
-## Pixel-center n-tego spawna — używane przez game.gd
+## Pixel-center n-tego spawna (losowa permutacja co rundę)
 func spawn_pixel(idx: int) -> Vector2:
-	var sp : Vector2i = SPAWN_POINTS[idx % SPAWN_POINTS.size()]
+	var sp : Vector2i = spawn_points[idx % spawn_points.size()]
 	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2, sp.y * GRID_SIZE + GRID_SIZE / 2)
