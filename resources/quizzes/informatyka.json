@@ -1,5 +1,5 @@
 {
-  "name": "Informatyka – technikum/studia",
+  "name": "Informatyka – technikum/studia (100 pytań)",
   "description": "Pytania z informatyki na poziomie technikum (diff 1-3) i studiów (diff 4-5).",
   "questions": [
     {
@@ -35,7 +35,7 @@
       "type": "multiple_choice",
       "difficulty": 1,
       "category": "sieci",
-      "question": "Który protokół odpowiada za przydzielanie adresów IP?",
+      "question": "Który protokół odpowiada za przydzielanie adresów IP w sieci LAN?",
       "answers": [
         "DNS",
         "HTTP",
@@ -77,7 +77,7 @@
       "type": "multiple_choice",
       "difficulty": 2,
       "category": "sieci",
-      "question": "W modelu OSI na której warstwie działa protokół IP?",
+      "question": "W modelu OSI, na której warstwie działa protokół IP?",
       "answers": [
         "Fizycznej",
         "Łącza danych",
@@ -91,7 +91,7 @@
       "type": "multiple_choice",
       "difficulty": 3,
       "category": "algorytmy",
-      "question": "Jaka jest złożoność czasowa wyszukiwania w drzewie BST w średnim przypadku?",
+      "question": "Jaka jest złożoność czasowa wyszukiwania w zrównoważonym drzewie BST w średnim przypadku?",
       "answers": [
         "O(1)",
         "O(log n)",
@@ -105,12 +105,12 @@
       "type": "multiple_choice",
       "difficulty": 3,
       "category": "programowanie",
-      "question": "Co zwraca funkcja rekurencyjna bez warunku bazowego?",
+      "question": "Co grozi programowi, w którym funkcja rekurencyjna nie ma warunku bazowego?",
       "answers": [
-        "None",
-        "0",
-        "Stack overflow",
-        "Nieskończoną pętlę"
+        "Zwrócenie None/null",
+        "Wyjątek dzielenia przez zero",
+        "Stack overflow (przepełnienie stosu)",
+        "Wyciek pamięci sterty (heap)"
       ],
       "correct_index": 2
     },
@@ -119,7 +119,7 @@
       "type": "multiple_choice",
       "difficulty": 3,
       "category": "bazy_danych",
-      "question": "Która postać normalna eliminuje zależności przechodnie?",
+      "question": "Która postać normalna w teorii baz danych eliminuje zależności przechodnie?",
       "answers": [
         "1NF",
         "2NF",
@@ -133,7 +133,7 @@
       "type": "multiple_choice",
       "difficulty": 4,
       "category": "algorytmy",
-      "question": "Algorytm Dijkstry nie działa poprawnie gdy graf zawiera:",
+      "question": "Algorytm Dijkstry nie zadziała poprawnie i zawsze z optymalnym wynikiem, gdy graf zawiera:",
       "answers": [
         "Cykle",
         "Krawędzie skierowane",
@@ -147,11 +147,11 @@
       "type": "multiple_choice",
       "difficulty": 4,
       "category": "systemy_operacyjne",
-      "question": "Które zjawisko opisuje sytuację, gdy procesy czekają na siebie nawzajem w nieskończoność?",
+      "question": "Które zjawisko opisuje sytuację, gdy procesy czekają na siebie nawzajem w nieskończoność, blokując zasoby?",
       "answers": [
-        "Race condition",
-        "Deadlock",
-        "Starvation",
+        "Race condition (Wyścig)",
+        "Deadlock (Zakleszczenie)",
+        "Starvation (Głodzenie)",
         "Livelock"
       ],
       "correct_index": 1
@@ -161,12 +161,12 @@
       "type": "multiple_choice",
       "difficulty": 4,
       "category": "kryptografia",
-      "question": "Algorytm RSA opiera się na trudności:",
+      "question": "Bezpieczeństwo algorytmu RSA opiera się przede wszystkim na obliczeniowej trudności problemu:",
       "answers": [
-        "Problemu plecakowego",
+        "Plecakowego",
         "Faktoryzacji dużych liczb",
         "Logarytmu dyskretnego",
-        "Problemu grafu hamiltonowskiego"
+        "Grafu hamiltonowskiego"
       ],
       "correct_index": 1
     },
@@ -175,12 +175,12 @@
       "type": "multiple_choice",
       "difficulty": 5,
       "category": "kryptografia",
-      "question": "Protokół Diffie-Hellman służy do:",
+      "question": "Do czego służy protokół Diffie-Hellman?",
       "answers": [
-        "Szyfrowania symetrycznego",
-        "Podpisów cyfrowych",
-        "Bezpiecznej wymiany klucza",
-        "Hashowania haseł"
+        "Do szyfrowania symetrycznego dysków",
+        "Do tworzenia podpisów cyfrowych",
+        "Do bezpiecznej wymiany klucza symetrycznego przez publiczny kanał",
+        "Do hashowania haseł z użyciem soli"
       ],
       "correct_index": 2
     },
@@ -189,12 +189,12 @@
       "type": "multiple_choice",
       "difficulty": 5,
       "category": "algorytmy",
-      "question": "Problem P vs NP dotyczy:",
+      "question": "Czego dotyczy otwarty problem P vs NP?",
       "answers": [
-        "Czy każdy problem NP jest rozwiązywalny w czasie wielomianowym",
-        "Porównania wydajności procesorów P i NP",
-        "Złożoności pamięciowej algorytmów",
-        "Równoległości obliczeń"
+        "Rozstrzygnięcia, czy każdy problem NP jest rozwiązywalny w czasie wielomianowym (P)",
+        "Porównania szybkości zegara procesorów architektur P i NP",
+        "Określenia teoretycznej minimalnej złożoności pamięciowej dla klasy NP",
+        "Udowodnienia, że algorytmy niesekwencyjne mogą rozwiązać każdy problem P"
       ],
       "correct_index": 0
     },
@@ -202,13 +202,363 @@
       "id": "mc_015",
       "type": "multiple_choice",
       "difficulty": 5,
-      "category": "systemy_operacyjne",
-      "question": "Które twierdzenie opisuje teoretyczne granice możliwości maszyn Turinga?",
+      "category": "teoria_obliczen",
+      "question": "Jak nazywa się teza stwierdzająca, że każda funkcja obliczalna w sensie intuicyjnym jest obliczalna przez maszynę Turinga?",
       "answers": [
-        "Twierdzenie Rice'a",
-        "Twierdzenie Goedla",
-        "Twierdzenie Churcha-Turinga",
-        "Twierdzenie Bayesa"
+        "Teza Rice'a",
+        "Teza Churcha-Turinga",
+        "Lemat pompowania",
+        "Twierdzenie Cooka-Levina"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sieci",
+      "question": "Jak nazywa się sieć o zasięgu globalnym (np. Internet)?",
+      "answers": [
+        "LAN",
+        "MAN",
+        "WAN",
+        "PAN"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_017",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzet",
+      "question": "Co oznacza skrót CPU?",
+      "answers": [
+        "Central Processing Unit",
+        "Computer Power Unit",
+        "Control Processing Utility",
+        "Central Program Unit"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_018",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sprzet",
+      "question": "Która pamięć jest ulotna (traci dane po odłączeniu zasilania)?",
+      "answers": [
+        "HDD",
+        "SSD",
+        "RAM",
+        "ROM"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_019",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "programowanie",
+      "question": "W programowaniu obiektowym (OOP), jak nazywa się ukrywanie stanu wewnętrznego obiektu i udostępnianie tylko określonego interfejsu?",
+      "answers": [
+        "Dziedziczenie",
+        "Polimorfizm",
+        "Hermetyzacja (Enkapsulacja)",
+        "Abstrakcja"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_020",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sieci",
+      "question": "Ile warstw ma model TCP/IP?",
+      "answers": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_021",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "question": "Które polecenie SQL służy do usuwania struktury tabeli (a nie tylko danych z niej)?",
+      "answers": [
+        "DELETE TABLE",
+        "DROP TABLE",
+        "TRUNCATE TABLE",
+        "REMOVE TABLE"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_022",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "question": "Który z poniższych algorytmów przeszukiwania grafu używa struktury danych kolejki (FIFO)?",
+      "answers": [
+        "DFS (w głąb)",
+        "BFS (wszerz)",
+        "Dijkstra",
+        "A*"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_023",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "systemy_operacyjne",
+      "question": "Co to jest 'thrashing' (szamotanie) w kontekście pamięci wirtualnej?",
+      "answers": [
+        "Sytuacja, gdy procesor spędza więcej czasu na wymianie stron pamięci niż na wykonywaniu kodu",
+        "Zjawisko zagłodzenia procesu przez planistę o niższym priorytecie",
+        "Fizyczne uszkodzenie dysku twardego wskutek przegrzania",
+        "Błąd segmentacji przy odwołaniu do niezaalokowanej pamięci"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_024",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "struktury_danych",
+      "question": "Tablica mieszająca (Hash Table) rozwiązuje problem kolizji. Która z poniższych metod NIE jest standardową metodą rozwiązywania kolizji?",
+      "answers": [
+        "Adresowanie otwarte (Open addressing)",
+        "Łańcuchowanie (Chaining)",
+        "Próbkowanie liniowe (Linear probing)",
+        "Przeszukiwanie binarne (Binary search)"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_025",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "sieci",
+      "question": "Który nagłówek w IPv4 zapobiega nieskończonemu krążeniu pakietów w sieci?",
+      "answers": [
+        "Fragment Offset",
+        "Checksum",
+        "TTL (Time to Live)",
+        "Protocol"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_026",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "programowanie",
+      "question": "Wzorce projektowe. Który wzorzec gwarantuje, że klasa ma tylko jedną instancję i zapewnia do niej globalny punkt dostępu?",
+      "answers": [
+        "Factory (Fabryka)",
+        "Observer (Obserwator)",
+        "Decorator (Dekorator)",
+        "Singleton"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_027",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "question": "Problem stopu (Halting problem) postawiony przez Alana Turinga udowadnia, że:",
+      "answers": [
+        "Nie istnieje algorytm sprawdzający, czy dowolny program kiedykolwiek się zatrzyma",
+        "Każdy program komputerowy w końcu napotka błąd",
+        "Złożoność pamięciowa maszyny Turinga jest zawsze ograniczona",
+        "Języki regularne są podzbiorem języków bezkontekstowych"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_028",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "question": "Drzewa czerwono-czarne (Red-Black Trees). Jaka jest maksymalna głębokość węzła na najdłuższej ścieżce od korzenia do liścia względem najkrótszej ścieżki?",
+      "answers": [
+        "Są zawsze równe (różnica 0)",
+        "Najdłuższa jest najwyżej dwukrotnie dłuższa od najkrótszej",
+        "Najdłuższa jest najwyżej o 1 większa od najkrótszej (jak w drzewach AVL)",
+        "Nie ma gwarantowanego limitu"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_029",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "question": "Kryptografia krzywych eliptycznych (ECC) używa matematyki krzywych nad ciałami skończonymi. Główną zaletą ECC w porównaniu do RSA jest:",
+      "answers": [
+        "Odporność na przyszłe komputery kwantowe (ECC jest post-quantum)",
+        "Podobny poziom bezpieczeństwa przy znacznie mniejszej długości klucza",
+        "Możliwość szyfrowania danych bez klucza prywatnego",
+        "Całkowity brak podatności na ataki kanałem bocznym (side-channel)"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_030",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "Skrót GUI oznacza:",
+      "answers": [
+        "Graphical Utility Interface",
+        "General User Internet",
+        "Graphical User Interface",
+        "Gaming User Interactivity"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_031",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "Najmniejsza jednostka informacji w systemach komputerowych to:",
+      "answers": [
+        "Bajt",
+        "Bit",
+        "Piksel",
+        "Znak"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_032",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sieci",
+      "question": "Jaki jest domyślny port dla protokołu HTTPS?",
+      "answers": [
+        "80",
+        "21",
+        "443",
+        "22"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_033",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "question": "W języku SQL skrót DDL rozwija się jako:",
+      "answers": [
+        "Data Definition Language",
+        "Data Manipulation Language",
+        "Data Query Language",
+        "Data Control Language"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_034",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "programowanie",
+      "question": "Czym w programowaniu obiektowym jest metoda abstrakcyjna?",
+      "answers": [
+        "Metodą, która jest prywatna i nie można jej dziedziczyć",
+        "Metodą posiadającą deklarację, ale nie posiadającą implementacji (ciała)",
+        "Metodą, która operuje tylko na typach generycznych",
+        "Metodą zwracającą zawsze wskaźnik do obiektu (this)"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_035",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "systemy_operacyjne",
+      "question": "Który z systemów operacyjnych NIE opiera się o architekturę jądra typu Unix/Linux?",
+      "answers": [
+        "macOS",
+        "Android",
+        "Windows",
+        "Ubuntu"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_036",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "question": "W drzewach poszukiwań binarnych (BST) operacja przejścia, która wypisuje wartości w posortowanej kolejności, to przechodzenie:",
+      "answers": [
+        "Pre-order (wzdłużne)",
+        "In-order (poprzeczne)",
+        "Post-order (wsteczne)",
+        "Level-order (poziomami)"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_037",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "sieci",
+      "question": "Który z adresów IPv4 reprezentuje tzw. pętlę zwrotną (localhost)?",
+      "answers": [
+        "192.168.1.1",
+        "255.255.255.255",
+        "127.0.0.1",
+        "10.0.0.0"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_038",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "struktury_danych",
+      "question": "Czym charakteryzuje się struktura danych 'B-Drzewo' (B-Tree), która czyni ją idealną dla systemów bazodanowych na dyskach?",
+      "answers": [
+        "Każdy węzeł może mieć tylko dwoje dzieci, ale wyszukiwanie jest zawsze w O(1)",
+        "Węzły posiadają wiele kluczy i dzieci, co zmniejsza wysokość drzewa i minimalizuje odczyty z dysku",
+        "Nie utrzymuje równowagi, ale klucze są przechowywane tylko w liściach ułożonych w listę",
+        "Klucze są przechowywane jako hashe, z pominięciem struktury drzewiastej"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_039",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "question": "Problem komiwojażera (Knapsack problem) to klasyczny przykład problemu należącego do klasy:",
+      "answers": [
+        "P",
+        "NP-trudnych",
+        "O(1)",
+        "Logarytmicznych"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_040",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "Do jakiej rodziny systemów operacyjnych należy iOS?",
+      "answers": [
+        "Windows",
+        "Symbian",
+        "Unix (Linux)",
+        "RTOS"
       ],
       "correct_index": 2
     },
@@ -233,7 +583,7 @@
       "type": "true_false",
       "difficulty": 2,
       "category": "algorytmy",
-      "statement": "Algorytm bąbelkowy ma złożoność O(n log n) w każdym przypadku.",
+      "statement": "Algorytm sortowania bąbelkowego (Bubble sort) ma złożoność czasową O(n log n) w każdym przypadku.",
       "correct_answer": false
     },
     {
@@ -241,7 +591,7 @@
       "type": "true_false",
       "difficulty": 2,
       "category": "sieci",
-      "statement": "Protokół TCP gwarantuje dostarczenie pakietów w odpowiedniej kolejności.",
+      "statement": "Protokół TCP gwarantuje dostarczenie pakietów w odpowiedniej kolejności i zapewnia kontrolę błędów transmisji.",
       "correct_answer": true
     },
     {
@@ -249,7 +599,7 @@
       "type": "true_false",
       "difficulty": 3,
       "category": "bazy_danych",
-      "statement": "Klucz główny w tabeli relacyjnej może przyjmować wartość NULL.",
+      "statement": "Klucz główny (Primary Key) w tabeli relacyjnej może przyjmować wartość NULL.",
       "correct_answer": false
     },
     {
@@ -257,7 +607,7 @@
       "type": "true_false",
       "difficulty": 3,
       "category": "programowanie",
-      "statement": "W języku Python lista jest strukturą mutowalną.",
+      "statement": "W języku Python typ 'lista' (list) jest strukturą mutowalną (zmienną).",
       "correct_answer": true
     },
     {
@@ -265,7 +615,7 @@
       "type": "true_false",
       "difficulty": 4,
       "category": "kryptografia",
-      "statement": "Algorytm SHA-256 jest algorytmem szyfrującym z kluczem symetrycznym.",
+      "statement": "Algorytm SHA-256 jest popularnym algorytmem szyfrującym wykorzystującym klucz symetryczny.",
       "correct_answer": false
     },
     {
@@ -273,15 +623,15 @@
       "type": "true_false",
       "difficulty": 4,
       "category": "systemy_operacyjne",
-      "statement": "Semafory binarne mogą służyć do implementacji wzajemnego wykluczenia.",
+      "statement": "Semafory binarne (mutex) często służą systemowi operacyjnemu do implementacji wzajemnego wykluczenia (dostęp do sekcji krytycznej).",
       "correct_answer": true
     },
     {
       "id": "tf_009",
       "type": "true_false",
       "difficulty": 5,
-      "category": "algorytmy",
-      "statement": "Każdy problem NP-zupełny jest też NP-trudny.",
+      "category": "teoria_obliczen",
+      "statement": "Z definicji, każdy problem należący do klasy NP-zupełnej (NP-complete) jest także problemem NP-trudnym (NP-hard).",
       "correct_answer": true
     },
     {
@@ -289,15 +639,95 @@
       "type": "true_false",
       "difficulty": 5,
       "category": "systemy_operacyjne",
-      "statement": "W architekturze mikrojądra sterowniki urządzeń działają w przestrzeni jądra.",
+      "statement": "W czystej architekturze mikrojądra (microkernel) sterowniki urządzeń i systemy plików działają bezpośrednio w uprzywilejowanej przestrzeni jądra (kernel space).",
       "correct_answer": false
+    },
+    {
+      "id": "tf_011",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "podstawy",
+      "statement": "System binarny używa tylko dwóch cyfr: 0 i 1.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_012",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sieci",
+      "statement": "Adres MAC karty sieciowej ulega zmianie przy każdym połączeniu z nową siecią Wi-Fi.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_013",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "statement": "Język SQL dzieli się na podzbiory m.in. DDL, DML i DCL.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_014",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sieci",
+      "statement": "Protokół UDP, w przeciwieństwie do TCP, jest połączeniowy i gwarantuje nadejście pakietu.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_015",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "programowanie",
+      "statement": "W języku Java wielokrotne dziedziczenie z wielu klas przez jedną klasę podrzędną jest w pełni dozwolone.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_016",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "systemy_operacyjne",
+      "statement": "Pamięć wirtualna pozwala systemowi wykreować iluzję dla procesu, że ma on do dyspozycji spójny i bardzo duży obszar pamięci RAM.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_017",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "statement": "Graf dwudzielny nie może zawierać cyklu o nieparzystej długości.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_018",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "struktury_danych",
+      "statement": "Usuwanie elementu z korzenia standardowego kopca typu Max-Heap działa w czasie średnim O(1).",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_019",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "statement": "Każde wyrażenie regularne można opisać za pomocą deterministycznego automatu skończonego (DFA).",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_020",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "programowanie",
+      "statement": "Domknięcia (closures) to mechanizm w programowaniu pozwalający funkcji na dostęp do zmiennych z zakresu leksykalnego otoczenia, w którym została zdefiniowana, nawet po zakończeniu działania tego otoczenia.",
+      "correct_answer": true
     },
     {
       "id": "ft_001",
       "type": "fill_tiles",
       "difficulty": 2,
       "category": "algorytmy",
-      "text_with_gaps": "Algorytm ___ sortuje dane przez wielokrotne znajdowanie ___ elementu.",
+      "text_with_gaps": "Algorytm sortowania ___ działa poprzez wielokrotne znajdowanie w nieposortowanej części ___ elementu.",
       "gaps": [
         {
           "index": 0,
@@ -321,7 +751,7 @@
       "type": "fill_tiles",
       "difficulty": 3,
       "category": "sieci",
-      "text_with_gaps": "Model ___ składa się z ___ warstw.",
+      "text_with_gaps": "Model referencyjny sieci ___ definiuje abstrakcyjną strukturę podziału komunikacji sieciowej na ___ oddzielnych warstw.",
       "gaps": [
         {
           "index": 0,
@@ -329,15 +759,15 @@
         },
         {
           "index": 1,
-          "correct": "siedmiu"
+          "correct": "siedem"
         }
       ],
       "tiles": [
         "OSI",
         "TCP/IP",
-        "czterech",
-        "siedmiu",
-        "pięciu"
+        "cztery",
+        "siedem",
+        "pięć"
       ]
     },
     {
@@ -345,7 +775,7 @@
       "type": "fill_tiles",
       "difficulty": 4,
       "category": "algorytmy",
-      "text_with_gaps": "Algorytm ___ wyznacza najkrótsze ścieżki od ___ źródła w grafie ważonym.",
+      "text_with_gaps": "Algorytm ___ pozwala na znalezienie ścieżek o najmniejszym koszcie z ___ źródła do pozostałych wierzchołków w grafie o wagach nieujemnych.",
       "gaps": [
         {
           "index": 0,
@@ -361,7 +791,7 @@
         "Bellmana-Forda",
         "jednego",
         "każdego",
-        "wybranego"
+        "losowego"
       ]
     },
     {
@@ -369,7 +799,7 @@
       "type": "fill_tiles",
       "difficulty": 5,
       "category": "kryptografia",
-      "text_with_gaps": "Szyfrowanie ___ używa dwóch kluczy: ___ do szyfrowania i ___ do deszyfrowania.",
+      "text_with_gaps": "Szyfrowanie ___ opiera się na parze kluczy: klucz ___ służy przeważnie do zaszyfrowania wiadomości (lub weryfikacji podpisu), a klucz ___ do jej odszyfrowania (lub składania podpisu).",
       "gaps": [
         {
           "index": 0,
@@ -377,20 +807,164 @@
         },
         {
           "index": 1,
-          "correct": "publicznego"
+          "correct": "publiczny"
         },
         {
           "index": 2,
-          "correct": "prywatnego"
+          "correct": "prywatny"
         }
       ],
       "tiles": [
         "asymetryczne",
         "symetryczne",
-        "publicznego",
-        "prywatnego",
-        "sesyjnego",
-        "tajnego"
+        "publiczny",
+        "prywatny",
+        "sesyjny",
+        "tajny"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "sprzet",
+      "text_with_gaps": "Pamięć typu ___ zapewnia nielotne przechowywanie danych na nośnikach opartych o układy ___ bez elementów ruchomych.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "SSD"
+        },
+        {
+          "index": 1,
+          "correct": "NAND flash"
+        }
+      ],
+      "tiles": [
+        "SSD",
+        "HDD",
+        "NAND flash",
+        "magnetyczne",
+        "optyczne"
+      ]
+    },
+    {
+      "id": "ft_006",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "text_with_gaps": "Typowa transakcja w bazie relacyjnej powinna zapewniać reguły ACID: ___, spójność, ___ i trwałość.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "atomowość"
+        },
+        {
+          "index": 1,
+          "correct": "izolację"
+        }
+      ],
+      "tiles": [
+        "atomowość",
+        "dostępność",
+        "izolację",
+        "integrację",
+        "rozdzielność"
+      ]
+    },
+    {
+      "id": "ft_007",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "text_with_gaps": "Jedną z metod zarządzania procesorem jest planowanie z wywłaszczeniem zwane po angielsku ___, w którym procesor zostaje odebrany procesowi po upływie z góry ustalonego ___ czasu.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "preemptive scheduling"
+        },
+        {
+          "index": 1,
+          "correct": "kwantu"
+        }
+      ],
+      "tiles": [
+        "preemptive scheduling",
+        "cooperative scheduling",
+        "kwantu",
+        "fragmentu",
+        "ticku"
+      ]
+    },
+    {
+      "id": "ft_008",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "programowanie",
+      "text_with_gaps": "Zasada w programowaniu obiektowym mówiąca, że obiekty powinny być otwarte na ___ ale zamknięte na ___, to w skrócie OCP.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "rozbudowę"
+        },
+        {
+          "index": 1,
+          "correct": "modyfikację"
+        }
+      ],
+      "tiles": [
+        "rozbudowę",
+        "modyfikację",
+        "wymianę",
+        "enkapsulację",
+        "abstrakcję"
+      ]
+    },
+    {
+      "id": "ft_009",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "programowanie",
+      "text_with_gaps": "Zmienne typu ___ służą w wielu językach programowania do przechowywania wartości ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "boolean"
+        },
+        {
+          "index": 1,
+          "correct": "prawda/fałsz"
+        }
+      ],
+      "tiles": [
+        "boolean",
+        "integer",
+        "prawda/fałsz",
+        "całkowitoliczbowych",
+        "tekstowych"
+      ]
+    },
+    {
+      "id": "ft_010",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "sieci",
+      "text_with_gaps": "Polecenie ___ przesyła żądanie do serwera DNS w celu sprawdzenia ___ dla podanej nazwy domenowej.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "nslookup"
+        },
+        {
+          "index": 1,
+          "correct": "adresu IP"
+        }
+      ],
+      "tiles": [
+        "nslookup",
+        "tracert",
+        "adresu IP",
+        "portu TCP",
+        "maski podsieci"
       ]
     },
     {
@@ -398,32 +972,39 @@
       "type": "fill_text",
       "difficulty": 1,
       "category": "struktury_danych",
-      "prompt": "Jak nazywa się struktura danych działająca na zasadzie LIFO?",
+      "prompt": "Jak w informatyce nazywa się abstrakcyjna struktura danych działająca na zasadzie LIFO (ostatnie weszło, pierwsze wyszło)?",
       "answer": "stos",
       "prefilled_pattern": "s__s",
-      "case_sensitive": false
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "stack"
+      ]
     },
     {
       "id": "ftext_002",
       "type": "fill_text",
       "difficulty": 2,
       "category": "sieci",
-      "prompt": "Jak nazywa się urządzenie łączące sieci i kierujące ruchem między nimi?",
+      "prompt": "Urządzenie sieciowe pracujące w warstwie trzeciej, którego głównym zadaniem jest łączenie ze sobą różnych sieci i przekazywanie pakietów (routing), to...",
       "answer": "router",
       "prefilled_pattern": "r____r",
-      "case_sensitive": false
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "rutery"
+      ]
     },
     {
       "id": "ftext_003",
       "type": "fill_text",
       "difficulty": 3,
       "category": "bazy_danych",
-      "prompt": "Jak nazywa się właściwość transakcji DB mówiąca, że operacja wykonuje się w całości lub wcale?",
+      "prompt": "Jaką nazwę nosi właściwość transakcji w DB gwarantująca, że składowe modyfikacje zostaną zaaplikowane w całości, albo żadna z nich nie zmieni stanu bazy (zasada 'wszystko albo nic')?",
       "answer": "atomowość",
       "prefilled_pattern": "a_______ść",
       "case_sensitive": false,
       "accepted_alternatives": [
-        "atomicity"
+        "atomicity",
+        "atomicznosc"
       ]
     },
     {
@@ -431,7 +1012,7 @@
       "type": "fill_text",
       "difficulty": 4,
       "category": "algorytmy",
-      "prompt": "Jak nazywa się technika optymalizacji polegająca na zapamiętywaniu wyników podproblemów?",
+      "prompt": "Jak nazywa się popularna w programowaniu dynamicznym technika optymalizacji, polegająca na zapamiętywaniu już obliczonych wyników wywołań funkcji w celu uniknięcia redundantnych obliczeń w przyszłości?",
       "answer": "memoizacja",
       "prefilled_pattern": "m________a",
       "case_sensitive": false,
@@ -444,13 +1025,74 @@
       "type": "fill_text",
       "difficulty": 5,
       "category": "kryptografia",
-      "prompt": "Jak nazywa się atak polegający na przechwyceniu komunikacji między dwiema stronami?",
+      "prompt": "Jak anglojęzycznie określa się atak cybernetyczny, w którym atakujący wstawia się potajemnie i ewentualnie modyfikuje komunikację pomiędzy dwiema stronami wierzącymi, że komunikują się ze sobą bezpośrednio?",
       "answer": "man in the middle",
       "prefilled_pattern": "m__ in the m_____",
       "case_sensitive": false,
       "accepted_alternatives": [
         "mitm",
         "man-in-the-middle"
+      ]
+    },
+    {
+      "id": "ftext_006",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "podstawy",
+      "prompt": "Sprzętowy odpowiednik pojęcia software (oprogramowanie) to po angielsku...?",
+      "answer": "hardware",
+      "prefilled_pattern": "h______e",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_007",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "sieci",
+      "prompt": "Skrót MAC w kontekście kart sieciowych pochodzi od słów Media Access ...",
+      "answer": "Control",
+      "prefilled_pattern": "C______",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_008",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "programowanie",
+      "prompt": "Pojęcie w którym obiekt/klasa przyjmuje wiele form. Wywodzące się z greki słowo opisujące m.in. przeciążanie metod i klas to...",
+      "answer": "polimorfizm",
+      "prefilled_pattern": "p_________m",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "polymorphism"
+      ]
+    },
+    {
+      "id": "ftext_009",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "prompt": "Fragment kodu, w którym proces ubiega się o dostęp lub modyfikuje zasoby wspólne dla kilku procesów (pamięć, urządzenia itp.), które nie powinny być przetwarzane jednocześnie, nazywany jest sekcją...",
+      "answer": "krytyczną",
+      "prefilled_pattern": "k_______ą",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "critical"
+      ]
+    },
+    {
+      "id": "ftext_010",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "prompt": "W analizie syntaktycznej, formalny opis gramatyk wprowadzony przez Noama Chomsky'ego dzieli języki formalne na 4 poziomy. Jak nazywa się typ hierarchii klasyfikujący języki np. na regularne, bezkontekstowe?",
+      "answer": "hierarchia Chomsky'ego",
+      "prefilled_pattern": "h_________ C_______'___",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "hierarchia chomskyego",
+        "chomsky hierarchy",
+        "chomsky"
       ]
     },
     {
@@ -464,9 +1106,9 @@
         "HDD"
       ],
       "right_items": [
-        "Tylko do odczytu",
-        "Pamięć operacyjna",
-        "Dysk twardy"
+        "Pamięć przeznaczona tylko do odczytu",
+        "Podstawowa pamięć operacyjna ulotna",
+        "Stary typ magnetycznego dysku trwałego"
       ],
       "pairs": [
         {
@@ -489,14 +1131,14 @@
       "difficulty": 2,
       "category": "algorytmy",
       "left_items": [
-        "O(1)",
-        "O(log n)",
-        "O(n²)"
+        "Złożoność O(1)",
+        "Złożoność O(log n)",
+        "Złożoność O(n²)"
       ],
       "right_items": [
-        "Sortowanie bąbelkowe",
-        "Wyszukiwanie binarne",
-        "Dostęp do tablicy"
+        "Np. kwadratowe sortowanie bąbelkowe",
+        "Np. podział przez pół (wyszukiwanie binarne)",
+        "Np. bezpośredni dostęp do indeksu tablicy"
       ],
       "pairs": [
         {
@@ -519,16 +1161,16 @@
       "difficulty": 3,
       "category": "sieci",
       "left_items": [
-        "HTTP",
-        "SSH",
-        "DNS",
-        "FTP"
+        "Protokół HTTP",
+        "Protokół SSH",
+        "Usługa DNS",
+        "Protokół FTP"
       ],
       "right_items": [
-        "Port 21",
-        "Port 22",
-        "Port 53",
-        "Port 80"
+        "Tradycyjny transfer plików (Port 21)",
+        "Bezpieczny szyfrowany terminal (Port 22)",
+        "Zamiana nazw na adresy (Port 53)",
+        "Hipertekst niezaszyfrowany (Port 80)"
       ],
       "pairs": [
         {
@@ -555,25 +1197,25 @@
       "difficulty": 4,
       "category": "bazy_danych",
       "left_items": [
-        "SELECT",
-        "INSERT",
-        "DELETE",
-        "UPDATE"
+        "DQL (Data Query Language)",
+        "DML (Data Manipulation Language)",
+        "DDL (Data Definition Language)",
+        "DCL (Data Control Language)"
       ],
       "right_items": [
-        "Modyfikacja rekordu",
-        "Odczyt danych",
-        "Usunięcie rekordu",
-        "Dodanie rekordu"
+        "Polecenie SELECT pobierające dane",
+        "Polecenia INSERT, UPDATE, DELETE edytujące dane",
+        "Polecenia CREATE, ALTER modyfikujące schemat",
+        "Polecenia GRANT, REVOKE przydzielające uprawnienia"
       ],
       "pairs": [
         {
           "left_index": 0,
-          "right_index": 1
+          "right_index": 0
         },
         {
           "left_index": 1,
-          "right_index": 3
+          "right_index": 1
         },
         {
           "left_index": 2,
@@ -581,7 +1223,7 @@
         },
         {
           "left_index": 3,
-          "right_index": 0
+          "right_index": 3
         }
       ]
     },
@@ -594,13 +1236,13 @@
         "AES",
         "RSA",
         "SHA-256",
-        "ECDH"
+        "Diffie-Hellman (DH)"
       ],
       "right_items": [
-        "Wymiana klucza",
-        "Haszowanie",
-        "Szyfrowanie asymetryczne",
-        "Szyfrowanie symetryczne"
+        "Bezpieczna wymiana klucza dla klucza sesyjnego",
+        "Standard haszowania produkujący ciąg 256-bit",
+        "Popularne szyfrowanie z użyciem asymetrycznych par kluczy",
+        "Obecny standard szyfrowania z kluczem symetrycznym (blokowy)"
       ],
       "pairs": [
         {
@@ -618,6 +1260,1663 @@
         {
           "left_index": 3,
           "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "mc_041",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "W systemie dwójkowym, jaką potęgę liczby 2 oznacza pierwsza pozycja z prawej strony przed przecinkiem?",
+      "answers": [
+        "2^0",
+        "2^1",
+        "2^2",
+        "2^10"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_042",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "programowanie",
+      "question": "Czego dotyczy instrukcja 'if' w językach programowania?",
+      "answers": [
+        "Definiowania funkcji",
+        "Tworzenia pętli",
+        "Sprawdzania warunków (rozgałęzienia kodu)",
+        "Importowania bibliotek"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_043",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sieci",
+      "question": "Które polecenie konsoli pozwala sprawdzić ścieżkę pakietów przesyłanych do określonego serwera?",
+      "answers": [
+        "ping",
+        "tracert / traceroute",
+        "ipconfig",
+        "netstat"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_044",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "struktury_danych",
+      "question": "Struktura danych ułożona hierarchicznie, w której każdy element (poza jednym zwanym korzeniem) ma jednego rodzica, to:",
+      "answers": [
+        "Lista dwukierunkowa",
+        "Kolejka",
+        "Drzewo",
+        "Stos"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_045",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "systemy_operacyjne",
+      "question": "W systemach uniksowych polecenie 'chmod' używane jest do:",
+      "answers": [
+        "Zmiany właściciela pliku",
+        "Modyfikacji uprawnień dostępu do plików/katalogów",
+        "Wykonywania programów jako administrator",
+        "Szukania procesów zużywających zasoby"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_046",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "question": "Ile wynosi pesymistyczna (najgorsza) złożoność czasowa wyszukiwania w tablicy niezposortowanej?",
+      "answers": [
+        "O(1)",
+        "O(log n)",
+        "O(n)",
+        "O(n^2)"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_047",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "programowanie",
+      "question": "Jaka jest główna cecha funkcji określanych w programowaniu funkcyjnym jako 'Pure Functions' (funkcje czyste)?",
+      "answers": [
+        "Nie przyjmują żadnych argumentów wejściowych",
+        "Nie modyfikują stanu zewnętrznego (brak side-effects) i dla takich samych wejść dają zawsze taki sam wynik",
+        "Można je wywołać jedynie z wewnątrz innych czystych funkcji",
+        "Nie posiadają zwracanego typu (typ void)"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_048",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "question": "Kopiowanie całej zawartości RAM-u procesu na dysk (ang. swapping) gdy pamięć operacyjna się kurczy, zarządzane jest przez:",
+      "answers": [
+        "Pamięć podręczną L1/L2 (Cache)",
+        "Moduł zarządzania pamięcią jądra (MMU i Pagefile/Swapfile)",
+        "Kartę sieciową",
+        "Aplikacje antywirusowe w tle"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_049",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "struktury_danych",
+      "question": "W programowaniu, implementacja struktury grafu za pomocą 'Macierzy sąsiedztwa' (Adjacency Matrix) charakteryzuje się dla grafu o V wierzchołkach:",
+      "answers": [
+        "Złożonością pamięciową O(V+E)",
+        "Szybkim ( O(1) ) sprawdzeniem, czy krawędź istnieje między dwoma węzłami",
+        "Optymalnym zużyciem pamięci w przypadku grafów bardzo rzadkich",
+        "Brakiem możliwości reprezentacji grafów skierowanych"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_050",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "question": "Czym w kontekście hashowania haseł (np. algorytmy bcrypt, argon2) jest parametr określany jako 'work factor' lub 'cost'?",
+      "answers": [
+        "Ilością danych, które można zahashować jednorazowo",
+        "Ceną finansową pobieraną za operację API przy użyciu usługi chmurowej",
+        "Zmienną sztucznie spowalniającą obliczanie hasha dla utrudnienia ataków brute-force",
+        "Kosztowną pamięciowo metodą wyliczania kluczy asymetrycznych"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "tf_021",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "podstawy",
+      "statement": "Skrót WWW rozwija się jako World Wide Web.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_022",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "programowanie",
+      "statement": "HTML jest w pełni funkcjonalnym, Turingowo-kompletnym językiem programowania.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_023",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sprzet",
+      "statement": "Gniazdo SATA na płycie głównej służy zazwyczaj do podłączania kart graficznych (GPU).",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_024",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "statement": "W relacyjnej bazie danych relacja 1:n (jeden-do-wielu) pozwala przypisać jednemu rekordowi w Tabeli A wiele połączonych rekordów w Tabeli B.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_025",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "programowanie",
+      "statement": "Programowanie asynchroniczne i wielowątkowość (multithreading) opisują dokładnie to samo mechaniczne zachowanie procesora, są to nazwy wymienne.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_026",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "sieci",
+      "statement": "VPN (Virtual Private Network) umożliwia tworzenie bezpiecznego, wirtualnego tunelu między sieciami poprzez sieć publiczną.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_027",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "statement": "Metoda programowania zwana 'Dziel i zwyciężaj' zakłada iteracyjne rozwiązanie problemu na najniższym poziomie, po czym ewentualnie przenosi się w górę.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_028",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "bazy_danych",
+      "statement": "Indeksy w bazach relacyjnych (B-Tree index) przyspieszają operację odczytu (SELECT), ale na ogół nieznacznie zwalniają modyfikację danych (INSERT/UPDATE).",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_029",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "sieci",
+      "statement": "W warstwie łącza danych z sieci OSI protokół kontroli dostępu do nośnika dla wczesnych sieci Ethernet nazywał się CSMA/CD, czyli wykrywał kolizje.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_030",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "statement": "Model maszyny RAM (Random Access Machine) oraz maszyny Turinga są mocą obliczeniową równoważne.",
+      "correct_answer": true
+    },
+    {
+      "id": "ft_011",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "podstawy",
+      "text_with_gaps": "Pamięć ___ (Random Access Memory) służy w komputerze do przechowywania programów i danych ___, z jakich korzysta procesor.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "RAM"
+        },
+        {
+          "index": 1,
+          "correct": "podczas pracy"
+        }
+      ],
+      "tiles": [
+        "RAM",
+        "ROM",
+        "podczas pracy",
+        "do zapisu",
+        "graficznych"
+      ]
+    },
+    {
+      "id": "ft_012",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "text_with_gaps": "SQL używa instrukcji ___, aby połączyć w zapytaniu dane z kilku relacyjnych ___ bazując na wskazanym warunku złączenia.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "JOIN"
+        },
+        {
+          "index": 1,
+          "correct": "tabel"
+        }
+      ],
+      "tiles": [
+        "JOIN",
+        "WHERE",
+        "tabel",
+        "wierszy",
+        "rekordów"
+      ]
+    },
+    {
+      "id": "ft_013",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "programowanie",
+      "text_with_gaps": "We frameworkach webowych bardzo powszechnym modelem podziału warstw aplikacji jest ___, dzielący ją na modele, widoki i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "MVC"
+        },
+        {
+          "index": 1,
+          "correct": "kontrolery"
+        }
+      ],
+      "tiles": [
+        "MVC",
+        "MVVM",
+        "kontrolery",
+        "interfejsy",
+        "klasy"
+      ]
+    },
+    {
+      "id": "ft_014",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "text_with_gaps": "Algorytm znany jako przeszukiwanie ___, wykorzystuje strukturę ___ wywołań aby przechodzić rekurencyjnie graf do najgłębszych możliwych liści.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "w głąb (DFS)"
+        },
+        {
+          "index": 1,
+          "correct": "stosu"
+        }
+      ],
+      "tiles": [
+        "w głąb (DFS)",
+        "wszerz (BFS)",
+        "stosu",
+        "kolejki",
+        "listy"
+      ]
+    },
+    {
+      "id": "ft_015",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "text_with_gaps": "Próba załamania hasha za pomocą wstępnie przetworzonych tabel to atak poprzez tzw. ___. Są one mitygowane głównie przez ___ każdego przechowywanego hasła.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Tęczowe Tablice (Rainbow Tables)"
+        },
+        {
+          "index": 1,
+          "correct": "solenie (salting)"
+        }
+      ],
+      "tiles": [
+        "Tęczowe Tablice (Rainbow Tables)",
+        "Atak Brute Force",
+        "solenie (salting)",
+        "pieprzenie (peppering)",
+        "szyfrowanie"
+      ]
+    },
+    {
+      "id": "ftext_011",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "podstawy",
+      "prompt": "Jak w skrócie nazywamy osobę/proces sprawdzający kod aplikacji pod kątem usterek po angielsku (tzw. zwalczanie pluskiew)?",
+      "answer": "debugging",
+      "prefilled_pattern": "d______ng",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "debugowanie"
+      ]
+    },
+    {
+      "id": "ftext_012",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "sieci",
+      "prompt": "Numer składający się ze znaków hex np. '00:1B:44:11:3A:B7', pełniący rolę unikalnego fizycznego identyfikatora karty sieciowej, nazywany jest adresem...",
+      "answer": "MAC",
+      "prefilled_pattern": "M__",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_013",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "prompt": "Struktura danych, z której pobierasz elementy według nadanej im ważności lub 'priorytetu' niezależnie od kolejności wejścia to kolejka...",
+      "answer": "priorytetowa",
+      "prefilled_pattern": "p__________a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "priority queue",
+        "priority"
+      ]
+    },
+    {
+      "id": "ftext_014",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "struktury_danych",
+      "prompt": "Struktura drzewa zbudowanego tak, by wyszukać słowa kluczowe mające wspólny rdzeń/przedrostek to tzw. drzewo trie. Jak brzmi inna polska nazwa takiego drzewa?",
+      "answer": "drzewo prefiksowe",
+      "prefilled_pattern": "d_____ p_________e",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "drzewo trie",
+        "prefiksowe"
+      ]
+    },
+    {
+      "id": "ftext_015",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "systemy_operacyjne",
+      "prompt": "Zaawansowany stan oczekiwania, gdzie wątki blokują się cyklicznie przesyłając żądania bez progresu w pracy (system kręci się w miejscu, mimo działania). Jak w teorii OS nazywa się taki 'stan' blokady wyższy niż deadlock?",
+      "answer": "livelock",
+      "prefilled_pattern": "l______k",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_006",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "podstawy",
+      "left_items": [
+        "Klawiatura",
+        "Monitor",
+        "Płyta Główna"
+      ],
+      "right_items": [
+        "Służy za punkt wpięcia wszystkich podzespołów.",
+        "To podstawowe urządzenie wprowadzania danych (Input).",
+        "Udostępnia obraz za pomocą pikseli (Output)."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_007",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "sieci",
+      "left_items": [
+        "URL",
+        "IP",
+        "MAC"
+      ],
+      "right_items": [
+        "Nazwowy i hierarchiczny adres fizyczny witryny, do wpisania z klawiatury",
+        "Logiczny 32-bitowy, lub 128-bitowy adres węzła internetu",
+        "Fizyczny adres osprzętu sieciowego podpinany przez fabrykę."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_008",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "programowanie",
+      "left_items": [
+        "Dziedziczenie",
+        "Polimorfizm",
+        "Abstrakcja"
+      ],
+      "right_items": [
+        "Tworzenie klasy potomnej rozszerzającej atrybuty rodzica",
+        "Użycie jednego interfejsu/metody przez klasy w różnych postaciach",
+        "Ukrywanie detali kodu dla prezentacji wysokopoziomowej operacji na danych."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_009",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "bazy_danych",
+      "left_items": [
+        "Klucz Obcy (Foreign Key)",
+        "Wyzwalacz (Trigger)",
+        "Złączenie Zewnętrzne (Outer Join)"
+      ],
+      "right_items": [
+        "Tworzy stałą powiązaną relację powołując do wartości w innej tabeli.",
+        "Automat uruchamiający akcję SQL w odpowiedzi na specyficzne operacje u bazy.",
+        "Pozwala załadować wszystkie pozycje bazy niezależnie czy relacja występuje, łącząc je np. NULL-em."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_010",
+      "type": "matching",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "left_items": [
+        "Języki Regularne",
+        "Języki Bezkontekstowe",
+        "Języki Kontekstowe"
+      ],
+      "right_items": [
+        "Rozpoznawalne przez automat skończony, opisane wyrażeniami",
+        "Rozpoznawalne przez automat ze stosem, opisane produkcjami np. BNF",
+        "Rozpoznawalne przez liniowo-ograniczone automaty Turinga."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "mc_051",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "systemy_liczbowe",
+      "question": "Jaka jest podstawa systemu szesnastkowego (heksadecymalnego)?",
+      "answers": [
+        "10",
+        "16",
+        "8",
+        "2"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_052",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sieci",
+      "question": "W adresie www.google.com, domeną najwyższego poziomu (TLD) jest:",
+      "answers": [
+        "www",
+        "google",
+        "com",
+        "google.com"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_053",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sprzet",
+      "question": "Skrót GPU rozwija się jako:",
+      "answers": [
+        "General Processor Unit",
+        "Graphics Processing Unit",
+        "Graphical Peripheral Unit",
+        "Global Performance Unit"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_054",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "programowanie",
+      "question": "W którym języku kod z reguły musi zostać bezpośrednio skompilowany na instrukcje maszyny (np. x86) by zagrać?",
+      "answers": [
+        "JavaScript",
+        "Python",
+        "C++",
+        "PHP"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_055",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "question": "Relacja 1:1, czyli rzadko stosowana relacja z elementem opcjonalnym oznacza że:",
+      "answers": [
+        "Oba klucze identyfikacyjne to klucze obce.",
+        "Kluczowi głównemu jednego rekordu odpowiada maksymalnie 1 rekord w drugiej tabeli i odwrotnie.",
+        "Do jednego klucza mogą zostać wstawione tysiące danych, ale unikalnie jedne rekordy.",
+        "Rozdziela operację transakcyjne zapisu dla uniknięcia lagów sieci."
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_056",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "struktury_danych",
+      "question": "Lista jednokierunkowa (Linked List), aby móc po niej poprawnie przejść wymaga przynajmniej:",
+      "answers": [
+        "Miejsca w którym kończą się obiekty, wylistowania obiektów po referencji do nazwy i numeru porządkowego.",
+        "Węzła wskazującego obiekt 'HEAD' (głowę), z którego referencja odwołuje do węzła za i tak dalej.",
+        "Znania ogólnego rozmiaru przed kompilacją pamięci by uchronić listę przed zgubieniem bloków.",
+        "Znania indeksu, tak by przejść na dół struktury."
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_057",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "kryptografia",
+      "question": "Metoda uwierzytelniania w którym system udowadnia poświadczenia osobie nie dzieląc samej istoty klucza np. znane z szyfrowania haseł (ang. 'Zero Knowledge Proofs'). Jak nazywa się ta popularna kategoria?",
+      "answers": [
+        "ZKF",
+        "ZKP",
+        "Klucz wymiany PGP",
+        "MAC HMAC Oauth"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_058",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "question": "Który z algorytmów oparty na metodzie Dziel i Zwyciężaj (Divide-and-Conquer) uchodzi za uśrednionego króla szybkości z wykorzystaniem punktu osiowego (Pivot)?",
+      "answers": [
+        "Merge Sort",
+        "Heap Sort",
+        "Quick Sort",
+        "Bubble Sort"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_059",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "programowanie",
+      "question": "Paradygmat tzw. współbieżności i procesów przesyłania wiadomości zamiast korzystania na blokowaniu współdzielonych danych (ang. Actor Model) jest podstawą natywną którego języka operacyjnego?",
+      "answers": [
+        "C++",
+        "Java",
+        "Erlang (lub system Elixir)",
+        "Python"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_060",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "systemy_operacyjne",
+      "question": "Standard zarządzania wymianą danych np. USB w systemach operacyjnych to tzw:",
+      "answers": [
+        "Direct Memory Access (DMA)",
+        "Szyfrowany Transfer Komunikatu (KCF)",
+        "Asynchroniczny Transfer Danych Magistrali Płyty (ATD)",
+        "Transfer Danych Kontrolera Blokującego i Szeregowego (BSSD)"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "tf_031",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "programowanie",
+      "statement": "Język Python opiera się na klamrach i średnikach tak samo jak C czy Java.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_032",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sprzet",
+      "statement": "Jednostka zasilająca komputer nazywana jest popularnie z angielska jako PSU (Power Supply Unit).",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_033",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "statement": "Bazy danych potocznie nazywane NoSQL używają tradycyjnych rygorystycznych relacyjnych schematów z wykorzystaniem kolumn tabeli i kluczy relacyjnych.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_034",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "statement": "W algorytmie Euklidesa do znalezienia wspólnego dzielnika (NWD) konieczna jest dekompozycja do liczb pierwszych.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_035",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "sieci",
+      "statement": "Maski w sieci IPv4 np. 255.255.255.0 posługują do ustalenia granicy bitowej między hostem a identyfikatorem sieci.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_036",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "struktury_danych",
+      "statement": "Dodawanie w strukturze danych Set (np w C++ w std::set ) zapobiega dublowaniu się zmiennych z definicji bez dodatkowych sprawdzeń programisty.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_037",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "programowanie",
+      "statement": "Typowe 'wycieki pamięci' (memory leak) w nowoczesnych projektach np w kodzie Java lub C#, to problem natywnej architektury a programista nie ma z nim do czynienia z uwagi na Garbage Collectory.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_038",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "statement": "Zarządzanie wątkami realizowane w architekturze jądra operacyjnego, z reguły oddelegowuje pojęcia tzw wątków przestrzeni użytkownika dla samej architektury np do maszyn API w programach języka JVM, ignorując je dla jądra systemu.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_039",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "statement": "Problem 3-SAT i cyklu Hamiltona, udowodnione na maszynach jako równe poprzez redukcje wymuszają zasady że rozwiązanie problemów P do NP, jest niemożliwe dla tradycyjnego schematu i na pewno klasa P nie stanowi grupy NP.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_040",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "statement": "Algorytm Grover'a wprowadzony w latach 90 w ramach maszyn i problemów kwantowych znacząco zmniejsza użyteczność szyfrów AES obniżając pojęcia klasyfikacji bezpieczeństwa do ułamkowych i wielomianowych rzutów skali O.",
+      "correct_answer": true
+    },
+    {
+      "id": "ft_016",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "podstawy",
+      "text_with_gaps": "Język znaczników dla witryn tworzących bazę hipertekstu określany jest jako ___ a za style wyglądu służy arkusz ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "HTML"
+        },
+        {
+          "index": 1,
+          "correct": "CSS"
+        }
+      ],
+      "tiles": [
+        "HTML",
+        "HTTP",
+        "CSS",
+        "JavaScript",
+        "REST"
+      ]
+    },
+    {
+      "id": "ft_017",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "text_with_gaps": "Stos to lista gdzie dostępna dla wstawiania operacja odbywa się przez modyfikator ___ zaś wyciągnięcia przez ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Push"
+        },
+        {
+          "index": 1,
+          "correct": "Pop"
+        }
+      ],
+      "tiles": [
+        "Push",
+        "Shift",
+        "Pop",
+        "Remove",
+        "Top"
+      ]
+    },
+    {
+      "id": "ft_018",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "sieci",
+      "text_with_gaps": "Kiedy program chce uzyskać od serwera adres zasobu w formacie URL np obraz.png uruchomi w sieci HTTP zapytanie ___ na wskazanej ramce, w przeciwieństwie do operacji utworzenia określonej modyfikatorem ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "GET"
+        },
+        {
+          "index": 1,
+          "correct": "POST"
+        }
+      ],
+      "tiles": [
+        "GET",
+        "FETCH",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    },
+    {
+      "id": "ft_019",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "bazy_danych",
+      "text_with_gaps": "Wyrażenie grupujące służące w relacji do wyświetlania w statystykach lub grupach wyliczonych z pojęciem np operacji w bazie COUNT() lub SUM() określa się komendą ___ ___, i często przydziela filtr po grupach ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "GROUP BY"
+        },
+        {
+          "index": 1,
+          "correct": "HAVING"
+        }
+      ],
+      "tiles": [
+        "GROUP BY",
+        "ORDER BY",
+        "HAVING",
+        "WHERE",
+        "JOINING"
+      ]
+    },
+    {
+      "id": "ft_020",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "programowanie",
+      "text_with_gaps": "Wykorzystywane wzorce typu Inversion of Control to popularna zasada dla zasobów klasy która wywłaszcza budowę zależności pod nazwą wstrzykiwania lub skrótu ___, odrzucająca bezpośrednie operacje ___ obiektu dla nowej referencji.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "DI (Dependency Injection)"
+        },
+        {
+          "index": 1,
+          "correct": "konstrukcji nowej klasy (new)"
+        }
+      ],
+      "tiles": [
+        "DI (Dependency Injection)",
+        "konstrukcji nowej klasy (new)",
+        "singletonu klasy",
+        "interfejsu fabrycznego"
+      ]
+    },
+    {
+      "id": "ftext_016",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "sprzet",
+      "prompt": "Urządzenie wprowadzające (peryferyjne), wskazujące używane typowo by kontrolować system operacyjny w postaci kursora?",
+      "answer": "Mysz",
+      "prefilled_pattern": "M_s_",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Myszka",
+        "Mouse"
+      ]
+    },
+    {
+      "id": "ftext_017",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "programowanie",
+      "prompt": "Struktura języków obiketowych użyta wyłącznie w deklaracji zachowań by zmusić programiste i kompilator do zaimplementowania wskazanych w niej pustych metod. Np dla Java stosowana jest słowem kluczowym 'implements'.",
+      "answer": "interfejs",
+      "prefilled_pattern": "i_______s",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "interface"
+      ]
+    },
+    {
+      "id": "ftext_018",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "sieci",
+      "prompt": "Błędy zwracane z poziomu klienta w modelu sieciowym HTTP rozpoczynają się od liczby 400. Jaki charakterystyczny numer przyporządkowuje popularny błąd pod zapytanie 'Nie odnaleziono (Not Found)'.",
+      "answer": "404",
+      "prefilled_pattern": "4__",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_019",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "prompt": "Rozważ sytuację, w której drzewo o właściwościach binarnych posiada funkcjonalność obracania węzłów w lewo i prawo, zachowując zbalansowane proporcje wielkości podrzędnych przez czynnik nazywany Balance Factor (-1,0,1). Jak nazywa się wynalezione w 1962 najstarsze, samo-równoważące drzewo operujące w taki sposób?",
+      "answer": "AVL",
+      "prefilled_pattern": "A__",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Drzewo AVL",
+        "AVL tree"
+      ]
+    },
+    {
+      "id": "ftext_020",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "systemy_operacyjne",
+      "prompt": "Strona zarządzania wejścia i mapą dysku fizycznego zwana inaczej Page Table używa rejestracji TLB by zrzucić lub ominąć nadmierne uderzania fizyczne CPU w mapę translacji. Co określa skrót TLB i bufor który omija system z języka angielskiego?",
+      "answer": "Translation Lookaside Buffer",
+      "prefilled_pattern": "T__________ L________ B_____",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Translation Lookaside",
+        "TLB buffer"
+      ]
+    },
+    {
+      "id": "match_011",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "podstawy",
+      "left_items": [
+        "System Windows",
+        "System macOS",
+        "System Linux"
+      ],
+      "right_items": [
+        "Popularny w komputerach dla graczy z uwagi na system DX.",
+        "Zamknięty ekosystem oparty uniksowo firmy Apple.",
+        "Otwarte, darmowe i modyfikowane platformy wspierane globalnie."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_012",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "programowanie",
+      "left_items": [
+        "Pętla FOR",
+        "Pętla WHILE",
+        "Kolekcja Zmiennych"
+      ],
+      "right_items": [
+        "Iterująca na wyznaczonym zakresie numerycznym kodu",
+        "Iterująca oparta na warunku Prawdy bez znajomości zakresu.",
+        "Dane w grupie (np zadeklarowane tablicą w Array)"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_013",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "sieci",
+      "left_items": [
+        "DHCP",
+        "NAT",
+        "PING"
+      ],
+      "right_items": [
+        "Pozyskuje adres identyfikacji lokalnej na zapytanie by obsłużyć urządzenie z automatu w masce.",
+        "Obsługuje przesunięcie do maskowania adresu prywatnego w jeden wiodący publiczny port IP.",
+        "Krótkie komunikaty używające algorytmów ICMP dla testu połączenia pomiędzy hostem a portem docelowym."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_014",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "algorytmy",
+      "left_items": [
+        "Dynamiczne Programowanie",
+        "Metoda Zachłanna",
+        "Algorytmy Kombinatoryki"
+      ],
+      "right_items": [
+        "Działania zapamiętujące obliczane procesy na podproblemach przez tzw memoizację w stos.",
+        "Działania po których podejmuje się operację dla najbardziej wydajnej i aktualnej jednostki z ignorowaniem całości.",
+        "Działania sprawdzające po ścieżkach każdy ułożony i wariacyjny układ drzewa, zwany back-trackingiem z cięciami i heurystykami."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_015",
+      "type": "matching",
+      "difficulty": 5,
+      "category": "bazy_danych",
+      "left_items": [
+        "Klaster i Sharding",
+        "Tradycyjna Baza Master-Slave",
+        "Eventual Consistency (Teoria Bazy NOSQL)"
+      ],
+      "right_items": [
+        "Mechanika podziału danych by zmniejszać przeciążenie zapisu między horyzontalnie przemieszanymi portami w węźle fizycznym",
+        "Jeden punkt służy zapisom jako węzeł decyzyjny a dziesiątki i klastry na wierzchu replikują tylko jego pozycje odczytowe do operacji by zbalansować wiersze",
+        "Mechanika opóźnień między wezłami w chmurze bez wymogu ACID która z biegiem spięć dopełni dane, mimo potencjalnych konfliktów synchronizacyjnch w sekundach lub milisekundach."
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "mc_061",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzet",
+      "question": "Które z wymienionych urządzeń jest urządzeniem wskazującym, często wbudowanym w laptopy?",
+      "answers": [
+        "Skaner",
+        "Kamera internetowa",
+        "Touchpad (gładzik)",
+        "Modem"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_062",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "podstawy",
+      "question": "Jedna cyfra szesnastkowa (hex) odpowiada ilu bitom?",
+      "answers": [
+        "1",
+        "2",
+        "4",
+        "8"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_063",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "question": "W SQL, która klauzula ogranicza liczbę zwracanych rekordów?",
+      "answers": [
+        "ORDER BY",
+        "LIMIT (w wielu dialektach)",
+        "GROUP BY",
+        "HAVING"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_064",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "programowanie",
+      "question": "W kodzie, jak nazywa się proces zamiany np. liczby całkowitej (int) na liczbę zmiennoprzecinkową (float)?",
+      "answers": [
+        "Kompilacja",
+        "Parsowanie",
+        "Rzutowanie (Casting/Type conversion)",
+        "Dziedziczenie"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_065",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "struktury_danych",
+      "question": "Złożoność dodawania elementu na koniec standardowej (niesprężystej) tablicy statycznej pełnej, jeśli wymaga to alokacji nowego obszaru i przekopiowania, wynosi w czasie zamortyzowanym:",
+      "answers": [
+        "O(1)",
+        "O(log n)",
+        "O(n)",
+        "O(n^2)"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_066",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "question": "Które z twierdzeń o drzewach BST jest poprawne dla węzła K?",
+      "answers": [
+        "Wszystkie elementy w prawym poddrzewie K są większe od K",
+        "Wszystkie elementy w lewym poddrzewie K są większe od K",
+        "Węzeł korzeniowy K przechowuje zawsze najmniejszą wartość z drzewa",
+        "Węzeł u dołu trzyma element dominujący w skali węzłów poddrzewa"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_067",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "sieci",
+      "question": "Jaką długość w bitach ma standardowy adres IPv6?",
+      "answers": [
+        "32",
+        "64",
+        "128",
+        "256"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_068",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "kryptografia",
+      "question": "Atak nazywany atakiem słownikowym (Dictionary Attack) polega na:",
+      "answers": [
+        "Odczytaniu słownika z danymi dla protokołów bazy i usunięcie z niego haseł systemowych przy resetowaniu",
+        "Znalezienie losowych definicji ze znakami numerycznymi z bazy binarnej pliku z kluczami sprzętowymi",
+        "Przeszukiwaniu zahashowanej zawartości w plikach systemowych posługując się listą najpowszechniejszych haseł i wyrazów wcześniej przetworzonych w identycznej metodologii hashowania",
+        "Injekcji podapytań przez błędy w autoryzacji baz."
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_069",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "question": "Dla którego rodzaju problemu stosuje się tzw lemat o pompowaniu (pumping lemma) by upewnić się o jego nienależności?",
+      "answers": [
+        "P i NP",
+        "Języków Rekursywnie Przeliczalnych (Typu 0)",
+        "Języków Regularnych (Typu 3) lub Bezkontekstowych (Typu 2)",
+        "Systemy złożoności cyklów Hamiltona i P=NP"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_070",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "programowanie",
+      "question": "W funkcjonalnym programowaniu tzw koncepcja 'Monad' np w Haskellu rozwiązuje:",
+      "answers": [
+        "Błąd dzielenia zmiennoprzecinkowego układu poprzez podział klas i modułów",
+        "Programowe ulepszenia wyliczania pętli iteracyjnej tak aby zużywały minimum pamięci na stertę",
+        "Struktury zachowujące abstrakcje do implementacji tzw side effects na operacjach deterministycznych lub obsługi wyjątku I/O z wyizolowanej struktury bez niszczenia rygorów funkcyjnych kodu.",
+        "Natywna baza instrukcji wektoryzacji pętli procesorów (SIMD)"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "tf_041",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sprzet",
+      "statement": "Port USB służy jedynie do ładowania urządzeń, ale nie do przesyłania danych.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_042",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sieci",
+      "statement": "Wi-Fi (np standardy z grupy 802.11) komunikuje się typowo operując w nielicencjonowanych częstotliwościach falowych.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_043",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "programowanie",
+      "statement": "W podejściu TDD (Test-Driven Development) kod implementacji funkcji pisze się przed utworzeniem testu do tej funkcji.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_044",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "algorytmy",
+      "statement": "Podział przez zmodulowanie modulo (%) z resztą ułamkową używane jest powszechnie by ocenić m.in parzystość liczbową w instrukcjach i kodach programowych",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_045",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "sieci",
+      "statement": "System komunikacji i przydzielania domeny (tzw. NAT) maskuje adresy IP z zakresu sieci prywatnej za adres IP węzła sieci publicznej wystawiając pule portów.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_046",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "bazy_danych",
+      "statement": "Relacja bazy danych pod nazwą 'Wiele do Wielu' (M:N) może być zaimplementowana bez tworzenia osobnej (tzw węzłowej lub joinowej) tabeli spinającej i obsługi referencji asocjacyjnej dla serwerów silnika baz.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_047",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "statement": "Scheduler dla kernela systemu Linux pod nazwą CFS (Completely Fair Scheduler) modeluje sprawiedliwość systemu stosując strukturę opartą na drzewach r-b.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_048",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "kryptografia",
+      "statement": "Długość tzw. funkcji jednokierunkowych hashy rośnie proporcjonalnie i potęgowo do pliku źródłowego- a sam string np dla SHA256 na dużym filmie GB staje się proporcjonalnie długi i pamięciożerny.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_049",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "teoria_obliczen",
+      "statement": "Graf i maszyny stanu np Turinga, definiują w językach regularnych niejednoznaczne determinizmy. Wykorzystując automaty NFA (Non-deterministic finite automaton), można je po kompilacji zawsze przekonwertować i przetłumaczyć na wersję DFA za potęgową ceną dodatkowych wielokrotności stacji maszynowej.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_050",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "statement": "Dekompozycja drzew oraz metoda HLD (Heavy-Light Decomposition) ogranicza zapytania np najniższego rodzica (LCA) spłaszczając odrębne części drzew po pod-strukturach, przyspieszając proces skoków bez limitu do czasu stałego skokowego w poszczególnych iteracjach.",
+      "correct_answer": true
+    },
+    {
+      "id": "ft_021",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "podstawy",
+      "text_with_gaps": "Pliki, które w systemie są upakowane mniejszą wagą do przesyłu bez utraty żadnej informacji za pomocą np algorytmów z serii ZIP nazywamy ___ plikami z bezstratną ___ danych.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "skompresowanymi"
+        },
+        {
+          "index": 1,
+          "correct": "kompresją"
+        }
+      ],
+      "tiles": [
+        "skompresowanymi",
+        "zaszyfrowanymi",
+        "kompresją",
+        "izolacją",
+        "degradacją"
+      ]
+    },
+    {
+      "id": "ft_022",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "programowanie",
+      "text_with_gaps": "W strukturach HTML węzły nazywane tagami służą jako szkielet prezentacji po DOM drzewie. Zazwyczaj wyróżnia się węzeł rozpoczynający oraz węzeł ___, charakteryzujący się dodaniem piktogramu: ___ przy etykiecie nazwy.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "zamykający"
+        },
+        {
+          "index": 1,
+          "correct": "slash /"
+        }
+      ],
+      "tiles": [
+        "zamykający",
+        "inicjujący",
+        "slash /",
+        "backslash \\",
+        "znak >"
+      ]
+    },
+    {
+      "id": "ft_023",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "sieci",
+      "text_with_gaps": "Urządzenie łączące segmenty sieci w ramach jednej LAN działające jako port na podstawie tablicy MAC z regułami przesyłania brzegowego to ___, którego praca rozkłada się logicznie w warstwie ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "przełącznik (Switch)"
+        },
+        {
+          "index": 1,
+          "correct": "drugiej OSI"
+        }
+      ],
+      "tiles": [
+        "przełącznik (Switch)",
+        "hub (Koncentrator)",
+        "drugiej OSI",
+        "czwartej OSI",
+        "trzeciej OSI"
+      ]
+    },
+    {
+      "id": "ft_024",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "systemy_operacyjne",
+      "text_with_gaps": "Fragmentacja zewnętrzna pamięci następuje, gdy małe bloki pamięci ___ na mapie, ułożone rzadko a rozproszone przez błędy bloków na skutek częstego ładowania RAM utrudniają lub uniemożliwiają systemowi wstawienie i przydzielenie pojęć ciągłych. Przeciwdziała zjawisku temu tzw proces ___ dysku albo zarządzania list bloków.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "wolnych / wolnej"
+        },
+        {
+          "index": 1,
+          "correct": "kompakcji / defragmentacji"
+        }
+      ],
+      "tiles": [
+        "wolnych / wolnej",
+        "alokowanych plików",
+        "kompakcji / defragmentacji",
+        "paginacji wirtualnej",
+        "formatowania partycji"
+      ]
+    },
+    {
+      "id": "ft_025",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "text_with_gaps": "Algorytm A* podnosi logikę BFS oraz Dijkstry, opierając szukanie najkrótszej odległości po punktowych ujęciach dystansów w połączeniu o specjalny koszt węzła docelowego oraz funkcja o nazwie ___, np określająca koszta i optymalizacje estymacji Manhattana dla optymalizującego wariant grawitacji f(x) = g(x) + ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "heurystyki (h)"
+        },
+        {
+          "index": 1,
+          "correct": "h(x)"
+        }
+      ],
+      "tiles": [
+        "heurystyki (h)",
+        "odchylenia wagi (w)",
+        "h(x)",
+        "f(x)",
+        "c(x)"
+      ]
+    },
+    {
+      "id": "ftext_021",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "programowanie",
+      "prompt": "W jakim dziale w procesach IT sprawdza się zachowania oprogramowania i stabilność dla zapobiegania awarii tworząc skrypty kontrolne np 'unit' ? Pisz w języku polskim",
+      "answer": "Testowanie",
+      "prefilled_pattern": "T________e",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "testach"
+      ]
+    },
+    {
+      "id": "ftext_022",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "sieci",
+      "prompt": "Protokół bezpołączeniowy TCP/IP pracujący m.in np podczas streamów z kamer, przy odtwarzaniu online gdzie ważniejsza jest zwinność z utratą pakietów niż pewność kontroli strumienia, nazywamy skrótem...",
+      "answer": "UDP",
+      "prefilled_pattern": "U_P",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_023",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "algorytmy",
+      "prompt": "Jeden z prostszych w wyliczeniach algorytm znajdowania drogi w podziałkach po posortowanych grupach tablic i systemach numerycznych (metoda Dziel po Pół na zakres), którego złożoność czasowa spada na O(logN) do elementu nazwany jest ang.",
+      "answer": "Binary search",
+      "prefilled_pattern": "B____y s____h",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "przeszukiwanie binarne"
+      ]
+    },
+    {
+      "id": "ftext_024",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "struktury_danych",
+      "prompt": "Metoda struktury i rozwiązywania w drzewach w programowaniu (oraz plikach w XML i bazach grafowych) zwaną też szukaniem po szerokości w grupach by zyskać listę sąsiadów z danej kasty na bazie algorytmiki grafów, nazywa się potocznie ze skrótu jako ...",
+      "answer": "BFS",
+      "prefilled_pattern": "B_S",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "w szerz"
+      ]
+    },
+    {
+      "id": "ftext_025",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "kryptografia",
+      "prompt": "W koncepcjach kryptograficznych popularna i niezawodna (teoretycznie do momentu skomplikowania po algorytmika i implementacje dla chmur), kryptografia znana jako 'One-Time Pad'. Na jakim operatorze operuje logicznym oparty o dodawanie ujętym matematycznie dla każdego bita dla wiadomości i zmiennej z padem dla kodu maszyn",
+      "answer": "XOR",
+      "prefilled_pattern": "X_R",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Exclusive OR"
+      ]
+    },
+    {
+      "id": "match_016",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "programowanie",
+      "left_items": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "right_items": [
+        "Główna mechanika i wyliczenia kodu logiki stron",
+        "Szkielet konstrukcji okna by opisać tekst blokowy",
+        "Barwy, wielkości stylów układu"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_017",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "bazy_danych",
+      "left_items": [
+        "Typ całkowitoliczbowy SQL",
+        "Typ tekstowy znaków skrót SQL",
+        "Typ logiczny P/F skrót dla np MySQL"
+      ],
+      "right_items": [
+        "INT",
+        "VARCHAR",
+        "BOOLEAN"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_018",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "systemy_operacyjne",
+      "left_items": [
+        "Bootloader",
+        "BIOS / UEFI",
+        "Kernel (Jądro)"
+      ],
+      "right_items": [
+        "Proces osadzany na twardym sprzęcie, kontrolujący i zaciągający wektory podziałów",
+        "Oprogramowanie bazowe dla koordynacji wejścia nałożone z płytą dla konfiguracji urządzeń startu z procesorem",
+        "Układ programu inicjującego z masą sterowników dla obsługi systemu operacyjnego i podniesienia flag interfejsu programistycznych do procesów RAM"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_019",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "sieci",
+      "left_items": [
+        "Certyfikat SSL / TLS",
+        "Port Firewall / FW",
+        "DMZ (Strefa Demilitaryzacji)"
+      ],
+      "right_items": [
+        "Moduł blokady programowej na połączenia wyselekcjonowanej usługi (Drop/Reject) wg logiki IP",
+        "Autoryzuje szyfry podmiotów przed rozpoczęciem protokołu komunikacji za pomocą mechanizmu Handshake z instancją asymetryczną z użyciem autorytatywnych urzędów (CA)",
+        "Konfiguracja oddelegowanego publicznie segmentu by obronić z wewnętrznymi urządzeniami resztą stacji z LAN prywatnej, a udostępnić usługę pod ostrzał zewnętrznych np WWW"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_020",
+      "type": "matching",
+      "difficulty": 5,
+      "category": "algorytmy",
+      "left_items": [
+        "Podejście Dynamiczne NP NP-T Problem Plecakowy",
+        "Zachłanność (Greedy Method)",
+        "Struktury Cyklu Hamiltonowskiego Grafy O()"
+      ],
+      "right_items": [
+        "Działa optymalnie wyliczając i korelując np wartości przez pamięciowe zaplecza i matryce po indeksie dla rozwiązania kompletnego maksimum bez braków decyzyjności (K=w, I=N) z reguł od dołu (Bottom-Up) i stacji Memoizacji z górą",
+        "Przyjmują za pewnik heurystyki decyzji ucinanej a brak optymalności w szukaniu na np pełnym plecaku podnosi szybkości kosztem dokładności na węzłach",
+        "Sposoby dla poszukiwania problemu ścieżki i powrotu na NP dla każdego bez duplikatów z użyciem logiki na algorytmie O(N!) lub 2^N z minimalizacją o algorytm podwieszonego back-tracku by wygłodzić"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
         }
       ]
     }

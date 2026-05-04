@@ -37,6 +37,7 @@ var _answered_p2   : bool       = false
 var _correct_p1    : bool       = false
 var _correct_p2    : bool       = false
 var _locked        : bool       = false
+var current_dead_player: int = 0
 
 # fill_tiles
 var _tile_slots    : Array[String]  = []
@@ -61,29 +62,35 @@ func _ready() -> void:
 # Publiczne API
 # ─────────────────────────────────────────────────────────────────────────────
 
-func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float) -> void:
+# Publiczne API
+func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, dead_pid: int = 0) -> void:
 	_question    = question
 	_mode        = rival_mode
 	_time_left   = time_limit
 	_total_time  = time_limit
+	current_dead_player = dead_pid # <--- TUTAJ ZAPISUJEMY KTO NIE ŻYJE!
+	
 	_answered_p1 = false
 	_answered_p2 = false
 	_correct_p1  = false
 	_correct_p2  = false
+	
 	_tile_slots.clear()
 	_tile_buttons.clear()
 	_gap_labels.clear()
 	_active_gap   = 0
+	
 	_match_selected = -1
 	_match_pairs.clear()
 	_match_left_btns.clear()
 	_match_right_btns.clear()
+	
 	_build_ui()
 	visible = true
 	_timer_node.wait_time = time_limit
 	_timer_node.start()
 	_locked=false
-
+	
 # ─────────────────────────────────────────────────────────────────────────────
 # Budowanie UI
 # ─────────────────────────────────────────────────────────────────────────────
@@ -462,54 +469,109 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 
 	_check_versus_done()
 
+func _show_complex_result(correct: bool) -> void:
+	var qtype : String = _question.get("type", "multiple_choice")
+
+	if correct:
+		# Zielony nagłówek
+		var lbl := Label.new()
+		lbl.text = "✅ Poprawnie!"
+		lbl.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4))
+		_answers_box.add_child(lbl)
+		return
+
+	# Przy złej odpowiedzi — pokaż poprawną
+	var lbl_wrong := Label.new()
+	lbl_wrong.text = "❌ Błędna odpowiedź!"
+	lbl_wrong.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+	_answers_box.add_child(lbl_wrong)
+
+	if qtype == "fill_text":
+		var answers : Array = _question.get("accepted_answers", [])
+		var lbl := Label.new()
+		lbl.text = "Poprawne odpowiedzi: %s" % ", ".join(answers)
+		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		_answers_box.add_child(lbl)
+
+	elif qtype == "fill_tiles":
+		var gaps : Array = _question.get("gaps", [])
+		var lbl := Label.new()
+		lbl.text = "Poprawna kolejność: %s" % ", ".join(gaps)
+		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		_answers_box.add_child(lbl)
 
 func _check_versus_done() -> void:
 	match _mode:
 		RivalMode.SOLO, RivalMode.DUEL_P1, RivalMode.DUEL_P2:
 			var correct : bool = _correct_p2 if _mode == RivalMode.DUEL_P2 else _correct_p1
 			_timer_node.stop()
-			await get_tree().create_timer(3.0).timeout
-			_resolve(correct)
+			await get_tree().create_timer(2.0).timeout # Czas ujednolicony
+			_locked = false
+			_route_duel_result(correct)
 		RivalMode.VERSUS:
-			# Pierwszy który odpowie kończy rundę — drugi nie może już odpowiadać
 			_timer_node.stop()
 			await get_tree().create_timer(3.0).timeout
 			_resolve_versus()
 
-
 func _finish_complex(correct: bool) -> void:
 	_timer_node.stop()
-	await get_tree().create_timer(0.8).timeout
-	_resolve(correct)
+	_show_complex_result(correct)
+	await get_tree().create_timer(2.0).timeout
+	_locked = false
+	_route_duel_result(correct)
 
-
-func _resolve(p1_correct: bool) -> void:
-	if _mode == RivalMode.DUEL_P2:
-		if p1_correct:
-			_emit_result(0)   # P2 poprawnie → turniej trwa
+# Nowy wspólny "dyrygent" dla pytań prostych i złożonych
+func _route_duel_result(correct: bool) -> void:
+	if _mode == RivalMode.DUEL_P1:
+		if correct:
+			_emit_result(0)   # P1 poprawnie -> przerzuć na P2 (Ping-Pong)
+			_locked = false
 		else:
-			_emit_result(1)   # P2 źle → P1 wygrywa
-	else:
-		if p1_correct:
-			_emit_result(1)   # P1 respawn
+			_emit_result(2)   # P1 źle -> P1 ginie, wygrywa P2
+			_locked = false
+	elif _mode == RivalMode.DUEL_P2:
+		if correct:
+			_emit_result(3)   # P2 poprawnie -> przerzuć na P1 (Ping-Pong)
+			_locked = false
 		else:
-			_emit_result(2)   # P1 odpada
-
+			_emit_result(1)   # P2 źle -> P2 ginie, wygrywa P1
+			_locked = false
+	else: # Tryb SOLO
+		if correct:
+			_emit_result(1)   # Solo sukces
+		else:
+			_emit_result(2)   # Solo porażka
 
 func _resolve_versus() -> void:
-	if _correct_p1 and not _correct_p2:
-		_emit_result(1)
-	elif _correct_p2 and not _correct_p1:
-		_emit_result(2)
-	elif _correct_p1 and _correct_p2:
-		_emit_result(1)   # Obaj poprawnie → P1 respawn
-	else:
-		_emit_result(2)   # Obaj źle → P1 odpada
-
+	if _answered_p1:
+		if _correct_p1:
+			_emit_result(1) # P1 był szybszy i zgadł -> Wygrywa P1
+		else:
+			_emit_result(2) # P1 był szybszy, ale się pomylił -> Wygrywa P2
+			
+	elif _answered_p2:
+		if _correct_p2:
+			_emit_result(2) # P2 był szybszy i zgadł -> Wygrywa P2
+		else:
+			_emit_result(1) # P2 był szybszy, ale się pomylił -> Wygrywa P1
 
 func _on_timer_timeout() -> void:
-	_emit_result(2)
-
+	if _mode == RivalMode.VERSUS:
+		# Brak odpowiedzi faworyzuje gracza, który ŻYJE (karze gracza martwego).
+		# Tu wykorzystujemy current_dead_player, którego podaliśmy z GameManagera!
+		if current_dead_player == 1:
+			_emit_result(2) # P1 martwy, czas minął -> Wygrywa P2
+		else:
+			_emit_result(1) # P2 martwy, czas minął -> Wygrywa P1
+			
+	elif _mode == RivalMode.DUEL_P1:
+		_emit_result(2)   # Czas minął P1 -> P2 wygrywa
+	elif _mode == RivalMode.DUEL_P2:
+		_emit_result(1)   # Czas minął P2 -> P1 wygrywa
+	else:
+		_emit_result(2)   # Czas minął w trybie Solo (porażka)
 
 func _emit_result(winner_id: int) -> void:
 	visible = false
