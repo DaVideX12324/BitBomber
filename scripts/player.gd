@@ -275,7 +275,7 @@ func take_hit() -> void:
 	lives -= 1
 	lives_changed.emit(player_id, lives)
 	if lives <= 0:
-		is_alive      = true
+		is_alive      = false
 		_pending_elim = true
 		if is_bot:
 			_eliminate()

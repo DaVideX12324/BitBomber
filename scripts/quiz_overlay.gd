@@ -198,6 +198,7 @@ func _build_fill_tiles() -> void:
 		hbox_text.add_child(lbl)
 		if i < gaps.size():
 			var gap_btn := Button.new()
+			gap_btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO
 			gap_btn.custom_minimum_size = Vector2(120, 36)
 			gap_btn.text = "[ ___ ]"
 			gap_btn.pressed.connect(_on_gap_clicked.bind(i))
@@ -213,12 +214,14 @@ func _build_fill_tiles() -> void:
 	for tile in tiles:
 		var tbtn := Button.new()
 		tbtn.text = str(tile)
+		tbtn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO (Kafelki)
 		tbtn.pressed.connect(_on_tile_clicked.bind(str(tile), tbtn))
 		tile_box.add_child(tbtn)
 		_tile_buttons.append(tbtn)
 
 	var confirm := Button.new()
 	confirm.text = "✔ Zatwierdź (Enter)"
+	confirm.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO (Zatwierdź)
 	confirm.pressed.connect(_on_fill_tiles_confirm)
 	_answers_box.add_child(confirm)
 
@@ -238,7 +241,7 @@ func _build_fill_text() -> void:
 	line_edit.placeholder_text = "Wpisz odpowiedź…"
 	_answers_box.add_child(line_edit)
 	line_edit.grab_focus()
-
+	line_edit.text_submitted.connect(func(text): _on_fill_text_confirm())
 	var confirm := Button.new()
 	confirm.text = "✔ Zatwierdź (Enter)"
 	confirm.pressed.connect(_on_fill_text_confirm)
@@ -258,6 +261,7 @@ func _build_matching() -> void:
 	grid.add_child(left_col)
 	for i in range(left_items.size()):
 		var btn := Button.new()
+		btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TĘ LINIJKĘ TUTAJ
 		btn.text = str(left_items[i])
 		btn.pressed.connect(_on_match_left.bind(i))
 		left_col.add_child(btn)
@@ -267,6 +271,7 @@ func _build_matching() -> void:
 	grid.add_child(right_col)
 	for i in range(right_items.size()):
 		var btn := Button.new()
+		btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TĘ LINIJKĘ TUTAJ
 		btn.text = str(right_items[i])
 		btn.pressed.connect(_on_match_right.bind(i))
 		right_col.add_child(btn)
@@ -421,14 +426,37 @@ func _on_match_left(index: int) -> void:
 func _on_match_right(index: int) -> void:
 	if _match_selected < 0:
 		return
-	_match_pairs[_match_selected] = index
-	_match_right_btns[index].add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+		
 	var left_items : Array = _question.get("left_items", [])
+
+	# 1. Sprawdzamy, czy ten PRAWY element jest już przypisany do jakiegoś LEWEGO terminu.
+	# Jeśli tak, usuwamy stare przypisanie i zabieramy mu "ptaszka".
+	for key in _match_pairs.keys():
+		if _match_pairs[key] == index:
+			_match_pairs.erase(key)
+			if key < _match_left_btns.size():
+				_match_left_btns[key].text = str(left_items[key]) # Reset tekstu (bez ✓)
+
+	# 2. Zapisujemy nowe przypisanie
+	_match_pairs[_match_selected] = index
+	
+	# 3. Aktualizujemy tekst nowo przypisanego lewego przycisku (dodajemy ✓)
 	if _match_selected < _match_left_btns.size():
 		_match_left_btns[_match_selected].text = str(left_items[_match_selected]) + " ✓"
+		
 	_match_selected = -1
+	
+	# 4. Odświeżamy kolory wszystkich przycisków
+	# Lewe tracą żółte podświetlenie selekcji
 	for btn : Button in _match_left_btns:
 		btn.remove_theme_color_override("font_color")
+		
+	# Prawe dostają zielony kolor TYLKO, jeśli są w słowniku przypisań
+	for i in range(_match_right_btns.size()):
+		if _match_pairs.values().has(i):
+			_match_right_btns[i].add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+		else:
+			_match_right_btns[i].remove_theme_color_override("font_color")
 
 
 func _on_matching_confirm() -> void:
@@ -496,9 +524,18 @@ func _show_complex_result(correct: bool) -> void:
 	_answers_box.add_child(lbl_wrong)
 
 	if qtype == "fill_text":
-		var answers : Array = _question.get("accepted_answers", [])
+		# Pobieramy główną odpowiedź oraz alternatywy używając poprawnych kluczy z JSON
+		var main_answer : String = _question.get("answer", "")
+		var alternatives : Array = _question.get("accepted_alternatives", [])
+		
+		# Łączymy je w jedną listę
+		var all_correct : Array[String] = [main_answer]
+		for alt in alternatives:
+			all_correct.append(str(alt))
+			
 		var lbl := Label.new()
-		lbl.text = "Poprawne odpowiedzi: %s" % ", ".join(answers)
+		# Formatujemy ładny tekst z połączoną listą
+		lbl.text = "Poprawne odpowiedzi: %s" % ", ".join(all_correct)
 		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
 		_answers_box.add_child(lbl)
@@ -516,6 +553,25 @@ func _show_complex_result(correct: bool) -> void:
 			lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 			lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
 			_answers_box.add_child(lbl)
+	elif qtype == "matching":
+		var left_items : Array = _question.get("left_items", [])
+		var right_items : Array = _question.get("right_items", [])
+		var pairs : Array = _question.get("pairs", [])
+		
+		var correct_matches : Array[String] = []
+		for pair in pairs:
+			var l_idx = pair.get("left_index", -1)
+			var r_idx = pair.get("right_index", -1)
+			if l_idx >= 0 and l_idx < left_items.size() and r_idx >= 0 and r_idx < right_items.size():
+				# Formatujemy parę np. "RAM ➔ Podstawowa pamięć operacyjna ulotna"
+				correct_matches.append(str(left_items[l_idx]) + " ➔ " + str(right_items[r_idx]))
+		
+		var lbl := Label.new()
+		lbl.text = "Poprawne dopasowania:\n" + "\n".join(correct_matches)
+		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		_answers_box.add_child(lbl)
+
 
 func _check_versus_done() -> void:
 	match _mode:

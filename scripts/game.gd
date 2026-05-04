@@ -73,6 +73,7 @@ func load_room(path: String) -> void:
 func load_menu() -> void:
 	if RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
+		_clear_players()
 	_load_menu()
 
 
