@@ -103,7 +103,6 @@ bb.start_session({
 - [ ] Więcej aren
 - [ ] Power-up: tarcza / freeze
 - [ ] Obsługa pytań dostarczanych przez hosta (tryb embedded)
-- [ ] Eksport na Android
 - [ ] Wyniki i statystyki sesji
 
 ---
