@@ -64,6 +64,10 @@ func _ready() -> void:
 
 # Publiczne API
 func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, dead_pid: int = 0) -> void:
+	print("\n--- QUIZ START ---")
+	print("Tryb: ", RivalMode.keys()[rival_mode])
+	print("Typ pytania: ", question.get("type", "unknown"))
+	print("Martwy gracz (ID): ", dead_pid)
 	_question    = question
 	_mode        = rival_mode
 	_time_left   = time_limit
@@ -440,10 +444,12 @@ func _on_matching_confirm() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _submit_answer(player_id: int, answer_index: int) -> void:
-	if _locked:
+	if _locked: 
+		print("DEBUG: Quiz zablokowany, ignoruję odpowiedź gracza ", player_id)
 		return
+	
 	_locked = true
-	var qtype    : String = _question.get("type", "multiple_choice")
+	var qtype : String = _question.get("type", "multiple_choice")
 	var is_correct : bool = false
 
 	if qtype == "multiple_choice":
@@ -452,6 +458,9 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 		var bool_val : bool = (answer_index == 0)
 		is_correct = (bool_val == _question.get("correct_answer", false) as bool)
 
+	print("DEBUG: Gracz ", player_id, " odpowiedział (index: ", answer_index, "). Poprawnie? ", is_correct)
+
+	# Wizualizacja na przyciskach
 	var btns : Array = _answers_box.get_children()
 	if answer_index < btns.size():
 		var btn := btns[answer_index] as Button
@@ -462,10 +471,10 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 
 	if player_id == 1:
 		_answered_p1 = true
-		_correct_p1  = is_correct
+		_correct_p1 = is_correct
 	else:
 		_answered_p2 = true
-		_correct_p2  = is_correct
+		_correct_p2 = is_correct
 
 	_check_versus_done()
 
@@ -495,12 +504,18 @@ func _show_complex_result(correct: bool) -> void:
 		_answers_box.add_child(lbl)
 
 	elif qtype == "fill_tiles":
-		var gaps : Array = _question.get("gaps", [])
-		var lbl := Label.new()
-		lbl.text = "Poprawna kolejność: %s" % ", ".join(gaps)
-		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
-		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
-		_answers_box.add_child(lbl)
+			var gaps : Array = _question.get("gaps", [])
+			var correct_texts : Array[String] = []
+			
+			# Wyciągamy same poprawne słowa, ignorując indeksy
+			for g in gaps:
+				correct_texts.append(str(g.get("correct", "")))
+				
+			var lbl := Label.new()
+			lbl.text = "Poprawna kolejność: %s" % ", ".join(correct_texts)
+			lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+			lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+			_answers_box.add_child(lbl)
 
 func _check_versus_done() -> void:
 	match _mode:
@@ -524,56 +539,54 @@ func _finish_complex(correct: bool) -> void:
 
 # Nowy wspólny "dyrygent" dla pytań prostych i złożonych
 func _route_duel_result(correct: bool) -> void:
+	print("DEBUG: Rozstrzyganie pojedynku. Czy martwy odpowiedział poprawnie? ", correct)
 	if _mode == RivalMode.DUEL_P1:
 		if correct:
-			_emit_result(0)   # P1 poprawnie -> przerzuć na P2 (Ping-Pong)
-			_locked = false
+			print("RESULT: P1 OK -> Kod 0 (Przerzut na P2)")
+			_emit_result(0)
 		else:
-			_emit_result(2)   # P1 źle -> P1 ginie, wygrywa P2
-			_locked = false
+			print("RESULT: P1 BŁĄD -> Kod 2 (Win P2 / P1 odpada)")
+			_emit_result(2)
 	elif _mode == RivalMode.DUEL_P2:
 		if correct:
-			_emit_result(3)   # P2 poprawnie -> przerzuć na P1 (Ping-Pong)
-			_locked = false
+			print("RESULT: P2 OK -> Kod 3 (Przerzut na P1)")
+			_emit_result(3)
 		else:
-			_emit_result(1)   # P2 źle -> P2 ginie, wygrywa P1
-			_locked = false
-	else: # Tryb SOLO
-		if correct:
-			_emit_result(1)   # Solo sukces
-		else:
-			_emit_result(2)   # Solo porażka
+			print("RESULT: P2 BŁĄD -> Kod 1 (Win P1 / P2 odpada)")
+			_emit_result(1)
+	else:
+		print("RESULT: Tryb SOLO/Inny. Sukces? ", correct, " -> Kod: ", (1 if correct else 2))
+		_emit_result(1 if correct else 2)
 
 func _resolve_versus() -> void:
+	print("DEBUG: Rozstrzyganie VERSUS (Kto pierwszy ten lepszy)")
 	if _answered_p1:
-		if _correct_p1:
-			_emit_result(1) # P1 był szybszy i zgadł -> Wygrywa P1
-		else:
-			_emit_result(2) # P1 był szybszy, ale się pomylił -> Wygrywa P2
-			
+		print("DEBUG: P1 odpowiedział pierwszy. Poprawnie? ", _correct_p1)
+		if _correct_p1: _emit_result(1)
+		else: _emit_result(2)
 	elif _answered_p2:
-		if _correct_p2:
-			_emit_result(2) # P2 był szybszy i zgadł -> Wygrywa P2
-		else:
-			_emit_result(1) # P2 był szybszy, ale się pomylił -> Wygrywa P1
-
+		print("DEBUG: P2 odpowiedział pierwszy. Poprawnie? ", _correct_p2)
+		if _correct_p2: _emit_result(2)
+		else: _emit_result(1)
+		
 func _on_timer_timeout() -> void:
+	print("DEBUG: Czas minął!")
 	if _mode == RivalMode.VERSUS:
-		# Brak odpowiedzi faworyzuje gracza, który ŻYJE (karze gracza martwego).
-		# Tu wykorzystujemy current_dead_player, którego podaliśmy z GameManagera!
-		if current_dead_player == 1:
-			_emit_result(2) # P1 martwy, czas minął -> Wygrywa P2
-		else:
-			_emit_result(1) # P2 martwy, czas minął -> Wygrywa P1
-			
+		print("RESULT: VERSUS Timeout. Martwy był: ", current_dead_player, " -> faworyzuję obrońcę")
+		if current_dead_player == 1: _emit_result(2)
+		else: _emit_result(1)
 	elif _mode == RivalMode.DUEL_P1:
-		_emit_result(2)   # Czas minął P1 -> P2 wygrywa
+		print("RESULT: DUEL P1 Timeout -> Win P2")
+		_emit_result(2)
 	elif _mode == RivalMode.DUEL_P2:
-		_emit_result(1)   # Czas minął P2 -> P1 wygrywa
+		print("RESULT: DUEL P2 Timeout -> Win P1")
+		_emit_result(1)
 	else:
-		_emit_result(2)   # Czas minął w trybie Solo (porażka)
+		print("RESULT: SOLO Timeout -> Porażka")
+		_emit_result(2)
 
 func _emit_result(winner_id: int) -> void:
+	print("--- QUIZ EMIT RESULT: ", winner_id, " ---\n")
 	visible = false
 	quiz_result.emit(winner_id)
 
