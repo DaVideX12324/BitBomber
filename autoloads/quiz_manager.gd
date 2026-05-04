@@ -217,8 +217,11 @@ func _check_answer(question: Dictionary, player_answer: Dictionary) -> bool:
 			var placements: Dictionary = player_answer.get("placements", {})
 			var gaps: Array = question.get("gaps", [])
 			for gap in gaps:
-				var idx = str(gap.get("index", -1))
-				if placements.get(idx, "") != gap.get("correct", ""):
+				var idx = str(int(gap.get("index", -1)))
+				var player_val = str(placements.get(idx, "")).strip_edges().to_lower()
+				var correct_val = str(gap.get("correct", "")).strip_edges().to_lower()
+				
+				if player_val != correct_val:
 					return false
 			return true
 
