@@ -4,10 +4,12 @@ extends CanvasLayer
 ##
 ## Tryby działania:
 ##   LAST_CHANCE  — gracz zginął, quiz daje szansę na respawn
-##   ROUND_END    — runda skończyła się
+##   ROUND_END    — runda skończyła się (można przejść dalej)
 ##   GAME_OVER    — cała sesja zakończona
 ##
-## Quiz wbudowany jako sub-flow przed decyzją o respawnie.
+## Kolejność sygnałów z RoundManagera:
+##   round_ended  → _on_round_ended  → show_round_end  (BtnContinue widoczny)
+##   session_ended→ _on_session_ended → show_game_over  (nadpisuje jeśli sesja się skończyła)
 
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
@@ -49,9 +51,9 @@ func _on_last_chance(dead_player_id: int) -> void:
 	_start_quiz_flow(dead_player_id)
 
 
+## Zawsze pokazujemy ekran końca rundy — jeśli sesja się skończyła,
+## _on_session_ended nadpisze go ekranem GAME_OVER zaraz po tym.
 func _on_round_ended(winner_id: int) -> void:
-	if GameManager.current_state == GameManager.GameState.GAME_OVER:
-		return
 	if winner_id >= 1:
 		show_round_end(winner_id)
 	else:
@@ -100,7 +102,7 @@ func _get_weighted_question(allowed_types: Array = []) -> Dictionary:
 				var t = q.get("type", "multiple_choice")
 				if not t in allowed_types:
 					continue
-			
+
 			var d : int = q.get("difficulty", 1)
 			if d < range_v.x or d > range_v.y: continue
 

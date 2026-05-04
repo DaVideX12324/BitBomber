@@ -58,28 +58,30 @@ func end_round(winner_id: int) -> void:
 	if winner_id >= 1:
 		round_wins[winner_id] = round_wins.get(winner_id, 0) + 1
 
-	round_ended.emit(winner_id)
+	# Najpierw ustal czy sesja się kończy
+	var session_winner := _compute_session_winner(winner_id)
+
+	# Zmień stan na ROUND_END (death_screen będzie wiedział że to normalny koniec rundy)
 	GameManager.change_state(GameManager.GameState.ROUND_END)
-	_check_session_winner(winner_id)
+
+	# Emituj round_ended — death_screen pokazuje ekran z przyciskiem
+	round_ended.emit(winner_id)
+
+	# Jeśli sesja się skończyła — zmień stan i emituj session_ended (nadpisze ekran)
+	if session_winner != 0:
+		GameManager.change_state(GameManager.GameState.GAME_OVER)
+		session_ended.emit(session_winner)
 
 
-func _timeout_round() -> void:
-	_round_active = false
-	end_round(-1)
-
-
-func _check_session_winner(winner_id: int) -> void:
+## Zwraca ID zwycięzcy sesji (>0) lub remis (-1), lub 0 jeśli sesja trwa nadal.
+func _compute_session_winner(winner_id: int) -> int:
 	var wc := GameManager.win_condition
 
 	if wc == GameManager.WinCondition.FIRST_TO_X:
-		# Wygrywa ten, kto pierwszy zdobędzie rounds_to_win wygranych rund
 		if winner_id >= 1 and round_wins.get(winner_id, 0) >= GameManager.rounds_to_win:
-			GameManager.change_state(GameManager.GameState.GAME_OVER)
-			session_ended.emit(winner_id)
-		# else: gra toczy się dalej, death_screen pokaże przycisk "Następna runda"
+			return winner_id
 
 	elif wc == GameManager.WinCondition.MOST_WINS_IN_Y:
-		# Po wyczerpaniu max_rounds rund wygrywa ten z największą liczbą wygranych
 		if current_round >= GameManager.max_rounds:
 			var best_id   := -1
 			var best_wins := -1
@@ -92,9 +94,14 @@ func _check_session_winner(winner_id: int) -> void:
 					tie       = false
 				elif w == best_wins:
 					tie = true
-			GameManager.change_state(GameManager.GameState.GAME_OVER)
-			session_ended.emit(-1 if tie else best_id)
-		# else: gra toczy się dalej
+			return -1 if tie else best_id
+
+	return 0  # sesja trwa nadal
+
+
+func _timeout_round() -> void:
+	_round_active = false
+	end_round(-1)
 
 
 # ---------------------------------------------------------------------------
@@ -146,7 +153,6 @@ func get_last_chance_player() -> int:
 func rounds_remaining() -> int:
 	match GameManager.win_condition:
 		GameManager.WinCondition.FIRST_TO_X:
-			# Ile rund potrzebuje lider do wygrania
 			var best := 0
 			for pid in round_wins:
 				if round_wins[pid] > best:
