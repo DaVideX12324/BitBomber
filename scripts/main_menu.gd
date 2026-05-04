@@ -1,4 +1,4 @@
-extends Control
+extends CanvasLayer
 
 ## Menu główne BitBomber.
 ## 1P: radio 1-3 boty + trudność + tryb wygranej + Zagraj!
