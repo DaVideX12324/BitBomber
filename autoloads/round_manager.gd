@@ -19,10 +19,6 @@ var round_time_limit: float = 180.0
 var _round_timer: float = 0.0
 var _round_active: bool = false
 
-## Czy rozgrywka to tryb "do X wygranych rund" czy "jedno życie = koniec"
-## Ustawiane automatycznie w reset_session().
-var _single_round_mode: bool = true
-
 
 func _process(delta: float) -> void:
 	if not _round_active or round_time_limit <= 0.0:
@@ -41,9 +37,6 @@ func reset_session() -> void:
 	current_round = 0
 	_round_active = false
 	_round_timer = 0.0
-	# W trybie z botami gramy do momentu aż jeden gracz zostanie —
-	# nie ma tur "runda po rundzie", więc ekran końcowy to zawsze GAME_OVER.
-	_single_round_mode = GameManager.num_bots > 0
 
 
 # ---------------------------------------------------------------------------
@@ -66,14 +59,8 @@ func end_round(winner_id: int) -> void:
 		round_wins[winner_id] = round_wins.get(winner_id, 0) + 1
 
 	round_ended.emit(winner_id)
-
-	if _single_round_mode:
-		# Tryb z botami: jedna runda = cała gra → od razu GAME_OVER
-		GameManager.change_state(GameManager.GameState.GAME_OVER)
-		session_ended.emit(winner_id)
-	else:
-		GameManager.change_state(GameManager.GameState.ROUND_END)
-		_check_session_winner(winner_id)
+	GameManager.change_state(GameManager.GameState.ROUND_END)
+	_check_session_winner(winner_id)
 
 
 func _timeout_round() -> void:
@@ -82,8 +69,32 @@ func _timeout_round() -> void:
 
 
 func _check_session_winner(winner_id: int) -> void:
-	if winner_id >= 1 and round_wins.get(winner_id, 0) >= GameManager.rounds_to_win:
-		session_ended.emit(winner_id)
+	var wc := GameManager.win_condition
+
+	if wc == GameManager.WinCondition.FIRST_TO_X:
+		# Wygrywa ten, kto pierwszy zdobędzie rounds_to_win wygranych rund
+		if winner_id >= 1 and round_wins.get(winner_id, 0) >= GameManager.rounds_to_win:
+			GameManager.change_state(GameManager.GameState.GAME_OVER)
+			session_ended.emit(winner_id)
+		# else: gra toczy się dalej, death_screen pokaże przycisk "Następna runda"
+
+	elif wc == GameManager.WinCondition.MOST_WINS_IN_Y:
+		# Po wyczerpaniu max_rounds rund wygrywa ten z największą liczbą wygranych
+		if current_round >= GameManager.max_rounds:
+			var best_id   := -1
+			var best_wins := -1
+			var tie       := false
+			for pid in round_wins:
+				var w: int = round_wins[pid]
+				if w > best_wins:
+					best_wins = w
+					best_id   = pid
+					tie       = false
+				elif w == best_wins:
+					tie = true
+			GameManager.change_state(GameManager.GameState.GAME_OVER)
+			session_ended.emit(-1 if tie else best_id)
+		# else: gra toczy się dalej
 
 
 # ---------------------------------------------------------------------------
@@ -130,3 +141,18 @@ func get_wins(player_id: int) -> int:
 
 func get_last_chance_player() -> int:
 	return _last_chance_player_id
+
+
+func rounds_remaining() -> int:
+	match GameManager.win_condition:
+		GameManager.WinCondition.FIRST_TO_X:
+			# Ile rund potrzebuje lider do wygrania
+			var best := 0
+			for pid in round_wins:
+				if round_wins[pid] > best:
+					best = round_wins[pid]
+			return GameManager.rounds_to_win - best
+		GameManager.WinCondition.MOST_WINS_IN_Y:
+			return GameManager.max_rounds - current_round
+		_:
+			return 0

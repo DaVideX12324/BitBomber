@@ -12,19 +12,35 @@ enum GameState {
 	GAME_OVER
 }
 
+enum WinCondition {
+	FIRST_TO_X,    ## Wygrywa ten, kto pierwszy zdobędzie X rund
+	MOST_WINS_IN_Y ## Wygrywa ten, kto ma więcej wygranych po Y rundach
+}
+
 signal state_changed(old_state: GameState, new_state: GameState)
 
 var current_state: GameState = GameState.MENU
 
 var num_human_players: int = 1
 var num_bots: int = 1
-var rounds_to_win: int = 3
+var rounds_to_win: int = 3   ## Używane w trybie FIRST_TO_X
+var max_rounds: int = 5      ## Używane w trybie MOST_WINS_IN_Y (max 20)
 
 ## Poziom trudności botów: 0=Easy 1=Medium 2=Hard (mapowane na BotAI.Difficulty)
 var bot_difficulty: int = 0
 
+## Warunek wygranej sesji
+var win_condition: WinCondition = WinCondition.FIRST_TO_X
+
 ## Referencja do persistentnego roota (ustawiana przez game.gd)
 var game_node: Node = null
+
+## Tryb embedded: null = standalone, Node = host modułu
+var host_module: Node = null
+
+
+func is_embedded() -> bool:
+	return host_module != null
 
 
 func change_state(new_state: GameState) -> void:
@@ -58,7 +74,9 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 
 func go_to_menu() -> void:
 	change_state(GameState.MENU)
-	if game_node:
+	if is_embedded():
+		host_module.emit_signal("exit_requested")
+	elif game_node:
 		game_node.load_menu()
 	else:
 		get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
