@@ -210,7 +210,6 @@ func _on_quiz_result(winner_id: int) -> void:
 			show_game_over(1) # P1 wygrywa całą sesję
 			
 		# --- WYMIANA CIOSÓW (turniej/odbijanie piłeczki) ---
-		# Znak '_' (wildcard) oznacza, że nie ma znaczenia, kto obecnie nie żyje
 		[_, 0]: # P1 odpowiedział poprawnie -> kolej P2
 			_duel_active = true
 			_ask_question_p2()
@@ -266,6 +265,8 @@ func show_game_over(winner_id: int) -> void:
 	_btn_menu.text = "Menu główne"
 	_show()
 	_do_pause()
+	if GameManager.is_embedded():
+		GameManager.host_module._emit_session_finished(winner_id)
 
 
 # ---------------------------------------------------------------------------
