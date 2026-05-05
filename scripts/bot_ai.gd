@@ -5,7 +5,7 @@
 # ======================================================
 
 extends Node
-class_name BombItAI
+class_name BotAi
 
 # ------ BOT NODE INTERFACE -------------------------
 # Zmień na właściwy typ jeśli nie używasz CharacterBody2D
@@ -198,11 +198,12 @@ func _roll_next_answer_time():
 	ai_answer_time = randf_range(range_vec.x, range_vec.y)
 	
 func _dbg(msg: String):
-	var alive = "LIVING"
-	if bot_node and bot_node.get(BOT_IS_ALIVE) == false:
-		alive = "DEAD"
-	var state_str = BotState.keys()[current_state] if current_state != null else "NONE"
-	print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
+	if GameManager.debug_enabled:
+		var alive = "LIVING"
+		if bot_node and bot_node.get(BOT_IS_ALIVE) == false:
+			alive = "DEAD"
+		var state_str = BotState.keys()[current_state] if current_state != null else "NONE"
+		print("[BotAI | %s | %s] %s" % [alive, state_str, msg])
 
 func _find_arena() -> Node:
 	var arenas = get_tree().get_nodes_in_group("arena")

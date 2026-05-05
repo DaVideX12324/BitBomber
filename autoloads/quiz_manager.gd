@@ -83,32 +83,47 @@ func _load_quiz_file(path: String, quiz_id: String) -> void:
 ## Zwraca przefiltrowana i przetasowana listę pytań.
 ## allowed_types — pusta tablica = wszystkie typy; np. ["multiple_choice", "true_false"]
 func get_questions(
-	quiz_id: String,
-	difficulty_range: Vector2i = Vector2i(1, 5),
-	count: int = 5,
+	quiz_id: String, 
+	difficulty_range: Vector2i = Vector2i(1, 5), 
+	count: int = 5, 
 	allowed_types: Array = []
-) -> Array:
+	) -> Array:
 	if not _quizzes.has(quiz_id):
 		push_warning("QuizManager: Quiz '%s' nie istnieje" % quiz_id)
 		return []
 
 	var all_questions: Array = _quizzes[quiz_id]
 	var filtered: Array = []
+	var max_diff_found = 0
 
+	# Etap 1: Sprawdzamy najwyższą dostępną trudność dla pasujących typów
 	for q in all_questions:
 		var diff = q.get("difficulty", 1)
 		var qtype = q.get("type", "multiple_choice")
-		var diff_ok = diff >= difficulty_range.x and diff <= difficulty_range.y
+		if allowed_types.is_empty() or (qtype in allowed_types):
+			max_diff_found = maxi(max_diff_found, diff)
+
+	# Etap 2: Fallback zakresu trudności
+	var actual_range = difficulty_range
+	if max_diff_found > 0 and max_diff_found < difficulty_range.x:
+		actual_range.y = max_diff_found
+		actual_range.x = maxi(1, max_diff_found - 2)
+
+	# Etap 3: Właściwe filtrowanie pytań
+	for q in all_questions:
+		var diff = q.get("difficulty", 1)
+		var qtype = q.get("type", "multiple_choice")
+		var diff_ok = diff >= actual_range.x and diff <= actual_range.y
 		var type_ok = allowed_types.is_empty() or (qtype in allowed_types)
+		
 		if diff_ok and type_ok:
 			filtered.append(q)
 
 	filtered.shuffle()
 	if filtered.size() > count:
 		filtered.resize(count)
-
+		
 	return filtered
-
 
 # ---------------------------------------------------------------------------
 # Przepływ quizu
