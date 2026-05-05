@@ -11,10 +11,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 1.0
-offset_right = 5.0
-offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -41,9 +37,9 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -351.0
+offset_top = -413.0
 offset_right = 291.0
-offset_bottom = 351.0
+offset_bottom = 413.0
 grow_vertical = 2
 theme_override_constants/separation = 6
 
@@ -81,11 +77,12 @@ horizontal_alignment = 1
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card1/VBox" unique_id=1892766415]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "💣: 1  
-↔️: 2 
+text = "💣: 1
+↔️: 2
 ⚡: 1
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Card2" type="PanelContainer" parent="Root/Cards" unique_id=1793614447]
 layout_mode = 2
@@ -121,8 +118,8 @@ horizontal_alignment = 1
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card2/VBox" unique_id=2005615640]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "💣: 1  
-↔️: 2 
+text = "💣: 1
+↔️: 2
 ⚡: 1
 "
 horizontal_alignment = 1
@@ -161,8 +158,8 @@ horizontal_alignment = 1
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card3/VBox" unique_id=803527938]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "💣: 1  
-↔️: 2 
+text = "💣: 1
+↔️: 2
 ⚡: 1
 "
 horizontal_alignment = 1
@@ -201,8 +198,8 @@ horizontal_alignment = 1
 [node name="StatsLabel" type="Label" parent="Root/Cards/Card4/VBox" unique_id=1668993246]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "💣: 1  
-↔️: 2 
+text = "💣: 1
+↔️: 2
 ⚡: 1
 "
 horizontal_alignment = 1

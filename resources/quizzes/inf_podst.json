@@ -1,0 +1,735 @@
+{
+  "name": "Informatyka – szkoła podstawowa",
+  "description": "Pytania z podstaw informatyki na poziomie szkoły podstawowej (diff 1-2).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "question": "Do czego najczęściej służy myszka komputerowa?",
+      "answers": [
+        "Do drukowania obrazków",
+        "Do wpisywania długich tekstów",
+        "Do wskazywania elementów i klikania",
+        "Do słuchania muzyki"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "question": "Które urządzenie służy do wyświetlania obrazu z komputera?",
+      "answers": [
+        "Klawiatura",
+        "Monitor",
+        "Drukarka",
+        "Myszka"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "oprogramowanie",
+      "question": "Jaki program najlepiej sprawdzi się do pisania wypracowania?",
+      "answers": [
+        "Microsoft Word",
+        "Paint",
+        "Kalkulator",
+        "Przeglądarka internetowa"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "internet",
+      "question": "Co to jest przeglądarka internetowa?",
+      "answers": [
+        "Gra komputerowa z dostępem do sieci",
+        "Program chroniący przed wirusami",
+        "Program służący do otwierania i czytania stron WWW",
+        "Urządzenie, które podłączamy do prądu"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "bezpieczeństwo",
+      "question": "Jakie powinno być bezpieczne hasło?",
+      "answers": [
+        "Krótkie i łatwe, np. '123'",
+        "Twoje imię, żeby łatwo było zapamiętać",
+        "Długie, zawierające duże litery, cyfry i znaki specjalne",
+        "Złożone tylko z samych jedynek"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "edytor_tekstu",
+      "question": "Do czego służy klawisz Enter w edytorze tekstu?",
+      "answers": [
+        "Do usuwania wyrazów",
+        "Do przejścia do nowej linii (akapitu)",
+        "Do zapisywania dokumentu na dysku",
+        "Do kopiowania tekstu"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "edytor_tekstu",
+      "question": "Do czego służy klawisz Backspace?",
+      "answers": [
+        "Do usuwania znaku po lewej stronie kursora",
+        "Do pisania wielkimi literami",
+        "Do robienia spacji między wyrazami",
+        "Do usuwania znaku po prawej stronie kursora"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "question": "Co często nazywa się 'mózgiem' komputera?",
+      "answers": [
+        "Monitor",
+        "Klawiaturę",
+        "Zasilacz",
+        "Procesor"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "question": "Co robi skrót klawiszowy Ctrl + C?",
+      "answers": [
+        "Wycina zaznaczony tekst",
+        "Wkleja skopiowany tekst",
+        "Kopiuje zaznaczony tekst",
+        "Drukuje dokument"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "question": "Co robi skrót klawiszowy Ctrl + V?",
+      "answers": [
+        "Wkleja skopiowany wcześniej element",
+        "Wycina element",
+        "Kopiuje element",
+        "Cofa ostatnią czynność"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "question": "Co robi skrót klawiszowy Ctrl + Z?",
+      "answers": [
+        "Zapisuje plik",
+        "Zamyka program",
+        "Cofa ostatnio wykonaną operację",
+        "Zaznacza cały tekst"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sprzęt",
+      "question": "Do czego służy Pendrive (pamięć USB)?",
+      "answers": [
+        "Do wyświetlania filmów",
+        "Do przenoszenia i przechowywania danych",
+        "Do podłączania komputera do prądu",
+        "Do drukowania zdjęć"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "internet",
+      "question": "Która z tych nazw to popularna wyszukiwarka internetowa?",
+      "answers": [
+        "Microsoft Word",
+        "Google",
+        "Paint",
+        "Windows"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "internet",
+      "question": "Jaki znak musi znajdować się w każdym poprawnym adresie e-mail?",
+      "answers": [
+        "#",
+        "&",
+        "*",
+        "@"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "bezpieczeństwo",
+      "question": "Ktoś obcy prosi Cię w internecie o Twoje hasło. Co robisz?",
+      "answers": [
+        "Podaję, żeby być miłym",
+        "Wymyślam fałszywe hasło",
+        "Ignoruję prośbę, nikomu nie podaję hasła i mówię o tym dorosłemu",
+        "Podaję, ale tylko połowę hasła"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "programowanie",
+      "question": "Jak nazywa się postać, którą programujemy w środowisku Scratch?",
+      "answers": [
+        "Duszek",
+        "Klocek",
+        "Skrypt",
+        "Tło"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_017",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "programowanie",
+      "question": "Co to jest pętla w programowaniu?",
+      "answers": [
+        "Błąd, przez który program przestaje działać",
+        "Instrukcja polegająca na wielokrotnym powtarzaniu tych samych czynności",
+        "Główny folder na pulpicie",
+        "Znak specjalny na klawiaturze"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_018",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "question": "Głośniki to urządzenie:",
+      "answers": [
+        "Wejścia",
+        "Wyjścia",
+        "Wskazujące",
+        "Przechowujące dane"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_019",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "question": "Plik z rozszerzeniem .jpg to zazwyczaj:",
+      "answers": [
+        "Plik tekstowy",
+        "Plik dźwiękowy",
+        "Obrazek (grafika/zdjęcie)",
+        "Film wideo"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_020",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "question": "Gdzie trafiają pliki po usunięciu z dysku komputera z systemem Windows?",
+      "answers": [
+        "Do Kosza",
+        "Do folderu Pobrane",
+        "Na Pulpit",
+        "Znikają bezpowrotnie w tej samej sekundzie"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "statement": "Klawiatura jest przykładem urządzenia wyjścia.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "statement": "Drukarka służy do przenoszenia tekstu i obrazków z komputera na papier.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "bezpieczeństwo",
+      "statement": "W internecie możemy w pełni ufać każdej nowo poznanej osobie, jeśli ma ładne zdjęcie profilowe.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "oprogramowanie",
+      "statement": "Program Paint służy głównie do tworzenia i edycji prostych rysunków.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "internet",
+      "statement": "Internet to globalna sieć, która łączy ze sobą komputery na całym świecie.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "statement": "Skrót klawiszowy Ctrl + S jest najczęściej używany do zapisywania pliku.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "bezpieczeństwo",
+      "statement": "Program antywirusowy służy do pobierania nowych wirusów z internetu.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "statement": "Windows to jeden z najpopularniejszych systemów operacyjnych na komputery osobiste.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "statement": "Plik z rozszerzeniem .txt to przeważnie gra komputerowa.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sprzęt",
+      "statement": "Mikrofon to urządzenie, które pozwala nagrywać Twój głos i wprowadzać go do komputera.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_011",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "statement": "Skaner działa odwrotnie niż drukarka – przenosi obraz z kartki do pamięci komputera.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_012",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "internet",
+      "statement": "YouTube to popularny edytor tekstu dostępny w internecie.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_013",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "edytor_tekstu",
+      "statement": "Włączenie klawisza Caps Lock powoduje, że wszystkie wpisywane litery stają się małe.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_014",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "edytor_tekstu",
+      "statement": "Klawisz Spacja to najdłuższy klawisz na standardowej klawiaturze, który służy do robienia odstępów.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_015",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "bezpieczeństwo",
+      "statement": "Klikanie w podejrzane linki otrzymane od nieznajomych w wiadomości e-mail jest zawsze bezpieczne.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "sprzęt",
+      "text_with_gaps": "Komputer stacjonarny składa się zazwyczaj z ___, monitora, klawiatury i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "jednostki centralnej"
+        },
+        {
+          "index": 1,
+          "correct": "myszki"
+        }
+      ],
+      "tiles": [
+        "jednostki centralnej",
+        "myszki",
+        "drukarki",
+        "głośnika",
+        "skanera"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "internet",
+      "text_with_gaps": "Adres strony internetowej wpisujemy w pasku ___ w otwartej ___ internetowej.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "adresu"
+        },
+        {
+          "index": 1,
+          "correct": "przeglądarce"
+        }
+      ],
+      "tiles": [
+        "adresu",
+        "przeglądarce",
+        "tytułu",
+        "wyszukiwarce",
+        "stronie"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "bezpieczeństwo",
+      "text_with_gaps": "Bezpieczne ___ powinno składać się z liter, cyfr i znaków ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "hasło"
+        },
+        {
+          "index": 1,
+          "correct": "specjalnych"
+        }
+      ],
+      "tiles": [
+        "hasło",
+        "specjalnych",
+        "login",
+        "prostych",
+        "zwykłych"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "oprogramowanie",
+      "text_with_gaps": "Program ___ służy do tworzenia rysunków, a program ___ do pisania i edycji tekstów.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Paint"
+        },
+        {
+          "index": 1,
+          "correct": "Word"
+        }
+      ],
+      "tiles": [
+        "Paint",
+        "Word",
+        "Excel",
+        "Kalkulator",
+        "Chrome"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "programowanie",
+      "text_with_gaps": "W programie Scratch polecenia budujemy z kolorowych ___, które łączymy w większe ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "klocków"
+        },
+        {
+          "index": 1,
+          "correct": "skrypty"
+        }
+      ],
+      "tiles": [
+        "klocków",
+        "skrypty",
+        "duszki",
+        "tła",
+        "rysunki"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "prompt": "Jak nazywa się urządzenie przypominające telewizor, na którym wyświetla się obraz z komputera?",
+      "answer": "monitor",
+      "prefilled_pattern": "m_____r",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "internet",
+      "prompt": "Jak potocznie nazywamy znak '@', który jest niezbędny w każdym adresie poczty elektronicznej?",
+      "answer": "małpa",
+      "prefilled_pattern": "m___a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "malpa"
+      ]
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "prompt": "Jak nazywa się klawisz, którym zazwyczaj usuwamy literę znajdującą się po lewej stronie migającego kursora?",
+      "answer": "backspace",
+      "prefilled_pattern": "b_______e",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "prompt": "Który klawisz na klawiaturze musisz przytrzymać razem z inną literą, by napisać ją wielką (np. duże 'A')?",
+      "answer": "shift",
+      "prefilled_pattern": "s___t",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "bezpieczeństwo",
+      "prompt": "Jak nazywa się złośliwy program komputerowy, który może skasować Twoje dane i przed którym chroni antywirus?",
+      "answer": "wirus",
+      "prefilled_pattern": "w___s",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "sprzęt",
+      "left_items": [
+        "Myszka",
+        "Klawiatura",
+        "Monitor"
+      ],
+      "right_items": [
+        "Pisanie tekstu",
+        "Wyświetlanie obrazu",
+        "Wskazywanie elementów"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "left_items": [
+        "Ctrl + C",
+        "Ctrl + V",
+        "Ctrl + Z",
+        "Ctrl + S"
+      ],
+      "right_items": [
+        "Wklej",
+        "Zapisz",
+        "Kopiuj",
+        "Cofnij"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "oprogramowanie",
+      "left_items": [
+        ".jpg",
+        ".mp3",
+        ".doc"
+      ],
+      "right_items": [
+        "Plik dźwiękowy (muzyka)",
+        "Dokument tekstowy",
+        "Plik graficzny (obrazek)"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "edytor_tekstu",
+      "left_items": [
+        "Enter",
+        "Spacja",
+        "Caps Lock"
+      ],
+      "right_items": [
+        "Odstęp między wyrazami",
+        "Pisanie cały czas wielkimi literami",
+        "Przejście do nowej linii"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_005",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "internet",
+      "left_items": [
+        "Przeglądarka internetowa",
+        "Wyszukiwarka",
+        "Poczta e-mail"
+      ],
+      "right_items": [
+        "Wysyłanie elektronicznych listów",
+        "Chrome, Firefox, Edge",
+        "Google, Bing"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        }
+      ]
+    }
+  ]
+}

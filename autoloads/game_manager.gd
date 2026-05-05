@@ -3,6 +3,8 @@ extends Node
 ## Główny menedżer gry BitBomber.
 ## Zarządza stanami gry i przejściami między nimi.
 
+var debug_enabled: bool = true # Zmień na false, aby wyciszyć całą grę
+
 enum GameState {
 	MENU,
 	PLAYING,
@@ -25,6 +27,7 @@ var num_human_players: int = 1
 var num_bots: int = 1
 var rounds_to_win: int = 3   ## Używane w trybie FIRST_TO_X
 var max_rounds: int = 5      ## Używane w trybie MOST_WINS_IN_Y (max 20)
+var selected_quiz_id: String = ""
 
 ## Poziom trudności botów: 0=Easy 1=Medium 2=Hard (mapowane na BotAI.Difficulty)
 var bot_difficulty: int = 0
@@ -80,3 +83,8 @@ func go_to_menu() -> void:
 		game_node.load_menu()
 	else:
 		get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
+		
+		# W game_manager.gd
+func log_debug(message: Variant, category: String = "GENERAL") -> void:
+	if OS.is_debug_build(): # Zwraca true tylko w edytorze i debugowych buildach
+		print("[%s] %s" % [category.to_upper(), str(message)])

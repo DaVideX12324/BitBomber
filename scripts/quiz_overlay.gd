@@ -56,6 +56,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 	_timer_node.timeout.connect(_on_timer_timeout)
+	_locked = false
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -64,15 +65,13 @@ func _ready() -> void:
 
 # Publiczne API
 func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, dead_pid: int = 0) -> void:
-	print("\n--- QUIZ START ---")
-	print("Tryb: ", RivalMode.keys()[rival_mode])
-	print("Typ pytania: ", question.get("type", "unknown"))
-	print("Martwy gracz (ID): ", dead_pid)
 	_question    = question
 	_mode        = rival_mode
 	_time_left   = time_limit
 	_total_time  = time_limit
-	current_dead_player = dead_pid # <--- TUTAJ ZAPISUJEMY KTO NIE ŻYJE!
+	current_dead_player = dead_pid
+	
+	_dbg("--- START --- Typ: %s" % question.get("type", "unknown"))
 	
 	_answered_p1 = false
 	_answered_p2 = false
@@ -93,8 +92,18 @@ func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, d
 	visible = true
 	_timer_node.wait_time = time_limit
 	_timer_node.start()
-	_locked=false
 	
+	_locked = true
+	get_tree().create_timer(0.5).timeout.connect(func(): _locked = false)
+
+
+func _dbg(msg: String) -> void:
+	if GameManager.debug_enabled:
+		var mode_str = RivalMode.keys()[_mode]
+		# Format: [QUIZ | TRYB | Martwy: ID] Wiadomość
+		print("[QUIZ | %s | Dead:P%d] %s" % [mode_str, current_dead_player, msg])
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Budowanie UI
 # ─────────────────────────────────────────────────────────────────────────────
@@ -319,7 +328,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _handle_key_choice(event: InputEvent) -> void:
-	if not (event is InputEventKey) or not (event as InputEventKey).pressed:
+	if not (event is InputEventKey) or not (event as InputEventKey).pressed or (event as InputEventKey).is_echo():
 		return
 	var ke := event as InputEventKey
 	var qtype : String = _question.get("type", "multiple_choice")
@@ -399,6 +408,8 @@ func _update_gap_highlight() -> void:
 
 
 func _on_fill_tiles_confirm() -> void:
+	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	_locked = true
 	var placements : Dictionary = {}
 	for i in range(_tile_slots.size()):
 		placements[str(i)] = _tile_slots[i]
@@ -407,6 +418,8 @@ func _on_fill_tiles_confirm() -> void:
 
 
 func _on_fill_text_confirm() -> void:
+	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	_locked = true
 	var input := _answers_box.get_node_or_null("FillTextInput") as LineEdit
 	if not input:
 		return
@@ -460,6 +473,8 @@ func _on_match_right(index: int) -> void:
 
 
 func _on_matching_confirm() -> void:
+	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	_locked = true
 	var pairs : Array = []
 	for left_idx : int in _match_pairs:
 		pairs.append({"left_index": left_idx, "right_index": _match_pairs[left_idx]})
@@ -473,7 +488,7 @@ func _on_matching_confirm() -> void:
 
 func _submit_answer(player_id: int, answer_index: int) -> void:
 	if _locked: 
-		print("DEBUG: Quiz zablokowany, ignoruję odpowiedź gracza ", player_id)
+		_dbg("Input zablokowany - ignoruję odpowiedź gracza %d" % player_id)
 		return
 	
 	_locked = true
@@ -486,9 +501,8 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 		var bool_val : bool = (answer_index == 0)
 		is_correct = (bool_val == _question.get("correct_answer", false) as bool)
 
-	print("DEBUG: Gracz ", player_id, " odpowiedział (index: ", answer_index, "). Poprawnie? ", is_correct)
+	_dbg("Gracz %d odpowiedział (idx: %d). Poprawnie? %s" % [player_id, answer_index, str(is_correct)])
 
-	# Wizualizacja na przyciskach
 	var btns : Array = _answers_box.get_children()
 	if answer_index < btns.size():
 		var btn := btns[answer_index] as Button
@@ -595,54 +609,49 @@ func _finish_complex(correct: bool) -> void:
 
 # Nowy wspólny "dyrygent" dla pytań prostych i złożonych
 func _route_duel_result(correct: bool) -> void:
-	print("DEBUG: Rozstrzyganie pojedynku. Czy martwy odpowiedział poprawnie? ", correct)
+	_dbg("Rozstrzyganie pojedynku. Czy martwy odpowiedział OK? %s" % str(correct))
+	
 	if _mode == RivalMode.DUEL_P1:
 		if correct:
-			print("RESULT: P1 OK -> Kod 0 (Przerzut na P2)")
+			_dbg("RESULT: P1 OK -> Kod 0 (Kolej P2)")
 			_emit_result(0)
 		else:
-			print("RESULT: P1 BŁĄD -> Kod 2 (Win P2 / P1 odpada)")
+			_dbg("RESULT: P1 BŁĄD -> Kod 2 (P1 odpada)")
 			_emit_result(2)
 	elif _mode == RivalMode.DUEL_P2:
 		if correct:
-			print("RESULT: P2 OK -> Kod 3 (Przerzut na P1)")
+			_dbg("RESULT: P2 OK -> Kod 3 (Kolej P1)")
 			_emit_result(3)
 		else:
-			print("RESULT: P2 BŁĄD -> Kod 1 (Win P1 / P2 odpada)")
+			_dbg("RESULT: P2 BŁĄD -> Kod 1 (P2 odpada)")
 			_emit_result(1)
 	else:
-		print("RESULT: Tryb SOLO/Inny. Sukces? ", correct, " -> Kod: ", (1 if correct else 2))
+		_dbg("RESULT: SOLO/Inny. Sukces? %s" % str(correct))
 		_emit_result(1 if correct else 2)
 
 func _resolve_versus() -> void:
-	print("DEBUG: Rozstrzyganie VERSUS (Kto pierwszy ten lepszy)")
+	_dbg("Rozstrzyganie VERSUS (Kto pierwszy...)")
 	if _answered_p1:
-		print("DEBUG: P1 odpowiedział pierwszy. Poprawnie? ", _correct_p1)
-		if _correct_p1: _emit_result(1)
-		else: _emit_result(2)
+		_dbg("P1 był pierwszy. Poprawnie? %s" % str(_correct_p1))
+		_emit_result(1 if _correct_p1 else 2)
 	elif _answered_p2:
-		print("DEBUG: P2 odpowiedział pierwszy. Poprawnie? ", _correct_p2)
-		if _correct_p2: _emit_result(2)
-		else: _emit_result(1)
+		_dbg("P2 był pierwszy. Poprawnie? %s" % str(_correct_p2))
+		_emit_result(2 if _correct_p2 else 1)
 		
 func _on_timer_timeout() -> void:
-	print("DEBUG: Czas minął!")
+	_dbg("Czas minął!")
 	if _mode == RivalMode.VERSUS:
-		print("RESULT: VERSUS Timeout. Martwy był: ", current_dead_player, " -> faworyzuję obrońcę")
-		if current_dead_player == 1: _emit_result(2)
-		else: _emit_result(1)
+		_dbg("VERSUS Timeout -> Faworyzuję obrońcę")
+		_emit_result(2 if current_dead_player == 1 else 1)
 	elif _mode == RivalMode.DUEL_P1:
-		print("RESULT: DUEL P1 Timeout -> Win P2")
 		_emit_result(2)
 	elif _mode == RivalMode.DUEL_P2:
-		print("RESULT: DUEL P2 Timeout -> Win P1")
 		_emit_result(1)
 	else:
-		print("RESULT: SOLO Timeout -> Porażka")
 		_emit_result(2)
 
 func _emit_result(winner_id: int) -> void:
-	print("--- QUIZ EMIT RESULT: ", winner_id, " ---\n")
+	_dbg("EMIT RESULT: %d" % winner_id)
 	visible = false
 	quiz_result.emit(winner_id)
 

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://83irgwan7gdu"]
 
 [ext_resource type="Script" uid="uid://cekxfjj58ihm3" path="res://scripts/player.gd" id="1"]
+[ext_resource type="Script" uid="uid://dxno435esr0q" path="res://scripts/bot_ai.gd" id="2_ldeu4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plyga"]
 size = Vector2(44, 44)
@@ -33,3 +34,7 @@ color = Color(0.2, 0.6, 1, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1240847043]
 shape = SubResource("1")
+
+[node name="BotAI" type="Node" parent="." unique_id=2121467267 node_paths=PackedStringArray("bot_node")]
+script = ExtResource("2_ldeu4")
+bot_node = NodePath("..")

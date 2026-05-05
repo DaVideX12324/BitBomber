@@ -54,6 +54,7 @@ signal powerup_collected(player_id: int, powerup_type: String)
 
 @onready var _sprite   : Sprite2D  = $Sprite2D
 @onready var _fallback : ColorRect = $Fallback
+@onready var bot_ai_node = $BotAI # Referencja do węzła w scenie
 
 const FALLBACK_COLORS : Dictionary = {
 	1: Color(0.2, 0.6, 1.0),
@@ -74,22 +75,11 @@ func _ready() -> void:
 	global_position = _pixel_target
 
 	if is_bot:
-		call_deferred("_init_ai")
-
-
-func _init_ai() -> void:
-	var arena := _find_arena()
-	if arena == null:
-		return
-
-	var BotAIScript = load("res://scripts/bot_ai.gd")
-	var ai_node = Node.new()
-	ai_node.set_script(BotAIScript)
-	ai_node.name = "BotAI"
-	ai_node.bot_node  = self
-	ai_node.grid_size = GRID_SIZE
-	add_child(ai_node)
-	_ai = ai_node
+		bot_ai_node.process_mode = Node.PROCESS_MODE_INHERIT
+		_ai = bot_ai_node
+	else:
+		bot_ai_node.process_mode = Node.PROCESS_MODE_DISABLED
+		bot_ai_node.queue_free() # Usuwamy AI jeśli to człowiek
 
 
 func _find_arena() -> Node:

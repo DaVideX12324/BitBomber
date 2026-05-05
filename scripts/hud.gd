@@ -25,12 +25,15 @@ const PLAYER_COLORS: Array[Color] = [
 ]
 @onready var _round_label : Label = $Root/RoundPanel/RoundLabel
 @onready var _toast       : Label = $Root/ToastLabel
-
+@onready var _round_panel : PanelContainer = $Root/RoundPanel
 
 func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
 	for card: Control in _cards_nodes:
 		card.visible = false
+	_round_panel.visible = false
+	visible = false # Zabezpieczenie: cały HUD jest ukryty na starcie
+	$"Root/Cards".alignment = BoxContainer.ALIGNMENT_CENTER
 
 
 # ---------------------------------------------------------------------------
@@ -38,6 +41,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func setup_players(player_list: Array) -> void:
+	_round_panel.visible = true # Dodaj tę linijkę!
 	for card: Control in _cards_nodes:
 		card.visible = false
 

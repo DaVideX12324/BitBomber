@@ -169,15 +169,29 @@ func _on_player_died(_pid: int) -> void:
 func _deferred_check_round() -> void:
 	if not RoundManager._round_active:
 		return
+		
 	var alive: Array = []
+	var human_alive: bool = false
+	
 	for p in _players:
 		if is_instance_valid(p) and p.is_alive:
 			alive.append(p)
-	match alive.size():
-		0: RoundManager.end_round(-1)
-		1: RoundManager.end_round(alive[0].player_id)
-		_: pass
-
+			if not p.is_bot:
+				human_alive = true
+				
+	if alive.size() == 0:
+		RoundManager.end_round(-1) # Remis (wszyscy zginęli naraz)
+		return
+	elif alive.size() == 1:
+		RoundManager.end_round(alive[0].player_id) # Został jeden gracz/bot na mapie
+		return
+	else:
+		# Zostało 2 lub więcej graczy na mapie...
+		if not human_alive:
+			# ...ale żaden z nich nie jest człowiekiem!
+			# Kończymy rundę od razu, żeby nie patrzeć jak boty ze sobą walczą.
+			RoundManager.end_round(999) # '999' to kod oznaczający wygraną botów
+			
 
 func _on_last_chance_resolved(dead_player_id: int, respawned: bool) -> void:
 	for p in _players:

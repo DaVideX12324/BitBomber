@@ -183,6 +183,9 @@ min_value = 1.0
 max_value = 20.0
 value = 3.0
 
+[node name="QuizOpt1P" type="OptionButton" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=65966798]
+layout_mode = 2
+
 [node name="BtnStart1P" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000006]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
@@ -197,6 +200,7 @@ theme_override_font_sizes/font_size = 17
 text = "▶  Graj (2 graczy)"
 
 [node name="Panel2P" type="PanelContainer" parent="Center/Panel/VBox" unique_id=1806719920]
+visible = false
 layout_mode = 2
 
 [node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P" unique_id=1152984982]
@@ -315,6 +319,9 @@ layout_mode = 2
 min_value = 1.0
 max_value = 20.0
 value = 3.0
+
+[node name="QuizOpt2P" type="OptionButton" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=144477404]
+layout_mode = 2
 
 [node name="BtnStart2P" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000016]
 custom_minimum_size = Vector2(0, 42)
