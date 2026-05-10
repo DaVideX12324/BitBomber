@@ -18,6 +18,87 @@ signal quiz_result(winner_id: int)
 
 enum RivalMode { SOLO, VERSUS, DUEL_P1, DUEL_P2 }
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Stałe do obliczania czasu
+# ─────────────────────────────────────────────────────────────────────────────
+
+## Sekund na jedno słowo (czas na przeczytanie pytania + odpowiedzi).
+const WORDS_PER_SEC : float = 0.35
+
+## Mnożniki czasu odpowiedzi per typ pytania.
+## true_false jest krótkie z natury, matching wymaga analizy par.
+const TYPE_MULTIPLIER : Dictionary = {
+	"true_false":      0.70,
+	"multiple_choice": 1.00,
+	"fill_text":       1.20,
+	"fill_tiles":      1.40,
+	"matching":        1.55,
+}
+
+## Ile sekund na diff zmienia się czas względem diff bazowego.
+## base_difficulty = poziom wybrany przez gracza (środek puli).
+## Każdy krok różnicy ±1 od bazy = ±DIFF_STEP_SEC sekund.
+const DIFF_STEP_SEC : float = 3.0
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Publiczna funkcja pomocnicza — oblicz czas dla pytania
+# ─────────────────────────────────────────────────────────────────────────────
+
+## Oblicza ostateczny limit czasu dla pytania.
+##
+## [param question]        Słownik pytania z JSON-a.
+## [param base_time]       Bazowy czas (w sekundach) dla base_difficulty.
+## [param base_difficulty] Środkowy poziom trudności wybrany przez gracza (np. 3 dla medium).
+##
+## Formuła:
+##   1. word_bonus  = liczba słów we wszystkich tekstach pytania × WORDS_PER_SEC
+##   2. type_mult   = TYPE_MULTIPLIER[question.type]
+##   3. diff_offset = (question.difficulty − base_difficulty) × DIFF_STEP_SEC
+##   4. result      = (base_time + word_bonus) × type_mult + diff_offset
+##   Wynik jest clampowany do [5.0, 120.0].
+static func calculate_time(question: Dictionary, base_time: float, base_difficulty: int) -> float:
+	# 1. Zlicz słowa we wszystkich polach tekstowych pytania
+	var word_count : int = 0
+	var text_fields : Array[String] = [
+		question.get("question", ""),
+		question.get("statement", ""),
+		question.get("prompt", ""),
+		question.get("text_with_gaps", ""),
+	]
+	for field : String in text_fields:
+		if field != "":
+			word_count += field.split(" ", false).size()
+
+	# Odpowiedzi (multiple_choice)
+	var answers : Array = question.get("answers", [])
+	for ans in answers:
+		word_count += str(ans).split(" ", false).size()
+
+	# left_items / right_items (matching)
+	var left_items : Array = question.get("left_items", [])
+	var right_items : Array = question.get("right_items", [])
+	for item in left_items:
+		word_count += str(item).split(" ", false).size()
+	for item in right_items:
+		word_count += str(item).split(" ", false).size()
+
+	# 2. Bonus za czytanie
+	var word_bonus : float = float(word_count) * WORDS_PER_SEC
+
+	# 3. Mnożnik typu pytania
+	var qtype : String = question.get("type", "multiple_choice")
+	var type_mult : float = TYPE_MULTIPLIER.get(qtype, 1.0)
+
+	# 4. Offset za trudność (diff pytania vs diff bazowy gracza)
+	var q_diff : int = question.get("difficulty", base_difficulty)
+	var diff_offset : float = float(q_diff - base_difficulty) * DIFF_STEP_SEC
+
+	# 5. Sklejenie
+	var result : float = (base_time + word_bonus) * type_mult + diff_offset
+	return clampf(result, 5.0, 120.0)
+
+
 @onready var _overlay      : ColorRect      = $Overlay
 @onready var _panel        : PanelContainer = $Panel
 @onready var _vbox         : VBoxContainer  = $Panel/VBox
