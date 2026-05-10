@@ -333,6 +333,10 @@ text = "▶  Zagraj!"
 [node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
 layout_mode = 2
 
+[node name="BtnHelp" type="Button" parent="Center/Panel/VBox" unique_id=2043692537]
+layout_mode = 2
+text = "Instrukcja"
+
 [node name="BtnQuit" type="Button" parent="Center/Panel/VBox" unique_id=196722966]
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2

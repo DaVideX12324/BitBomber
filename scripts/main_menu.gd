@@ -172,7 +172,7 @@ Wyeliminuj przeciwników za pomocą bomb! Ostatni żywy gracz (lub ten z najwię
 
 [b]Sterowanie — Gracz 2[/b]
   [b]W A S D[/b]   ruch
-  [b]LShift[/b]   połóż bombę
+  [b]Enter[/b]   połóż bombę
 
 [b]Bomba[/b]
 Wybucha po 2 sekundach. Żółknie od krawędzi do środka — im bardziej żółta, tym bliżej wybuchu. Eksplozja niszczy kruche ściany i zabija graczy w zasięgu. Gracz może mieć tylko jedną bombę na raz.
