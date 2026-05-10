@@ -11,6 +11,7 @@ signal exploded
 
 @onready var _sprite   : Sprite2D  = $Sprite2D
 @onready var _fallback : ColorRect = $Fallback
+@onready var _fuse_mat : ShaderMaterial = $Sprite2D.material
 
 var _timer : float = 0.0
 
@@ -23,8 +24,9 @@ func _ready() -> void:
 	if has_node("/root/SpriteLoader"):
 		SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/bomb.png")
 	
-	# Ustawiamy punkt skalowania ColorRect na środek (domyślnie skaluje od lewego górnego rogu)
-	# Upewnij się, że rozmiar _fallback jest poprawnie ustawiony w scenie
+	# Zapisujemy materiał Sprite2D
+	_fuse_mat = _sprite.material as ShaderMaterial
+	
 	_fallback.pivot_offset = _fallback.size / 2.0
 
 
@@ -32,7 +34,16 @@ func _process(delta: float) -> void:
 	_timer += delta
 	var scale_val := 1.0 + 0.1 * sin(_timer * TAU * 2.0)
 	
-	# Aplikujemy skalę TYLKO do węzłów wizualnych, pomijając CollisionShape2D
+	var progress: float = clampf(_timer / FUSE_TIME, 0.0, 1.0)
+	
+	# Aktualizacja shadera dla tekstury (jeśli istnieje)
+	if _fuse_mat:
+		_fuse_mat.set_shader_parameter("progress", progress)
+		
+	# Aktualizacja shadera dla Fallback (jeśli jest widoczny)
+	if _fallback.visible and _fallback.material:
+		(_fallback.material as ShaderMaterial).set_shader_parameter("progress", progress)
+	
 	var new_scale = Vector2(scale_val, scale_val)
 	_sprite.scale = new_scale
 	_fallback.scale = new_scale
