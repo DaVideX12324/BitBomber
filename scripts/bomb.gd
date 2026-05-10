@@ -14,29 +14,70 @@ signal exploded
 
 var _timer : float = 0.0
 
+## Shader inline — żółty pierścień od krawędzi do centrum w miarę odliczania
+const _FUSE_SHADER_CODE := """
+shader_type canvas_item;
+
+uniform float progress : hint_range(0.0, 1.0) = 0.0;
+uniform vec4  glow_color : source_color = vec4(1.0, 0.85, 0.0, 1.0);
+
+void fragment() {
+	// UV (0,0) = lewy górny róg, (1,1) = prawy dolny
+	vec2 centered = UV - vec2(0.5);
+	float dist = length(centered) * 2.0;   // 0 = środek, 1 = narożnik
+
+	// Krawędź zalewania: zaczyna od 1.0 (krawędź) i idzie do 0.0 (środek)
+	float fill_edge = 1.0 - progress;
+
+	// Miękkie przejście (szerokość 0.15)
+	float t = smoothstep(fill_edge - 0.15, fill_edge + 0.05, dist);
+
+	vec4 original = texture(TEXTURE, UV);
+
+	// Mieszamy oryginalny kolor z glow_color tylko tam gdzie alfa > 0
+	vec4 result = mix(original, glow_color * vec4(1.0, 1.0, 1.0, original.a), t * original.a);
+	COLOR = result;
+}
+"""
+
+var _fuse_shader : ShaderMaterial
+
 
 func _ready() -> void:
 	add_to_group("bomb")
 	collision_layer = 4
 	collision_mask  = 0
-	
+
 	if has_node("/root/SpriteLoader"):
 		SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/bomb.png")
-	
-	# Ustawiamy punkt skalowania ColorRect na środek (domyślnie skaluje od lewego górnego rogu)
-	# Upewnij się, że rozmiar _fallback jest poprawnie ustawiony w scenie
+
 	_fallback.pivot_offset = _fallback.size / 2.0
+
+	# Tworzymy i przypisujemy shader do sprite'a
+	var sh := Shader.new()
+	sh.code = _FUSE_SHADER_CODE
+	_fuse_shader = ShaderMaterial.new()
+	_fuse_shader.shader = sh
+	_sprite.material = _fuse_shader
 
 
 func _process(delta: float) -> void:
 	_timer += delta
+	var progress : float = clampf(_timer / FUSE_TIME, 0.0, 1.0)
+
+	# Pulsowanie skali (oryginalne)
 	var scale_val := 1.0 + 0.1 * sin(_timer * TAU * 2.0)
-	
-	# Aplikujemy skalę TYLKO do węzłów wizualnych, pomijając CollisionShape2D
-	var new_scale = Vector2(scale_val, scale_val)
-	_sprite.scale = new_scale
+	var new_scale := Vector2(scale_val, scale_val)
+	_sprite.scale   = new_scale
 	_fallback.scale = new_scale
-	
+
+	# Aktualizacja shadera
+	if _fuse_shader:
+		_fuse_shader.set_shader_parameter("progress", progress)
+
+	# Fallback (ColorRect) — modulujemy kolor od szarego do żółtego
+	_fallback.modulate = Color(1.0, 1.0, 1.0, 1.0).lerp(Color(1.0, 0.85, 0.0, 1.0), progress)
+
 	if _timer >= FUSE_TIME:
 		_explode()
 
@@ -92,7 +133,6 @@ func _get_arena() -> Node:
 
 
 func _get_map_root() -> Node:
-	# Bezpieczne odpytanie Singletonu GameManager
 	var gm = get_node_or_null("/root/GameManager")
 	if gm and gm.get("game_node") != null:
 		var gn = gm.game_node
