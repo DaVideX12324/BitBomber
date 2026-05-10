@@ -25,8 +25,8 @@ extends CanvasLayer
 	$"Center/Panel/VBox/Panel1P/VBox1P/HBoxWin1P/Win1P_FirstTo",
 	$"Center/Panel/VBox/Panel1P/VBox1P/HBoxWin1P/Win1P_MostWins",
 ]
-@onready var _rounds_spin1p : SpinBox = $"Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P/RoundsSpin1P"
-@onready var _rounds_label1p : Label  = $"Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P/RoundsLabel1P"
+@onready var _rounds_spin1p  : SpinBox = $"Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P/RoundsSpin1P"
+@onready var _rounds_label1p : Label   = $"Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P/RoundsLabel1P"
 @onready var _quiz_opt1p : OptionButton = $Center/Panel/VBox/Panel1P/VBox1P/QuizOpt1P
 @onready var _start1p : Button = $Center/Panel/VBox/Panel1P/VBox1P/BtnStart1P
 
@@ -49,15 +49,18 @@ extends CanvasLayer
 @onready var _rounds_label2p : Label          = $"Center/Panel/VBox/Panel2P/VBox2P/HBoxRounds2P/RoundsLabel2P"
 @onready var _diff_label2p   : Label          = $Center/Panel/VBox/Panel2P/VBox2P/DiffLabel2P
 @onready var _diff_hbox2p    : HBoxContainer  = $Center/Panel/VBox/Panel2P/VBox2P/HBoxDiff2P
-@onready var _quiz_opt2p : OptionButton = $Center/Panel/VBox/Panel2P/VBox2P/QuizOpt2P
+@onready var _quiz_opt2p     : OptionButton   = $Center/Panel/VBox/Panel2P/VBox2P/QuizOpt2P
 @onready var _start2p        : Button         = $Center/Panel/VBox/Panel2P/VBox2P/BtnStart2P
 
 var _sel_bot_1p  : int = 0
 var _sel_bot_2p  : int = 0
 var _sel_diff_1p : int = 0
 var _sel_diff_2p : int = 0
-var _sel_win_1p  : int = 0   ## 0 = FIRST_TO_X, 1 = MOST_WINS_IN_Y
+var _sel_win_1p  : int = 0
 var _sel_win_2p  : int = 0
+
+## Panel instrukcji tworzony dynamicznie
+var _help_overlay : ColorRect
 
 
 func _ready() -> void:
@@ -85,7 +88,7 @@ func _ready() -> void:
 		var idx := i
 		_win2p[i].pressed.connect(func(): _set_win(idx, false))
 	_rounds_spin2p.value_changed.connect(func(v): _on_rounds_changed(v, false))
-	
+
 	$Center/Panel/VBox/BtnQuit.pressed.connect(get_tree().quit)
 	_refresh_bots(true);  _refresh_bots(false)
 	_refresh_diff(true);  _refresh_diff(false)
@@ -99,14 +102,118 @@ func _ready() -> void:
 		_quiz_opt1p.add_item(q)
 		_quiz_opt2p.add_item(q)
 
-	_start1p.pressed.connect(func(): 
+	_start1p.pressed.connect(func():
 		var q_id = "" if _quiz_opt1p.selected <= 0 else _quiz_opt1p.get_item_text(_quiz_opt1p.selected)
 		_start(1, _sel_bot_1p + 1, _sel_diff_1p, _sel_win_1p, int(_rounds_spin1p.value), q_id)
 	)
-	_start2p.pressed.connect(func(): 
+	_start2p.pressed.connect(func():
 		var q_id = "" if _quiz_opt2p.selected <= 0 else _quiz_opt2p.get_item_text(_quiz_opt2p.selected)
 		_start(2, _sel_bot_2p, _sel_diff_2p, _sel_win_2p, int(_rounds_spin2p.value), q_id)
 	)
+
+	# --- PRZYCISK INSTRUKCJI ---
+	$Center/Panel/VBox/BtnHelp.pressed.connect(_show_help)
+	_build_help_overlay()
+
+
+# ---------------------------------------------------------------------------
+# Instrukcja
+# ---------------------------------------------------------------------------
+
+func _build_help_overlay() -> void:
+	_help_overlay = ColorRect.new()
+	_help_overlay.color = Color(0, 0, 0, 0.75)
+	_help_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_help_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	_help_overlay.visible = false
+	add_child(_help_overlay)
+
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(640, 500)
+	panel.offset_left   = -320
+	panel.offset_top    = -250
+	panel.offset_right  =  320
+	panel.offset_bottom =  250
+	_help_overlay.add_child(panel)
+
+	var margin := MarginContainer.new()
+	for side in ["left", "right", "top", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 16)
+	panel.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	margin.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "💣  Jak grać w BitBomber?"
+	title.add_theme_font_size_override("font_size", 22)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	vbox.add_child(HSeparator.new())
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+
+	var content := RichTextLabel.new()
+	content.bbcode_enabled = true
+	content.fit_content = true
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_font_size_override("normal_font_size", 15)
+	content.text = """[b]Cel gry[/b]
+Wyeliminuj przeciwników za pomocą bomb! Ostatni żywy gracz (lub ten z największą liczbą wygranych rund) zdobywa zwycięstwo.
+
+[b]Sterowanie — Gracz 1[/b]
+  ↑ ↓ ← →   ruch
+  [b]Spacja[/b]   połóż bombę
+
+[b]Sterowanie — Gracz 2[/b]
+  [b]W A S D[/b]   ruch
+  [b]LShift[/b]   połóż bombę
+
+[b]Bomba[/b]
+Wybucha po 2 sekundach. Żółknie od krawędzi do środka — im bardziej żółta, tym bliżej wybuchu. Eksplozja niszczy kruche ściany i zabija graczy w zasięgu. Gracz może mieć tylko jedną bombę na raz.
+
+[b]Power-upy[/b]
+Pojawiają się po zniszczeniu kruchych ścian. Po zebraniu pojawia się pytanie quizowe — poprawna odpowiedź daje bonus (np. większy zasięg eksplozji).
+
+[b]Last Chance[/b]
+Po śmierci gracza odpala się quiz. Poprawna odpowiedź = respawn. Błędna odpowiedź = koniec gry.
+
+[b]Tryby wygranej[/b]
+  [b]Pierwszy do X[/b]   wygrywa kto pierwszy zdobył X wygranych rund
+  [b]Najwięcej w Y[/b]   rozgrywanych jest Y rund, wygrywa kto ma więcej zwycięstw
+
+[b]Trudność bota[/b]
+  [b]Łatwy[/b]   bot reaguje wolno, proste pytania quizowe
+  [b]Średnii[/b]   wyważony balans
+  [b]Trudny[/b]   bot agresywny, trudniejsze pytania"""
+	scroll.add_child(content)
+
+	vbox.add_child(HSeparator.new())
+
+	var btn_close := Button.new()
+	btn_close.text = "Zamknij  [ESC]"
+	btn_close.pressed.connect(_hide_help)
+	vbox.add_child(btn_close)
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and _help_overlay and _help_overlay.visible:
+		_hide_help()
+		get_viewport().set_input_as_handled()
+
+
+func _show_help() -> void:
+	_help_overlay.visible = true
+
+
+func _hide_help() -> void:
+	_help_overlay.visible = false
+
 
 # ---------------------------------------------------------------------------
 
@@ -134,8 +241,7 @@ func _set_win(idx: int, is_1p: bool) -> void:
 
 
 func _on_rounds_changed(value: float, is_1p: bool) -> void:
-	## Aktualizuj label SpinBoxa w zależności od trybu
-	var sel := _sel_win_1p if is_1p else _sel_win_2p
+	var sel   := _sel_win_1p if is_1p else _sel_win_2p
 	var label := _rounds_label1p if is_1p else _rounds_label2p
 	if sel == 0:
 		label.text = "Wygrane rundy do zwycięstwa (X):"
@@ -163,7 +269,6 @@ func _refresh_win(is_1p: bool) -> void:
 	var label := _rounds_label1p if is_1p else _rounds_label2p
 	for i in btns.size():
 		btns[i].button_pressed = (i == sel)
-	## Aktualizuj label przy zmianie trybu
 	if sel == 0:
 		label.text = "Wygrane rundy do zwycięstwa (X):"
 	else:
@@ -171,10 +276,10 @@ func _refresh_win(is_1p: bool) -> void:
 
 
 func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_id: String) -> void:
-	GameManager.bot_difficulty = diff
-	GameManager.win_condition  = win_mode as GameManager.WinCondition
+	GameManager.bot_difficulty   = diff
+	GameManager.win_condition    = win_mode as GameManager.WinCondition
 	GameManager.selected_quiz_id = quiz_id
-	
+
 	if win_mode == GameManager.WinCondition.FIRST_TO_X:
 		GameManager.rounds_to_win = rounds
 	else:
