@@ -57,13 +57,15 @@ func _ready() -> void:
 	visible = false
 	_timer_node.timeout.connect(_on_timer_timeout)
 	_locked = false
+	# Włącz zawijanie tekstu pytania + rozciągnięcie na całą szerokość
+	_lbl_question.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_lbl_question.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Publiczne API
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Publiczne API
 func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, dead_pid: int = 0) -> void:
 	_question    = question
 	_mode        = rival_mode
@@ -100,7 +102,6 @@ func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, d
 func _dbg(msg: String) -> void:
 	if GameManager.debug_enabled:
 		var mode_str = RivalMode.keys()[_mode]
-		# Format: [QUIZ | TRYB | Martwy: ID] Wiadomość
 		print("[QUIZ | %s | Dead:P%d] %s" % [mode_str, current_dead_player, msg])
 
 
@@ -167,6 +168,8 @@ func _build_mc() -> void:
 		else:
 			btn.text = "[%s]  %s" % [k1, answer_text]
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_mc_button.bind(i))
 		_answers_box.add_child(btn)
 
@@ -196,8 +199,10 @@ func _build_fill_tiles() -> void:
 	_tile_slots.resize(gaps.size())
 	_tile_slots.fill("")
 
-	var hbox_text := HBoxContainer.new()
+	# HFlowContainer zamiast HBoxContainer — automatycznie zalega do nowej linii
+	var hbox_text := HFlowContainer.new()
 	hbox_text.add_theme_constant_override("separation", 4)
+	hbox_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_answers_box.add_child(hbox_text)
 
 	var parts : PackedStringArray = text_with_gaps.split("___")
@@ -207,7 +212,7 @@ func _build_fill_tiles() -> void:
 		hbox_text.add_child(lbl)
 		if i < gaps.size():
 			var gap_btn := Button.new()
-			gap_btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO
+			gap_btn.focus_mode = Control.FOCUS_NONE
 			gap_btn.custom_minimum_size = Vector2(120, 36)
 			gap_btn.text = "[ ___ ]"
 			gap_btn.pressed.connect(_on_gap_clicked.bind(i))
@@ -223,14 +228,14 @@ func _build_fill_tiles() -> void:
 	for tile in tiles:
 		var tbtn := Button.new()
 		tbtn.text = str(tile)
-		tbtn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO (Kafelki)
+		tbtn.focus_mode = Control.FOCUS_NONE
 		tbtn.pressed.connect(_on_tile_clicked.bind(str(tile), tbtn))
 		tile_box.add_child(tbtn)
 		_tile_buttons.append(tbtn)
 
 	var confirm := Button.new()
 	confirm.text = "✔ Zatwierdź (Enter)"
-	confirm.focus_mode = Control.FOCUS_NONE # <--- DODAJ TO (Zatwierdź)
+	confirm.focus_mode = Control.FOCUS_NONE
 	confirm.pressed.connect(_on_fill_tiles_confirm)
 	_answers_box.add_child(confirm)
 
@@ -243,11 +248,14 @@ func _build_fill_text() -> void:
 		var hint_lbl := Label.new()
 		hint_lbl.text = "Podpowiedź: %s" % pattern
 		hint_lbl.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
+		hint_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hint_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_answers_box.add_child(hint_lbl)
 
 	var line_edit := LineEdit.new()
 	line_edit.name = "FillTextInput"
 	line_edit.placeholder_text = "Wpisz odpowiedź…"
+	line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_answers_box.add_child(line_edit)
 	line_edit.grab_focus()
 	line_edit.text_submitted.connect(func(text): _on_fill_text_confirm())
@@ -264,24 +272,31 @@ func _build_matching() -> void:
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("separation", 12)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_answers_box.add_child(grid)
 
 	var left_col := VBoxContainer.new()
+	left_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(left_col)
 	for i in range(left_items.size()):
 		var btn := Button.new()
-		btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TĘ LINIJKĘ TUTAJ
+		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(left_items[i])
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_match_left.bind(i))
 		left_col.add_child(btn)
 		_match_left_btns.append(btn)
 
 	var right_col := VBoxContainer.new()
+	right_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(right_col)
 	for i in range(right_items.size()):
 		var btn := Button.new()
-		btn.focus_mode = Control.FOCUS_NONE # <--- DODAJ TĘ LINIJKĘ TUTAJ
+		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(right_items[i])
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_match_right.bind(i))
 		right_col.add_child(btn)
 		_match_right_btns.append(btn)
@@ -408,7 +423,7 @@ func _update_gap_highlight() -> void:
 
 
 func _on_fill_tiles_confirm() -> void:
-	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	if _locked: return
 	_locked = true
 	var placements : Dictionary = {}
 	for i in range(_tile_slots.size()):
@@ -418,7 +433,7 @@ func _on_fill_tiles_confirm() -> void:
 
 
 func _on_fill_text_confirm() -> void:
-	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	if _locked: return
 	_locked = true
 	var input := _answers_box.get_node_or_null("FillTextInput") as LineEdit
 	if not input:
@@ -442,29 +457,22 @@ func _on_match_right(index: int) -> void:
 		
 	var left_items : Array = _question.get("left_items", [])
 
-	# 1. Sprawdzamy, czy ten PRAWY element jest już przypisany do jakiegoś LEWEGO terminu.
-	# Jeśli tak, usuwamy stare przypisanie i zabieramy mu "ptaszka".
 	for key in _match_pairs.keys():
 		if _match_pairs[key] == index:
 			_match_pairs.erase(key)
 			if key < _match_left_btns.size():
-				_match_left_btns[key].text = str(left_items[key]) # Reset tekstu (bez ✓)
+				_match_left_btns[key].text = str(left_items[key])
 
-	# 2. Zapisujemy nowe przypisanie
 	_match_pairs[_match_selected] = index
 	
-	# 3. Aktualizujemy tekst nowo przypisanego lewego przycisku (dodajemy ✓)
 	if _match_selected < _match_left_btns.size():
 		_match_left_btns[_match_selected].text = str(left_items[_match_selected]) + " ✓"
 		
 	_match_selected = -1
 	
-	# 4. Odświeżamy kolory wszystkich przycisków
-	# Lewe tracą żółte podświetlenie selekcji
 	for btn : Button in _match_left_btns:
 		btn.remove_theme_color_override("font_color")
 		
-	# Prawe dostają zielony kolor TYLKO, jeśli są w słowniku przypisań
 	for i in range(_match_right_btns.size()):
 		if _match_pairs.values().has(i):
 			_match_right_btns[i].add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
@@ -473,7 +481,7 @@ func _on_match_right(index: int) -> void:
 
 
 func _on_matching_confirm() -> void:
-	if _locked: return # <--- Zabezpieczenie przed spamowaniem
+	if _locked: return
 	_locked = true
 	var pairs : Array = []
 	for left_idx : int in _match_pairs:
@@ -524,48 +532,40 @@ func _show_complex_result(correct: bool) -> void:
 	var qtype : String = _question.get("type", "multiple_choice")
 
 	if correct:
-		# Zielony nagłówek
 		var lbl := Label.new()
 		lbl.text = "✅ Poprawnie!"
 		lbl.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4))
 		_answers_box.add_child(lbl)
 		return
 
-	# Przy złej odpowiedzi — pokaż poprawną
 	var lbl_wrong := Label.new()
 	lbl_wrong.text = "❌ Błędna odpowiedź!"
 	lbl_wrong.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
 	_answers_box.add_child(lbl_wrong)
 
 	if qtype == "fill_text":
-		# Pobieramy główną odpowiedź oraz alternatywy używając poprawnych kluczy z JSON
 		var main_answer : String = _question.get("answer", "")
 		var alternatives : Array = _question.get("accepted_alternatives", [])
-		
-		# Łączymy je w jedną listę
 		var all_correct : Array[String] = [main_answer]
 		for alt in alternatives:
 			all_correct.append(str(alt))
-			
 		var lbl := Label.new()
-		# Formatujemy ładny tekst z połączoną listą
 		lbl.text = "Poprawne odpowiedzi: %s" % ", ".join(all_correct)
 		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
-		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_answers_box.add_child(lbl)
 
 	elif qtype == "fill_tiles":
 			var gaps : Array = _question.get("gaps", [])
 			var correct_texts : Array[String] = []
-			
-			# Wyciągamy same poprawne słowa, ignorując indeksy
 			for g in gaps:
 				correct_texts.append(str(g.get("correct", "")))
-				
 			var lbl := Label.new()
 			lbl.text = "Poprawna kolejność: %s" % ", ".join(correct_texts)
 			lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
-			lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+			lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			_answers_box.add_child(lbl)
 	elif qtype == "matching":
 		var left_items : Array = _question.get("left_items", [])
@@ -577,13 +577,13 @@ func _show_complex_result(correct: bool) -> void:
 			var l_idx = pair.get("left_index", -1)
 			var r_idx = pair.get("right_index", -1)
 			if l_idx >= 0 and l_idx < left_items.size() and r_idx >= 0 and r_idx < right_items.size():
-				# Formatujemy parę np. "RAM ➔ Podstawowa pamięć operacyjna ulotna"
 				correct_matches.append(str(left_items[l_idx]) + " ➔ " + str(right_items[r_idx]))
 		
 		var lbl := Label.new()
 		lbl.text = "Poprawne dopasowania:\n" + "\n".join(correct_matches)
 		lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
-		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_answers_box.add_child(lbl)
 
 
@@ -592,7 +592,7 @@ func _check_versus_done() -> void:
 		RivalMode.SOLO, RivalMode.DUEL_P1, RivalMode.DUEL_P2:
 			var correct : bool = _correct_p2 if _mode == RivalMode.DUEL_P2 else _correct_p1
 			_timer_node.stop()
-			await get_tree().create_timer(2.0).timeout # Czas ujednolicony
+			await get_tree().create_timer(2.0).timeout
 			_locked = false
 			_route_duel_result(correct)
 		RivalMode.VERSUS:
@@ -607,7 +607,6 @@ func _finish_complex(correct: bool) -> void:
 	_locked = false
 	_route_duel_result(correct)
 
-# Nowy wspólny "dyrygent" dla pytań prostych i złożonych
 func _route_duel_result(correct: bool) -> void:
 	_dbg("Rozstrzyganie pojedynku. Czy martwy odpowiedział OK? %s" % str(correct))
 	
