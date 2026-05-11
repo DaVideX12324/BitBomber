@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://durkd13kos1xe"]
 
 [ext_resource type="Script" uid="uid://cphh0uqwl7a7" path="res://scripts/death_screen.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/quiz_overlay.tscn" id="2_njuei"]
+[ext_resource type="PackedScene" uid="uid://dqyqqsss2kvio" path="res://scenes/ui/quiz_overlay.tscn" id="2_njuei"]
 
 [node name="DeathScreen" type="CanvasLayer" unique_id=1653189185]
 layer = 20
@@ -40,7 +40,7 @@ horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=689558472]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 32
 text = "Wyślij tytuł"
 horizontal_alignment = 1
 
@@ -66,13 +66,13 @@ alignment = 1
 [node name="BtnContinue" type="Button" parent="Panel/VBox/Buttons" unique_id=1753386908]
 custom_minimum_size = Vector2(160, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 21
 text = "Dalej"
 
 [node name="BtnMenu" type="Button" parent="Panel/VBox/Buttons" unique_id=1442448011]
 custom_minimum_size = Vector2(160, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 21
 text = "Menu główne"
 
 [node name="QuizOverlay" parent="." unique_id=894658300 instance=ExtResource("2_njuei")]
