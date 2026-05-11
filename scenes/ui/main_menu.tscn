@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dhc28m5n0t5v7"]
 
 [ext_resource type="Script" uid="uid://b6860fx2m1im7" path="res://scripts/main_menu.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_menu.tscn" id="2"]
 
 [node name="MainMenu" type="CanvasLayer" unique_id=1654604993]
 process_mode = 3
@@ -248,10 +249,22 @@ text = "▶ Zagraj!"
 [node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
 layout_mode = 2
 
-[node name="BtnHelp" type="Button" parent="Center/Panel/VBox" unique_id=2043692537]
+[node name="HBoxMeta" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=111111111]
 layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BtnHelp" type="Button" parent="Center/Panel/VBox/HBoxMeta" unique_id=2043692537]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "Instrukcja"
+
+[node name="BtnOptions" type="Button" parent="Center/Panel/VBox/HBoxMeta" unique_id=111111112]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "⚙ Opcje"
 
 [node name="BtnQuit" type="Button" parent="Center/Panel/VBox" unique_id=196722966]
 custom_minimum_size = Vector2(0, 36)
@@ -276,3 +289,5 @@ theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
 theme_override_font_sizes/font_size = 11
 text = "v0.1-dev"
 horizontal_alignment = 2
+
+[node name="OptionsMenu" parent="." instance=ExtResource("2")]

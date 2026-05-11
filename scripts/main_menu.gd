@@ -1,8 +1,6 @@
 extends CanvasLayer
 
 ## Menu główne BitBomber.
-## Jeden panel: wybor graczy (1-4) + boty (0 do 4-gracze) + trudnosc + tryb wygranej + Zagraj!
-## Trudnosc ukryta gdy bots == 0.
 
 @onready var _players_btns : Array[Button] = [
 	$"Center/Panel/VBox/HBoxPlayers/Players_1",
@@ -25,15 +23,16 @@ extends CanvasLayer
 	$"Center/Panel/VBox/HBoxWin/Win_FirstTo",
 	$"Center/Panel/VBox/HBoxWin/Win_MostWins",
 ]
-@onready var _rounds_spin  : SpinBox      = $"Center/Panel/VBox/HBoxRounds/RoundsSpin"
-@onready var _rounds_label : Label        = $"Center/Panel/VBox/HBoxRounds/RoundsLabel"
-@onready var _diff_label   : Label        = $"Center/Panel/VBox/DiffLabel"
-@onready var _diff_hbox    : HBoxContainer = $"Center/Panel/VBox/HBoxDiff"
-@onready var _quiz_opt     : OptionButton = $"Center/Panel/VBox/QuizOpt"
-@onready var _start_btn    : Button       = $"Center/Panel/VBox/BtnStart"
+@onready var _rounds_spin    : SpinBox        = $"Center/Panel/VBox/HBoxRounds/RoundsSpin"
+@onready var _rounds_label   : Label          = $"Center/Panel/VBox/HBoxRounds/RoundsLabel"
+@onready var _diff_label     : Label          = $"Center/Panel/VBox/DiffLabel"
+@onready var _diff_hbox      : HBoxContainer  = $"Center/Panel/VBox/HBoxDiff"
+@onready var _quiz_opt       : OptionButton   = $"Center/Panel/VBox/QuizOpt"
+@onready var _start_btn      : Button         = $"Center/Panel/VBox/BtnStart"
+@onready var _options_menu                    = $OptionsMenu
 
-var _sel_players : int = 1  # 1-4
-var _sel_bots    : int = 1  # 0-3
+var _sel_players : int = 1
+var _sel_bots    : int = 1
 var _sel_diff    : int = 0
 var _sel_win     : int = 0
 
@@ -44,39 +43,32 @@ func _ready() -> void:
 	for i in _players_btns.size():
 		var idx := i
 		_players_btns[i].pressed.connect(func(): _set_players(idx + 1))
-
 	for i in _bots_btns.size():
 		var idx := i
 		_bots_btns[i].pressed.connect(func(): _set_bots(idx))
-
 	for i in _diff_btns.size():
 		var idx := i
 		_diff_btns[i].pressed.connect(func(): _set_diff(idx))
-
 	for i in _win_btns.size():
 		var idx := i
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
-
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
 	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", 18)
-	$Center/Panel/VBox/BtnQuit.pressed.connect(get_tree().quit)
-	$Center/Panel/VBox/BtnHelp.pressed.connect(_show_help)
-
+	$"Center/Panel/VBox/BtnQuit".pressed.connect(get_tree().quit)
+	$"Center/Panel/VBox/BtnHelp".pressed.connect(_show_help)
+	$"Center/Panel/VBox/HBoxMeta/BtnOptions".pressed.connect(func(): _options_menu.open())
 	var quizzes = QuizManager.get_quiz_ids()
 	_quiz_opt.add_item("Wszystkie")
 	for q in quizzes:
 		_quiz_opt.add_item(q)
-
 	_start_btn.pressed.connect(func():
 		var q_id = "" if _quiz_opt.selected <= 0 else _quiz_opt.get_item_text(_quiz_opt.selected)
 		_start(_sel_players, _sel_bots, _sel_diff, _sel_win, int(_rounds_spin.value), q_id)
 	)
-
 	_refresh_players()
 	_refresh_bots()
 	_refresh_diff()
 	_refresh_win()
-
 	_build_help_overlay()
 
 
@@ -89,6 +81,7 @@ func _set_players(count: int) -> void:
 	_sel_bots = clampi(_sel_bots, min_bots, max_bots)
 	_refresh_players()
 	_refresh_bots()
+
 
 func _set_bots(count: int) -> void:
 	_sel_bots = count
@@ -105,7 +98,7 @@ func _set_win(idx: int) -> void:
 	_refresh_win()
 
 
-func _on_rounds_changed(value: float) -> void:
+func _on_rounds_changed(_value: float) -> void:
 	if _sel_win == 0:
 		_rounds_label.text = "Wygrane rundy do zwyci\u0119stwa (X):"
 	else:
@@ -138,6 +131,7 @@ func _refresh_win() -> void:
 	else:
 		_rounds_label.text = "Liczba rund w sesji (Y):"
 
+
 func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_id: String) -> void:
 	GameManager.bot_difficulty   = diff
 	GameManager.win_condition    = win_mode as GameManager.WinCondition
@@ -160,7 +154,6 @@ func _build_help_overlay() -> void:
 	_help_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	_help_overlay.visible = false
 	add_child(_help_overlay)
-
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
 	panel.custom_minimum_size = Vector2(640, 500)
@@ -169,28 +162,22 @@ func _build_help_overlay() -> void:
 	panel.offset_right  =  320
 	panel.offset_bottom =  250
 	_help_overlay.add_child(panel)
-
 	var margin := MarginContainer.new()
 	for side in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 16)
 	panel.add_child(margin)
-
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 12)
 	margin.add_child(vbox)
-
 	var title := Label.new()
 	title.text = "💣  Jak grać w BitBomber?"
 	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
-
 	vbox.add_child(HSeparator.new())
-
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(scroll)
-
 	var content := RichTextLabel.new()
 	content.bbcode_enabled = true
 	content.fit_content = true
@@ -225,9 +212,7 @@ Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. 
   [b]\u015arednii[/b]   wywa\u017cony balans
   [b]Trudny[/b]   bot agresywny, trudniejsze pytania"""
 	scroll.add_child(content)
-
 	vbox.add_child(HSeparator.new())
-
 	var btn_close := Button.new()
 	btn_close.text = "Zamknij  [ESC]"
 	btn_close.pressed.connect(_hide_help)
