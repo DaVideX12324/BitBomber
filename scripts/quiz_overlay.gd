@@ -261,10 +261,12 @@ func _build_fill_tiles() -> void:
 	var parts := text_with_gaps.split("___")
 	for i in parts.size():
 		var lbl := Label.new()
+		lbl.add_theme_font_size_override("font_size", 20)
 		lbl.text = parts[i]
 		_gap_row.add_child(lbl)
 		if i < gaps.size():
 			var gap_btn := Button.new()
+			gap_btn.add_theme_font_size_override("font_size", 20)
 			gap_btn.focus_mode = Control.FOCUS_NONE
 			gap_btn.custom_minimum_size = Vector2(120, 36)
 			gap_btn.text = "[ ___ ]"
@@ -274,6 +276,7 @@ func _build_fill_tiles() -> void:
 			_gap_buttons.append(gap_btn)
 	for tile in tiles:
 		var tbtn := Button.new()
+		tbtn.add_theme_font_size_override("font_size", 20)
 		tbtn.text = str(tile)
 		tbtn.focus_mode = Control.FOCUS_NONE
 		var txt := str(tile)
@@ -292,6 +295,7 @@ func _build_matching() -> void:
 	var right_items : Array = _question.get("right_items", [])
 	for i in left_items.size():
 		var btn := Button.new()
+		btn.add_theme_font_size_override("font_size", 20)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(left_items[i])
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -302,6 +306,7 @@ func _build_matching() -> void:
 		_match_left_btns.append(btn)
 	for i in right_items.size():
 		var btn := Button.new()
+		btn.add_theme_font_size_override("font_size", 20)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(right_items[i])
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -522,8 +527,8 @@ func _show_result_label(correct: bool) -> void:
 			var ri : Array = _question.get("right_items", [])
 			var lines : Array[String] = []
 			for pair in _question.get("pairs", []):
-				var l := pair.get("left_index", -1)
-				var r := pair.get("right_index", -1)
+				var l : int = pair.get("left_index", -1)
+				var r : int = pair.get("right_index", -1)
 				if l >= 0 and l < li.size() and r >= 0 and r < ri.size():
 					lines.append("%s → %s" % [str(li[l]), str(ri[r])])
 			_correct_lbl.text = "Poprawne:\n" + "\n".join(lines)

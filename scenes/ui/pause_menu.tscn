@@ -40,7 +40,7 @@ horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=491972599]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 32
 text = "Pauza"
 horizontal_alignment = 1
 
@@ -50,11 +50,11 @@ layout_mode = 2
 [node name="BtnResume" type="Button" parent="Panel/VBox" unique_id=141895807]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "Wznów grę"
 
 [node name="BtnMenu" type="Button" parent="Panel/VBox" unique_id=1036077389]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "Menu główne"

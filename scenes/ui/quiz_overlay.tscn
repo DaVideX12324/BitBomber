@@ -1,22 +1,20 @@
-[gd_scene format=3 uid="uid://quiz_overlay_001"]
+[gd_scene format=3 uid="uid://belt4sxp0pq2l"]
 
-[ext_resource type="Script" path="res://scripts/quiz_overlay.gd" id="1"]
+[ext_resource type="Script" uid="uid://dbd58lwrqgtl1" path="res://scripts/quiz_overlay.gd" id="1"]
 
-[node name="QuizOverlay" type="CanvasLayer"]
+[node name="QuizOverlay" type="CanvasLayer" unique_id=377216357]
 layer = 20
 script = ExtResource("1")
 
-[node name="Overlay" type="ColorRect" parent="."]
+[node name="Overlay" type="ColorRect" parent="." unique_id=2131003677]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.72)
-mouse_filter = 0
 
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 1
+[node name="Panel" type="PanelContainer" parent="." unique_id=1550094128]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -29,186 +27,175 @@ offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1798106957]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Panel/VBox"]
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=2143113829]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 24
 text = "⚡ Ostatnia szansa!"
 horizontal_alignment = 1
 
-[node name="Question" type="Label" parent="Panel/VBox"]
+[node name="Question" type="Label" parent="Panel/VBox" unique_id=722142091]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-autowrap_mode = 3
 size_flags_horizontal = 3
-text = ""
+theme_override_font_sizes/font_size = 21
 horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="Timer" type="Label" parent="Panel/VBox"]
+[node name="Timer" type="Label" parent="Panel/VBox" unique_id=281873437]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.3, 1, 0.3, 1)
+theme_override_font_sizes/font_size = 20
 text = "⏱ 15.0 s"
 horizontal_alignment = 1
 
-[node name="Hint" type="Label" parent="Panel/VBox"]
+[node name="Hint" type="Label" parent="Panel/VBox" unique_id=978564416]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-text = ""
+theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 
-[node name="HSep" type="HSeparator" parent="Panel/VBox"]
+[node name="HSep" type="HSeparator" parent="Panel/VBox" unique_id=1260198666]
 layout_mode = 2
 
-[node name="MC_Box" type="VBoxContainer" parent="Panel/VBox"]
+[node name="MC_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=602506031]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Btn0" type="Button" parent="Panel/VBox/MC_Box"]
+[node name="Btn0" type="Button" parent="Panel/VBox/MC_Box" unique_id=2016068659]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
 alignment = 0
 autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
 
-[node name="Btn1" type="Button" parent="Panel/VBox/MC_Box"]
+[node name="Btn1" type="Button" parent="Panel/VBox/MC_Box" unique_id=1957549676]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
 alignment = 0
 autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
 
-[node name="Btn2" type="Button" parent="Panel/VBox/MC_Box"]
+[node name="Btn2" type="Button" parent="Panel/VBox/MC_Box" unique_id=2041259429]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
 alignment = 0
 autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
 
-[node name="Btn3" type="Button" parent="Panel/VBox/MC_Box"]
+[node name="Btn3" type="Button" parent="Panel/VBox/MC_Box" unique_id=598843147]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
 alignment = 0
 autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
 
-[node name="TF_Box" type="VBoxContainer" parent="Panel/VBox"]
+[node name="TF_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=1243360646]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="BtnTrue" type="Button" parent="Panel/VBox/TF_Box"]
+[node name="BtnTrue" type="Button" parent="Panel/VBox/TF_Box" unique_id=139104843]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-alignment = 0
 size_flags_horizontal = 3
-text = ""
+theme_override_font_sizes/font_size = 20
+alignment = 0
 
-[node name="BtnFalse" type="Button" parent="Panel/VBox/TF_Box"]
+[node name="BtnFalse" type="Button" parent="Panel/VBox/TF_Box" unique_id=1827938139]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-alignment = 0
 size_flags_horizontal = 3
-text = ""
+theme_override_font_sizes/font_size = 20
+alignment = 0
 
-[node name="FillText_Box" type="VBoxContainer" parent="Panel/VBox"]
+[node name="FillText_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=1374970414]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="PatternHint" type="Label" parent="Panel/VBox/FillText_Box"]
+[node name="PatternHint" type="Label" parent="Panel/VBox/FillText_Box" unique_id=1686506043]
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 20
 autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
 
-[node name="Input" type="LineEdit" parent="Panel/VBox/FillText_Box"]
+[node name="Input" type="LineEdit" parent="Panel/VBox/FillText_Box" unique_id=2126546061]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
 placeholder_text = "Wpisz odpowiedź…"
 
-[node name="Confirm" type="Button" parent="Panel/VBox/FillText_Box"]
+[node name="Confirm" type="Button" parent="Panel/VBox/FillText_Box" unique_id=1938784894]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "✔ Zatwierdź (Enter)"
 
-[node name="FillTiles_Box" type="VBoxContainer" parent="Panel/VBox"]
+[node name="FillTiles_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=1326903406]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="GapRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box"]
+[node name="GapRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box" unique_id=894913835]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TileSep" type="HSeparator" parent="Panel/VBox/FillTiles_Box"]
+[node name="TileSep" type="HSeparator" parent="Panel/VBox/FillTiles_Box" unique_id=548626269]
 layout_mode = 2
 
-[node name="TileRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box"]
+[node name="TileRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box" unique_id=636476067]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Confirm" type="Button" parent="Panel/VBox/FillTiles_Box"]
+[node name="Confirm" type="Button" parent="Panel/VBox/FillTiles_Box" unique_id=1268982581]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "✔ Zatwierdź (Enter)"
 
-[node name="Matching_Box" type="VBoxContainer" parent="Panel/VBox"]
+[node name="Matching_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=1425405687]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="MatchGrid" type="GridContainer" parent="Panel/VBox/Matching_Box"]
+[node name="MatchGrid" type="GridContainer" parent="Panel/VBox/Matching_Box" unique_id=1215399695]
 layout_mode = 2
+size_flags_horizontal = 3
 columns = 2
-size_flags_horizontal = 3
 
-[node name="LeftCol" type="VBoxContainer" parent="Panel/VBox/Matching_Box/MatchGrid"]
+[node name="LeftCol" type="VBoxContainer" parent="Panel/VBox/Matching_Box/MatchGrid" unique_id=987389231]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RightCol" type="VBoxContainer" parent="Panel/VBox/Matching_Box/MatchGrid"]
+[node name="RightCol" type="VBoxContainer" parent="Panel/VBox/Matching_Box/MatchGrid" unique_id=12257877]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Confirm" type="Button" parent="Panel/VBox/Matching_Box"]
+[node name="Confirm" type="Button" parent="Panel/VBox/Matching_Box" unique_id=1807561884]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "✔ Zatwierdź (Enter)"
 
-[node name="ResultLabel" type="Label" parent="Panel/VBox"]
+[node name="ResultLabel" type="Label" parent="Panel/VBox" unique_id=454212053]
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-autowrap_mode = 3
 size_flags_horizontal = 3
-text = ""
+theme_override_font_sizes/font_size = 22
 horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="CorrectAnswer" type="Label" parent="Panel/VBox"]
+[node name="CorrectAnswer" type="Label" parent="Panel/VBox" unique_id=1337338050]
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-autowrap_mode = 3
-size_flags_horizontal = 3
-text = ""
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1105383957]
 wait_time = 15.0
 one_shot = true
