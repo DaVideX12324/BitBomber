@@ -197,7 +197,7 @@ func _build_ui() -> void:
 		"fill_text":        _build_fill_text()
 		"fill_tiles":       _build_fill_tiles()
 		"matching":         _build_matching()
-
+	_lbl_question.visible = _lbl_question.text != ""
 
 # --- multiple_choice ---
 func _build_mc() -> void:

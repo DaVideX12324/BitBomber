@@ -56,25 +56,22 @@ func end_round(winner_id: int) -> void:
 	if not _round_active:
 		return
 	_round_active = false
-	
-	# ZMIANA 1: Pozwalamy przypisać punkt botom (ID == 0)
-	if winner_id >= 0:
-		round_wins[winner_id] = round_wins.get(winner_id, 0) + 1
-		
-	# Najpierw ustal czy sesja się skończyła
-	var session_winner := _compute_session_winner(winner_id)
-	
-	# Zmień stan na ROUND_END (death_screen będzie wiedział że to normalny koniec rundy)
+
+	# Normalizuj: każdy gracz > num_human_players to bot → zapisuj pod 999
+	var record_id := winner_id
+	if winner_id > GameManager.num_human_players:
+		record_id = 999
+
+	if record_id >= 0:
+		round_wins[record_id] = round_wins.get(record_id, 0) + 1
+
+	var session_winner := _compute_session_winner(record_id)
 	GameManager.change_state(GameManager.GameState.ROUND_END)
-	
-	# Emituj round_ended
-	round_ended.emit(winner_id)
-	
-	# ZMIANA 2: Używamy -2 jako kodu "sesja trwa", żeby nie blokować botów (ID 0)
+	round_ended.emit(record_id)  # ← emituj znormalizowane ID
+
 	if session_winner != -2:
 		GameManager.change_state(GameManager.GameState.GAME_OVER)
 		session_ended.emit(session_winner)
-
 
 ## Zwraca ID zwycięzcy sesji (>=0), remis (-1), lub -2 jeśli sesja trwa nadal.
 func _compute_session_winner(winner_id: int) -> int:
