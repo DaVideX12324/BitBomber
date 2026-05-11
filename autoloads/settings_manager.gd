@@ -2,43 +2,41 @@ extends Node
 
 ## Autoload: wczytuje i zapisuje ustawienia wyświetlania.
 ## Ścieżka: user://settings.cfg
-##
-## Użycie:
-##   SettingsManager.apply_window_mode(mode)
-##   SettingsManager.apply_resolution(Vector2i(1920, 1080))
 
 const CONFIG_PATH := "user://settings.cfg"
-const SEC := "display"
+const SEC         := "display"
 
-var window_mode : int     = DisplayServer.WINDOW_MODE_WINDOWED
-var resolution  : Vector2i = Vector2i(1280, 720)
+## 0 = okienkowy, 1 = bez ramki, 2 = pełny ekran
+var window_mode_idx : int      = 0
+var resolution      : Vector2i = Vector2i(1280, 720)
 
 
 func _ready() -> void:
 	_load()
-	apply_window_mode(window_mode)
-	apply_resolution(resolution)
+	apply_settings(window_mode_idx, resolution)
 
 
 # ---------------------------------------------------------------------------
 # Publiczne API
 # ---------------------------------------------------------------------------
 
-func apply_window_mode(mode: int) -> void:
-	window_mode = mode
-	DisplayServer.window_set_mode(mode)
-	# W pełnym ekranie rozdzielczość ustawia się automatycznie przez OS
-	if mode == DisplayServer.WINDOW_MODE_WINDOWED or mode == DisplayServer.WINDOW_MODE_MAXIMIZED:
-		apply_resolution(resolution)
-	_save()
-
-
-func apply_resolution(res: Vector2i) -> void:
-	resolution = res
-	var mode := DisplayServer.window_get_mode()
-	if mode == DisplayServer.WINDOW_MODE_WINDOWED:
-		DisplayServer.window_set_size(res)
-		_center_window()
+func apply_settings(mode_idx: int, res: Vector2i) -> void:
+	window_mode_idx = mode_idx
+	resolution      = res
+	match mode_idx:
+		0: # Okienkowy z ramką
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_size(res)
+			_center_window()
+		1: # Bez ramki (okno bez dekoracji Windows)
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			DisplayServer.window_set_size(res)
+			_center_window()
+		2: # Pełny ekran (exclusive)
+			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 	_save()
 
 
@@ -60,7 +58,6 @@ func get_available_resolutions() -> Array[Vector2i]:
 	for r in candidates:
 		if r.x <= screen_size.x and r.y <= screen_size.y:
 			result.append(r)
-	# Dodaj natywną rozdzielczość monitora jeśli nie ma jej na liście
 	if not result.has(screen_size):
 		result.append(screen_size)
 	return result
@@ -82,7 +79,7 @@ func _center_window() -> void:
 
 func _save() -> void:
 	var cfg := ConfigFile.new()
-	cfg.set_value(SEC, "window_mode", window_mode)
+	cfg.set_value(SEC, "window_mode_idx", window_mode_idx)
 	cfg.set_value(SEC, "resolution_x", resolution.x)
 	cfg.set_value(SEC, "resolution_y", resolution.y)
 	cfg.save(CONFIG_PATH)
@@ -92,7 +89,7 @@ func _load() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(CONFIG_PATH) != OK:
 		return
-	window_mode = cfg.get_value(SEC, "window_mode", DisplayServer.WINDOW_MODE_WINDOWED)
+	window_mode_idx = cfg.get_value(SEC, "window_mode_idx", 0)
 	var rx : int = cfg.get_value(SEC, "resolution_x", 1280)
 	var ry : int = cfg.get_value(SEC, "resolution_y", 720)
 	resolution = Vector2i(rx, ry)

@@ -33,8 +33,9 @@ SettingsManager="*uid://0b60j1jm6etx"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/borderless=true
+window/size/mode=3
 window/stretch/mode="canvas_items"
+window/vsync/vsync_mode=0
 
 [global_group]
 
@@ -143,3 +144,7 @@ quiz_p2_d={
 2d_physics/layer_3="BombCollision"
 2d_physics/layer_4="explosionCollision"
 2d_physics/layer_5="powerUp"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
