@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Center" unique_id=719870763]
-custom_minimum_size = Vector2(380, 0)
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel" unique_id=1767725691]
@@ -32,7 +32,7 @@ theme_override_constants/separation = 16
 [node name="Title" type="Label" parent="Center/Panel/VBox" unique_id=2128057794]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "💣 BitBomber"
+text = "\u{1F4A3} BitBomber"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Panel/VBox" unique_id=360151117]
@@ -49,286 +49,182 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.75, 0.65, 1)
 theme_override_font_sizes/font_size = 13
-text = "P1: WASD + Spacja
-P2: Strzałki + Num0 / Enter"
+text = "P1: WASD + Spacja   |   P2: Strzalki + Enter"
 horizontal_alignment = 1
 
 [node name="Sep2" type="HSeparator" parent="Center/Panel/VBox" unique_id=1925169792]
 layout_mode = 2
 
-[node name="Btn1P" type="Button" parent="Center/Panel/VBox" unique_id=615722078]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "▶  Graj (1 gracz)"
-
-[node name="Panel1P" type="PanelContainer" parent="Center/Panel/VBox" unique_id=207371030]
-visible = false
-layout_mode = 2
-
-[node name="VBox1P" type="VBoxContainer" parent="Center/Panel/VBox/Panel1P" unique_id=423972456]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=472920558]
+[node name="PlayersLabel" type="Label" parent="Center/Panel/VBox" unique_id=500000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "Liczba botów:"
+text = "Liczba graczy:"
 horizontal_alignment = 1
 
-[node name="HBox1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=696020488]
+[node name="HBoxPlayers" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=500000002]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Bot1P_1" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=1680287039]
-custom_minimum_size = Vector2(80, 36)
+[node name="Players_1" type="Button" parent="Center/Panel/VBox/HBoxPlayers" unique_id=500000003]
+custom_minimum_size = Vector2(72, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+button_pressed = true
+text = "1 Gracz"
+
+[node name="Players_2" type="Button" parent="Center/Panel/VBox/HBoxPlayers" unique_id=500000004]
+custom_minimum_size = Vector2(72, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "2 Graczy"
+
+[node name="Players_3" type="Button" parent="Center/Panel/VBox/HBoxPlayers" unique_id=500000005]
+custom_minimum_size = Vector2(72, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "3 Graczy"
+
+[node name="Players_4" type="Button" parent="Center/Panel/VBox/HBoxPlayers" unique_id=500000006]
+custom_minimum_size = Vector2(72, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "4 Graczy"
+
+[node name="BotsLabel" type="Label" parent="Center/Panel/VBox" unique_id=600000001]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Liczba botow:"
+horizontal_alignment = 1
+
+[node name="HBoxBots" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=600000002]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Bots_0" type="Button" parent="Center/Panel/VBox/HBoxBots" unique_id=600000003]
+custom_minimum_size = Vector2(72, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+text = "0 Botow"
+
+[node name="Bots_1" type="Button" parent="Center/Panel/VBox/HBoxBots" unique_id=600000004]
+custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 toggle_mode = true
 button_pressed = true
 text = "1 Bot"
 
-[node name="Bot1P_2" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=1864410728]
-custom_minimum_size = Vector2(80, 36)
+[node name="Bots_2" type="Button" parent="Center/Panel/VBox/HBoxBots" unique_id=600000005]
+custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 toggle_mode = true
 text = "2 Boty"
 
-[node name="Bot1P_3" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBox1P" unique_id=211343684]
-custom_minimum_size = Vector2(80, 36)
+[node name="Bots_3" type="Button" parent="Center/Panel/VBox/HBoxBots" unique_id=600000006]
+custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 toggle_mode = true
 text = "3 Boty"
 
-[node name="DiffLabel1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000001]
+[node name="DiffLabel" type="Label" parent="Center/Panel/VBox" unique_id=700000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "Trudność botów i pytań:"
+text = "Trudnosc botow i pytan:"
 horizontal_alignment = 1
 
-[node name="HBoxDiff1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000002]
+[node name="HBoxDiff" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=700000002]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Diff1P_Easy" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxDiff1P" unique_id=100000003]
+[node name="Diff_Easy" type="Button" parent="Center/Panel/VBox/HBoxDiff" unique_id=700000003]
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 toggle_mode = true
 button_pressed = true
-text = "🟢 Łatwy"
+text = "\u{1F7E2} Latwy"
 
-[node name="Diff1P_Medium" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxDiff1P" unique_id=100000004]
+[node name="Diff_Medium" type="Button" parent="Center/Panel/VBox/HBoxDiff" unique_id=700000004]
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 toggle_mode = true
-text = "🟡 Średni"
+text = "\u{1F7E1} Sredni"
 
-[node name="Diff1P_Hard" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxDiff1P" unique_id=100000005]
+[node name="Diff_Hard" type="Button" parent="Center/Panel/VBox/HBoxDiff" unique_id=700000005]
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 toggle_mode = true
-text = "🔴 Trudny"
+text = "\u{1F534} Trudny"
 
-[node name="WinLabel1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=300000001]
+[node name="WinLabel" type="Label" parent="Center/Panel/VBox" unique_id=800000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 13
 text = "Tryb wygranej:"
 horizontal_alignment = 1
 
-[node name="HBoxWin1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=300000002]
+[node name="HBoxWin" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=800000002]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Win1P_FirstTo" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxWin1P" unique_id=300000003]
+[node name="Win_FirstTo" type="Button" parent="Center/Panel/VBox/HBoxWin" unique_id=800000003]
 custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 toggle_mode = true
 button_pressed = true
-text = "🏆 Pierwszy do X"
+text = "\u{1F3C6} Pierwszy do X"
 
-[node name="Win1P_MostWins" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxWin1P" unique_id=300000004]
+[node name="Win_MostWins" type="Button" parent="Center/Panel/VBox/HBoxWin" unique_id=800000004]
 custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 toggle_mode = true
-text = "📊 Max Y rund"
+text = "\u{1F4CA} Max Y rund"
 
-[node name="HBoxRounds1P" type="HBoxContainer" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=300000005]
+[node name="HBoxRounds" type="HBoxContainer" parent="Center/Panel/VBox" unique_id=800000005]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="RoundsLabel1P" type="Label" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P" unique_id=300000006]
+[node name="RoundsLabel" type="Label" parent="Center/Panel/VBox/HBoxRounds" unique_id=800000006]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "Liczba rund (X):"
+text = "Wygrane rundy do zwyciestwa (X):"
 
-[node name="RoundsSpin1P" type="SpinBox" parent="Center/Panel/VBox/Panel1P/VBox1P/HBoxRounds1P" unique_id=300000007]
+[node name="RoundsSpin" type="SpinBox" parent="Center/Panel/VBox/HBoxRounds" unique_id=800000007]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 min_value = 1.0
 max_value = 20.0
 value = 3.0
 
-[node name="QuizOpt1P" type="OptionButton" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=65966798]
+[node name="QuizOpt" type="OptionButton" parent="Center/Panel/VBox" unique_id=900000001]
 layout_mode = 2
 
-[node name="BtnStart1P" type="Button" parent="Center/Panel/VBox/Panel1P/VBox1P" unique_id=100000006]
+[node name="BtnStart" type="Button" parent="Center/Panel/VBox" unique_id=900000002]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
 theme_override_font_sizes/font_size = 16
-text = "▶  Zagraj!"
-
-[node name="Btn2P" type="Button" parent="Center/Panel/VBox" unique_id=1893811316]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "▶  Graj (2 graczy)"
-
-[node name="Panel2P" type="PanelContainer" parent="Center/Panel/VBox" unique_id=1806719920]
-visible = false
-layout_mode = 2
-
-[node name="VBox2P" type="VBoxContainer" parent="Center/Panel/VBox/Panel2P" unique_id=1152984982]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Label2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=1079606127]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "Liczba botów:"
-horizontal_alignment = 1
-
-[node name="HBox2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=756273401]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Bot2P_0" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=200000001]
-custom_minimum_size = Vector2(80, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-toggle_mode = true
-button_pressed = true
-text = "0 Botów"
-
-[node name="Bot2P_1" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=486921655]
-custom_minimum_size = Vector2(80, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-toggle_mode = true
-text = "1 Bot"
-
-[node name="Bot2P_2" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBox2P" unique_id=1886455927]
-custom_minimum_size = Vector2(80, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-toggle_mode = true
-text = "2 Boty"
-
-[node name="DiffLabel2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000011]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "Trudność botów i pytań:"
-horizontal_alignment = 1
-
-[node name="HBoxDiff2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000012]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Diff2P_Easy" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxDiff2P" unique_id=100000013]
-custom_minimum_size = Vector2(88, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-toggle_mode = true
-button_pressed = true
-text = "🟢 Łatwy"
-
-[node name="Diff2P_Medium" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxDiff2P" unique_id=100000014]
-custom_minimum_size = Vector2(88, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-toggle_mode = true
-text = "🟡 Średni"
-
-[node name="Diff2P_Hard" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxDiff2P" unique_id=100000015]
-custom_minimum_size = Vector2(88, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-toggle_mode = true
-text = "🔴 Trudny"
-
-[node name="WinLabel2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=300000011]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "Tryb wygranej:"
-horizontal_alignment = 1
-
-[node name="HBoxWin2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=300000012]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Win2P_FirstTo" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxWin2P" unique_id=300000013]
-custom_minimum_size = Vector2(140, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-toggle_mode = true
-button_pressed = true
-text = "🏆 Pierwszy do X"
-
-[node name="Win2P_MostWins" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxWin2P" unique_id=300000014]
-custom_minimum_size = Vector2(140, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-toggle_mode = true
-text = "📊 Max Y rund"
-
-[node name="HBoxRounds2P" type="HBoxContainer" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=300000015]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="RoundsLabel2P" type="Label" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxRounds2P" unique_id=300000016]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "Liczba rund (X):"
-
-[node name="RoundsSpin2P" type="SpinBox" parent="Center/Panel/VBox/Panel2P/VBox2P/HBoxRounds2P" unique_id=300000017]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-min_value = 1.0
-max_value = 20.0
-value = 3.0
-
-[node name="QuizOpt2P" type="OptionButton" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=144477404]
-layout_mode = 2
-
-[node name="BtnStart2P" type="Button" parent="Center/Panel/VBox/Panel2P/VBox2P" unique_id=100000016]
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
-theme_override_font_sizes/font_size = 16
-text = "▶  Zagraj!"
+text = "\u{25B6}  Zagraj!"
 
 [node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
 layout_mode = 2
@@ -342,7 +238,7 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_font_sizes/font_size = 15
-text = "✕  Wyjście"
+text = "\u{2715}  Wyjscie"
 
 [node name="VerLabel" type="Label" parent="." unique_id=899343667]
 anchors_preset = 3
