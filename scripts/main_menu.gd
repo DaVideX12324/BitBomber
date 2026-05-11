@@ -58,7 +58,7 @@ func _ready() -> void:
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
 
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
-
+	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", 18)
 	$Center/Panel/VBox/BtnQuit.pressed.connect(get_tree().quit)
 	$Center/Panel/VBox/BtnHelp.pressed.connect(_show_help)
 
@@ -76,7 +76,6 @@ func _ready() -> void:
 	_refresh_bots()
 	_refresh_diff()
 	_refresh_win()
-	_refresh_diff_visibility()
 
 	_build_help_overlay()
 
@@ -85,19 +84,16 @@ func _ready() -> void:
 
 func _set_players(count: int) -> void:
 	_sel_players = count
-	# Jesli liczba botow + graczy > 4, cofnij boty do max
 	var max_bots := 4 - _sel_players
+	var min_bots := 1 if _sel_players == 1 else 0
 	if _sel_bots > max_bots:
 		_sel_bots = max_bots
 	_refresh_players()
 	_refresh_bots()
-	_refresh_diff_visibility()
-
 
 func _set_bots(count: int) -> void:
 	_sel_bots = count
 	_refresh_bots()
-	_refresh_diff_visibility()
 
 
 func _set_diff(idx: int) -> void:
@@ -124,8 +120,9 @@ func _refresh_players() -> void:
 
 func _refresh_bots() -> void:
 	var max_bots := 4 - _sel_players
+	var min_bots := 1 if _sel_players == 1 else 0
 	for i in _bots_btns.size():
-		_bots_btns[i].disabled = (i > max_bots)
+		_bots_btns[i].disabled = (i > max_bots or i < min_bots)
 		_bots_btns[i].button_pressed = (i == _sel_bots)
 
 
@@ -141,12 +138,6 @@ func _refresh_win() -> void:
 		_rounds_label.text = "Wygrane rundy do zwyci\u0119stwa (X):"
 	else:
 		_rounds_label.text = "Liczba rund w sesji (Y):"
-
-
-func _refresh_diff_visibility() -> void:
-	_diff_label.visible = (_sel_bots > 0)
-	_diff_hbox.visible  = (_sel_bots > 0)
-
 
 func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_id: String) -> void:
 	GameManager.bot_difficulty   = diff
@@ -190,7 +181,7 @@ func _build_help_overlay() -> void:
 	margin.add_child(vbox)
 
 	var title := Label.new()
-	title.text = "\u{1F4A3}  Jak grać w BitBomber?"
+	title.text = "💣  Jak grać w BitBomber?"
 	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
