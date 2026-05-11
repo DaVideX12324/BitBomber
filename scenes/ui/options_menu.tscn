@@ -138,3 +138,54 @@ custom_minimum_size = Vector2(130, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "✕ Zamknij"
+
+[node name="ConfirmPopup" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -100.0
+offset_right = 220.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+
+[node name="VBoxConfirm" type="VBoxContainer" parent="ConfirmPopup"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LblQuestion" type="Label" parent="ConfirmPopup/VBoxConfirm"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Zachować ustawienia wyświetlania?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="LblCountdown" type="Label" parent="ConfirmPopup/VBoxConfirm"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+text = "Przywrócenie za: 20s"
+horizontal_alignment = 1
+
+[node name="HBoxConfirm" type="HBoxContainer" parent="ConfirmPopup/VBoxConfirm"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="BtnConfirm" type="Button" parent="ConfirmPopup/VBoxConfirm/HBoxConfirm"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+text = "✔ Zachowaj"
+
+[node name="BtnRevert" type="Button" parent="ConfirmPopup/VBoxConfirm/HBoxConfirm"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+text = "↩ Przywróć"

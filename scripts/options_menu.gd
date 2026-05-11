@@ -11,9 +11,24 @@ extends CanvasLayer
 @onready var _btn_apply      : Button       = $Panel/VBox/HBoxButtons/BtnApply
 @onready var _btn_close      : Button       = $Panel/VBox/HBoxButtons/BtnClose
 
+@onready var _confirm_popup  : PanelContainer = $ConfirmPopup
+@onready var _lbl_countdown  : Label          = $ConfirmPopup/VBoxConfirm/LblCountdown
+@onready var _btn_confirm    : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnConfirm
+@onready var _btn_revert     : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnRevert
+
+const CONFIRM_TIMEOUT := 20.0
+
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
 var _sel_mode    : int             = 0
+
+# Snapshot ustawień przed zastosowaniem — używany przy cofaniu
+var _prev_mode    : int      = 0
+var _prev_res     : Vector2i = Vector2i(1280, 720)
+var _prev_monitor : int      = 0
+
+var _countdown  : float = 0.0
+var _confirming : bool  = false
 
 
 func _ready() -> void:
@@ -21,7 +36,9 @@ func _ready() -> void:
 	visible = false
 	_mode_btns = ([_btn_windowed, _btn_borderless, _btn_fullscreen] as Array[Button])
 	_btn_apply.pressed.connect(_on_apply)
-	_btn_close.pressed.connect(hide)
+	_btn_close.pressed.connect(_on_close)
+	_btn_confirm.pressed.connect(_on_confirm)
+	_btn_revert.pressed.connect(_on_revert)
 	for i in _mode_btns.size():
 		var idx := i
 		_mode_btns[i].pressed.connect(func(): _select_mode(idx))
@@ -29,14 +46,29 @@ func _ready() -> void:
 	_populate_resolutions()
 
 
+func _process(delta: float) -> void:
+	if not _confirming:
+		return
+	_countdown -= delta
+	if _countdown <= 0.0:
+		_on_revert()
+		return
+	_lbl_countdown.text = "Przywrócenie za: %ds" % ceili(_countdown)
+
+
 func _input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("ui_cancel"):
-		hide()
+	if not visible:
+		return
+	if event.is_action_pressed("ui_cancel"):
+		if _confirming:
+			_on_revert()
+		else:
+			_on_close()
 		get_viewport().set_input_as_handled()
 
 
 # ---------------------------------------------------------------------------
-# Otwieranie
+# Otwieranie / zamykanie
 # ---------------------------------------------------------------------------
 
 func open() -> void:
@@ -46,6 +78,17 @@ func open() -> void:
 	_monitor_option.selected = SettingsManager.monitor_idx
 	visible = true
 
+
+func _on_close() -> void:
+	if _confirming:
+		_on_revert()
+	else:
+		hide()
+
+
+# ---------------------------------------------------------------------------
+# Synchronizacja UI
+# ---------------------------------------------------------------------------
 
 func _sync_mode_buttons() -> void:
 	for i in _mode_btns.size():
@@ -107,14 +150,45 @@ func _update_res_note() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Zastosuj
+# Zastosuj + potwierdzenie
 # ---------------------------------------------------------------------------
 
 func _on_apply() -> void:
+	# Zapisz poprzedni stan do ewentualnego cofnięcia
+	_prev_mode    = SettingsManager.window_mode_idx
+	_prev_res     = SettingsManager.resolution
+	_prev_monitor = SettingsManager.monitor_idx
+
 	var res_idx := _res_option.selected
 	var res := SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
 	var screen := _monitor_option.selected
 	SettingsManager.apply_settings(_sel_mode, res, screen)
+
+	_start_confirm()
+
+
+func _start_confirm() -> void:
+	_countdown  = CONFIRM_TIMEOUT
+	_confirming = true
+	_confirm_popup.visible = true
+	_lbl_countdown.text = "Przywrócenie za: %ds" % ceili(_countdown)
+
+
+func _on_confirm() -> void:
+	_confirming = false
+	_confirm_popup.visible = false
 	hide()
+
+
+func _on_revert() -> void:
+	_confirming = false
+	_confirm_popup.visible = false
+	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
+	# Cofnij również UI do poprzednich wartości
+	_sel_mode = _prev_mode
+	_sync_mode_buttons()
+	_sync_resolution()
+	_monitor_option.selected = _prev_monitor
+	# Nie zamykaj panelu — gracz może spróbować ponownie
