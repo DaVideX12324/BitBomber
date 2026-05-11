@@ -22,7 +22,6 @@ var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
 var _sel_mode    : int             = 0
 
-# Snapshot ustawień przed zastosowaniem — używany przy cofaniu
 var _prev_mode    : int      = 0
 var _prev_res     : Vector2i = Vector2i(1280, 720)
 var _prev_monitor : int      = 0
@@ -43,7 +42,8 @@ func _ready() -> void:
 		var idx := i
 		_mode_btns[i].pressed.connect(func(): _select_mode(idx))
 	_populate_monitors()
-	_populate_resolutions()
+	_monitor_option.item_selected.connect(_on_monitor_changed)
+	_populate_resolutions(_monitor_option.selected)
 
 
 func _process(delta: float) -> void:
@@ -74,8 +74,9 @@ func _input(event: InputEvent) -> void:
 func open() -> void:
 	_sel_mode = SettingsManager.window_mode_idx
 	_sync_mode_buttons()
-	_sync_resolution()
 	_monitor_option.selected = SettingsManager.monitor_idx
+	_populate_resolutions(SettingsManager.monitor_idx)
+	_sync_resolution()
 	visible = true
 
 
@@ -120,14 +121,25 @@ func _populate_monitors() -> void:
 		_monitor_option.add_item(label)
 
 
+func _on_monitor_changed(idx: int) -> void:
+	_populate_resolutions(idx)
+	# Ustaw domyślnie natywną rozdzielczość wybranego monitora
+	_res_option.selected = _resolutions.size() - 1
+
+
 # ---------------------------------------------------------------------------
 # Rozdzielczości
 # ---------------------------------------------------------------------------
 
-func _populate_resolutions() -> void:
+func _populate_resolutions(screen: int) -> void:
+	# Tymczasowo podstaw monitor_idx w SettingsManager żeby get_available_resolutions() działało poprawnie
+	var saved_idx := SettingsManager.monitor_idx
+	SettingsManager.monitor_idx = screen
 	_resolutions = SettingsManager.get_available_resolutions()
+	SettingsManager.monitor_idx = saved_idx
+
 	_res_option.clear()
-	var screen_size := DisplayServer.screen_get_size(SettingsManager.monitor_idx)
+	var screen_size := DisplayServer.screen_get_size(screen)
 	for r in _resolutions:
 		var label := "%d × %d" % [r.x, r.y]
 		if r == screen_size:
@@ -154,7 +166,6 @@ func _update_res_note() -> void:
 # ---------------------------------------------------------------------------
 
 func _on_apply() -> void:
-	# Zapisz poprzedni stan do ewentualnego cofnięcia
 	_prev_mode    = SettingsManager.window_mode_idx
 	_prev_res     = SettingsManager.resolution
 	_prev_monitor = SettingsManager.monitor_idx
@@ -165,7 +176,6 @@ func _on_apply() -> void:
 		res = _resolutions[res_idx]
 	var screen := _monitor_option.selected
 	SettingsManager.apply_settings(_sel_mode, res, screen)
-
 	_start_confirm()
 
 
@@ -186,9 +196,8 @@ func _on_revert() -> void:
 	_confirming = false
 	_confirm_popup.visible = false
 	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
-	# Cofnij również UI do poprzednich wartości
 	_sel_mode = _prev_mode
 	_sync_mode_buttons()
-	_sync_resolution()
 	_monitor_option.selected = _prev_monitor
-	# Nie zamykaj panelu — gracz może spróbować ponownie
+	_populate_resolutions(_prev_monitor)
+	_sync_resolution()
