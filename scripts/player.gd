@@ -305,6 +305,9 @@ func _get_map_root() -> Node:
 func take_hit() -> void:
 	if not is_alive or _invincible:
 		return
+	# Natychmiastowe ustawienie invincible — blokuje kolejne eksplozje
+	# trafiające gracza w tym samym lub następnym framie (multi-bomb insta-kill).
+	_invincible = true
 	lives -= 1
 	lives_changed.emit(player_id, lives)
 	if lives <= 0:
@@ -335,7 +338,6 @@ func resolve_last_chance(respawned: bool) -> void:
 
 func _start_hit_sequence() -> void:
 	_frozen     = true
-	_invincible = true
 	_blink(3.0, 0.3)
 	await get_tree().create_timer(2.0).timeout
 	_frozen = false
