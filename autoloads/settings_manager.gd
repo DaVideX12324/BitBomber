@@ -9,39 +9,46 @@ const SEC         := "display"
 ## 0 = okienkowy, 1 = bez ramki, 2 = pełny ekran
 var window_mode_idx : int      = 0
 var resolution      : Vector2i = Vector2i(1280, 720)
+var monitor_idx     : int      = 0
 
 
 func _ready() -> void:
 	_load()
-	apply_settings(window_mode_idx, resolution)
+	# Clamp monitor_idx na wypadek gdyby monitor został odłączony
+	monitor_idx = clampi(monitor_idx, 0, DisplayServer.get_screen_count() - 1)
+	apply_settings(window_mode_idx, resolution, monitor_idx)
 
 
 # ---------------------------------------------------------------------------
 # Publiczne API
 # ---------------------------------------------------------------------------
 
-func apply_settings(mode_idx: int, res: Vector2i) -> void:
+func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 	window_mode_idx = mode_idx
 	resolution      = res
+	monitor_idx     = clampi(screen, 0, DisplayServer.get_screen_count() - 1)
 	match mode_idx:
 		0: # Okienkowy z ramką
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			DisplayServer.window_set_current_screen(monitor_idx)
 			DisplayServer.window_set_size(res)
 			_center_window()
-		1: # Bez ramki (okno bez dekoracji Windows)
+		1: # Bez ramki
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			DisplayServer.window_set_current_screen(monitor_idx)
 			DisplayServer.window_set_size(res)
 			_center_window()
 		2: # Pełny ekran (exclusive)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_current_screen(monitor_idx)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 	_save()
 
 
 func get_available_resolutions() -> Array[Vector2i]:
-	var screen_size := DisplayServer.screen_get_size()
+	var screen_size := DisplayServer.screen_get_size(monitor_idx)
 	var candidates : Array[Vector2i] = [
 		Vector2i(640,  480),
 		Vector2i(800,  600),
@@ -68,9 +75,10 @@ func get_available_resolutions() -> Array[Vector2i]:
 # ---------------------------------------------------------------------------
 
 func _center_window() -> void:
-	var screen_size := DisplayServer.screen_get_size()
+	var screen_pos  := DisplayServer.screen_get_position(monitor_idx)
+	var screen_size := DisplayServer.screen_get_size(monitor_idx)
 	var win_size    := DisplayServer.window_get_size()
-	var pos := Vector2i(
+	var pos := screen_pos + Vector2i(
 		(screen_size.x - win_size.x) / 2,
 		(screen_size.y - win_size.y) / 2
 	)
@@ -82,6 +90,7 @@ func _save() -> void:
 	cfg.set_value(SEC, "window_mode_idx", window_mode_idx)
 	cfg.set_value(SEC, "resolution_x", resolution.x)
 	cfg.set_value(SEC, "resolution_y", resolution.y)
+	cfg.set_value(SEC, "monitor_idx", monitor_idx)
 	cfg.save(CONFIG_PATH)
 
 
@@ -92,4 +101,5 @@ func _load() -> void:
 	window_mode_idx = cfg.get_value(SEC, "window_mode_idx", 0)
 	var rx : int = cfg.get_value(SEC, "resolution_x", 1280)
 	var ry : int = cfg.get_value(SEC, "resolution_y", 720)
-	resolution = Vector2i(rx, ry)
+	resolution  = Vector2i(rx, ry)
+	monitor_idx = cfg.get_value(SEC, "monitor_idx", 0)

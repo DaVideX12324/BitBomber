@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var _btn_fullscreen : Button       = $Panel/VBox/HBoxMode/BtnFullscreen
 @onready var _res_option     : OptionButton = $Panel/VBox/ResOption
 @onready var _res_note       : Label        = $Panel/VBox/ResNote
+@onready var _monitor_option : OptionButton = $Panel/VBox/MonitorOption
 @onready var _btn_apply      : Button       = $Panel/VBox/HBoxButtons/BtnApply
 @onready var _btn_close      : Button       = $Panel/VBox/HBoxButtons/BtnClose
 
@@ -24,6 +25,7 @@ func _ready() -> void:
 	for i in _mode_btns.size():
 		var idx := i
 		_mode_btns[i].pressed.connect(func(): _select_mode(idx))
+	_populate_monitors()
 	_populate_resolutions()
 
 
@@ -41,6 +43,7 @@ func open() -> void:
 	_sel_mode = SettingsManager.window_mode_idx
 	_sync_mode_buttons()
 	_sync_resolution()
+	_monitor_option.selected = SettingsManager.monitor_idx
 	visible = true
 
 
@@ -60,13 +63,28 @@ func _sync_resolution() -> void:
 
 
 # ---------------------------------------------------------------------------
+# Monitory
+# ---------------------------------------------------------------------------
+
+func _populate_monitors() -> void:
+	_monitor_option.clear()
+	var count := DisplayServer.get_screen_count()
+	for i in count:
+		var size := DisplayServer.screen_get_size(i)
+		var label := "Monitor %d  (%d×%d)" % [i + 1, size.x, size.y]
+		if i == DisplayServer.get_primary_screen():
+			label += "  [główny]"
+		_monitor_option.add_item(label)
+
+
+# ---------------------------------------------------------------------------
 # Rozdzielczości
 # ---------------------------------------------------------------------------
 
 func _populate_resolutions() -> void:
 	_resolutions = SettingsManager.get_available_resolutions()
 	_res_option.clear()
-	var screen_size := DisplayServer.screen_get_size()
+	var screen_size := DisplayServer.screen_get_size(SettingsManager.monitor_idx)
 	for r in _resolutions:
 		var label := "%d × %d" % [r.x, r.y]
 		if r == screen_size:
@@ -93,9 +111,10 @@ func _update_res_note() -> void:
 # ---------------------------------------------------------------------------
 
 func _on_apply() -> void:
-	var idx := _res_option.selected
+	var res_idx := _res_option.selected
 	var res := SettingsManager.resolution
-	if idx >= 0 and idx < _resolutions.size():
-		res = _resolutions[idx]
-	SettingsManager.apply_settings(_sel_mode, res)
+	if res_idx >= 0 and res_idx < _resolutions.size():
+		res = _resolutions[res_idx]
+	var screen := _monitor_option.selected
+	SettingsManager.apply_settings(_sel_mode, res, screen)
 	hide()
