@@ -290,4 +290,4 @@ theme_override_font_sizes/font_size = 11
 text = "v0.1-dev"
 horizontal_alignment = 2
 
-[node name="OptionsMenu" parent="." instance=ExtResource("2")]
+[node name="OptionsMenu" parent="." unique_id=267325576 instance=ExtResource("2")]

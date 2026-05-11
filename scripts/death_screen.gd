@@ -21,8 +21,8 @@ enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 	$Panel/VBox/ScoreTable/ScoreRow2,
 	$Panel/VBox/ScoreTable/ScoreRow3,
 ]
-@onready var _btn_cont    : Button         = $Panel/VBox/Buttons/BtnContinue
-@onready var _btn_menu    : Button         = $Panel/VBox/Buttons/BtnMenu
+@onready var _btn_cont    : Button         = $Panel/VBox/BtnContinue
+@onready var _btn_menu    : Button         = $Panel/VBox/BtnMenu
 @onready var _quiz_overlay : CanvasLayer   = $QuizOverlay
 
 var _mode           : Mode = Mode.ROUND_END

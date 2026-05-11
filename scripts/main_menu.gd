@@ -55,7 +55,7 @@ func _ready() -> void:
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
 	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", 18)
 	$"Center/Panel/VBox/BtnQuit".pressed.connect(get_tree().quit)
-	$"Center/Panel/VBox/BtnHelp".pressed.connect(_show_help)
+	$"Center/Panel/VBox/HBoxMeta/BtnHelp".pressed.connect(_show_help)
 	$"Center/Panel/VBox/HBoxMeta/BtnOptions".pressed.connect(func(): _options_menu.open())
 	var quizzes = QuizManager.get_quiz_ids()
 	_quiz_opt.add_item("Wszystkie")
