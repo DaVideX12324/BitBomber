@@ -1,8 +1,6 @@
 extends CanvasLayer
 
 ## Panel opcji wyświetlania.
-## Otwierany z main menu przyciskiem "Opcje".
-## Ustawienia są zapisywane przez SettingsManager.
 
 @onready var _btn_windowed   : Button       = $Panel/VBox/HBoxMode/BtnWindowed
 @onready var _btn_borderless : Button       = $Panel/VBox/HBoxMode/BtnBorderless
@@ -12,15 +10,9 @@ extends CanvasLayer
 @onready var _btn_apply      : Button       = $Panel/VBox/HBoxButtons/BtnApply
 @onready var _btn_close      : Button       = $Panel/VBox/HBoxButtons/BtnClose
 
-var _mode_btns  : Array[Button] = []
+var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
-
-# Mapowanie indeksu przycisku na stałą DisplayServer
-const MODES : Array[int] = [
-	DisplayServer.WINDOW_MODE_WINDOWED,
-	DisplayServer.WINDOW_MODE_FULLSCREEN,   # borderless fullscreen
-	DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN,
-]
+var _sel_mode    : int             = 0
 
 
 func _ready() -> void:
@@ -46,20 +38,25 @@ func _input(event: InputEvent) -> void:
 # ---------------------------------------------------------------------------
 
 func open() -> void:
-	_sync_from_settings()
+	_sel_mode = SettingsManager.window_mode_idx
+	_sync_mode_buttons()
+	_sync_resolution()
 	visible = true
 
 
-func _sync_from_settings() -> void:
-	var cur_mode := SettingsManager.window_mode
-	for i in MODES.size():
-		_mode_btns[i].button_pressed = (MODES[i] == cur_mode)
+func _sync_mode_buttons() -> void:
+	for i in _mode_btns.size():
+		_mode_btns[i].button_pressed = (i == _sel_mode)
+	_update_res_note()
+
+
+func _sync_resolution() -> void:
 	var cur_res := SettingsManager.resolution
 	for i in _resolutions.size():
 		if _resolutions[i] == cur_res:
 			_res_option.selected = i
-			break
-	_update_res_note()
+			return
+	_res_option.selected = 0
 
 
 # ---------------------------------------------------------------------------
@@ -82,22 +79,13 @@ func _populate_resolutions() -> void:
 # ---------------------------------------------------------------------------
 
 func _select_mode(idx: int) -> void:
-	for i in _mode_btns.size():
-		_mode_btns[i].button_pressed = (i == idx)
-	_update_res_note()
+	_sel_mode = idx
+	_sync_mode_buttons()
 
 
 func _update_res_note() -> void:
-	var selected_mode := _get_selected_mode()
-	_res_option.disabled = (selected_mode != DisplayServer.WINDOW_MODE_WINDOWED)
-	_res_note.visible    = (selected_mode != DisplayServer.WINDOW_MODE_WINDOWED)
-
-
-func _get_selected_mode() -> int:
-	for i in _mode_btns.size():
-		if _mode_btns[i].button_pressed:
-			return MODES[i]
-	return DisplayServer.WINDOW_MODE_WINDOWED
+	_res_option.disabled = false
+	_res_note.visible    = false
 
 
 # ---------------------------------------------------------------------------
@@ -105,10 +93,9 @@ func _get_selected_mode() -> int:
 # ---------------------------------------------------------------------------
 
 func _on_apply() -> void:
-	var mode := _get_selected_mode()
-	SettingsManager.apply_window_mode(mode)
-	if mode == DisplayServer.WINDOW_MODE_WINDOWED:
-		var idx := _res_option.selected
-		if idx >= 0 and idx < _resolutions.size():
-			SettingsManager.apply_resolution(_resolutions[idx])
+	var idx := _res_option.selected
+	var res := SettingsManager.resolution
+	if idx >= 0 and idx < _resolutions.size():
+		res = _resolutions[idx]
+	SettingsManager.apply_settings(_sel_mode, res)
 	hide()
