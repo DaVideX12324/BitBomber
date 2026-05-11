@@ -86,8 +86,7 @@ func _set_players(count: int) -> void:
 	_sel_players = count
 	var max_bots := 4 - _sel_players
 	var min_bots := 1 if _sel_players == 1 else 0
-	if _sel_bots > max_bots:
-		_sel_bots = max_bots
+	_sel_bots = clampi(_sel_bots, min_bots, max_bots)
 	_refresh_players()
 	_refresh_bots()
 

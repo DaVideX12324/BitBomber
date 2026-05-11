@@ -12,6 +12,7 @@ signal session_ended(winner_id: int)
 ## Wyniki rund per gracz (player_id -> liczba wygranych rund)
 var round_wins: Dictionary = {}
 var current_round: int = 0
+var _last_chance_queue: Array[int] = []
 var _last_chance_player_id: int = -1
 
 ## Czas trwania rundy w sekundach (0 = bez limitu)
@@ -37,7 +38,8 @@ func reset_session() -> void:
 	current_round = 0
 	_round_active = false
 	_round_timer = 0.0
-
+	_last_chance_queue.clear()  # ← dodaj
+	_last_chance_player_id = -1
 
 # ---------------------------------------------------------------------------
 # Rundy
@@ -120,8 +122,17 @@ func trigger_powerup_quiz(collector_id: int) -> void:
 # ---------------------------------------------------------------------------
 
 func trigger_last_chance(dead_player_id: int) -> void:
+	if GameManager.current_state == GameManager.GameState.QUIZ_LAST_CHANCE:
+		# Quiz już trwa — dodaj do kolejki, zostanie obsłużony po zakończeniu bieżącego
+		if not _last_chance_queue.has(dead_player_id):
+			_last_chance_queue.append(dead_player_id)
+		return
 	if GameManager.current_state != GameManager.GameState.PLAYING:
 		return
+	_fire_last_chance(dead_player_id)
+
+
+func _fire_last_chance(dead_player_id: int) -> void:
 	_last_chance_player_id = dead_player_id
 	GameManager.change_state(GameManager.GameState.QUIZ_LAST_CHANCE)
 	last_chance_triggered.emit(dead_player_id)
@@ -131,7 +142,12 @@ func resolve_last_chance(respawned: bool) -> void:
 	var pid := _last_chance_player_id
 	_last_chance_player_id = -1
 	last_chance_resolved.emit(pid, respawned)
-	GameManager.change_state(GameManager.GameState.PLAYING)
+	# Sprawdź czy jest ktoś w kolejce
+	if _last_chance_queue.size() > 0:
+		var next_pid := _last_chance_queue.pop_front() as int
+		_fire_last_chance(next_pid)
+	else:
+		GameManager.change_state(GameManager.GameState.PLAYING)
 
 
 func resolve_powerup_quiz() -> void:

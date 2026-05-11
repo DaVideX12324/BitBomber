@@ -175,9 +175,11 @@ func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, d
 	visible = true
 	_timer_node.wait_time = time_limit
 	_timer_node.start()
-	
-	_locked = true
-	get_tree().create_timer(0.5).timeout.connect(func(): _locked = false)
+	var qtype : String = _question.get("type", "multiple_choice")
+	_locked = (qtype == "multiple_choice" or qtype == "true_false")
+	if _locked:
+		get_tree().create_timer(0.5).timeout.connect(func(): _locked = false)
+	_locked = false
 
 
 func _dbg(msg: String) -> void:
@@ -410,11 +412,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_on_fill_tiles_confirm()
 				get_viewport().set_input_as_handled()
 	elif qtype == "fill_text":
-		if event is InputEventKey and event.pressed:
-			var ke := event as InputEventKey
-			if ke.keycode == KEY_ENTER or ke.keycode == KEY_KP_ENTER:
-				_on_fill_text_confirm()
-				get_viewport().set_input_as_handled()
+		pass  
 	elif qtype == "matching":
 		if event is InputEventKey and event.pressed:
 			var ke := event as InputEventKey
@@ -518,6 +516,7 @@ func _on_fill_text_confirm() -> void:
 	_locked = true
 	var input := _answers_box.get_node_or_null("FillTextInput") as LineEdit
 	if not input:
+		_locked = false
 		return
 	var result : Dictionary = QuizManager.answer_current({"text": input.text})
 	_finish_complex(result.get("correct", false))
