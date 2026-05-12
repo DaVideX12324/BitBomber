@@ -124,6 +124,7 @@ func get_available_resolutions() -> Array[Vector2i]:
 
 func _save() -> void:
 	var cfg := ConfigFile.new()
+	cfg.load(CONFIG_PATH)  # ← to dodaj — wczytaj istniejące klucze przed zapisem
 	cfg.set_value(SEC, "window_mode_idx", window_mode_idx)
 	cfg.set_value(SEC, "resolution_x", resolution.x)
 	cfg.set_value(SEC, "resolution_y", resolution.y)
