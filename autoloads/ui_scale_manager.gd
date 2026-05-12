@@ -3,13 +3,9 @@ extends Node
 ##
 ## Zarządza trybem skalowania UI per-węzeł (font_size + custom_minimum_size).
 ##
-## Tryb domyślny jest dobierany automatycznie na podstawie wybranej
-## rozdzielczości (SettingsManager.resolution). Gdy gracz zmieni
-## rozdzielczość i NIE ma ręcznego wyboru skali, skala aktualizuje się
-## automatycznie. Jeśli gracz sam wybrał tryb — jego wybór zostaje,
-## ale jest przycinany w dół jeśli ekran jest za mały.
-##
-## Zapis/odczyt delegowany do SettingsManager — ten plik nie dotyka settings.cfg.
+## Cały cykl życia (init, zapis, odczyt) jest kontrolowany przez SettingsManager.
+## Ten skrypt nie robi nic samodzielnie — nie ładuje danych w _ready(),
+## nie zapisuje pliku, nie podłącza się do żadnych sygnałów.
 ##
 ## Progi (wysokość rozdzielczości):
 ##   XSMALL — 0.50×  (≤ 720px)
@@ -18,15 +14,16 @@ extends Node
 ##   LARGE  — 1.5×   (≤ 2159px)
 ##   XLARGE — 2.0×   (≥ 2160px)
 ##
-## API:
-##   UIScaleManager.px(base)           — int, przelicza rozmiar czcionki
-##   UIScaleManager.sz(base)           — float, przelicza pojedynczy wymiar
-##   UIScaleManager.sz2(w, h)          — Vector2, przelicza rozmiar 2D
-##   UIScaleManager.set_mode(m)        — ręczny wybór (blokuje auto)
-##   UIScaleManager.reset_to_auto()    — powrót do auto-detekcji
-##   UIScaleManager.load_from_cfg(cfg) — wywoływane przez SettingsManager
-##   UIScaleManager.save_to_cfg(cfg)   — wywoływane przez SettingsManager
-##   UIScaleManager.scale_changed      — sygnał emitowany przy każdej zmianie
+## API publiczne:
+##   px(base)           — int, przelicza rozmiar czcionki
+##   sz(base)           — float, przelicza pojedynczy wymiar
+##   sz2(w, h)          — Vector2, przelicza rozmiar 2D
+##   set_mode(m)        — ręczny wybór trybu (tylko stan, bez zapisu)
+##   reset_to_auto()    — powrót do auto-detekcji (tylko stan, bez zapisu)
+##   load_from_cfg(cfg) — wywoływane przez SettingsManager przy starcie
+##   save_to_cfg(cfg)   — wywoływane przez SettingsManager przy zapisie
+##   on_resolution_changed(res) — wywoływane przez SettingsManager po zmianie res
+##   scale_changed      — sygnał emitowany przy każdej zmianie trybu
 
 enum ScaleMode { XSMALL, SMALL, NORMAL, LARGE, XLARGE }
 
@@ -61,30 +58,25 @@ var current_mode : ScaleMode = ScaleMode.NORMAL :
 		scale_changed.emit(scale_factor)
 
 var scale_factor : float = 1.0
-
-## true = gracz sam wybrał tryb; false = tryb dobierany automatycznie
-var _user_picked : bool = false
+var _user_picked : bool  = false
 
 signal scale_changed(new_scale: float)
 
 
-func _ready() -> void:
-	# Dane wczytuje SettingsManager — tutaj tylko podłączamy sygnał.
-	SettingsManager.resolution_changed.connect(_on_resolution_changed)
+# _ready() celowo puste — inicjalizacja przez SettingsManager.init_ui_scale()
 
 
 # ---------------------------------------------------------------------------
-# Publiczne API
+# Publiczne API — stan
 # ---------------------------------------------------------------------------
 
-## Ręczny wybór trybu przez gracza — blokuje auto-detekcję.
-## SettingsManager zadba o zapis przy najbliższym apply_settings().
+## Ręczny wybór trybu. Nie zapisuje — zapis przez SettingsManager.save().
 func set_mode(mode: ScaleMode) -> void:
 	_user_picked = true
 	current_mode = _clamp_mode_to_screen(mode)
 
 
-## Powrót do auto-detekcji na podstawie rozdzielczości.
+## Powrót do auto-detekcji. Nie zapisuje.
 func reset_to_auto() -> void:
 	_user_picked = false
 	current_mode = _detect_mode()
@@ -113,13 +105,13 @@ func sz2(w: float, h: float) -> Vector2:
 
 
 # ---------------------------------------------------------------------------
-# I/O delegowane do SettingsManager
+# Publiczne API — wywoływane przez SettingsManager
 # ---------------------------------------------------------------------------
 
 func load_from_cfg(cfg: ConfigFile) -> void:
-	var is_auto : bool = cfg.get_value("display", "ui_scale_auto", true)
+	var is_auto : bool = cfg.get_value("ui", "ui_scale_auto", true)
 	if not is_auto:
-		var saved : int = cfg.get_value("display", "ui_scale_mode", -1)
+		var saved : int = cfg.get_value("ui", "ui_scale_mode", -1)
 		if saved >= ScaleMode.XSMALL and saved <= ScaleMode.XLARGE:
 			_user_picked = true
 			current_mode = _clamp_mode_to_screen(saved as ScaleMode)
@@ -129,15 +121,12 @@ func load_from_cfg(cfg: ConfigFile) -> void:
 
 
 func save_to_cfg(cfg: ConfigFile) -> void:
-	cfg.set_value("display", "ui_scale_mode", current_mode)
-	cfg.set_value("display", "ui_scale_auto", not _user_picked)
+	cfg.set_value("ui", "ui_scale_mode", current_mode)
+	cfg.set_value("ui", "ui_scale_auto", not _user_picked)
 
 
-# ---------------------------------------------------------------------------
-# Reakcja na zmianę rozdzielczości
-# ---------------------------------------------------------------------------
-
-func _on_resolution_changed(_new_res: Vector2i) -> void:
+## Wywoływane przez SettingsManager po zmianie rozdzielczości.
+func on_resolution_changed(_new_res: Vector2i) -> void:
 	if _user_picked:
 		current_mode = _clamp_mode_to_screen(current_mode)
 		return
@@ -145,7 +134,7 @@ func _on_resolution_changed(_new_res: Vector2i) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Detekcja i clamp
+# Prywatne
 # ---------------------------------------------------------------------------
 
 func _detect_mode() -> ScaleMode:

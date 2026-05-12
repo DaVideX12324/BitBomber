@@ -2,7 +2,7 @@ extends Node
 
 ## Autoload: wczytuje i zapisuje ustawienia wyświetlania.
 ## Jedyny właściciel pliku user://settings.cfg.
-## Ścieżka: user://settings.cfg
+## Kontroluje pełny cykl życia UIScaleManager (init, reakcja na zmiany, zapis).
 
 const CONFIG_PATH := "user://settings.cfg"
 const SEC         := "display"
@@ -16,7 +16,10 @@ signal resolution_changed(new_resolution: Vector2i)
 
 
 func _ready() -> void:
-	_load()
+	var cfg := _load()
+	# UIScaleManager jest pod nami w kolejności autoloadów — już istnieje.
+	UIScaleManager.load_from_cfg(cfg)
+	resolution_changed.connect(UIScaleManager.on_resolution_changed)
 	monitor_idx = clampi(monitor_idx, 0, DisplayServer.get_screen_count() - 1)
 	apply_settings(window_mode_idx, resolution, monitor_idx)
 
@@ -77,6 +80,12 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 		resolution_changed.emit(resolution)
 
 
+## Zapisuje aktualny stan SettingsManager + UIScaleManager do pliku.
+## Wywołuj z options_menu po zmianie skali UI.
+func save() -> void:
+	_save()
+
+
 # ---------------------------------------------------------------------------
 # Stretch helpers
 # ---------------------------------------------------------------------------
@@ -125,7 +134,7 @@ func get_available_resolutions() -> Array[Vector2i]:
 
 func _save() -> void:
 	var cfg := ConfigFile.new()
-	cfg.load(CONFIG_PATH)  # zachowaj klucze innych sekcji
+	cfg.load(CONFIG_PATH)
 	cfg.set_value(SEC, "window_mode_idx", window_mode_idx)
 	cfg.set_value(SEC, "resolution_x",   resolution.x)
 	cfg.set_value(SEC, "resolution_y",   resolution.y)
@@ -134,17 +143,18 @@ func _save() -> void:
 	cfg.save(CONFIG_PATH)
 
 
-func _load() -> void:
+## Zwraca załadowany ConfigFile (lub pusty jeśli brak pliku).
+func _load() -> ConfigFile:
 	var cfg := ConfigFile.new()
 	if cfg.load(CONFIG_PATH) != OK:
 		# Pierwsze uruchomienie — użyj natywnej rozdzielczości i fullscreenu.
 		var native := DisplayServer.screen_get_size(0)
 		resolution      = native
 		window_mode_idx = 2
-		return
+		return cfg
 	window_mode_idx = cfg.get_value(SEC, "window_mode_idx", 2)
 	var rx : int = cfg.get_value(SEC, "resolution_x", DisplayServer.screen_get_size(0).x)
 	var ry : int = cfg.get_value(SEC, "resolution_y", DisplayServer.screen_get_size(0).y)
 	resolution  = Vector2i(rx, ry)
 	monitor_idx = cfg.get_value(SEC, "monitor_idx", 0)
-	UIScaleManager.load_from_cfg(cfg)
+	return cfg
