@@ -25,7 +25,7 @@ const PLAYER_COLORS: Array[Color] = [
 ]
 @onready var _round_label : Label = $Root/RoundPanel/RoundLabel
 @onready var _toast       : Label = $Root/ToastLabel
-@onready var _round_panel : PanelContainer = $Root/RoundPanel
+@onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
 
 func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)

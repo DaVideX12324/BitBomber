@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://dhc28m5n0t5v7"]
 
 [ext_resource type="Script" uid="uid://b6860fx2m1im7" path="res://scripts/main_menu.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://c7egcr86ymr3g" path="res://scenes/ui/options_menu.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bekjolfxecoun" path="res://scenes/ui/options_menu.tscn" id="2"]
 
 [node name="MainMenu" type="CanvasLayer" unique_id=1654604993]
 process_mode = 3
+follow_viewport_enabled = true
 script = ExtResource("1")
 
 [node name="BG" type="ColorRect" parent="." unique_id=174068454]
@@ -16,6 +17,7 @@ grow_vertical = 2
 color = Color(0.06, 0.06, 0.1, 1)
 
 [node name="Center" type="CenterContainer" parent="." unique_id=1547427281]
+texture_filter = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

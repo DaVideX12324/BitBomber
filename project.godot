@@ -44,6 +44,10 @@ bomb=""
 explosion=""
 powerup=""
 
+[gui]
+
+theme/custom_font="uid://cifsnravkbggb"
+
 [input]
 
 p1_up={
