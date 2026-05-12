@@ -119,9 +119,8 @@ func _ready() -> void:
 	for i in _mc_btns.size():
 		var idx := i
 		_mc_btns[i].pressed.connect(func(): _on_mc_button(idx))	
-	for i in _tf_btns.size():
-		var idx := i
-		_tf_btns[i].pressed.connect(func(): _on_tf_button(idx))
+	_tf_btns[0].pressed.connect(func(): _on_tf_button(true))   # BtnTrue
+	_tf_btns[1].pressed.connect(func(): _on_tf_button(false))  # BtnFalse
 
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
@@ -155,8 +154,8 @@ func _on_scale_changed(_s: float) -> void:
 	var fs_btn := UIScaleManager.px(BASE_FS_ANSWER_BTN)
 	for btn in _mc_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
-	for btn in _tf_btns:
-		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
+	_tf_btns[0].add_theme_font_size_override("font_size", fs_btn)
+	_tf_btns[1].add_theme_font_size_override("font_size", fs_btn)
 	# FillText
 	_fill_pattern_lbl.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
 	_fill_input.add_theme_font_size_override("font_size",       UIScaleManager.px(BASE_FS_ANSWER_BTN))
