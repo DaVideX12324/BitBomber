@@ -115,6 +115,6 @@ func _detect_mode() -> ScaleMode:
 	if w <= 0:
 		w = DisplayServer.window_get_size().x
 	if   w >= 3840: return ScaleMode.XLARGE
-	elif w >= 1920: return ScaleMode.LARGE
-	elif w >= 1601: return ScaleMode.NORMAL
+	elif w > 1920: return ScaleMode.LARGE
+	elif w > 1600: return ScaleMode.NORMAL
 	else:           return ScaleMode.SMALL
