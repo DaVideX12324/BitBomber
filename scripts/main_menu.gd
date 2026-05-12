@@ -29,9 +29,6 @@ extends CanvasLayer
 @onready var _diff_hbox      : HBoxContainer  = $"Center/Panel/VBox/HBoxDiff"
 @onready var _quiz_opt       : OptionButton   = $"Center/Panel/VBox/QuizOpt"
 @onready var _start_btn      : Button         = $"Center/Panel/VBox/BtnStart"
-@onready var _btn_quit       : Button         = $"Center/Panel/VBox/BtnQuit"
-@onready var _btn_help       : Button         = $"Center/Panel/VBox/HBoxMeta/BtnHelp"
-@onready var _btn_options    : Button         = $"Center/Panel/VBox/HBoxMeta/BtnOptions"
 @onready var _options_menu                    = $OptionsMenu
 
 var _sel_players : int = 1
@@ -39,10 +36,7 @@ var _sel_bots    : int = 1
 var _sel_diff    : int = 0
 var _sel_win     : int = 0
 
-var _help_overlay  : ColorRect
-var _help_title    : Label
-var _help_content  : RichTextLabel
-var _help_close    : Button
+var _help_overlay : ColorRect
 
 
 func _ready() -> void:
@@ -59,9 +53,10 @@ func _ready() -> void:
 		var idx := i
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
-	_btn_quit.pressed.connect(get_tree().quit)
-	_btn_help.pressed.connect(_show_help)
-	_btn_options.pressed.connect(func(): _options_menu.open())
+	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", 18)
+	$"Center/Panel/VBox/BtnQuit".pressed.connect(get_tree().quit)
+	$"Center/Panel/VBox/HBoxMeta/BtnHelp".pressed.connect(_show_help)
+	$"Center/Panel/VBox/HBoxMeta/BtnOptions".pressed.connect(func(): _options_menu.open())
 	var quizzes = QuizManager.get_quiz_ids()
 	_quiz_opt.add_item("Wszystkie")
 	for q in quizzes:
@@ -78,34 +73,15 @@ func _ready() -> void:
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
 
-
 func _on_scale_changed(_s: float) -> void:
 	var fs_btn   := UIScaleManager.px(22)
 	var fs_label := UIScaleManager.px(18)
-	var fs_meta  := UIScaleManager.px(16)
-	# Przyciski wyboru (gracze / boty / trudność / wygrana)
-	for btn: Button in _players_btns + _bots_btns + _diff_btns + _win_btns:
+	for btn in _players_btns + _bots_btns + _diff_btns + _win_btns:
 		btn.add_theme_font_size_override("font_size", fs_btn)
-	# Przyciski główne
 	_start_btn.add_theme_font_size_override("font_size", UIScaleManager.px(26))
-	_btn_quit.add_theme_font_size_override("font_size", fs_meta)
-	_btn_help.add_theme_font_size_override("font_size", fs_meta)
-	_btn_options.add_theme_font_size_override("font_size", fs_meta)
-	# Labele
 	_rounds_label.add_theme_font_size_override("font_size", fs_label)
 	_diff_label.add_theme_font_size_override("font_size", fs_label)
-	# SpinBox
 	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", fs_label)
-	# OptionButton (quiz)
-	_quiz_opt.add_theme_font_size_override("font_size", fs_label)
-	# Overlay pomocy (jeśli już zbudowany)
-	if _help_title:
-		_help_title.add_theme_font_size_override("font_size", UIScaleManager.px(22))
-	if _help_content:
-		_help_content.add_theme_font_size_override("normal_font_size", UIScaleManager.px(15))
-	if _help_close:
-		_help_close.add_theme_font_size_override("font_size", fs_meta)
-
 
 # ---------------------------------------------------------------------------
 
@@ -179,7 +155,7 @@ func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_
 
 
 # ---------------------------------------------------------------------------
-# Instrukcja (budowana dynamicznie)
+# Instrukcja
 # ---------------------------------------------------------------------------
 
 func _build_help_overlay() -> void:
@@ -189,7 +165,6 @@ func _build_help_overlay() -> void:
 	_help_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	_help_overlay.visible = false
 	add_child(_help_overlay)
-
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
 	panel.custom_minimum_size = Vector2(640, 500)
@@ -198,31 +173,28 @@ func _build_help_overlay() -> void:
 	panel.offset_right  =  320
 	panel.offset_bottom =  250
 	_help_overlay.add_child(panel)
-
 	var margin := MarginContainer.new()
 	for side in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 16)
 	panel.add_child(margin)
-
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 12)
 	margin.add_child(vbox)
-
-	_help_title = Label.new()
-	_help_title.text = "\U0001F4A3  Jak gra\u0107 w BitBomber?"
-	_help_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(_help_title)
+	var title := Label.new()
+	title.text = "💣  Jak grać w BitBomber?"
+	title.add_theme_font_size_override("font_size", 22)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
 	vbox.add_child(HSeparator.new())
-
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(scroll)
-
-	_help_content = RichTextLabel.new()
-	_help_content.bbcode_enabled = true
-	_help_content.fit_content = true
-	_help_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_help_content.text = """[b]Cel gry[/b]
+	var content := RichTextLabel.new()
+	content.bbcode_enabled = true
+	content.fit_content = true
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_font_size_override("normal_font_size", 15)
+	content.text = """[b]Cel gry[/b]
 Wyeliminuj przeciwnik\u00f3w za pomoc\u0105 bomb! Ostatni \u017cywy gracz (lub ten z najwi\u0119ksz\u0105 liczb\u0105 wygranych rund) zdobywa zwyci\u0119stwo.
 
 [b]Sterowanie \u2014 Gracz 1[/b]
@@ -250,13 +222,12 @@ Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. 
   [b]\u0141atwy[/b]   bot reaguje wolno, proste pytania
   [b]\u015arednii[/b]   wywa\u017cony balans
   [b]Trudny[/b]   bot agresywny, trudniejsze pytania"""
-	scroll.add_child(_help_content)
-
+	scroll.add_child(content)
 	vbox.add_child(HSeparator.new())
-	_help_close = Button.new()
-	_help_close.text = "Zamknij  [ESC]"
-	_help_close.pressed.connect(_hide_help)
-	vbox.add_child(_help_close)
+	var btn_close := Button.new()
+	btn_close.text = "Zamknij  [ESC]"
+	btn_close.pressed.connect(_hide_help)
+	vbox.add_child(btn_close)
 
 
 func _input(event: InputEvent) -> void:
