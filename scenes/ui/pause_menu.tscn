@@ -6,7 +6,6 @@
 process_mode = 3
 layer = 10
 visible = false
-follow_viewport_enabled = true
 script = ExtResource("1")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=421584204]

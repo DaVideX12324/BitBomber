@@ -4,7 +4,6 @@
 
 [node name="HUD" type="CanvasLayer" unique_id=1716525981]
 layer = 10
-follow_viewport_enabled = true
 script = ExtResource("1")
 
 [node name="Root" type="Control" parent="." unique_id=1522875390]
