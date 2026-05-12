@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dnu7tdv6y78we"]
 
 [ext_resource type="Script" uid="uid://cof3tbida8ufx" path="res://scripts/pause_menu.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bekjolfxecoun" path="res://scenes/ui/options_menu.tscn" id="2"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1431945732]
 process_mode = 3
@@ -24,12 +25,13 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -220.0
-offset_top = -160.0
+offset_top = -200.0
 offset_right = 220.0
-offset_bottom = 160.0
+offset_bottom = 200.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=833131621]
 layout_mode = 2
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="Icon" type="Label" parent="Panel/VBox" unique_id=572912928]
@@ -53,8 +55,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Wznów grę"
 
+[node name="BtnOptions" type="Button" parent="Panel/VBox" unique_id=141895808]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "⚙ Opcje"
+
 [node name="BtnMenu" type="Button" parent="Panel/VBox" unique_id=1036077389]
 custom_minimum_size = Vector2(200, 44)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Menu główne"
+
+[node name="OptionsMenu" parent="." unique_id=267325577 instance=ExtResource("2")]
