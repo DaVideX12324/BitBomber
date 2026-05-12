@@ -7,8 +7,8 @@ const CONFIG_PATH := "user://settings.cfg"
 const SEC         := "display"
 
 ## 0 = okienkowy, 1 = bez ramki, 2 = pełny ekran
-var window_mode_idx : int      = 0
-var resolution      : Vector2i = Vector2i(1280, 720)
+var window_mode_idx : int      = 2
+var resolution      : Vector2i = Vector2i(1920, 1080)
 var monitor_idx     : int      = 0
 
 signal resolution_changed(new_resolution: Vector2i)
@@ -134,9 +134,14 @@ func _save() -> void:
 func _load() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(CONFIG_PATH) != OK:
+		# Brak pliku konfiguracyjnego — pierwsze uruchomienie.
+		# Użyj natywnej rozdzielczości monitora i fullscreenu.
+		var native := DisplayServer.screen_get_size(0)
+		resolution      = native
+		window_mode_idx = 2
 		return
-	window_mode_idx = cfg.get_value(SEC, "window_mode_idx", 0)
-	var rx : int = cfg.get_value(SEC, "resolution_x", 1280)
-	var ry : int = cfg.get_value(SEC, "resolution_y", 720)
+	window_mode_idx = cfg.get_value(SEC, "window_mode_idx", 2)
+	var rx : int = cfg.get_value(SEC, "resolution_x", DisplayServer.screen_get_size(0).x)
+	var ry : int = cfg.get_value(SEC, "resolution_y", DisplayServer.screen_get_size(0).y)
 	resolution  = Vector2i(rx, ry)
 	monitor_idx = cfg.get_value(SEC, "monitor_idx", 0)
