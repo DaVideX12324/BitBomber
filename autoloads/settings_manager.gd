@@ -11,7 +11,6 @@ var window_mode_idx : int      = 0
 var resolution      : Vector2i = Vector2i(1280, 720)
 var monitor_idx     : int      = 0
 
-## Emitowany po każdej zmianie rozdzielczości (także przy starcie).
 signal resolution_changed(new_resolution: Vector2i)
 
 
@@ -35,23 +34,42 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 	var screen_size := DisplayServer.screen_get_size(monitor_idx)
 
 	# Zawsze najpierw wróć do czystego trybu okienkowego z ramką.
-	# To zdejmuje zarówno flagę BORDERLESS jak i fullscreen —
-	# bez tego zmiana z bezramkowego na okienkowy nie działa za pierwszym razem.
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 
-	# Dopiero teraz ustaw rozmiar i pozycję
-	DisplayServer.window_set_size(res)
-	DisplayServer.window_set_position(
-		screen_pos + (screen_size - res) / 2
-	)
-
 	match mode_idx:
-		1: # Bez ramki
+		0: # Okienkowy z ramką
+			# Pobierz grubość dekoracji (ramki) aby okno zewnętrzne mieściło się w res.
+			# window_get_size_with_decorations() dostepne dopiero po ustawieniu rozmiaru,
+			# więc najpierw ustaw żądany rozmiar, potem skompensuj.
+			DisplayServer.window_set_size(res)
+			var decorated := DisplayServer.window_get_size_with_decorations()
+			var border    := decorated - DisplayServer.window_get_size()
+			var inner     := Vector2i(
+				maxi(res.x - border.x, 320),
+				maxi(res.y - border.y, 240)
+			)
+			DisplayServer.window_set_size(inner)
+			DisplayServer.window_set_position(
+				screen_pos + (screen_size - decorated) / 2
+			)
+		1: # Bez ramki — dokładnie wypełnij obszar monitora bez wychodzenia poza niego
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			var clamped := Vector2i(
+				mini(res.x, screen_size.x),
+				mini(res.y, screen_size.y)
+			)
+			DisplayServer.window_set_size(clamped)
+			# Wycentruj w granicach monitora
+			DisplayServer.window_set_position(
+				screen_pos + (screen_size - clamped) / 2
+			)
 		2: # Pełny ekran (exclusive)
+			DisplayServer.window_set_size(res)
+			DisplayServer.window_set_position(
+				screen_pos + (screen_size - res) / 2
+			)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
-		# 0: okienkowy z ramką — już ustawiony powyżej, nic więcej
 
 	_save()
 	if res != prev_res:
