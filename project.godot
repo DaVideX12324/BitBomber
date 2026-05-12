@@ -28,6 +28,7 @@ SpriteLoader="*res://autoloads/sprite_loader.gd"
 WindowManager="*uid://fv2xg3xhx8v5"
 QuizManager="*uid://v7ttgjic1mf5"
 SettingsManager="*uid://0b60j1jm6etx"
+UIScaleManager="*uid://dh4ovm0yqu75a"
 
 [display]
 

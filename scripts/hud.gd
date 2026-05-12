@@ -23,7 +23,7 @@ const PLAYER_COLORS: Array[Color] = [
 	$Root/Cards/Card3,
 	$Root/Cards/Card4,
 ]
-@onready var _round_label : Label = $Root/RoundPanel/RoundLabel
+@onready var _round_label : Label = $Root/Cards/RoundPanel/RoundLabel
 @onready var _toast       : Label = $Root/ToastLabel
 @onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
 

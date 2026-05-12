@@ -70,7 +70,18 @@ func _ready() -> void:
 	_refresh_diff()
 	_refresh_win()
 	_build_help_overlay()
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
 
+func _on_scale_changed(_s: float) -> void:
+	var fs_btn   := UIScaleManager.px(22)
+	var fs_label := UIScaleManager.px(18)
+	for btn in _players_btns + _bots_btns + _diff_btns + _win_btns:
+		btn.add_theme_font_size_override("font_size", fs_btn)
+	_start_btn.add_theme_font_size_override("font_size", UIScaleManager.px(26))
+	_rounds_label.add_theme_font_size_override("font_size", fs_label)
+	_diff_label.add_theme_font_size_override("font_size", fs_label)
+	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", fs_label)
 
 # ---------------------------------------------------------------------------
 
