@@ -84,7 +84,7 @@ func _enable_stretch(render_res: Vector2i) -> void:
 	var root := get_tree().root
 	root.content_scale_size   = render_res
 	root.content_scale_mode   = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 
 
 func _disable_stretch() -> void:
