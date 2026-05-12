@@ -2,45 +2,56 @@ extends CanvasLayer
 
 ## Menu główne BitBomber.
 
+@onready var _panel    : PanelContainer  = $Center/Panel
+@onready var _vbox     : VBoxContainer   = $Center/Panel/VBox
+@onready var _title    : Label           = $Center/Panel/VBox/Title
+@onready var _subtitle : Label           = $Center/Panel/VBox/Subtitle
+@onready var _controls : Label           = $Center/Panel/VBox/Controls
+
+@onready var _players_label : Label = $Center/Panel/VBox/PlayersLabel
+@onready var _bots_label    : Label = $Center/Panel/VBox/BotsLabel
+@onready var _diff_label    : Label = $Center/Panel/VBox/DiffLabel
+@onready var _win_label     : Label = $Center/Panel/VBox/WinLabel
+@onready var _rounds_label  : Label = $Center/Panel/VBox/HBoxRounds/RoundsLabel
+@onready var _quiz_opt      : OptionButton = $Center/Panel/VBox/QuizOpt
+@onready var _rounds_spin   : SpinBox      = $Center/Panel/VBox/HBoxRounds/RoundsSpin
+@onready var _start_btn     : Button       = $Center/Panel/VBox/BtnStart
+@onready var _help_btn      : Button       = $Center/Panel/VBox/HBoxMeta/BtnHelp
+@onready var _options_btn   : Button       = $Center/Panel/VBox/HBoxMeta/BtnOptions
+@onready var _quit_btn      : Button       = $Center/Panel/VBox/BtnQuit
+@onready var _ver_label     : Label        = $VerLabel
+@onready var _options_menu                 = $OptionsMenu
+
 @onready var _players_btns : Array[Button] = [
-	$"Center/Panel/VBox/HBoxPlayers/Players_1",
-	$"Center/Panel/VBox/HBoxPlayers/Players_2",
-	$"Center/Panel/VBox/HBoxPlayers/Players_3",
-	$"Center/Panel/VBox/HBoxPlayers/Players_4",
+	$Center/Panel/VBox/HBoxPlayers/Players_1,
+	$Center/Panel/VBox/HBoxPlayers/Players_2,
+	$Center/Panel/VBox/HBoxPlayers/Players_3,
+	$Center/Panel/VBox/HBoxPlayers/Players_4,
 ]
 @onready var _bots_btns : Array[Button] = [
-	$"Center/Panel/VBox/HBoxBots/Bots_0",
-	$"Center/Panel/VBox/HBoxBots/Bots_1",
-	$"Center/Panel/VBox/HBoxBots/Bots_2",
-	$"Center/Panel/VBox/HBoxBots/Bots_3",
+	$Center/Panel/VBox/HBoxBots/Bots_0,
+	$Center/Panel/VBox/HBoxBots/Bots_1,
+	$Center/Panel/VBox/HBoxBots/Bots_2,
+	$Center/Panel/VBox/HBoxBots/Bots_3,
 ]
 @onready var _diff_btns : Array[Button] = [
-	$"Center/Panel/VBox/HBoxDiff/Diff_Easy",
-	$"Center/Panel/VBox/HBoxDiff/Diff_Medium",
-	$"Center/Panel/VBox/HBoxDiff/Diff_Hard",
+	$Center/Panel/VBox/HBoxDiff/Diff_Easy,
+	$Center/Panel/VBox/HBoxDiff/Diff_Medium,
+	$Center/Panel/VBox/HBoxDiff/Diff_Hard,
 ]
 @onready var _win_btns : Array[Button] = [
-	$"Center/Panel/VBox/HBoxWin/Win_FirstTo",
-	$"Center/Panel/VBox/HBoxWin/Win_MostWins",
+	$Center/Panel/VBox/HBoxWin/Win_FirstTo,
+	$Center/Panel/VBox/HBoxWin/Win_MostWins,
 ]
-@onready var _rounds_spin    : SpinBox       = $"Center/Panel/VBox/HBoxRounds/RoundsSpin"
-@onready var _rounds_label   : Label         = $"Center/Panel/VBox/HBoxRounds/RoundsLabel"
-@onready var _diff_label     : Label         = $"Center/Panel/VBox/DiffLabel"
-@onready var _diff_hbox      : HBoxContainer = $"Center/Panel/VBox/HBoxDiff"
-@onready var _quiz_opt       : OptionButton  = $"Center/Panel/VBox/QuizOpt"
-@onready var _start_btn      : Button        = $"Center/Panel/VBox/BtnStart"
-@onready var _options_menu                   = $OptionsMenu
-# Węzły potrzebne do skalowania czcionek
-@onready var _title_label    : Label  = $"Center/Panel/VBox/Title"
-@onready var _subtitle_label : Label  = $"Center/Panel/VBox/Subtitle"
-@onready var _controls_label : Label  = $"Center/Panel/VBox/Controls"
-@onready var _players_label  : Label  = $"Center/Panel/VBox/PlayersLabel"
-@onready var _bots_label     : Label  = $"Center/Panel/VBox/BotsLabel"
-@onready var _win_label      : Label  = $"Center/Panel/VBox/WinLabel"
-@onready var _btn_help       : Button = $"Center/Panel/VBox/HBoxMeta/BtnHelp"
-@onready var _btn_options    : Button = $"Center/Panel/VBox/HBoxMeta/BtnOptions"
-@onready var _btn_quit       : Button = $"Center/Panel/VBox/BtnQuit"
-@onready var _ver_label      : Label  = $"VerLabel"
+
+# Bazowe rozmiary z .tscn (tryb NORMAL = 1×)
+const BASE_PANEL_SIZE   := Vector2(550.0, 900.0)
+const BASE_VBOX_W       := 500.0
+const BASE_BTN_SM       := Vector2(72.0,  36.0)   # Players_*, Bots_*
+const BASE_BTN_DIFF     := Vector2(88.0,  36.0)   # Diff_*
+const BASE_BTN_WIN      := Vector2(140.0, 36.0)   # Win_*
+const BASE_BTN_START    := Vector2(0.0,   42.0)
+const BASE_BTN_QUIT     := Vector2(0.0,   36.0)
 
 var _sel_players : int = 1
 var _sel_bots    : int = 1
@@ -64,16 +75,18 @@ func _ready() -> void:
 		var idx := i
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
-	$"Center/Panel/VBox/BtnQuit".pressed.connect(get_tree().quit)
-	$"Center/Panel/VBox/HBoxMeta/BtnHelp".pressed.connect(_show_help)
-	$"Center/Panel/VBox/HBoxMeta/BtnOptions".pressed.connect(func(): _options_menu.open())
+	_quit_btn.pressed.connect(get_tree().quit)
+	_help_btn.pressed.connect(_show_help)
+	_options_btn.pressed.connect(func(): _options_menu.open())
 	var quizzes = QuizManager.get_quiz_ids()
 	_quiz_opt.add_item("Wszystkie")
 	for q in quizzes:
 		_quiz_opt.add_item(q)
 	_start_btn.pressed.connect(func():
-		var q_id = "" if _quiz_opt.selected <= 0 else _quiz_opt.get_item_text(_quiz_opt.selected)
-		_start(_sel_players, _sel_bots, _sel_diff, _sel_win, int(_rounds_spin.value), q_id)
+		var q_id = "" if _quiz_opt.selected <= 0 \
+				else _quiz_opt.get_item_text(_quiz_opt.selected)
+		_start(_sel_players, _sel_bots, _sel_diff, _sel_win,
+				int(_rounds_spin.value), q_id)
 	)
 	_refresh_players()
 	_refresh_bots()
@@ -85,45 +98,39 @@ func _ready() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Skalowanie czcionek
-# Wartości bazowe wprost z main_menu.tscn (tryb NORMAL = 1× / FHD)
+# Skalowanie — czcionki + rozmiary elementów
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	_title_label.add_theme_font_size_override("font_size",    UIScaleManager.px(48))
-	_subtitle_label.add_theme_font_size_override("font_size", UIScaleManager.px(20))
-	_controls_label.add_theme_font_size_override("font_size", UIScaleManager.px(18))
-	_players_label.add_theme_font_size_override("font_size",  UIScaleManager.px(17))
-	_bots_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	_diff_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	_win_label.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
-	_rounds_label.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
-	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", UIScaleManager.px(18))
-	_quiz_opt.add_theme_font_size_override("font_size",       UIScaleManager.px(18))
-	_start_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
-	_btn_help.add_theme_font_size_override("font_size",       UIScaleManager.px(20))
-	_btn_options.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
-	_btn_quit.add_theme_font_size_override("font_size",       UIScaleManager.px(20))
-	_ver_label.add_theme_font_size_override("font_size",      UIScaleManager.px(11))
-	var fs_btn := UIScaleManager.px(19)
-	for btn in _players_btns + _bots_btns + _diff_btns + _win_btns:
-		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
-	if _help_overlay:
-		_rescale_help_overlay()
-
-
-## Skaluje czcionki w panelu instrukcji (budowanym dynamicznie).
-func _rescale_help_overlay() -> void:
-	var panel     := _help_overlay.get_child(0) as PanelContainer
-	var margin    := panel.get_child(0)          as MarginContainer
-	var vbox      := margin.get_child(0)         as VBoxContainer
-	var title     := vbox.get_child(0)           as Label
-	var scroll    := vbox.get_child(2)           as ScrollContainer
-	var content   := scroll.get_child(0)         as RichTextLabel
-	var btn_close := vbox.get_child(4)           as Button
-	title.add_theme_font_size_override("font_size",          UIScaleManager.px(22))
-	content.add_theme_font_size_override("normal_font_size", UIScaleManager.px(15))
-	btn_close.add_theme_font_size_override("font_size",      UIScaleManager.px(16))
+	# Panel główny i VBox
+	_panel.custom_minimum_size = UIScaleManager.sz2(BASE_PANEL_SIZE.x, BASE_PANEL_SIZE.y)
+	_vbox.custom_minimum_size  = Vector2(UIScaleManager.sz(BASE_VBOX_W), 0.0)
+	# Czcionki
+	_title.add_theme_font_size_override("font_size",    UIScaleManager.px(48))
+	_subtitle.add_theme_font_size_override("font_size", UIScaleManager.px(20))
+	_controls.add_theme_font_size_override("font_size", UIScaleManager.px(18))
+	_players_label.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	_bots_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
+	_diff_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
+	_win_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
+	_rounds_label.add_theme_font_size_override("font_size",  UIScaleManager.px(20))
+	_quiz_opt.add_theme_font_size_override("font_size",      UIScaleManager.px(18))
+	_start_btn.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
+	_help_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
+	_options_btn.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
+	_quit_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
+	_ver_label.add_theme_font_size_override("font_size",     UIScaleManager.px(11))
+	# Rozmiary przycisków
+	for btn in _players_btns:
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
+	for btn in _bots_btns:
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
+	for btn in _diff_btns:
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
+	for btn in _win_btns:
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x,  BASE_BTN_WIN.y)
+	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
+	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +193,8 @@ func _refresh_win() -> void:
 		_rounds_label.text = "Liczba rund w sesji (Y):"
 
 
-func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_id: String) -> void:
+func _start(humans: int, bots: int, diff: int, win_mode: int,
+		rounds: int, quiz_id: String) -> void:
 	GameManager.bot_difficulty   = diff
 	GameManager.win_condition    = win_mode as GameManager.WinCondition
 	GameManager.selected_quiz_id = quiz_id
@@ -198,7 +206,7 @@ func _start(humans: int, bots: int, diff: int, win_mode: int, rounds: int, quiz_
 
 
 # ---------------------------------------------------------------------------
-# Instrukcja
+# Instrukcja (help overlay budowany w kodzie)
 # ---------------------------------------------------------------------------
 
 func _build_help_overlay() -> void:
@@ -225,6 +233,7 @@ func _build_help_overlay() -> void:
 	margin.add_child(vbox)
 	var title := Label.new()
 	title.text = "💣  Jak grać w BitBomber?"
+	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
 	vbox.add_child(HSeparator.new())
@@ -235,6 +244,7 @@ func _build_help_overlay() -> void:
 	content.bbcode_enabled = true
 	content.fit_content = true
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_font_size_override("normal_font_size", 15)
 	content.text = """[b]Cel gry[/b]
 Wyeliminuj przeciwnik\u00f3w za pomoc\u0105 bomb! Ostatni \u017cywy gracz (lub ten z najwi\u0119ksz\u0105 liczb\u0105 wygranych rund) zdobywa zwyci\u0119stwo.
 
@@ -269,8 +279,6 @@ Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. 
 	btn_close.text = "Zamknij  [ESC]"
 	btn_close.pressed.connect(_hide_help)
 	vbox.add_child(btn_close)
-	# zastosuj bieżące skalowanie do nowo zbudowanego overlay
-	_rescale_help_overlay()
 
 
 func _input(event: InputEvent) -> void:
