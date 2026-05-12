@@ -22,6 +22,13 @@ extends CanvasLayer
 @onready var _ver_label     : Label        = $VerLabel
 @onready var _options_menu                 = $OptionsMenu
 
+@onready var _hbox_players : HBoxContainer = $Center/Panel/VBox/HBoxPlayers
+@onready var _hbox_bots    : HBoxContainer = $Center/Panel/VBox/HBoxBots
+@onready var _hbox_diff    : HBoxContainer = $Center/Panel/VBox/HBoxDiff
+@onready var _hbox_win     : HBoxContainer = $Center/Panel/VBox/HBoxWin
+@onready var _hbox_rounds  : HBoxContainer = $Center/Panel/VBox/HBoxRounds
+@onready var _hbox_meta    : HBoxContainer = $Center/Panel/VBox/HBoxMeta
+
 @onready var _players_btns : Array[Button] = [
 	$Center/Panel/VBox/HBoxPlayers/Players_1,
 	$Center/Panel/VBox/HBoxPlayers/Players_2,
@@ -44,12 +51,13 @@ extends CanvasLayer
 	$Center/Panel/VBox/HBoxWin/Win_MostWins,
 ]
 
-# Bazowe rozmiary z .tscn (tryb NORMAL = 1×)
 const BASE_PANEL_SIZE   := Vector2(550.0, 900.0)
 const BASE_VBOX_W       := 500.0
-const BASE_BTN_SM       := Vector2(72.0,  36.0)   # Players_*, Bots_*
-const BASE_BTN_DIFF     := Vector2(88.0,  36.0)   # Diff_*
-const BASE_BTN_WIN      := Vector2(140.0, 36.0)   # Win_*
+const BASE_SEP_VBOX     := 16   # separation VBoxContainer
+const BASE_SEP_HBOX     := 8    # separation HBoxContainer
+const BASE_BTN_SM       := Vector2(72.0,  36.0)
+const BASE_BTN_DIFF     := Vector2(88.0,  36.0)
+const BASE_BTN_WIN      := Vector2(140.0, 36.0)
 const BASE_BTN_START    := Vector2(0.0,   42.0)
 const BASE_BTN_QUIT     := Vector2(0.0,   36.0)
 
@@ -98,14 +106,22 @@ func _ready() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Skalowanie — czcionki + rozmiary elementów
+# Skalowanie
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	# Panel główny i VBox
+	# Panel i VBox
 	_panel.custom_minimum_size = UIScaleManager.sz2(BASE_PANEL_SIZE.x, BASE_PANEL_SIZE.y)
 	_vbox.custom_minimum_size  = Vector2(UIScaleManager.sz(BASE_VBOX_W), 0.0)
-	# Czcionki
+	# Separation
+	_vbox.add_theme_constant_override("separation",        UIScaleManager.px(BASE_SEP_VBOX))
+	_hbox_players.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_HBOX))
+	_hbox_bots.add_theme_constant_override("separation",    UIScaleManager.px(BASE_SEP_HBOX))
+	_hbox_diff.add_theme_constant_override("separation",    UIScaleManager.px(BASE_SEP_HBOX))
+	_hbox_win.add_theme_constant_override("separation",     UIScaleManager.px(BASE_SEP_HBOX))
+	_hbox_rounds.add_theme_constant_override("separation",  UIScaleManager.px(BASE_SEP_HBOX))
+	_hbox_meta.add_theme_constant_override("separation",    UIScaleManager.px(BASE_SEP_HBOX))
+	# Czcionki etykiet
 	_title.add_theme_font_size_override("font_size",    UIScaleManager.px(48))
 	_subtitle.add_theme_font_size_override("font_size", UIScaleManager.px(20))
 	_controls.add_theme_font_size_override("font_size", UIScaleManager.px(18))
@@ -113,28 +129,40 @@ func _on_scale_changed(_s: float) -> void:
 	_bots_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
 	_diff_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
 	_win_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	_rounds_label.add_theme_font_size_override("font_size",  UIScaleManager.px(20))
-	_quiz_opt.add_theme_font_size_override("font_size",      UIScaleManager.px(18))
-	_start_btn.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
-	_help_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
-	_options_btn.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
-	_quit_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
+	_rounds_label.add_theme_font_size_override("font_size",  UIScaleManager.px(17))
 	_ver_label.add_theme_font_size_override("font_size",     UIScaleManager.px(11))
-	# Rozmiary przycisków
+	# QuizOpt + dropdown
+	_quiz_opt.add_theme_font_size_override("font_size", UIScaleManager.px(18))
+	_scale_popup_font(_quiz_opt, UIScaleManager.px(18))
+	# SpinBox
+	_rounds_spin.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	var spin_edit := _rounds_spin.get_line_edit()
+	if spin_edit:
+		spin_edit.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	# Przyciski akcji
+	_start_btn.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
+	_help_btn.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	_options_btn.add_theme_font_size_override("font_size", UIScaleManager.px(20))
+	_quit_btn.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	# Grupy przycisków
 	for btn in _players_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
 	for btn in _bots_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
 	for btn in _diff_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
-		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
+		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
 	for btn in _win_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x,  BASE_BTN_WIN.y)
-		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
+		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
 	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
 	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
+
+
+func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
+	opt.get_popup().add_theme_font_size_override("font_size", font_size)
 
 
 # ---------------------------------------------------------------------------
@@ -210,7 +238,7 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 
 
 # ---------------------------------------------------------------------------
-# Instrukcja (help overlay budowany w kodzie)
+# Instrukcja
 # ---------------------------------------------------------------------------
 
 func _build_help_overlay() -> void:
@@ -236,7 +264,7 @@ func _build_help_overlay() -> void:
 	vbox.add_theme_constant_override("separation", 12)
 	margin.add_child(vbox)
 	var title := Label.new()
-	title.text = "💣  Jak grać w BitBomber?"
+	title.text = "\u2665  Jak grać w BitBomber?"
 	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
@@ -291,9 +319,5 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _show_help() -> void:
-	_help_overlay.visible = true
-
-
-func _hide_help() -> void:
-	_help_overlay.visible = false
+func _show_help() -> void: _help_overlay.visible = true
+func _hide_help() -> void: _help_overlay.visible = false
