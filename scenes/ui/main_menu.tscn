@@ -30,10 +30,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin" unique_id=1767725691]
-custom_minimum_size = Vector2(500, 850)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 alignment = 1
 
 [node name="Title" type="Label" parent="Center/Panel/Margin/VBox" unique_id=2128057794]
