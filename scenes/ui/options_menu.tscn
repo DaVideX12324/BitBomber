@@ -23,10 +23,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -340.0
-offset_right = 280.0
-offset_bottom = 340.0
+offset_left = -300.0
+offset_top = -360.0
+offset_right = 300.0
+offset_bottom = 360.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -38,24 +38,33 @@ theme_override_constants/separation = 14
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
 theme_override_font_sizes/font_size = 26
-text = "⚙ Opcje wyświetlania"
+text = "⚙ Opcje"
 horizontal_alignment = 1
 
 [node name="Sep0" type="HSeparator" parent="Panel/VBox" unique_id=1491773234]
 layout_mode = 2
 
-[node name="ModeLabel" type="Label" parent="Panel/VBox" unique_id=425452572]
+[node name="Tabs" type="TabContainer" parent="Panel/VBox" unique_id=600000001]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/side_margin = 8
+
+[node name="Ekran" type="VBoxContainer" parent="Panel/VBox/Tabs" unique_id=600000010]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ModeLabel" type="Label" parent="Panel/VBox/Tabs/Ekran" unique_id=425452572]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "Tryb okna:"
 
-[node name="HBoxMode" type="HBoxContainer" parent="Panel/VBox" unique_id=241439613]
+[node name="HBoxMode" type="HBoxContainer" parent="Panel/VBox/Tabs/Ekran" unique_id=241439613]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="BtnWindowed" type="Button" parent="Panel/VBox/HBoxMode" unique_id=1438082638]
+[node name="BtnWindowed" type="Button" parent="Panel/VBox/Tabs/Ekran/HBoxMode" unique_id=1438082638]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -64,7 +73,7 @@ toggle_mode = true
 button_pressed = true
 text = "🗔 Okno"
 
-[node name="BtnBorderless" type="Button" parent="Panel/VBox/HBoxMode" unique_id=193946951]
+[node name="BtnBorderless" type="Button" parent="Panel/VBox/Tabs/Ekran/HBoxMode" unique_id=193946951]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -72,7 +81,7 @@ theme_override_font_sizes/font_size = 15
 toggle_mode = true
 text = "□ Bez ramki"
 
-[node name="BtnFullscreen" type="Button" parent="Panel/VBox/HBoxMode" unique_id=1869916235]
+[node name="BtnFullscreen" type="Button" parent="Panel/VBox/Tabs/Ekran/HBoxMode" unique_id=1869916235]
 custom_minimum_size = Vector2(80, 36)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -80,54 +89,120 @@ theme_override_font_sizes/font_size = 15
 toggle_mode = true
 text = "⛶ Pełny ekran"
 
-[node name="Sep1" type="HSeparator" parent="Panel/VBox" unique_id=1040163847]
+[node name="Sep1" type="HSeparator" parent="Panel/VBox/Tabs/Ekran" unique_id=1040163847]
 layout_mode = 2
 
-[node name="MonitorLabel" type="Label" parent="Panel/VBox" unique_id=1524531760]
+[node name="MonitorLabel" type="Label" parent="Panel/VBox/Tabs/Ekran" unique_id=1524531760]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "Monitor:"
 
-[node name="MonitorOption" type="OptionButton" parent="Panel/VBox" unique_id=2103821003]
+[node name="MonitorOption" type="OptionButton" parent="Panel/VBox/Tabs/Ekran" unique_id=2103821003]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 
-[node name="Sep2" type="HSeparator" parent="Panel/VBox" unique_id=102616672]
+[node name="Sep2" type="HSeparator" parent="Panel/VBox/Tabs/Ekran" unique_id=102616672]
 layout_mode = 2
 
-[node name="ResLabel" type="Label" parent="Panel/VBox" unique_id=897505164]
+[node name="ResLabel" type="Label" parent="Panel/VBox/Tabs/Ekran" unique_id=897505164]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "Rozdzielczość:"
 
-[node name="ResOption" type="OptionButton" parent="Panel/VBox" unique_id=1675403671]
+[node name="ResOption" type="OptionButton" parent="Panel/VBox/Tabs/Ekran" unique_id=1675403671]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 
-[node name="ResNote" type="Label" parent="Panel/VBox" unique_id=787608528]
+[node name="ResNote" type="Label" parent="Panel/VBox/Tabs/Ekran" unique_id=787608528]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Sep3" type="HSeparator" parent="Panel/VBox" unique_id=354985676]
+[node name="Sep3" type="HSeparator" parent="Panel/VBox/Tabs/Ekran" unique_id=354985676]
 layout_mode = 2
 
-[node name="ScaleLabel" type="Label" parent="Panel/VBox" unique_id=500000101]
+[node name="ScaleLabel" type="Label" parent="Panel/VBox/Tabs/Ekran" unique_id=500000101]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 theme_override_font_sizes/font_size = 16
 text = "Skalowanie interfejsu:"
 
-[node name="ScaleOption" type="OptionButton" parent="Panel/VBox" unique_id=500000102]
+[node name="ScaleOption" type="OptionButton" parent="Panel/VBox/Tabs/Ekran" unique_id=500000102]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
+
+[node name="Dzwiek" type="VBoxContainer" parent="Panel/VBox/Tabs" unique_id=600000020]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LblMaster" type="Label" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000021]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "🔊 Głośność ogólna:"
+
+[node name="SliderMaster" type="HSlider" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000022]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="LblMusic" type="Label" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000023]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "🎵 Muzyka:"
+
+[node name="SliderMusic" type="HSlider" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000024]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="LblSfx" type="Label" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000025]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "💥 Efekty dźwiękowe:"
+
+[node name="SliderSfx" type="HSlider" parent="Panel/VBox/Tabs/Dzwiek" unique_id=600000026]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Sterowanie" type="VBoxContainer" parent="Panel/VBox/Tabs" unique_id=600000030]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LblInfo" type="Label" parent="Panel/VBox/Tabs/Sterowanie" unique_id=600000031]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "Gracz 1: WASD + Spacja
+Gracz 2: Strzałki + Enter"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Sep5" type="HSeparator" parent="Panel/VBox/Tabs/Sterowanie" unique_id=600000032]
+layout_mode = 2
+
+[node name="BindsList" type="VBoxContainer" parent="Panel/VBox/Tabs/Sterowanie" unique_id=600000033]
+layout_mode = 2
+theme_override_constants/separation = 6
 
 [node name="Sep4" type="HSeparator" parent="Panel/VBox" unique_id=500000103]
 layout_mode = 2
