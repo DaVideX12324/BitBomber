@@ -30,7 +30,6 @@ offset_bottom = 160.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=833131621]
 layout_mode = 2
-theme_override_constants/separation = 20
 alignment = 1
 
 [node name="Icon" type="Label" parent="Panel/VBox" unique_id=572912928]
