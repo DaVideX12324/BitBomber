@@ -15,7 +15,7 @@ enum RivalMode { SOLO, VERSUS, DUEL_P1, DUEL_P2 }
 const WORDS_PER_SEC   : float = 0.35
 const DIFF_STEP_SEC   : float = 3.0
 const TYPE_MULTIPLIER : Dictionary = {
-	"true_false":      0.70,
+	"true_false":      0.80,
 	"multiple_choice": 1.00,
 	"fill_text":       1.20,
 	"fill_tiles":      1.40,
