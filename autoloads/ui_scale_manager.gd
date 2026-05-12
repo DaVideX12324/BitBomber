@@ -1,23 +1,18 @@
 extends Node
 ## Autoload: UIScaleManager
 ##
-## Zarządza trybem skalowania UI.
-## Przy pierwszym uruchomieniu automatycznie dobiera tryb do rozdzielczości
-## monitora. Gracz może później zmienić tryb ręcznie w opcjach.
+## Skaluje całe warstwy UI przez CanvasLayer.scale.
+## Dzięki temu skalowane są WSZYSTKIE elementy (czcionki, przyciski,
+## panele, marginesy, ikony) — bez żadnych ręcznych override’ów.
 ##
 ## Tryby:
-##   SMALL  — 0.75×  (< 1280px szerokości)
-##   NORMAL — 1.0×   (1280–1919px, baza FHD 1080p)
+##   SMALL  — 0.75×  (< 1280px)
+##   NORMAL — 1.0×   (1280–1919px, baza FHD)
 ##   LARGE  — 1.5×   (1920–2559px)
-##   XLARGE — 2.0×   (≥ 2560px, 4K / QHD)
+##   XLARGE — 2.0×   (≥ 2560px, 4K)
 ##
-## Użycie w skrypcie UI:
-##   func _ready():
-##       UIScaleManager.scale_changed.connect(_on_scale_changed)
-##       _on_scale_changed(UIScaleManager.scale_factor)
-##
-##   func _on_scale_changed(s: float) -> void:
-##       $Label.add_theme_font_size_override("font_size", UIScaleManager.px(32))
+## Użycie w skrypcie UI (jedyna potrzebna linia w _ready):
+##   UIScaleManager.apply_to_layer(self)
 
 enum ScaleMode { SMALL, NORMAL, LARGE, XLARGE }
 
@@ -37,22 +32,33 @@ const SCALE_LABELS : Dictionary = {
 
 const SAVE_KEY := "ui_scale_mode"
 
-## Aktualny tryb skalowania
 var current_mode : ScaleMode = ScaleMode.NORMAL :
 	set(value):
 		current_mode = value
 		scale_factor = SCALE_VALUES[value]
+		_apply_to_all_layers()
 		scale_changed.emit(scale_factor)
 
-## Aktualny współczynnik (tylko do odczytu z zewnątrz)
 var scale_factor : float = 1.0
 
-## Emitowany przy każdej zmianie trybu
 signal scale_changed(new_scale: float)
+
+# Wszystkie zarejestrowane warstwy UI
+var _layers : Array[CanvasLayer] = []
 
 
 func _ready() -> void:
 	_load_saved()
+
+
+## Rejestruje CanvasLayer i natychmiast aplikuje aktualne skalowanie.
+## Wywołaj w _ready() każdego skryptu UI: UIScaleManager.apply_to_layer(self)
+func apply_to_layer(layer: CanvasLayer) -> void:
+	if not _layers.has(layer):
+		_layers.append(layer)
+		# Sprzątanie po usunięciu węzła
+		layer.tree_exited.connect(func(): _layers.erase(layer))
+	_set_layer_scale(layer)
 
 
 ## Ustawia tryb ręcznie i zapisuje wybór gracza.
@@ -71,9 +77,18 @@ func get_mode_labels() -> Array[String]:
 	]
 
 
-## Przelicza wartość pikselową z bazy 1080p na aktualny tryb skalowania.
-func px(base_pixels: float) -> int:
-	return roundi(base_pixels * scale_factor)
+# ---------------------------------------------------------------------------
+# Internals
+# ---------------------------------------------------------------------------
+
+func _apply_to_all_layers() -> void:
+	for layer in _layers:
+		if is_instance_valid(layer):
+			_set_layer_scale(layer)
+
+
+func _set_layer_scale(layer: CanvasLayer) -> void:
+	layer.scale = Vector2(scale_factor, scale_factor)
 
 
 # ---------------------------------------------------------------------------
@@ -93,12 +108,9 @@ func _load_saved() -> void:
 		if saved >= 0 and saved <= ScaleMode.XLARGE:
 			current_mode = saved as ScaleMode
 			return
-	# Brak zapisu — dobierz tryb automatycznie
 	current_mode = _detect_mode()
 
 
-## Wykrywa tryb na podstawie szerokości aktualnego ekranu.
-## Używa monitora głównego (primary screen).
 func _detect_mode() -> ScaleMode:
 	var w : int = DisplayServer.screen_get_size(
 			DisplayServer.get_primary_screen()).x
