@@ -3,36 +3,37 @@ extends CanvasLayer
 ## Panel opcji — zakładki: Ekran / Dźwięk / Sterowanie
 
 # --- Ekran ---
-@onready var _btn_windowed   : Button       = $Panel/VBox/Tabs/Ekran/HBoxMode/BtnWindowed
-@onready var _btn_borderless : Button       = $Panel/VBox/Tabs/Ekran/HBoxMode/BtnBorderless
-@onready var _btn_fullscreen : Button       = $Panel/VBox/Tabs/Ekran/HBoxMode/BtnFullscreen
-@onready var _res_option     : OptionButton = $Panel/VBox/Tabs/Ekran/ResOption
-@onready var _res_note       : Label        = $Panel/VBox/Tabs/Ekran/ResNote
-@onready var _monitor_option : OptionButton = $Panel/VBox/Tabs/Ekran/MonitorOption
-@onready var _scale_option   : OptionButton = $Panel/VBox/Tabs/Ekran/ScaleOption
-@onready var _mode_label     : Label        = $Panel/VBox/Tabs/Ekran/ModeLabel
-@onready var _monitor_label  : Label        = $Panel/VBox/Tabs/Ekran/MonitorLabel
-@onready var _res_label      : Label        = $Panel/VBox/Tabs/Ekran/ResLabel
-@onready var _scale_label    : Label        = $Panel/VBox/Tabs/Ekran/ScaleLabel
+@onready var _btn_windowed   : Button       = $Panel/Margin/VBox/Tabs/Ekran/HBoxMode/BtnWindowed
+@onready var _btn_borderless : Button       = $Panel/Margin/VBox/Tabs/Ekran/HBoxMode/BtnBorderless
+@onready var _btn_fullscreen : Button       = $Panel/Margin/VBox/Tabs/Ekran/HBoxMode/BtnFullscreen
+@onready var _res_option     : OptionButton = $Panel/Margin/VBox/Tabs/Ekran/ResOption
+@onready var _res_note       : Label        = $Panel/Margin/VBox/Tabs/Ekran/ResNote
+@onready var _monitor_option : OptionButton = $Panel/Margin/VBox/Tabs/Ekran/MonitorOption
+@onready var _scale_option   : OptionButton = $Panel/Margin/VBox/Tabs/Ekran/ScaleOption
+@onready var _mode_label     : Label        = $Panel/Margin/VBox/Tabs/Ekran/ModeLabel
+@onready var _monitor_label  : Label        = $Panel/Margin/VBox/Tabs/Ekran/MonitorLabel
+@onready var _res_label      : Label        = $Panel/Margin/VBox/Tabs/Ekran/ResLabel
+@onready var _scale_label    : Label        = $Panel/Margin/VBox/Tabs/Ekran/ScaleLabel
 
 # --- Dźwięk ---
-@onready var _slider_master : HSlider = $Panel/VBox/Tabs/Dzwiek/SliderMaster
-@onready var _slider_music  : HSlider = $Panel/VBox/Tabs/Dzwiek/SliderMusic
-@onready var _slider_sfx    : HSlider = $Panel/VBox/Tabs/Dzwiek/SliderSfx
-@onready var _lbl_master    : Label   = $Panel/VBox/Tabs/Dzwiek/LblMaster
-@onready var _lbl_music     : Label   = $Panel/VBox/Tabs/Dzwiek/LblMusic
-@onready var _lbl_sfx       : Label   = $Panel/VBox/Tabs/Dzwiek/LblSfx
+@onready var _slider_master : HSlider = $Panel/Margin/VBox/Tabs/Dzwiek/SliderMaster
+@onready var _slider_music  : HSlider = $Panel/Margin/VBox/Tabs/Dzwiek/SliderMusic
+@onready var _slider_sfx    : HSlider = $Panel/Margin/VBox/Tabs/Dzwiek/SliderSfx
+@onready var _lbl_master    : Label   = $Panel/Margin/VBox/Tabs/Dzwiek/LblMaster
+@onready var _lbl_music     : Label   = $Panel/Margin/VBox/Tabs/Dzwiek/LblMusic
+@onready var _lbl_sfx       : Label   = $Panel/Margin/VBox/Tabs/Dzwiek/LblSfx
 
 # --- Sterowanie ---
-@onready var _binds_list : VBoxContainer = $Panel/VBox/Tabs/Sterowanie/BindsList
-@onready var _lbl_info   : Label         = $Panel/VBox/Tabs/Sterowanie/LblInfo
+@onready var _binds_list : VBoxContainer = $Panel/Margin/VBox/Tabs/Sterowanie/BindsList
+@onready var _lbl_info   : Label         = $Panel/Margin/VBox/Tabs/Sterowanie/LblInfo
 
 # --- Wspólne ---
-@onready var _panel       : PanelContainer = $Panel
-@onready var _title_label : Label          = $Panel/VBox/Title
-@onready var _tabs        : TabContainer   = $Panel/VBox/Tabs
-@onready var _btn_apply   : Button         = $Panel/VBox/HBoxButtons/BtnApply
-@onready var _btn_close   : Button         = $Panel/VBox/HBoxButtons/BtnClose
+@onready var _panel       : PanelContainer  = $Panel
+@onready var _margin      : MarginContainer = $Panel/Margin
+@onready var _title_label : Label           = $Panel/Margin/VBox/Title
+@onready var _tabs        : TabContainer    = $Panel/Margin/VBox/Tabs
+@onready var _btn_apply   : Button          = $Panel/Margin/VBox/HBoxButtons/BtnApply
+@onready var _btn_close   : Button          = $Panel/Margin/VBox/HBoxButtons/BtnClose
 
 @onready var _confirm_popup : PanelContainer = $ConfirmPopup
 @onready var _lbl_countdown : Label          = $ConfirmPopup/VBoxConfirm/LblCountdown
@@ -49,6 +50,7 @@ const BASE_CONFIRM_HALF_H   := 100.0
 const BASE_BTN_MODE_SIZE    := Vector2(80.0,  36.0)
 const BASE_BTN_ACTION_SIZE  := Vector2(130.0, 40.0)
 const BASE_BTN_CONFIRM_SIZE := Vector2(140.0, 40.0)
+const BASE_PANEL_PADDING    := 40
 
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
@@ -168,7 +170,11 @@ func _on_scale_changed(_s: float) -> void:
 	var cv := UIScaleManager.sz(BASE_CONFIRM_HALF_H)
 	_confirm_popup.offset_left   = -ch ; _confirm_popup.offset_top    = -cv
 	_confirm_popup.offset_right  =  ch ; _confirm_popup.offset_bottom =  cv
-
+	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
+	_margin.add_theme_constant_override("margin_left", pad)
+	_margin.add_theme_constant_override("margin_top", pad)
+	_margin.add_theme_constant_override("margin_right", pad)
+	_margin.add_theme_constant_override("margin_bottom", pad)
 
 ## Ustawia rozmiar czcionki w rozwijanym PopupMenu OptionButtona.
 func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
