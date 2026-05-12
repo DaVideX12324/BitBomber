@@ -12,8 +12,8 @@ signal quiz_result(winner_id: int)
 
 enum RivalMode { SOLO, VERSUS, DUEL_P1, DUEL_P2 }
 
-const WORDS_PER_SEC  : float = 0.35
-const DIFF_STEP_SEC  : float = 3.0
+const WORDS_PER_SEC   : float = 0.35
+const DIFF_STEP_SEC   : float = 3.0
 const TYPE_MULTIPLIER : Dictionary = {
 	"true_false":      0.70,
 	"multiple_choice": 1.00,
@@ -22,7 +22,25 @@ const TYPE_MULTIPLIER : Dictionary = {
 	"matching":        1.55,
 }
 
+# Bazowe rozmiary czcionek z .tscn
+const BASE_FS_TITLE      := 24
+const BASE_FS_QUESTION   := 21
+const BASE_FS_TIMER      := 20
+const BASE_FS_HINT       := 13
+const BASE_FS_ANSWER_BTN := 20
+const BASE_FS_RESULT     := 22
+const BASE_FS_CORRECT    := 18
+const BASE_FS_CONFIRM_MATCH := 15   # Matching_Box/Confirm ma 15 w .tscn
+
+# Bazowe rozmiary panelu i separatorow z .tscn
+const BASE_PANEL_HALF_W := 340.0
+const BASE_PANEL_HALF_H := 300.0
+const BASE_SEP_VBOX     := 10
+const BASE_SEP_SUBBOX   := 6
+
 # ---- stałe węzły ----
+@onready var _panel        : PanelContainer  = $Panel
+@onready var _vbox         : VBoxContainer   = $Panel/VBox
 @onready var _lbl_title    : Label           = $Panel/VBox/Title
 @onready var _lbl_question : Label           = $Panel/VBox/Question
 @onready var _lbl_timer    : Label           = $Panel/VBox/Timer
@@ -41,9 +59,9 @@ const TYPE_MULTIPLIER : Dictionary = {
 ]
 
 # true_false
-@onready var _tf_box      : VBoxContainer = $Panel/VBox/TF_Box
-@onready var _btn_true    : Button        = $Panel/VBox/TF_Box/BtnTrue
-@onready var _btn_false   : Button        = $Panel/VBox/TF_Box/BtnFalse
+@onready var _tf_box   : VBoxContainer = $Panel/VBox/TF_Box
+@onready var _btn_true  : Button        = $Panel/VBox/TF_Box/BtnTrue
+@onready var _btn_false : Button        = $Panel/VBox/TF_Box/BtnFalse
 
 # fill_text
 @onready var _fill_text_box    : VBoxContainer = $Panel/VBox/FillText_Box
@@ -101,6 +119,48 @@ func _ready() -> void:
 		_mc_btns[i].pressed.connect(func(): _on_mc_button(idx))
 	_btn_true.pressed.connect(func(): _on_tf_button(true))
 	_btn_false.pressed.connect(func(): _on_tf_button(false))
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
+
+
+# ---------------------------------------------------------------------------
+# Skalowanie
+# ---------------------------------------------------------------------------
+
+func _on_scale_changed(_s: float) -> void:
+	# Panel
+	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
+	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
+	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
+	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
+	# Separation
+	_vbox.add_theme_constant_override("separation",           UIScaleManager.px(BASE_SEP_VBOX))
+	_mc_box.add_theme_constant_override("separation",         UIScaleManager.px(BASE_SEP_SUBBOX))
+	_tf_box.add_theme_constant_override("separation",         UIScaleManager.px(BASE_SEP_SUBBOX))
+	_fill_text_box.add_theme_constant_override("separation",  UIScaleManager.px(BASE_SEP_SUBBOX))
+	_fill_tiles_box.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_SUBBOX))
+	_matching_box.add_theme_constant_override("separation",   UIScaleManager.px(BASE_SEP_SUBBOX))
+	# Etykiety nagłówkowe
+	_lbl_title.add_theme_font_size_override("font_size",    UIScaleManager.px(BASE_FS_TITLE))
+	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_QUESTION))
+	_lbl_timer.add_theme_font_size_override("font_size",    UIScaleManager.px(BASE_FS_TIMER))
+	_lbl_hint.add_theme_font_size_override("font_size",     UIScaleManager.px(BASE_FS_HINT))
+	_result_label.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_RESULT))
+	_correct_lbl.add_theme_font_size_override("font_size",  UIScaleManager.px(BASE_FS_CORRECT))
+	# Statyczne przyciski odpowiedzi (MC / TF)
+	var fs_btn := UIScaleManager.px(BASE_FS_ANSWER_BTN)
+	for btn in _mc_btns:
+		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
+	_btn_true.add_theme_font_size_override("font_size",  fs_btn)
+	_btn_false.add_theme_font_size_override("font_size", fs_btn)
+	# FillText
+	_fill_pattern_lbl.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	_fill_input.add_theme_font_size_override("font_size",       UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	_fill_confirm.add_theme_font_size_override("font_size",     UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	# FillTiles confirm
+	_tiles_confirm.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	# Matching confirm
+	_match_confirm.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_CONFIRM_MATCH))
 
 
 # ---------------------------------------------------------------------------
@@ -115,10 +175,10 @@ static func calculate_time(question: Dictionary, base_time: float, base_difficul
 	for ans in question.get("answers", []): word_count += str(ans).split(" ",false).size()
 	for item in question.get("left_items",  []): word_count += str(item).split(" ",false).size()
 	for item in question.get("right_items", []): word_count += str(item).split(" ",false).size()
-	var word_bonus   : float = float(word_count) * WORDS_PER_SEC
-	var qtype        : String = question.get("type", "multiple_choice")
-	var type_mult    : float  = TYPE_MULTIPLIER.get(qtype, 1.0)
-	var diff_offset  : float  = float(question.get("difficulty", base_difficulty) - base_difficulty) * DIFF_STEP_SEC
+	var word_bonus  : float  = float(word_count) * WORDS_PER_SEC
+	var qtype       : String = question.get("type", "multiple_choice")
+	var type_mult   : float  = TYPE_MULTIPLIER.get(qtype, 1.0)
+	var diff_offset : float  = float(question.get("difficulty", base_difficulty) - base_difficulty) * DIFF_STEP_SEC
 	return clampf((base_time + word_bonus) * type_mult + diff_offset, 5.0, 120.0)
 
 
@@ -199,6 +259,7 @@ func _build_ui() -> void:
 		"matching":         _build_matching()
 	_lbl_question.visible = _lbl_question.text != ""
 
+
 # --- multiple_choice ---
 func _build_mc() -> void:
 	_mc_box.visible = true
@@ -258,17 +319,18 @@ func _build_fill_tiles() -> void:
 	var tiles : Array = _question.get("tiles", [])
 	_tile_slots.resize(gaps.size())
 	_tile_slots.fill("")
+	var fs := UIScaleManager.px(BASE_FS_ANSWER_BTN)
 	var parts := text_with_gaps.split("___")
 	for i in parts.size():
 		var lbl := Label.new()
-		lbl.add_theme_font_size_override("font_size", 20)
+		lbl.add_theme_font_size_override("font_size", fs)
 		lbl.text = parts[i]
 		_gap_row.add_child(lbl)
 		if i < gaps.size():
 			var gap_btn := Button.new()
-			gap_btn.add_theme_font_size_override("font_size", 20)
+			gap_btn.add_theme_font_size_override("font_size", fs)
 			gap_btn.focus_mode = Control.FOCUS_NONE
-			gap_btn.custom_minimum_size = Vector2(120, 36)
+			gap_btn.custom_minimum_size = UIScaleManager.sz2(120, 36)
 			gap_btn.text = "[ ___ ]"
 			var idx := i
 			gap_btn.pressed.connect(func(): _on_gap_clicked(idx))
@@ -276,7 +338,7 @@ func _build_fill_tiles() -> void:
 			_gap_buttons.append(gap_btn)
 	for tile in tiles:
 		var tbtn := Button.new()
-		tbtn.add_theme_font_size_override("font_size", 20)
+		tbtn.add_theme_font_size_override("font_size", fs)
 		tbtn.text = str(tile)
 		tbtn.focus_mode = Control.FOCUS_NONE
 		var txt := str(tile)
@@ -293,9 +355,10 @@ func _build_matching() -> void:
 	for ch in _match_right.get_children(): ch.queue_free()
 	var left_items  : Array = _question.get("left_items", [])
 	var right_items : Array = _question.get("right_items", [])
+	var fs := UIScaleManager.px(BASE_FS_ANSWER_BTN)
 	for i in left_items.size():
 		var btn := Button.new()
-		btn.add_theme_font_size_override("font_size", 20)
+		btn.add_theme_font_size_override("font_size", fs)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(left_items[i])
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -306,7 +369,7 @@ func _build_matching() -> void:
 		_match_left_btns.append(btn)
 	for i in right_items.size():
 		var btn := Button.new()
-		btn.add_theme_font_size_override("font_size", 20)
+		btn.add_theme_font_size_override("font_size", fs)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.text = str(right_items[i])
 		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -337,7 +400,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_on_fill_tiles_confirm()
 				get_viewport().set_input_as_handled()
 	elif qtype == "fill_text":
-		pass  # LineEdit obsługuje text_submitted samodzielnie
+		pass
 	elif qtype == "matching":
 		if event is InputEventKey and event.pressed:
 			var ke := event as InputEventKey
@@ -455,6 +518,7 @@ func _on_match_right(index: int) -> void:
 			_match_pairs.erase(key)
 			if key < _match_left_btns.size():
 				_match_left_btns[key].text = str(left_items[key])
+				_match_left_btns[key].remove_theme_color_override("font_color")
 	_match_pairs[_match_selected] = index
 	if _match_selected < _match_left_btns.size():
 		_match_left_btns[_match_selected].text = str(left_items[_match_selected]) + " ✓"
