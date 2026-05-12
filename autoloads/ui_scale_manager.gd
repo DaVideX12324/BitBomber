@@ -113,12 +113,12 @@ func _on_resolution_changed(_new_res: Vector2i) -> void:
 # ---------------------------------------------------------------------------
 
 func _detect_mode() -> ScaleMode:
-	var w : int = SettingsManager.resolution.x
-	if w <= 0:
-		w = DisplayServer.window_get_size().x
-	if   w >= 2560: return ScaleMode.XLARGE
-	elif w >= 1920: return ScaleMode.LARGE
-	elif w >= 1280: return ScaleMode.NORMAL
+	var y : int = SettingsManager.resolution.y
+	if y <= 0:
+		y = DisplayServer.window_get_size().y
+	if   y >= 2160: return ScaleMode.XLARGE
+	elif y > 1080: return ScaleMode.LARGE
+	elif y > 900: return ScaleMode.NORMAL
 	else:           return ScaleMode.SMALL
 
 

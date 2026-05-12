@@ -134,9 +134,7 @@ func _on_scale_changed(_s: float) -> void:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x,  BASE_BTN_WIN.y)
 		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
-	_start_btn.add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
-	_quit_btn.add_theme_font_size_override("font_size",UIScaleManager.px(19))
 
 
 # ---------------------------------------------------------------------------
