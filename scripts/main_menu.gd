@@ -30,6 +30,17 @@ extends CanvasLayer
 @onready var _quiz_opt       : OptionButton  = $"Center/Panel/VBox/QuizOpt"
 @onready var _start_btn      : Button        = $"Center/Panel/VBox/BtnStart"
 @onready var _options_menu                   = $OptionsMenu
+# Węzły potrzebne do skalowania czcionek
+@onready var _title_label    : Label  = $"Center/Panel/VBox/Title"
+@onready var _subtitle_label : Label  = $"Center/Panel/VBox/Subtitle"
+@onready var _controls_label : Label  = $"Center/Panel/VBox/Controls"
+@onready var _players_label  : Label  = $"Center/Panel/VBox/PlayersLabel"
+@onready var _bots_label     : Label  = $"Center/Panel/VBox/BotsLabel"
+@onready var _win_label      : Label  = $"Center/Panel/VBox/WinLabel"
+@onready var _btn_help       : Button = $"Center/Panel/VBox/HBoxMeta/BtnHelp"
+@onready var _btn_options    : Button = $"Center/Panel/VBox/HBoxMeta/BtnOptions"
+@onready var _btn_quit       : Button = $"Center/Panel/VBox/BtnQuit"
+@onready var _ver_label      : Label  = $"VerLabel"
 
 var _sel_players : int = 1
 var _sel_bots    : int = 1
@@ -69,7 +80,50 @@ func _ready() -> void:
 	_refresh_diff()
 	_refresh_win()
 	_build_help_overlay()
-	UIScaleManager.apply_to_layer(self)
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
+
+
+# ---------------------------------------------------------------------------
+# Skalowanie czcionek
+# Wartości bazowe wprost z main_menu.tscn (tryb NORMAL = 1× / FHD)
+# ---------------------------------------------------------------------------
+
+func _on_scale_changed(_s: float) -> void:
+	_title_label.add_theme_font_size_override("font_size",    UIScaleManager.px(48))
+	_subtitle_label.add_theme_font_size_override("font_size", UIScaleManager.px(20))
+	_controls_label.add_theme_font_size_override("font_size", UIScaleManager.px(18))
+	_players_label.add_theme_font_size_override("font_size",  UIScaleManager.px(17))
+	_bots_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
+	_diff_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
+	_win_label.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
+	_rounds_label.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
+	_rounds_spin.get_line_edit().add_theme_font_size_override("font_size", UIScaleManager.px(18))
+	_quiz_opt.add_theme_font_size_override("font_size",       UIScaleManager.px(18))
+	_start_btn.add_theme_font_size_override("font_size",      UIScaleManager.px(20))
+	_btn_help.add_theme_font_size_override("font_size",       UIScaleManager.px(20))
+	_btn_options.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	_btn_quit.add_theme_font_size_override("font_size",       UIScaleManager.px(20))
+	_ver_label.add_theme_font_size_override("font_size",      UIScaleManager.px(11))
+	var fs_btn := UIScaleManager.px(19)
+	for btn in _players_btns + _bots_btns + _diff_btns + _win_btns:
+		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
+	if _help_overlay:
+		_rescale_help_overlay()
+
+
+## Skaluje czcionki w panelu instrukcji (budowanym dynamicznie).
+func _rescale_help_overlay() -> void:
+	var panel     := _help_overlay.get_child(0) as PanelContainer
+	var margin    := panel.get_child(0)          as MarginContainer
+	var vbox      := margin.get_child(0)         as VBoxContainer
+	var title     := vbox.get_child(0)           as Label
+	var scroll    := vbox.get_child(2)           as ScrollContainer
+	var content   := scroll.get_child(0)         as RichTextLabel
+	var btn_close := vbox.get_child(4)           as Button
+	title.add_theme_font_size_override("font_size",          UIScaleManager.px(22))
+	content.add_theme_font_size_override("normal_font_size", UIScaleManager.px(15))
+	btn_close.add_theme_font_size_override("font_size",      UIScaleManager.px(16))
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +225,6 @@ func _build_help_overlay() -> void:
 	margin.add_child(vbox)
 	var title := Label.new()
 	title.text = "💣  Jak grać w BitBomber?"
-	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
 	vbox.add_child(HSeparator.new())
@@ -182,7 +235,6 @@ func _build_help_overlay() -> void:
 	content.bbcode_enabled = true
 	content.fit_content = true
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_font_size_override("normal_font_size", 15)
 	content.text = """[b]Cel gry[/b]
 Wyeliminuj przeciwnik\u00f3w za pomoc\u0105 bomb! Ostatni \u017cywy gracz (lub ten z najwi\u0119ksz\u0105 liczb\u0105 wygranych rund) zdobywa zwyci\u0119stwo.
 
@@ -217,6 +269,8 @@ Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. 
 	btn_close.text = "Zamknij  [ESC]"
 	btn_close.pressed.connect(_hide_help)
 	vbox.add_child(btn_close)
+	# zastosuj bieżące skalowanie do nowo zbudowanego overlay
+	_rescale_help_overlay()
 
 
 func _input(event: InputEvent) -> void:

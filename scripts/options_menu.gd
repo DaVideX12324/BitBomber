@@ -17,6 +17,13 @@ extends CanvasLayer
 @onready var _btn_confirm    : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnConfirm
 @onready var _btn_revert     : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnRevert
 
+# Węzły potrzebne do skalowania czcionek (bazy z options_menu.tscn)
+@onready var _title_label    : Label = $Panel/VBox/Title
+@onready var _mode_label     : Label = $Panel/VBox/ModeLabel
+@onready var _monitor_label  : Label = $Panel/VBox/MonitorLabel
+@onready var _res_label      : Label = $Panel/VBox/ResLabel
+@onready var _scale_label    : Label = $Panel/VBox/ScaleLabel
+
 const CONFIRM_TIMEOUT := 20.0
 
 var _mode_btns   : Array[Button]   = []
@@ -46,7 +53,8 @@ func _ready() -> void:
 	_monitor_option.item_selected.connect(_on_monitor_changed)
 	_populate_resolutions(_monitor_option.selected)
 	_populate_scale()
-	UIScaleManager.apply_to_layer(self)
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
 
 
 func _process(delta: float) -> void:
@@ -68,6 +76,31 @@ func _input(event: InputEvent) -> void:
 		else:
 			_on_close()
 		get_viewport().set_input_as_handled()
+
+
+# ---------------------------------------------------------------------------
+# Skalowanie czcionek
+# Bazy z options_menu.tscn (tryb NORMAL = 1×)
+# ---------------------------------------------------------------------------
+
+func _on_scale_changed(_s: float) -> void:
+	_title_label.add_theme_font_size_override("font_size",   UIScaleManager.px(26))
+	_mode_label.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
+	_monitor_label.add_theme_font_size_override("font_size", UIScaleManager.px(16))
+	_res_label.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
+	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(12))
+	_scale_label.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
+	_monitor_option.add_theme_font_size_override("font_size", UIScaleManager.px(16))
+	_res_option.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
+	_scale_option.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
+	_btn_apply.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
+	_btn_close.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
+	var fs_mode := UIScaleManager.px(15)
+	for btn in _mode_btns:
+		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
+	_lbl_countdown.add_theme_font_size_override("font_size",  UIScaleManager.px(22))
+	_btn_confirm.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
+	_btn_revert.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
 
 
 # ---------------------------------------------------------------------------
@@ -143,6 +176,7 @@ func _populate_resolutions(screen: int) -> void:
 	SettingsManager.monitor_idx = screen
 	_resolutions = SettingsManager.get_available_resolutions()
 	SettingsManager.monitor_idx = saved_idx
+
 	_res_option.clear()
 	var screen_size := DisplayServer.screen_get_size(screen)
 	for r in _resolutions:
@@ -190,6 +224,7 @@ func _on_apply() -> void:
 	_prev_mode    = SettingsManager.window_mode_idx
 	_prev_res     = SettingsManager.resolution
 	_prev_monitor = SettingsManager.monitor_idx
+
 	var res_idx := _res_option.selected
 	var res := SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
