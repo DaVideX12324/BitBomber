@@ -144,7 +144,7 @@ func _detect_mode() -> ScaleMode:
 	if   y >= 2160: return ScaleMode.XLARGE
 	elif y > 1080:  return ScaleMode.LARGE
 	elif y > 900:   return ScaleMode.NORMAL
-	elif y > 720:   return ScaleMode.SMALL
+	elif y >= 720:   return ScaleMode.SMALL
 	else:           return ScaleMode.XSMALL
 
 
