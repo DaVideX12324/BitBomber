@@ -2,15 +2,16 @@ extends CanvasLayer
 
 ## Menu pauzy — wyświetlane po naciśnięciu ESC podczas rozgrywki.
 
-@onready var _overlay      : ColorRect      = $Overlay
-@onready var _panel        : PanelContainer = $Panel
-@onready var _vbox         : VBoxContainer  = $Panel/VBox
-@onready var _icon         : Label          = $Panel/VBox/Icon
-@onready var _title        : Label          = $Panel/VBox/Title
-@onready var _btn_resume   : Button         = $Panel/VBox/BtnResume
-@onready var _btn_options  : Button         = $Panel/VBox/BtnOptions
-@onready var _btn_menu     : Button         = $Panel/VBox/BtnMenu
-@onready var _options_menu                  = $OptionsMenu
+@onready var _overlay      : ColorRect       = $Overlay
+@onready var _panel        : PanelContainer  = $Panel
+@onready var _margin       : MarginContainer = $Panel/Margin
+@onready var _vbox         : VBoxContainer   = $Panel/Margin/VBox
+@onready var _icon         : Label           = $Panel/Margin/VBox/Icon
+@onready var _title        : Label           = $Panel/Margin/VBox/Title
+@onready var _btn_resume   : Button          = $Panel/Margin/VBox/BtnResume
+@onready var _btn_options  : Button          = $Panel/Margin/VBox/BtnOptions
+@onready var _btn_menu     : Button          = $Panel/Margin/VBox/BtnMenu
+@onready var _options_menu                   = $OptionsMenu
 
 # Bazowe rozmiary z .tscn
 const BASE_PANEL_HALF_W := 220.0
@@ -20,6 +21,7 @@ const BASE_FS_ICON      := 52
 const BASE_FS_TITLE     := 32
 const BASE_FS_BTN       := 20
 const BASE_BTN_SIZE     := Vector2(200.0, 44.0)
+const BASE_PANEL_PADDING  := 20
 
 var _paused : bool = false
 
@@ -39,13 +41,18 @@ func _on_scale_changed(_s: float) -> void:
 	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
 	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
 	_vbox.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_VBOX))
-	_icon.add_theme_font_size_override("font_size",         UIScaleManager.px(BASE_FS_ICON))
-	_title.add_theme_font_size_override("font_size",        UIScaleManager.px(BASE_FS_TITLE))
+	_icon.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ICON))
+	_title.add_theme_font_size_override("font_size",UIScaleManager.px(BASE_FS_TITLE))
 	var fs_btn  := UIScaleManager.px(BASE_FS_BTN)
 	var btn_sz  := UIScaleManager.sz2(BASE_BTN_SIZE.x, BASE_BTN_SIZE.y)
 	for btn in [_btn_resume, _btn_options, _btn_menu]:
 		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
 		(btn as Button).custom_minimum_size = btn_sz
+	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
+	_margin.add_theme_constant_override("margin_left", pad)
+	_margin.add_theme_constant_override("margin_top", pad)
+	_margin.add_theme_constant_override("margin_right", pad)
+	_margin.add_theme_constant_override("margin_bottom", pad)
 
 
 # ---------------------------------------------------------------------------
