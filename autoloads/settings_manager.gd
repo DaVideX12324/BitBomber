@@ -39,9 +39,7 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 
 	match mode_idx:
 		0: # Okienkowy z ramką
-			# Pobierz grubość dekoracji (ramki) aby okno zewnętrzne mieściło się w res.
-			# window_get_size_with_decorations() dostepne dopiero po ustawieniu rozmiaru,
-			# więc najpierw ustaw żądany rozmiar, potem skompensuj.
+			_disable_stretch()
 			DisplayServer.window_set_size(res)
 			var decorated := DisplayServer.window_get_size_with_decorations()
 			var border    := decorated - DisplayServer.window_get_size()
@@ -53,28 +51,49 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - decorated) / 2
 			)
-		1: # Bez ramki — dokładnie wypełnij obszar monitora bez wychodzenia poza niego
+		1: # Bez ramki
+			_disable_stretch()
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 			var clamped := Vector2i(
 				mini(res.x, screen_size.x),
 				mini(res.y, screen_size.y)
 			)
 			DisplayServer.window_set_size(clamped)
-			# Wycentruj w granicach monitora
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - clamped) / 2
 			)
-		2: # Pełny ekran (exclusive)
+		2: # Pełny ekran — gra renderuje się w wybranej rozdzielczości,
+		   # Godot skaluje viewport do rozmiaru monitora.
 			DisplayServer.window_set_size(res)
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - res) / 2
 			)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+			_enable_stretch(res)
 
 	_save()
 	if res != prev_res:
 		resolution_changed.emit(resolution)
 
+
+# ---------------------------------------------------------------------------
+# Stretch helpers
+# ---------------------------------------------------------------------------
+
+func _enable_stretch(render_res: Vector2i) -> void:
+	var root := get_tree().root
+	root.content_scale_size   = render_res
+	root.content_scale_mode   = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+
+
+func _disable_stretch() -> void:
+	var root := get_tree().root
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+	root.content_scale_size = Vector2i.ZERO
+
+
+# ---------------------------------------------------------------------------
 
 func get_available_resolutions() -> Array[Vector2i]:
 	var screen_size := DisplayServer.screen_get_size(monitor_idx)
