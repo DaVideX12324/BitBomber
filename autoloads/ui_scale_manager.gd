@@ -1,23 +1,25 @@
 extends Node
 ## Autoload: UIScaleManager
 ##
-## Zarządza trybem skalowania UI.
-## Przy pierwszym uruchomieniu automatycznie dobiera tryb do rozdzielczości
-## monitora. Gracz może później zmienić tryb ręcznie w opcjach.
+## Zarządza trybem skalowania UI per-węzeł (font_size + custom_minimum_size).
 ##
-## Tryby:
-##   SMALL  — 0.75×  (< 1280px szerokości)
-##   NORMAL — 1.0×   (1280–1919px, baza FHD 1080p)
+## Tryb domyślny przy pierwszym uruchomieniu jest dobierany
+## na podstawie WYBRANEJ ROZDZIELCZOŚCI w SettingsManager (nie rozmiaru monitora).
+## Progi:
+##   SMALL  — 0.75×  (szerokość < 1280px)
+##   NORMAL — 1.0×   (1280–1919px)
 ##   LARGE  — 1.5×   (1920–2559px)
-##   XLARGE — 2.0×   (≥ 2560px, 4K / QHD)
+##   XLARGE — 2.0×   (≥ 2560px)
 ##
-## Użycie w skrypcie UI:
-##   func _ready():
-##       UIScaleManager.scale_changed.connect(_on_scale_changed)
-##       _on_scale_changed(UIScaleManager.scale_factor)
+## API:
+##   UIScaleManager.px(base)        — int, przelicza rozmiar czcionki
+##   UIScaleManager.sz(base)        — float, przelicza pojedynczy wymiar
+##   UIScaleManager.sz2(w, h)       — Vector2, przelicza rozmiar 2D
+##   UIScaleManager.scale_changed   — sygnał emitowany przy zmianie trybu
 ##
-##   func _on_scale_changed(s: float) -> void:
-##       $Label.add_theme_font_size_override("font_size", UIScaleManager.px(32))
+## Użycie w _ready():
+##   UIScaleManager.scale_changed.connect(_on_scale_changed)
+##   _on_scale_changed(UIScaleManager.scale_factor)
 
 enum ScaleMode { SMALL, NORMAL, LARGE, XLARGE }
 
@@ -37,17 +39,14 @@ const SCALE_LABELS : Dictionary = {
 
 const SAVE_KEY := "ui_scale_mode"
 
-## Aktualny tryb skalowania
 var current_mode : ScaleMode = ScaleMode.NORMAL :
 	set(value):
 		current_mode = value
 		scale_factor = SCALE_VALUES[value]
 		scale_changed.emit(scale_factor)
 
-## Aktualny współczynnik (tylko do odczytu z zewnątrz)
 var scale_factor : float = 1.0
 
-## Emitowany przy każdej zmianie trybu
 signal scale_changed(new_scale: float)
 
 
@@ -61,7 +60,7 @@ func set_mode(mode: ScaleMode) -> void:
 	_save()
 
 
-## Zwraca listę etykiet wszystkich trybów (do OptionButton w opcjach).
+## Zwraca listę etykiet wszystkich trybów (do OptionButton).
 func get_mode_labels() -> Array[String]:
 	return [
 		SCALE_LABELS[ScaleMode.SMALL],
@@ -71,9 +70,19 @@ func get_mode_labels() -> Array[String]:
 	]
 
 
-## Przelicza wartość pikselową z bazy 1080p na aktualny tryb skalowania.
+## Przelicza rozmiar czcionki z bazy 1080p.
 func px(base_pixels: float) -> int:
 	return roundi(base_pixels * scale_factor)
+
+
+## Przelicza pojedynczy wymiar (margin, separation itp.).
+func sz(base: float) -> float:
+	return base * scale_factor
+
+
+## Przelicza rozmiar 2D (custom_minimum_size, offset itp.).
+func sz2(w: float, h: float) -> Vector2:
+	return Vector2(w, h) * scale_factor
 
 
 # ---------------------------------------------------------------------------
@@ -93,15 +102,18 @@ func _load_saved() -> void:
 		if saved >= 0 and saved <= ScaleMode.XLARGE:
 			current_mode = saved as ScaleMode
 			return
-	# Brak zapisu — dobierz tryb automatycznie
+	# Brak zapisu — dobierz tryb na podstawie wybranej rozdzielczości
 	current_mode = _detect_mode()
 
 
-## Wykrywa tryb na podstawie szerokości aktualnego ekranu.
-## Używa monitora głównego (primary screen).
+## Dobiera tryb na podstawie szerokości rozdzielczości z SettingsManager.
+## Fallback: rozmiar aktualnego okna (gdy SettingsManager jeszcze nie gotowy).
 func _detect_mode() -> ScaleMode:
-	var w : int = DisplayServer.screen_get_size(
-			DisplayServer.get_primary_screen()).x
+	var w : int = 0
+	if Engine.has_singleton("SettingsManager"):
+		w = SettingsManager.resolution.x
+	if w <= 0:
+		w = DisplayServer.window_get_size().x
 	if   w >= 2560: return ScaleMode.XLARGE
 	elif w >= 1920: return ScaleMode.LARGE
 	elif w >= 1280: return ScaleMode.NORMAL
