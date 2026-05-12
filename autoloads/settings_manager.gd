@@ -11,6 +11,9 @@ var window_mode_idx : int      = 0
 var resolution      : Vector2i = Vector2i(1280, 720)
 var monitor_idx     : int      = 0
 
+## Emitowany po każdej zmianie rozdzielczości (także przy starcie).
+signal resolution_changed(new_resolution: Vector2i)
+
 
 func _ready() -> void:
 	_load()
@@ -23,6 +26,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
+	var prev_res := resolution
 	window_mode_idx = mode_idx
 	resolution      = res
 	monitor_idx     = clampi(screen, 0, DisplayServer.get_screen_count() - 1)
@@ -49,12 +53,13 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_size(res)
-			# Przesuń na środek docelowego monitora zanim włączysz fullscreen
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - res) / 2
 			)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 	_save()
+	if res != prev_res:
+		resolution_changed.emit(resolution)
 
 
 func get_available_resolutions() -> Array[Vector2i]:
