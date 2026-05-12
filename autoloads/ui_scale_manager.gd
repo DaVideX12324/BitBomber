@@ -117,9 +117,9 @@ func sz2(w: float, h: float) -> Vector2:
 # ---------------------------------------------------------------------------
 
 func load_from_cfg(cfg: ConfigFile) -> void:
-	var is_auto : bool = cfg.get_value("ui", "ui_scale_auto", true)
+	var is_auto : bool = cfg.get_value("display", "ui_scale_auto", true)
 	if not is_auto:
-		var saved : int = cfg.get_value("ui", "ui_scale_mode", -1)
+		var saved : int = cfg.get_value("display", "ui_scale_mode", -1)
 		if saved >= ScaleMode.XSMALL and saved <= ScaleMode.XLARGE:
 			_user_picked = true
 			current_mode = _clamp_mode_to_screen(saved as ScaleMode)
@@ -129,8 +129,8 @@ func load_from_cfg(cfg: ConfigFile) -> void:
 
 
 func save_to_cfg(cfg: ConfigFile) -> void:
-	cfg.set_value("ui", "ui_scale_mode", current_mode)
-	cfg.set_value("ui", "ui_scale_auto", not _user_picked)
+	cfg.set_value("display", "ui_scale_mode", current_mode)
+	cfg.set_value("display", "ui_scale_auto", not _user_picked)
 
 
 # ---------------------------------------------------------------------------
