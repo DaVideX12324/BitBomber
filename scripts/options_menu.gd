@@ -27,7 +27,6 @@ extends CanvasLayer
 
 const CONFIRM_TIMEOUT := 20.0
 
-# Bazowe wymiary z .tscn (NORMAL = 1×)
 const BASE_PANEL_HALF_W    := 280.0
 const BASE_PANEL_HALF_H    := 340.0
 const BASE_CONFIRM_HALF_W  := 220.0
@@ -39,15 +38,17 @@ const BASE_BTN_CONFIRM_SIZE := Vector2(140.0, 40.0)
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
 
-# Aktualnie zaznaczony w UI (jeszcze nie zastosowany)
-var _sel_mode    : int                      = 0
-var _sel_scale   : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
+var _sel_mode  : int                      = 0
+var _sel_scale : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
 
-# Snapshot stanu sprzed kliknięcia Zastosuj — używany przez Anuluj
+## true tylko gdy gracz ręcznie zmienił dropdown skali w tej sesji otwarcia panelu
+var _scale_manually_changed : bool = false
+
 var _prev_mode    : int                      = 0
 var _prev_res     : Vector2i                 = Vector2i(1280, 720)
 var _prev_monitor : int                      = 0
 var _prev_scale   : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
+var _prev_scale_user_picked : bool           = false
 
 var _countdown  : float = 0.0
 var _confirming : bool  = false
@@ -145,16 +146,15 @@ func _on_scale_changed(_s: float) -> void:
 # Otwieranie / zamykanie
 # ---------------------------------------------------------------------------
 
-## Zapisuje aktualny stan jako snapshot i otwiera panel.
 func open() -> void:
-	# Snapshot — będzie używany przez Anuluj
-	_prev_mode    = SettingsManager.window_mode_idx
-	_prev_res     = SettingsManager.resolution
-	_prev_monitor = SettingsManager.monitor_idx
-	_prev_scale   = UIScaleManager.current_mode
-	# Wypełnij UI aktualnym stanem
-	_sel_mode  = _prev_mode
-	_sel_scale = _prev_scale
+	_prev_mode              = SettingsManager.window_mode_idx
+	_prev_res               = SettingsManager.resolution
+	_prev_monitor           = SettingsManager.monitor_idx
+	_prev_scale             = UIScaleManager.current_mode
+	_prev_scale_user_picked = UIScaleManager._user_picked
+	_sel_mode               = _prev_mode
+	_sel_scale              = _prev_scale
+	_scale_manually_changed = false
 	_sync_mode_buttons()
 	_monitor_option.selected = _prev_monitor
 	_populate_resolutions(_prev_monitor)
@@ -167,9 +167,6 @@ func _on_close() -> void:
 	if _confirming:
 		_on_revert()
 	else:
-		# Zamknięcie bez Zastosuj — przywróć skalę jeśli została zmieniona w UI
-		if UIScaleManager.current_mode != _prev_scale:
-			UIScaleManager.set_mode(_prev_scale)
 		hide()
 
 
@@ -246,9 +243,9 @@ func _populate_scale() -> void:
 	_scale_option.item_selected.connect(_on_scale_item_selected)
 
 
-## Zmiana w dropdownie — tylko zapamiętaj wybór, nie aplikuj jeszcze.
 func _on_scale_item_selected(idx: int) -> void:
 	_sel_scale = idx as UIScaleManager.ScaleMode
+	_scale_manually_changed = true
 
 
 # ---------------------------------------------------------------------------
@@ -276,7 +273,14 @@ func _on_apply() -> void:
 		res = _resolutions[res_idx]
 	var screen := _monitor_option.selected
 	SettingsManager.apply_settings(_sel_mode, res, screen)
-	UIScaleManager.set_mode(_sel_scale)
+	if _scale_manually_changed:
+		# Gracz świadomie wybrali tryb skali — zapisz i zablokuj auto
+		UIScaleManager.set_mode(_sel_scale)
+	else:
+		# Gracz nie ruszył dropdownu skali — zachowaj auto-detekcję
+		if not _prev_scale_user_picked:
+			UIScaleManager.reset_to_auto()
+		# jeśli był _user_picked=true przed otwarciem — nic nie zmieniaj
 	_start_confirm()
 
 
@@ -296,8 +300,12 @@ func _on_confirm() -> void:
 func _on_revert() -> void:
 	_confirming = false
 	_confirm_popup.visible = false
+	_scale_manually_changed = false
 	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
-	UIScaleManager.set_mode(_prev_scale)
+	if _prev_scale_user_picked:
+		UIScaleManager.set_mode(_prev_scale)
+	else:
+		UIScaleManager.reset_to_auto()
 	_sel_mode  = _prev_mode
 	_sel_scale = _prev_scale
 	_sync_mode_buttons()
