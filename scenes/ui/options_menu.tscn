@@ -25,9 +25,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -280.0
-offset_top = -300.0
+offset_top = -340.0
 offset_right = 280.0
-offset_bottom = 300.0
+offset_bottom = 340.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -117,6 +117,20 @@ horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="Sep3" type="HSeparator" parent="Panel/VBox" unique_id=354985676]
+layout_mode = 2
+
+[node name="ScaleLabel" type="Label" parent="Panel/VBox" unique_id=500000101]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "Skalowanie interfejsu:"
+
+[node name="ScaleOption" type="OptionButton" parent="Panel/VBox" unique_id=500000102]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="Sep4" type="HSeparator" parent="Panel/VBox" unique_id=500000103]
 layout_mode = 2
 
 [node name="HBoxButtons" type="HBoxContainer" parent="Panel/VBox" unique_id=2068552211]
