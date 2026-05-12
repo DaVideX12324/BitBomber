@@ -10,7 +10,6 @@ extends CanvasLayer
 @onready var _monitor_option : OptionButton = $Panel/VBox/MonitorOption
 @onready var _btn_apply      : Button       = $Panel/VBox/HBoxButtons/BtnApply
 @onready var _btn_close      : Button       = $Panel/VBox/HBoxButtons/BtnClose
-@onready var _panel          : PanelContainer = $Panel
 
 @onready var _confirm_popup  : PanelContainer = $ConfirmPopup
 @onready var _lbl_countdown  : Label          = $ConfirmPopup/VBoxConfirm/LblCountdown
@@ -45,8 +44,6 @@ func _ready() -> void:
 	_populate_monitors()
 	_monitor_option.item_selected.connect(_on_monitor_changed)
 	_populate_resolutions(_monitor_option.selected)
-	UIScaleManager.scale_changed.connect(_on_scale_changed)
-	_on_scale_changed(UIScaleManager.scale_factor)
 
 
 func _process(delta: float) -> void:
@@ -68,27 +65,6 @@ func _input(event: InputEvent) -> void:
 		else:
 			_on_close()
 		get_viewport().set_input_as_handled()
-
-
-# ---------------------------------------------------------------------------
-# Skalowanie UI
-# ---------------------------------------------------------------------------
-
-func _on_scale_changed(_s: float) -> void:
-	var fs_label  := UIScaleManager.px(20)
-	var fs_button := UIScaleManager.px(18)
-	for node in [$Panel/VBox/LblTitle] if has_node("Panel/VBox/LblTitle") else []:
-		(node as Label).add_theme_font_size_override("font_size", UIScaleManager.px(26))
-	for btn in _mode_btns:
-		btn.add_theme_font_size_override("font_size", fs_button)
-	_res_option.add_theme_font_size_override("font_size", fs_label)
-	_monitor_option.add_theme_font_size_override("font_size", fs_label)
-	_btn_apply.add_theme_font_size_override("font_size", fs_button)
-	_btn_close.add_theme_font_size_override("font_size", fs_button)
-	_btn_confirm.add_theme_font_size_override("font_size", fs_button)
-	_btn_revert.add_theme_font_size_override("font_size", fs_button)
-	_lbl_countdown.add_theme_font_size_override("font_size", fs_label)
-	_panel.custom_minimum_size = Vector2(UIScaleManager.px(560), UIScaleManager.px(400))
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +123,7 @@ func _populate_monitors() -> void:
 
 func _on_monitor_changed(idx: int) -> void:
 	_populate_resolutions(idx)
+	# Ustaw domyślnie natywną rozdzielczość wybranego monitora
 	_res_option.selected = _resolutions.size() - 1
 
 
@@ -155,6 +132,7 @@ func _on_monitor_changed(idx: int) -> void:
 # ---------------------------------------------------------------------------
 
 func _populate_resolutions(screen: int) -> void:
+	# Tymczasowo podstaw monitor_idx w SettingsManager żeby get_available_resolutions() działało poprawnie
 	var saved_idx := SettingsManager.monitor_idx
 	SettingsManager.monitor_idx = screen
 	_resolutions = SettingsManager.get_available_resolutions()
