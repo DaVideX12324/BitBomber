@@ -4,7 +4,6 @@
 
 [node name="OptionsMenu" type="CanvasLayer" unique_id=1606057796]
 layer = 25
-visible = false
 script = ExtResource("1")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=1136623010]
@@ -33,6 +32,7 @@ grow_vertical = 2
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=451313730]
 layout_mode = 2
 theme_override_constants/separation = 14
+alignment = 1
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=1907369375]
 layout_mode = 2
