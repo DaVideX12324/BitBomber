@@ -1,104 +1,37 @@
 extends CanvasLayer
 
-## HUD — UI zdefiniowane w hud.tscn, skrypt tylko wypełnia dane.
-##
-## Publiczne API:
-##   hud.setup_players(player_list: Array)
-##     player_list = [{ "id":1, "is_bot":false }, ...]
-##   hud.update_lives(pid, lives_left)
-##   hud.update_player(pid, bombs, bomb_range, speed)
-##   hud.update_round(round_num)
-##   hud.show_message(text, duration)
+@onready var _lbl_p1_bombs  : Label = $HBoxHUD/P1Info/LblBombs
+@onready var _lbl_p1_range  : Label = $HBoxHUD/P1Info/LblRange
+@onready var _lbl_p1_lives  : Label = $HBoxHUD/P1Info/LblLives
+@onready var _lbl_p2_bombs  : Label = $HBoxHUD/P2Info/LblBombs
+@onready var _lbl_p2_range  : Label = $HBoxHUD/P2Info/LblRange
+@onready var _lbl_p2_lives  : Label = $HBoxHUD/P2Info/LblLives
+@onready var _lbl_round     : Label = $HBoxHUD/LblRound
 
-const PLAYER_COLORS: Array[Color] = [
-	Color(0.18, 0.45, 0.85),
-	Color(0.88, 0.25, 0.55),
-	Color(0.20, 0.65, 0.25),
-	Color(0.55, 0.82, 0.20),
-]
-
-@onready var _cards_nodes: Array[Control] = [
-	$Root/Cards/Card1,
-	$Root/Cards/Card2,
-	$Root/Cards/Card3,
-	$Root/Cards/Card4,
-]
-@onready var _round_label : Label = $Root/RoundPanel/RoundLabel
-@onready var _toast       : Label = $Root/ToastLabel
-@onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
 
 func _ready() -> void:
-	GameManager.state_changed.connect(_on_state_changed)
-	for card: Control in _cards_nodes:
-		card.visible = false
-	_round_panel.visible = false
-	visible = false # Zabezpieczenie: cały HUD jest ukryty na starcie
-	$"Root/Cards".alignment = BoxContainer.ALIGNMENT_CENTER
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
 
 
-# ---------------------------------------------------------------------------
-# Publiczne API
-# ---------------------------------------------------------------------------
-
-func setup_players(player_list: Array) -> void:
-	_round_panel.visible = true # Dodaj tę linijkę!
-	for card: Control in _cards_nodes:
-		card.visible = false
-
-	for entry: Dictionary in player_list:
-		var pid: int = int(entry["id"])
-		var idx: int = pid - 1
-		if idx < 0 or idx >= _cards_nodes.size():
-			continue
-		var card: Control = _cards_nodes[idx]
-		card.visible = true
-		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
-		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
-		(card.get_node("VBox/Header/Title") as Label).text = "Gracz %d" % pid
+func _on_scale_changed(_s: float) -> void:
+	var fs := UIScaleManager.px(24)
+	for lbl in [_lbl_p1_bombs, _lbl_p1_range, _lbl_p1_lives,
+				_lbl_p2_bombs, _lbl_p2_range, _lbl_p2_lives, _lbl_round]:
+		if is_instance_valid(lbl):
+			lbl.add_theme_font_size_override("font_size", fs)
 
 
-## Aktualizuje serca gracza — format: "❤️:N"
-func update_lives(pid: int, lives_left: int) -> void:
-	var card: Control = _get_card(pid)
-	if not card:
-		return
-	(card.get_node("VBox/HeartsLabel") as Label).text = "\u2764\ufe0f:%d" % lives_left
+func update_player(player_idx: int, bombs: int, range_val: int, lives: int) -> void:
+	if player_idx == 0:
+		_lbl_p1_bombs.text = "Bomby: %d" % bombs
+		_lbl_p1_range.text = "Zasięg: %d" % range_val
+		_lbl_p1_lives.text = "Życia: %d" % lives
+	else:
+		_lbl_p2_bombs.text = "Bomby: %d" % bombs
+		_lbl_p2_range.text = "Zasięg: %d" % range_val
+		_lbl_p2_lives.text = "Życia: %d" % lives
 
 
-## Aktualizuje statystyki gracza pid.
-func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
-	var card: Control = _get_card(pid)
-	if not card:
-		return
-	var speed_level := int((speed - 1.0) / 50.0) + 1
-	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"\uD83D\uDCA3:%d\n\uD83C\uDFAF:%d\n\u26A1:%d\n" % [bombs, bomb_range, speed_level]
-
-
-## Aktualizuje numer rundy.
 func update_round(round_num: int) -> void:
-	_round_label.text = "Runda %d" % round_num
-
-
-## Wyświetla toast pośrodku ekranu.
-func show_message(msg: String, duration: float = 2.0) -> void:
-	_toast.text = msg
-	_toast.modulate.a = 1.0
-	var tw: Tween = create_tween()
-	tw.tween_interval(maxf(duration - 0.5, 0.1))
-	tw.tween_property(_toast, "modulate:a", 0.0, 0.5)
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-func _get_card(pid: int) -> Control:
-	var idx: int = pid - 1
-	if idx < 0 or idx >= _cards_nodes.size():
-		return null
-	return _cards_nodes[idx]
-
-
-func _on_state_changed(_old: GameManager.GameState, new_state: GameManager.GameState) -> void:
-	visible = new_state == GameManager.GameState.PLAYING
+	_lbl_round.text = "Runda %d" % round_num
