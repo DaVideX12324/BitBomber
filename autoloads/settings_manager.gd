@@ -1,6 +1,7 @@
 extends Node
 
 ## Autoload: wczytuje i zapisuje ustawienia wyświetlania.
+## Jedyny właściciel pliku user://settings.cfg.
 ## Ścieżka: user://settings.cfg
 
 const CONFIG_PATH := "user://settings.cfg"
@@ -119,24 +120,24 @@ func get_available_resolutions() -> Array[Vector2i]:
 
 
 # ---------------------------------------------------------------------------
-# Prywatne
+# Prywatne — jedyny punkt zapisu/odczytu settings.cfg
 # ---------------------------------------------------------------------------
 
 func _save() -> void:
 	var cfg := ConfigFile.new()
-	cfg.load(CONFIG_PATH)  # ← to dodaj — wczytaj istniejące klucze przed zapisem
+	cfg.load(CONFIG_PATH)  # zachowaj klucze innych sekcji
 	cfg.set_value(SEC, "window_mode_idx", window_mode_idx)
-	cfg.set_value(SEC, "resolution_x", resolution.x)
-	cfg.set_value(SEC, "resolution_y", resolution.y)
-	cfg.set_value(SEC, "monitor_idx", monitor_idx)
+	cfg.set_value(SEC, "resolution_x",   resolution.x)
+	cfg.set_value(SEC, "resolution_y",   resolution.y)
+	cfg.set_value(SEC, "monitor_idx",    monitor_idx)
+	UIScaleManager.save_to_cfg(cfg)
 	cfg.save(CONFIG_PATH)
 
 
 func _load() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(CONFIG_PATH) != OK:
-		# Brak pliku konfiguracyjnego — pierwsze uruchomienie.
-		# Użyj natywnej rozdzielczości monitora i fullscreenu.
+		# Pierwsze uruchomienie — użyj natywnej rozdzielczości i fullscreenu.
 		var native := DisplayServer.screen_get_size(0)
 		resolution      = native
 		window_mode_idx = 2
@@ -146,3 +147,4 @@ func _load() -> void:
 	var ry : int = cfg.get_value(SEC, "resolution_y", DisplayServer.screen_get_size(0).y)
 	resolution  = Vector2i(rx, ry)
 	monitor_idx = cfg.get_value(SEC, "monitor_idx", 0)
+	UIScaleManager.load_from_cfg(cfg)

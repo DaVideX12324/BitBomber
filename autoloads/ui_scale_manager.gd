@@ -6,20 +6,27 @@ extends Node
 ## Tryb domyślny jest dobierany automatycznie na podstawie wybranej
 ## rozdzielczości (SettingsManager.resolution). Gdy gracz zmieni
 ## rozdzielczość i NIE ma ręcznego wyboru skali, skala aktualizuje się
-## automatycznie. Jeśli gracz sam wybrał tryb — jego wybór zostaje.
+## automatycznie. Jeśli gracz sam wybrał tryb — jego wybór zostaje,
+## ale jest przycinany w dół jeśli ekran jest za mały.
 ##
-## Progi (szerokość rozdzielczości):
-##   SMALL  — 0.75×  (< 1280px)
-##   NORMAL — 1.0×   (1280–1919px)
-##   LARGE  — 1.5×   (1920–2559px)
-##   XLARGE — 2.0×   (≥ 2560px)
+## Zapis/odczyt delegowany do SettingsManager — ten plik nie dotyka settings.cfg.
+##
+## Progi (wysokość rozdzielczości):
+##   XSMALL — 0.50×  (≤ 720px)
+##   SMALL  — 0.75×  (≤ 900px)
+##   NORMAL — 1.0×   (≤ 1080px)
+##   LARGE  — 1.5×   (≤ 2159px)
+##   XLARGE — 2.0×   (≥ 2160px)
 ##
 ## API:
-##   UIScaleManager.px(base)      — int, przelicza rozmiar czcionki
-##   UIScaleManager.sz(base)      — float, przelicza pojedynczy wymiar
-##   UIScaleManager.sz2(w, h)     — Vector2, przelicza rozmiar 2D
-##   UIScaleManager.set_mode(m)   — ręczny wybór + zapis (blokuje auto)
-##   UIScaleManager.scale_changed — sygnał emitowany przy każdej zmianie
+##   UIScaleManager.px(base)           — int, przelicza rozmiar czcionki
+##   UIScaleManager.sz(base)           — float, przelicza pojedynczy wymiar
+##   UIScaleManager.sz2(w, h)          — Vector2, przelicza rozmiar 2D
+##   UIScaleManager.set_mode(m)        — ręczny wybór (blokuje auto)
+##   UIScaleManager.reset_to_auto()    — powrót do auto-detekcji
+##   UIScaleManager.load_from_cfg(cfg) — wywoływane przez SettingsManager
+##   UIScaleManager.save_to_cfg(cfg)   — wywoływane przez SettingsManager
+##   UIScaleManager.scale_changed      — sygnał emitowany przy każdej zmianie
 
 enum ScaleMode { XSMALL, SMALL, NORMAL, LARGE, XLARGE }
 
@@ -32,14 +39,20 @@ const SCALE_VALUES : Dictionary = {
 }
 
 const SCALE_LABELS : Dictionary = {
-	ScaleMode.XSMALL:  "B. Małe (0.5×)",
+	ScaleMode.XSMALL: "B. Małe (0.5×)",
 	ScaleMode.SMALL:  "Małe (0.75×)",
 	ScaleMode.NORMAL: "Normalne (1×)",
 	ScaleMode.LARGE:  "Duże (1.5×)",
 	ScaleMode.XLARGE: "4K (2×)",
 }
 
-const SAVE_KEY := "ui_scale_mode"
+const MIN_SCREEN_H : Dictionary = {
+	ScaleMode.XLARGE: 2160,
+	ScaleMode.LARGE:  1081,
+	ScaleMode.NORMAL:  901,
+	ScaleMode.SMALL:   721,
+	ScaleMode.XSMALL:    0,
+}
 
 var current_mode : ScaleMode = ScaleMode.NORMAL :
 	set(value):
@@ -56,8 +69,7 @@ signal scale_changed(new_scale: float)
 
 
 func _ready() -> void:
-	_load_saved()
-	# Po załadowaniu ustawień podłącz się do sygnału rozdzielczości
+	# Dane wczytuje SettingsManager — tutaj tylko podłączamy sygnał.
 	SettingsManager.resolution_changed.connect(_on_resolution_changed)
 
 
@@ -65,36 +77,16 @@ func _ready() -> void:
 # Publiczne API
 # ---------------------------------------------------------------------------
 
-## Ręczny wybór trybu przez gracza — blokuje auto-detekcję i zapisuje.
+## Ręczny wybór trybu przez gracza — blokuje auto-detekcję.
+## SettingsManager zadba o zapis przy najbliższym apply_settings().
 func set_mode(mode: ScaleMode) -> void:
 	_user_picked = true
-	current_mode = _clamp_mode_to_screen(mode)  # ← clamp
-	_save()
-	
-func _clamp_mode_to_screen(mode: ScaleMode) -> ScaleMode:
-	var screen_h := SettingsManager.resolution.y
-	if screen_h <= 0:
-		screen_h = DisplayServer.screen_get_size(0).y
-	# Progi minimalne wysokości ekranu per tryb
-	# (bazowa wysokość HUD w NORMAL to ~826px, więc np. LARGE wymaga min ~900px)
-	const MIN_HEIGHT : Dictionary = {
-		ScaleMode.XLARGE: 2160,
-		ScaleMode.LARGE:  1081,
-		ScaleMode.NORMAL: 901,
-		ScaleMode.SMALL:  721,
-		ScaleMode.XSMALL: 0,
-	}
-	while mode > ScaleMode.SMALL and screen_h < MIN_HEIGHT[mode]:
-		mode -= 1
-	return mode
-	
+	current_mode = _clamp_mode_to_screen(mode)
 
 
-
-## Czyści ręczny wybór — od tej pory skala zmienia się wraz z rozdzielczością.
+## Powrót do auto-detekcji na podstawie rozdzielczości.
 func reset_to_auto() -> void:
 	_user_picked = false
-	_save_user_picked()
 	current_mode = _detect_mode()
 
 
@@ -121,17 +113,39 @@ func sz2(w: float, h: float) -> Vector2:
 
 
 # ---------------------------------------------------------------------------
+# I/O delegowane do SettingsManager
+# ---------------------------------------------------------------------------
+
+func load_from_cfg(cfg: ConfigFile) -> void:
+	var is_auto : bool = cfg.get_value("ui", "ui_scale_auto", true)
+	if not is_auto:
+		var saved : int = cfg.get_value("ui", "ui_scale_mode", -1)
+		if saved >= ScaleMode.XSMALL and saved <= ScaleMode.XLARGE:
+			_user_picked = true
+			current_mode = _clamp_mode_to_screen(saved as ScaleMode)
+			return
+	_user_picked = false
+	current_mode = _detect_mode()
+
+
+func save_to_cfg(cfg: ConfigFile) -> void:
+	cfg.set_value("ui", "ui_scale_mode", current_mode)
+	cfg.set_value("ui", "ui_scale_auto", not _user_picked)
+
+
+# ---------------------------------------------------------------------------
 # Reakcja na zmianę rozdzielczości
 # ---------------------------------------------------------------------------
 
 func _on_resolution_changed(_new_res: Vector2i) -> void:
 	if _user_picked:
-		return  # gracz ma ręczny wybór — nie nadpisuj
-	current_mode = _clamp_mode_to_screen(current_mode)
+		current_mode = _clamp_mode_to_screen(current_mode)
+		return
+	current_mode = _detect_mode()
 
 
 # ---------------------------------------------------------------------------
-# Detekcja na podstawie wybranej rozdzielczości
+# Detekcja i clamp
 # ---------------------------------------------------------------------------
 
 func _detect_mode() -> ScaleMode:
@@ -139,39 +153,16 @@ func _detect_mode() -> ScaleMode:
 	if y <= 0:
 		y = DisplayServer.window_get_size().y
 	if   y >= 2160: return ScaleMode.XLARGE
-	elif y > 1080: return ScaleMode.LARGE
-	elif y > 900: return ScaleMode.NORMAL
-	elif y > 720: return ScaleMode.SMALL
+	elif y > 1080:  return ScaleMode.LARGE
+	elif y > 900:   return ScaleMode.NORMAL
+	elif y > 720:   return ScaleMode.SMALL
 	else:           return ScaleMode.XSMALL
 
 
-# ---------------------------------------------------------------------------
-# Zapis / odczyt
-# ---------------------------------------------------------------------------
-
-func _save() -> void:
-	var cfg := ConfigFile.new()
-	cfg.load("user://settings.cfg")  # zachowaj istniejące klucze
-	cfg.set_value("ui", SAVE_KEY, current_mode)
-	cfg.set_value("ui", "ui_scale_auto", not _user_picked)
-	cfg.save("user://settings.cfg")
-
-
-func _save_user_picked() -> void:
-	var cfg := ConfigFile.new()
-	cfg.load("user://settings.cfg")
-	cfg.set_value("ui", "ui_scale_auto", true)
-	cfg.save("user://settings.cfg")
-
-
-func _load_saved() -> void:
-	var cfg := ConfigFile.new()
-	if cfg.load("user://settings.cfg") == OK:
-		var is_auto : bool = cfg.get_value("ui", "ui_scale_auto", true)
-		if not is_auto:
-			var saved : int = cfg.get_value("ui", SAVE_KEY, -1)
-			if saved >= 0 and saved <= ScaleMode.XLARGE:
-				_user_picked = true
-				current_mode = saved as ScaleMode
-				return
-			current_mode = _clamp_mode_to_screen(saved as ScaleMode)
+func _clamp_mode_to_screen(mode: ScaleMode) -> ScaleMode:
+	var h : int = SettingsManager.resolution.y
+	if h <= 0:
+		h = DisplayServer.window_get_size().y
+	while mode > ScaleMode.XSMALL and h < MIN_SCREEN_H[mode]:
+		mode = (mode - 1) as ScaleMode
+	return mode
