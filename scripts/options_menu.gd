@@ -121,11 +121,8 @@ func _input(event: InputEvent) -> void:
 
 func _on_scale_changed(_s: float) -> void:
 	var main_size := UIScaleManager.px(18)
-	# Tytuł
 	_title_label.add_theme_font_size_override("font_size", UIScaleManager.px(26))
-	# Zakładki TabContainer — napis na samych zakładkach
 	_tabs.add_theme_font_size_override("font_size", UIScaleManager.px(17))
-	# Ekran
 	_mode_label.add_theme_font_size_override("font_size",    main_size)
 	_monitor_label.add_theme_font_size_override("font_size", main_size)
 	_res_label.add_theme_font_size_override("font_size",     main_size)
@@ -134,26 +131,22 @@ func _on_scale_changed(_s: float) -> void:
 	_monitor_option.add_theme_font_size_override("font_size", main_size)
 	_res_option.add_theme_font_size_override("font_size",     main_size)
 	_scale_option.add_theme_font_size_override("font_size",   main_size)
-	# Dropdown (PopupMenu) każdego OptionButton
 	_scale_popup_font(_monitor_option, main_size)
 	_scale_popup_font(_res_option,     main_size)
 	_scale_popup_font(_scale_option,   main_size)
-	# Dźwięk
 	_lbl_master.add_theme_font_size_override("font_size", main_size)
 	_lbl_music.add_theme_font_size_override("font_size",  main_size)
 	_lbl_sfx.add_theme_font_size_override("font_size",    main_size)
-	# Sterowanie
 	_lbl_info.add_theme_font_size_override("font_size", UIScaleManager.px(14))
 	for child in _binds_list.get_children():
 		if child is Label:
 			(child as Label).add_theme_font_size_override("font_size", UIScaleManager.px(14))
-	# Przyciski akcji
-	_btn_apply.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
-	_btn_close.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
-	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(18))
-	_lbl_countdown.add_theme_font_size_override("font_size",UIScaleManager.px(22))
-	_btn_confirm.add_theme_font_size_override("font_size",  UIScaleManager.px(20))
-	_btn_revert.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
+	_btn_apply.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
+	_btn_close.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
+	_lbl_question.add_theme_font_size_override("font_size",  UIScaleManager.px(18))
+	_lbl_countdown.add_theme_font_size_override("font_size", UIScaleManager.px(22))
+	_btn_confirm.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
+	_btn_revert.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
 	var fs_mode := UIScaleManager.px(15)
 	for btn in _mode_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
@@ -171,15 +164,14 @@ func _on_scale_changed(_s: float) -> void:
 	_confirm_popup.offset_left   = -ch ; _confirm_popup.offset_top    = -cv
 	_confirm_popup.offset_right  =  ch ; _confirm_popup.offset_bottom =  cv
 	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
-	_margin.add_theme_constant_override("margin_left", pad)
-	_margin.add_theme_constant_override("margin_top", pad)
-	_margin.add_theme_constant_override("margin_right", pad)
+	_margin.add_theme_constant_override("margin_left",   pad)
+	_margin.add_theme_constant_override("margin_top",    pad)
+	_margin.add_theme_constant_override("margin_right",  pad)
 	_margin.add_theme_constant_override("margin_bottom", pad)
 
-## Ustawia rozmiar czcionki w rozwijanym PopupMenu OptionButtona.
+
 func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
-	var popup := opt.get_popup()
-	popup.add_theme_font_size_override("font_size", font_size)
+	opt.get_popup().add_theme_font_size_override("font_size", font_size)
 
 
 # ---------------------------------------------------------------------------
@@ -366,12 +358,13 @@ func _on_apply() -> void:
 	var res     := SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
-	SettingsManager.apply_settings(_sel_mode, res, _monitor_option.selected)
+	# Najpierw ustaw skalową — apply_settings wywoła _save() który już zapisze aktualny stan.
 	if _scale_manually_changed:
 		UIScaleManager.set_mode(_sel_scale)
 	else:
 		if not _prev_scale_user_picked:
 			UIScaleManager.reset_to_auto()
+	SettingsManager.apply_settings(_sel_mode, res, _monitor_option.selected)
 	_start_confirm()
 
 
@@ -392,11 +385,12 @@ func _on_revert() -> void:
 	_confirming = false
 	_confirm_popup.visible = false
 	_scale_manually_changed = false
-	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
+	# Najpierw przywróć skalę — apply_settings zapisze wszystko razem.
 	if _prev_scale_user_picked:
 		UIScaleManager.set_mode(_prev_scale)
 	else:
 		UIScaleManager.reset_to_auto()
+	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
 	_sel_mode  = _prev_mode
 	_sel_scale = _prev_scale
 	_sync_mode_buttons()

@@ -17,7 +17,6 @@ signal resolution_changed(new_resolution: Vector2i)
 
 func _ready() -> void:
 	var cfg := _load()
-	# UIScaleManager jest pod nami w kolejności autoloadów — już istnieje.
 	UIScaleManager.load_from_cfg(cfg)
 	resolution_changed.connect(UIScaleManager.on_resolution_changed)
 	monitor_idx = clampi(monitor_idx, 0, DisplayServer.get_screen_count() - 1)
@@ -37,7 +36,6 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 	var screen_pos  := DisplayServer.screen_get_position(monitor_idx)
 	var screen_size := DisplayServer.screen_get_size(monitor_idx)
 
-	# Zawsze najpierw wróć do czystego trybu okienkowego z ramką.
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 
@@ -66,8 +64,7 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - clamped) / 2
 			)
-		2: # Pełny ekran — gra renderuje się w wybranej rozdzielczości,
-		   # Godot skaluje viewport do rozmiaru monitora.
+		2: # Pełny ekran
 			DisplayServer.window_set_size(res)
 			DisplayServer.window_set_position(
 				screen_pos + (screen_size - res) / 2
@@ -78,12 +75,6 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 	_save()
 	if res != prev_res:
 		resolution_changed.emit(resolution)
-
-
-## Zapisuje aktualny stan SettingsManager + UIScaleManager do pliku.
-## Wywołuj z options_menu po zmianie skali UI.
-func save() -> void:
-	_save()
 
 
 # ---------------------------------------------------------------------------
@@ -143,11 +134,9 @@ func _save() -> void:
 	cfg.save(CONFIG_PATH)
 
 
-## Zwraca załadowany ConfigFile (lub pusty jeśli brak pliku).
 func _load() -> ConfigFile:
 	var cfg := ConfigFile.new()
 	if cfg.load(CONFIG_PATH) != OK:
-		# Pierwsze uruchomienie — użyj natywnej rozdzielczości i fullscreenu.
 		var native := DisplayServer.screen_get_size(0)
 		resolution      = native
 		window_mode_idx = 2
