@@ -243,7 +243,7 @@ text = "Instrukcja"
 [node name="BtnOptions" type="Button" parent="Center/Panel/Margin/VBox/HBoxMeta" unique_id=111111112]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "⚙ Opcje"
+text = "⚙ Ustawienia"
 
 [node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox" unique_id=196722966]
 custom_minimum_size = Vector2(0, 36)
