@@ -21,9 +21,10 @@ extends Node
 ##   UIScaleManager.set_mode(m)   — ręczny wybór + zapis (blokuje auto)
 ##   UIScaleManager.scale_changed — sygnał emitowany przy każdej zmianie
 
-enum ScaleMode { SMALL, NORMAL, LARGE, XLARGE }
+enum ScaleMode { XSMALL, SMALL, NORMAL, LARGE, XLARGE }
 
 const SCALE_VALUES : Dictionary = {
+	ScaleMode.XSMALL: 0.5,
 	ScaleMode.SMALL:  0.75,
 	ScaleMode.NORMAL: 1.0,
 	ScaleMode.LARGE:  1.5,
@@ -31,6 +32,7 @@ const SCALE_VALUES : Dictionary = {
 }
 
 const SCALE_LABELS : Dictionary = {
+	ScaleMode.XSMALL:  "B. Małe (0.5×)",
 	ScaleMode.SMALL:  "Małe (0.75×)",
 	ScaleMode.NORMAL: "Normalne (1×)",
 	ScaleMode.LARGE:  "Duże (1.5×)",
@@ -79,6 +81,7 @@ func reset_to_auto() -> void:
 
 func get_mode_labels() -> Array[String]:
 	return [
+		SCALE_LABELS[ScaleMode.XSMALL],
 		SCALE_LABELS[ScaleMode.SMALL],
 		SCALE_LABELS[ScaleMode.NORMAL],
 		SCALE_LABELS[ScaleMode.LARGE],
@@ -119,7 +122,8 @@ func _detect_mode() -> ScaleMode:
 	if   y >= 2160: return ScaleMode.XLARGE
 	elif y > 1080: return ScaleMode.LARGE
 	elif y > 900: return ScaleMode.NORMAL
-	else:           return ScaleMode.SMALL
+	elif y > 720: return ScaleMode.SMALL
+	else:           return ScaleMode.XSMALL
 
 
 # ---------------------------------------------------------------------------
