@@ -46,8 +46,8 @@ const SCALE_LABELS : Dictionary = {
 const MIN_SCREEN_H : Dictionary = {
 	ScaleMode.XLARGE: 2160,
 	ScaleMode.LARGE:  1081,
-	ScaleMode.NORMAL:  901,
-	ScaleMode.SMALL:   721,
+	ScaleMode.NORMAL:  900,
+	ScaleMode.SMALL:   720,
 	ScaleMode.XSMALL:    0,
 }
 
