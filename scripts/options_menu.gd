@@ -12,19 +12,29 @@ extends CanvasLayer
 @onready var _btn_close      : Button       = $Panel/VBox/HBoxButtons/BtnClose
 @onready var _scale_option   : OptionButton = $Panel/VBox/ScaleOption
 
+@onready var _panel          : PanelContainer = $Panel
+@onready var _title_label    : Label          = $Panel/VBox/Title
+@onready var _mode_label     : Label          = $Panel/VBox/ModeLabel
+@onready var _monitor_label  : Label          = $Panel/VBox/MonitorLabel
+@onready var _res_label      : Label          = $Panel/VBox/ResLabel
+@onready var _scale_label    : Label          = $Panel/VBox/ScaleLabel
+
 @onready var _confirm_popup  : PanelContainer = $ConfirmPopup
 @onready var _lbl_countdown  : Label          = $ConfirmPopup/VBoxConfirm/LblCountdown
+@onready var _lbl_question   : Label          = $ConfirmPopup/VBoxConfirm/LblQuestion
 @onready var _btn_confirm    : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnConfirm
 @onready var _btn_revert     : Button         = $ConfirmPopup/VBoxConfirm/HBoxConfirm/BtnRevert
 
-# Węzły potrzebne do skalowania czcionek (bazy z options_menu.tscn)
-@onready var _title_label    : Label = $Panel/VBox/Title
-@onready var _mode_label     : Label = $Panel/VBox/ModeLabel
-@onready var _monitor_label  : Label = $Panel/VBox/MonitorLabel
-@onready var _res_label      : Label = $Panel/VBox/ResLabel
-@onready var _scale_label    : Label = $Panel/VBox/ScaleLabel
-
 const CONFIRM_TIMEOUT := 20.0
+
+# Bazowe wymiary z .tscn (NORMAL = 1×)
+const BASE_PANEL_HALF_W  := 280.0
+const BASE_PANEL_HALF_H  := 340.0
+const BASE_CONFIRM_HALF_W := 220.0
+const BASE_CONFIRM_HALF_H := 100.0
+const BASE_BTN_MODE_SIZE  := Vector2(80.0, 36.0)
+const BASE_BTN_ACTION_SIZE := Vector2(130.0, 40.0)
+const BASE_BTN_CONFIRM_SIZE := Vector2(140.0, 40.0)
 
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
@@ -79,28 +89,54 @@ func _input(event: InputEvent) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Skalowanie czcionek
-# Bazy z options_menu.tscn (tryb NORMAL = 1×)
+# Skalowanie — czcionki + rozmiary elementów
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	_title_label.add_theme_font_size_override("font_size",   UIScaleManager.px(26))
-	_mode_label.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
-	_monitor_label.add_theme_font_size_override("font_size", UIScaleManager.px(16))
-	_res_label.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
-	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(12))
-	_scale_label.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
+	# Czcionki
+	_title_label.add_theme_font_size_override("font_size",    UIScaleManager.px(26))
+	_mode_label.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
+	_monitor_label.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
+	_res_label.add_theme_font_size_override("font_size",      UIScaleManager.px(16))
+	_res_note.add_theme_font_size_override("font_size",       UIScaleManager.px(12))
+	_scale_label.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
 	_monitor_option.add_theme_font_size_override("font_size", UIScaleManager.px(16))
-	_res_option.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
-	_scale_option.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
-	_btn_apply.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	_btn_close.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	var fs_mode := UIScaleManager.px(15)
-	for btn in _mode_btns:
-		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
+	_res_option.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
+	_scale_option.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
+	_btn_apply.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
+	_btn_close.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
+	_lbl_question.add_theme_font_size_override("font_size",   UIScaleManager.px(17))
 	_lbl_countdown.add_theme_font_size_override("font_size",  UIScaleManager.px(22))
 	_btn_confirm.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
 	_btn_revert.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
+	var fs_mode := UIScaleManager.px(15)
+	for btn in _mode_btns:
+		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
+	# Rozmiary przycisków
+	for btn in _mode_btns:
+		(btn as Button).custom_minimum_size = UIScaleManager.sz2(
+				BASE_BTN_MODE_SIZE.x, BASE_BTN_MODE_SIZE.y)
+	_btn_apply.custom_minimum_size = UIScaleManager.sz2(
+			BASE_BTN_ACTION_SIZE.x, BASE_BTN_ACTION_SIZE.y)
+	_btn_close.custom_minimum_size = UIScaleManager.sz2(
+			BASE_BTN_ACTION_SIZE.x, BASE_BTN_ACTION_SIZE.y)
+	_btn_confirm.custom_minimum_size = UIScaleManager.sz2(
+			BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
+	_btn_revert.custom_minimum_size  = UIScaleManager.sz2(
+			BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
+	# Rozmiar paneli (offsety względem środka)
+	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
+	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
+	_panel.offset_left   = -ph
+	_panel.offset_top    = -pv
+	_panel.offset_right  =  ph
+	_panel.offset_bottom =  pv
+	var ch := UIScaleManager.sz(BASE_CONFIRM_HALF_W)
+	var cv := UIScaleManager.sz(BASE_CONFIRM_HALF_H)
+	_confirm_popup.offset_left   = -ch
+	_confirm_popup.offset_top    = -cv
+	_confirm_popup.offset_right  =  ch
+	_confirm_popup.offset_bottom =  cv
 
 
 # ---------------------------------------------------------------------------
@@ -176,7 +212,6 @@ func _populate_resolutions(screen: int) -> void:
 	SettingsManager.monitor_idx = screen
 	_resolutions = SettingsManager.get_available_resolutions()
 	SettingsManager.monitor_idx = saved_idx
-
 	_res_option.clear()
 	var screen_size := DisplayServer.screen_get_size(screen)
 	for r in _resolutions:
@@ -224,7 +259,6 @@ func _on_apply() -> void:
 	_prev_mode    = SettingsManager.window_mode_idx
 	_prev_res     = SettingsManager.resolution
 	_prev_monitor = SettingsManager.monitor_idx
-
 	var res_idx := _res_option.selected
 	var res := SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
