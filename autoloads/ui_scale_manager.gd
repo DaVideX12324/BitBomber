@@ -8,8 +8,8 @@ extends Node
 ## Tryby:
 ##   SMALL  — 0.75×  (< 1280px szerokości)
 ##   NORMAL — 1.0×   (1280–1919px, baza FHD 1080p)
-##   LARGE  — 1.5×   (1920–2559px)
-##   XLARGE — 2.0×   (≥ 2560px, 4K / QHD)
+##   LARGE  — 1.5×   (1920–3839px)
+##   XLARGE — 2.0×   (≥ 3840px, 4K)
 ##
 ## Użycie w skrypcie UI:
 ##   func _ready():
@@ -102,7 +102,7 @@ func _load_saved() -> void:
 func _detect_mode() -> ScaleMode:
 	var w : int = DisplayServer.screen_get_size(
 			DisplayServer.get_primary_screen()).x
-	if   w >= 2560: return ScaleMode.XLARGE
+	if   w >= 3840: return ScaleMode.XLARGE
 	elif w >= 1920: return ScaleMode.LARGE
 	elif w >= 1280: return ScaleMode.NORMAL
 	else:           return ScaleMode.SMALL
