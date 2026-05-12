@@ -24,7 +24,7 @@ extends Node
 enum ScaleMode { XSMALL, SMALL, NORMAL, LARGE, XLARGE }
 
 const SCALE_VALUES : Dictionary = {
-	ScaleMode.XSMALL: 0.5,
+	ScaleMode.XSMALL: 0.6,
 	ScaleMode.SMALL:  0.75,
 	ScaleMode.NORMAL: 1.0,
 	ScaleMode.LARGE:  1.5,
@@ -32,7 +32,7 @@ const SCALE_VALUES : Dictionary = {
 }
 
 const SCALE_LABELS : Dictionary = {
-	ScaleMode.XSMALL:  "B. Małe (0.5×)",
+	ScaleMode.XSMALL:  "B. Małe (0.6×)",
 	ScaleMode.SMALL:  "Małe (0.75×)",
 	ScaleMode.NORMAL: "Normalne (1×)",
 	ScaleMode.LARGE:  "Duże (1.5×)",
