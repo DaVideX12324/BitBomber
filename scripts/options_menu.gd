@@ -50,7 +50,7 @@ const BASE_CONFIRM_HALF_H   := 100.0
 const BASE_BTN_MODE_SIZE    := Vector2(80.0,  36.0)
 const BASE_BTN_ACTION_SIZE  := Vector2(130.0, 40.0)
 const BASE_BTN_CONFIRM_SIZE := Vector2(140.0, 40.0)
-const BASE_PANEL_PADDING    := 40
+const BASE_PANEL_PADDING    := 20
 
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []

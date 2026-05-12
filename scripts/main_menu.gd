@@ -3,55 +3,57 @@ extends CanvasLayer
 ## Menu główne BitBomber.
 
 @onready var _panel    : PanelContainer  = $Center/Panel
-@onready var _vbox     : VBoxContainer   = $Center/Panel/VBox
-@onready var _title    : Label           = $Center/Panel/VBox/Title
-@onready var _subtitle : Label           = $Center/Panel/VBox/Subtitle
-@onready var _controls : Label           = $Center/Panel/VBox/Controls
+@onready var _margin   : MarginContainer  = $Center/Panel/Margin
+@onready var _vbox     : VBoxContainer   = $Center/Panel/Margin/VBox
+@onready var _title    : Label           = $Center/Panel/Margin/VBox/Title
+@onready var _subtitle : Label           = $Center/Panel/Margin/VBox/Subtitle
+@onready var _controls : Label           = $Center/Panel/Margin/VBox/Controls
 
-@onready var _players_label : Label = $Center/Panel/VBox/PlayersLabel
-@onready var _bots_label    : Label = $Center/Panel/VBox/BotsLabel
-@onready var _diff_label    : Label = $Center/Panel/VBox/DiffLabel
-@onready var _win_label     : Label = $Center/Panel/VBox/WinLabel
-@onready var _rounds_label  : Label = $Center/Panel/VBox/HBoxRounds/RoundsLabel
-@onready var _quiz_opt      : OptionButton = $Center/Panel/VBox/QuizOpt
-@onready var _rounds_spin   : SpinBox      = $Center/Panel/VBox/HBoxRounds/RoundsSpin
-@onready var _start_btn     : Button       = $Center/Panel/VBox/BtnStart
-@onready var _help_btn      : Button       = $Center/Panel/VBox/HBoxMeta/BtnHelp
-@onready var _options_btn   : Button       = $Center/Panel/VBox/HBoxMeta/BtnOptions
-@onready var _quit_btn      : Button       = $Center/Panel/VBox/BtnQuit
+@onready var _players_label : Label = $Center/Panel/Margin/VBox/PlayersLabel
+@onready var _bots_label    : Label = $Center/Panel/Margin/VBox/BotsLabel
+@onready var _diff_label    : Label = $Center/Panel/Margin/VBox/DiffLabel
+@onready var _win_label     : Label = $Center/Panel/Margin/VBox/WinLabel
+@onready var _rounds_label  : Label = $Center/Panel/Margin/VBox/HBoxRounds/RoundsLabel
+@onready var _quiz_opt      : OptionButton = $Center/Panel/Margin/VBox/QuizOpt
+@onready var _rounds_spin   : SpinBox      = $Center/Panel/Margin/VBox/HBoxRounds/RoundsSpin
+@onready var _start_btn     : Button       = $Center/Panel/Margin/VBox/BtnStart
+@onready var _help_btn      : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnHelp
+@onready var _options_btn   : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnOptions
+@onready var _quit_btn      : Button       = $Center/Panel/Margin/VBox/BtnQuit
 @onready var _ver_label     : Label        = $VerLabel
 @onready var _options_menu                 = $OptionsMenu
 
 @onready var _players_btns : Array[Button] = [
-	$Center/Panel/VBox/HBoxPlayers/Players_1,
-	$Center/Panel/VBox/HBoxPlayers/Players_2,
-	$Center/Panel/VBox/HBoxPlayers/Players_3,
-	$Center/Panel/VBox/HBoxPlayers/Players_4,
+	$Center/Panel/Margin/VBox/HBoxPlayers/Players_1,
+	$Center/Panel/Margin/VBox/HBoxPlayers/Players_2,
+	$Center/Panel/Margin/VBox/HBoxPlayers/Players_3,
+	$Center/Panel/Margin/VBox/HBoxPlayers/Players_4,
 ]
 @onready var _bots_btns : Array[Button] = [
-	$Center/Panel/VBox/HBoxBots/Bots_0,
-	$Center/Panel/VBox/HBoxBots/Bots_1,
-	$Center/Panel/VBox/HBoxBots/Bots_2,
-	$Center/Panel/VBox/HBoxBots/Bots_3,
+	$Center/Panel/Margin/VBox/HBoxBots/Bots_0,
+	$Center/Panel/Margin/VBox/HBoxBots/Bots_1,
+	$Center/Panel/Margin/VBox/HBoxBots/Bots_2,
+	$Center/Panel/Margin/VBox/HBoxBots/Bots_3,
 ]
 @onready var _diff_btns : Array[Button] = [
-	$Center/Panel/VBox/HBoxDiff/Diff_Easy,
-	$Center/Panel/VBox/HBoxDiff/Diff_Medium,
-	$Center/Panel/VBox/HBoxDiff/Diff_Hard,
+	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Easy,
+	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Medium,
+	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Hard,
 ]
 @onready var _win_btns : Array[Button] = [
-	$Center/Panel/VBox/HBoxWin/Win_FirstTo,
-	$Center/Panel/VBox/HBoxWin/Win_MostWins,
+	$Center/Panel/Margin/VBox/HBoxWin/Win_FirstTo,
+	$Center/Panel/Margin/VBox/HBoxWin/Win_MostWins,
 ]
 
-const BASE_PANEL_SIZE   := Vector2(550.0, 900.0)
-const BASE_SEP_VBOX     := 18   # separation VBoxContainer
-const BASE_SEP_HBOX     := 8    # separation HBoxContainer
-const BASE_BTN_SM       := Vector2(72.0,  36.0)
-const BASE_BTN_DIFF     := Vector2(88.0,  36.0)
-const BASE_BTN_WIN      := Vector2(140.0, 36.0)
-const BASE_BTN_START    := Vector2(0.0,   42.0)
-const BASE_BTN_QUIT     := Vector2(0.0,   36.0)
+const BASE_PANEL_SIZE     := Vector2(550.0, 900.0)
+const BASE_SEP_VBOX       := 18   # separation VBoxContainer
+const BASE_SEP_HBOX       := 8    # separation HBoxContainer
+const BASE_BTN_SM         := Vector2(72.0,  36.0)
+const BASE_BTN_DIFF       := Vector2(88.0,  36.0)
+const BASE_BTN_WIN        := Vector2(140.0, 36.0)
+const BASE_BTN_START      := Vector2(0.0,   42.0)
+const BASE_BTN_QUIT       := Vector2(0.0,   36.0)
+const BASE_PANEL_PADDING  := 20
 
 var _sel_players : int = 1
 var _sel_bots    : int = 1
@@ -144,6 +146,11 @@ func _on_scale_changed(_s: float) -> void:
 		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
 	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
 	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
+	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
+	_margin.add_theme_constant_override("margin_left", pad)
+	_margin.add_theme_constant_override("margin_top", pad)
+	_margin.add_theme_constant_override("margin_right", pad)
+	_margin.add_theme_constant_override("margin_bottom", pad)
 
 
 func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
