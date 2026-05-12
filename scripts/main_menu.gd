@@ -123,14 +123,20 @@ func _on_scale_changed(_s: float) -> void:
 	# Rozmiary przycisków
 	for btn in _players_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	for btn in _bots_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x,   BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	for btn in _diff_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
+		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	for btn in _win_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x,  BASE_BTN_WIN.y)
+		(btn as Button).add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
+	_start_btn.add_theme_font_size_override("font_size",UIScaleManager.px(19))
 	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
+	_quit_btn.add_theme_font_size_override("font_size",UIScaleManager.px(19))
 
 
 # ---------------------------------------------------------------------------
