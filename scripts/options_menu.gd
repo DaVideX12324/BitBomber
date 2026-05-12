@@ -24,15 +24,15 @@ extends CanvasLayer
 @onready var _lbl_sfx       : Label   = $Panel/VBox/Tabs/Dzwiek/LblSfx
 
 # --- Sterowanie ---
-@onready var _binds_list    : VBoxContainer = $Panel/VBox/Tabs/Sterowanie/BindsList
-@onready var _lbl_info      : Label         = $Panel/VBox/Tabs/Sterowanie/LblInfo
+@onready var _binds_list : VBoxContainer = $Panel/VBox/Tabs/Sterowanie/BindsList
+@onready var _lbl_info   : Label         = $Panel/VBox/Tabs/Sterowanie/LblInfo
 
 # --- Wspólne ---
-@onready var _panel         : PanelContainer = $Panel
-@onready var _title_label   : Label          = $Panel/VBox/Title
-@onready var _tabs          : TabContainer   = $Panel/VBox/Tabs
-@onready var _btn_apply     : Button         = $Panel/VBox/HBoxButtons/BtnApply
-@onready var _btn_close     : Button         = $Panel/VBox/HBoxButtons/BtnClose
+@onready var _panel       : PanelContainer = $Panel
+@onready var _title_label : Label          = $Panel/VBox/Title
+@onready var _tabs        : TabContainer   = $Panel/VBox/Tabs
+@onready var _btn_apply   : Button         = $Panel/VBox/HBoxButtons/BtnApply
+@onready var _btn_close   : Button         = $Panel/VBox/HBoxButtons/BtnClose
 
 @onready var _confirm_popup : PanelContainer = $ConfirmPopup
 @onready var _lbl_countdown : Label          = $ConfirmPopup/VBoxConfirm/LblCountdown
@@ -66,7 +66,6 @@ var _prev_scale_user_picked : bool                     = false
 var _countdown  : float = 0.0
 var _confirming : bool  = false
 
-# Nazwy busów AudioServer
 const BUS_MASTER := "Master"
 const BUS_MUSIC  := "Music"
 const BUS_SFX    := "SFX"
@@ -119,49 +118,62 @@ func _input(event: InputEvent) -> void:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	_title_label.add_theme_font_size_override("font_size",    UIScaleManager.px(26))
-	_mode_label.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
-	_monitor_label.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
-	_res_label.add_theme_font_size_override("font_size",      UIScaleManager.px(16))
-	_res_note.add_theme_font_size_override("font_size",       UIScaleManager.px(12))
-	_scale_label.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
-	_monitor_option.add_theme_font_size_override("font_size", UIScaleManager.px(16))
-	_res_option.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
-	_scale_option.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
-	_lbl_master.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
-	_lbl_music.add_theme_font_size_override("font_size",      UIScaleManager.px(16))
-	_lbl_sfx.add_theme_font_size_override("font_size",        UIScaleManager.px(16))
-	_lbl_info.add_theme_font_size_override("font_size",       UIScaleManager.px(14))
-	_btn_apply.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
-	_btn_close.add_theme_font_size_override("font_size",      UIScaleManager.px(17))
-	_lbl_question.add_theme_font_size_override("font_size",   UIScaleManager.px(17))
-	_lbl_countdown.add_theme_font_size_override("font_size",  UIScaleManager.px(22))
-	_btn_confirm.add_theme_font_size_override("font_size",    UIScaleManager.px(16))
-	_btn_revert.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
+	var fs16 := UIScaleManager.px(16)
+	# Tytuł
+	_title_label.add_theme_font_size_override("font_size", UIScaleManager.px(26))
+	# Zakładki TabContainer — napis na samych zakładkach
+	_tabs.add_theme_font_size_override("font_size", UIScaleManager.px(15))
+	# Ekran
+	_mode_label.add_theme_font_size_override("font_size",    fs16)
+	_monitor_label.add_theme_font_size_override("font_size", fs16)
+	_res_label.add_theme_font_size_override("font_size",     fs16)
+	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(12))
+	_scale_label.add_theme_font_size_override("font_size",   fs16)
+	_monitor_option.add_theme_font_size_override("font_size", fs16)
+	_res_option.add_theme_font_size_override("font_size",     fs16)
+	_scale_option.add_theme_font_size_override("font_size",   fs16)
+	# Dropdown (PopupMenu) każdego OptionButton
+	_scale_popup_font(_monitor_option, fs16)
+	_scale_popup_font(_res_option,     fs16)
+	_scale_popup_font(_scale_option,   fs16)
+	# Dźwięk
+	_lbl_master.add_theme_font_size_override("font_size", fs16)
+	_lbl_music.add_theme_font_size_override("font_size",  fs16)
+	_lbl_sfx.add_theme_font_size_override("font_size",    fs16)
+	# Sterowanie
+	_lbl_info.add_theme_font_size_override("font_size", UIScaleManager.px(14))
+	for child in _binds_list.get_children():
+		if child is Label:
+			(child as Label).add_theme_font_size_override("font_size", UIScaleManager.px(14))
+	# Przyciski akcji
+	_btn_apply.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
+	_btn_close.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
+	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	_lbl_countdown.add_theme_font_size_override("font_size",UIScaleManager.px(22))
+	_btn_confirm.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
+	_btn_revert.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
 	var fs_mode := UIScaleManager.px(15)
 	for btn in _mode_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_MODE_SIZE.x, BASE_BTN_MODE_SIZE.y)
-	_btn_apply.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
-	_btn_close.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
+	_btn_apply.custom_minimum_size   = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
+	_btn_close.custom_minimum_size   = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
 	_btn_confirm.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
 	_btn_revert.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
-	# Etykiety bindów w zakładce Sterowanie
-	for child in _binds_list.get_children():
-		if child is Label:
-			(child as Label).add_theme_font_size_override("font_size", UIScaleManager.px(14))
 	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
 	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
-	_panel.offset_left   = -ph
-	_panel.offset_top    = -pv
-	_panel.offset_right  =  ph
-	_panel.offset_bottom =  pv
+	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
+	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
 	var ch := UIScaleManager.sz(BASE_CONFIRM_HALF_W)
 	var cv := UIScaleManager.sz(BASE_CONFIRM_HALF_H)
-	_confirm_popup.offset_left   = -ch
-	_confirm_popup.offset_top    = -cv
-	_confirm_popup.offset_right  =  ch
-	_confirm_popup.offset_bottom =  cv
+	_confirm_popup.offset_left   = -ch ; _confirm_popup.offset_top    = -cv
+	_confirm_popup.offset_right  =  ch ; _confirm_popup.offset_bottom =  cv
+
+
+## Ustawia rozmiar czcionki w rozwijanym PopupMenu OptionButtona.
+func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
+	var popup := opt.get_popup()
+	popup.add_theme_font_size_override("font_size", font_size)
 
 
 # ---------------------------------------------------------------------------
@@ -194,7 +206,7 @@ func _on_close() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Synchronizacja Ekran
+# Ekran
 # ---------------------------------------------------------------------------
 
 func _sync_mode_buttons() -> void:
@@ -286,8 +298,7 @@ func _sync_audio_sliders() -> void:
 
 func _bus_volume(bus_name: String) -> float:
 	var idx := AudioServer.get_bus_index(bus_name)
-	if idx < 0:
-		return 1.0
+	if idx < 0: return 1.0
 	return db_to_linear(AudioServer.get_bus_volume_db(idx))
 
 
@@ -303,15 +314,15 @@ func _on_sfx_changed(v: float)    -> void: _set_bus_volume(BUS_SFX,    v)
 
 
 # ---------------------------------------------------------------------------
-# Sterowanie — lista bindów (tylko wyświetlanie)
+# Sterowanie
 # ---------------------------------------------------------------------------
 
 const BINDS : Array = [
-	["Gracz 1 — ruch",        ["p1_up", "p1_down", "p1_left", "p1_right"]],
-	["Gracz 1 — bomba",       ["p1_bomb"]],
-	["Gracz 2 — ruch",        ["p2_up", "p2_down", "p2_left", "p2_right"]],
-	["Gracz 2 — bomba",       ["p2_bomb"]],
-	["Pauza",                  ["pause"]],
+	["Gracz 1 — ruch",  ["p1_up", "p1_down", "p1_left", "p1_right"]],
+	["Gracz 1 — bomba", ["p1_bomb"]],
+	["Gracz 2 — ruch",  ["p2_up", "p2_down", "p2_left", "p2_right"]],
+	["Gracz 2 — bomba", ["p2_bomb"]],
+	["Pauza",            ["pause"]],
 ]
 
 
@@ -319,8 +330,8 @@ func _populate_binds() -> void:
 	for child in _binds_list.get_children():
 		child.queue_free()
 	for entry in BINDS:
-		var section : String        = entry[0]
-		var actions : Array         = entry[1]
+		var section : String = entry[0]
+		var actions : Array  = entry[1]
 		var lbl_sec := Label.new()
 		lbl_sec.text = section
 		lbl_sec.add_theme_font_size_override("font_size", UIScaleManager.px(14))
@@ -328,8 +339,7 @@ func _populate_binds() -> void:
 		_binds_list.add_child(lbl_sec)
 		var keys : Array[String] = []
 		for action in actions:
-			if not InputMap.has_action(action):
-				continue
+			if not InputMap.has_action(action): continue
 			for event in InputMap.action_get_events(action):
 				if event is InputEventKey:
 					keys.append(event.as_text_physical_keycode())
