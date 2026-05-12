@@ -118,40 +118,40 @@ func _input(event: InputEvent) -> void:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	var fs16 := UIScaleManager.px(16)
+	var main_size := UIScaleManager.px(18)
 	# Tytuł
 	_title_label.add_theme_font_size_override("font_size", UIScaleManager.px(26))
 	# Zakładki TabContainer — napis na samych zakładkach
-	_tabs.add_theme_font_size_override("font_size", UIScaleManager.px(15))
+	_tabs.add_theme_font_size_override("font_size", UIScaleManager.px(17))
 	# Ekran
-	_mode_label.add_theme_font_size_override("font_size",    fs16)
-	_monitor_label.add_theme_font_size_override("font_size", fs16)
-	_res_label.add_theme_font_size_override("font_size",     fs16)
-	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(12))
-	_scale_label.add_theme_font_size_override("font_size",   fs16)
-	_monitor_option.add_theme_font_size_override("font_size", fs16)
-	_res_option.add_theme_font_size_override("font_size",     fs16)
-	_scale_option.add_theme_font_size_override("font_size",   fs16)
+	_mode_label.add_theme_font_size_override("font_size",    main_size)
+	_monitor_label.add_theme_font_size_override("font_size", main_size)
+	_res_label.add_theme_font_size_override("font_size",     main_size)
+	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(15))
+	_scale_label.add_theme_font_size_override("font_size",   main_size)
+	_monitor_option.add_theme_font_size_override("font_size", main_size)
+	_res_option.add_theme_font_size_override("font_size",     main_size)
+	_scale_option.add_theme_font_size_override("font_size",   main_size)
 	# Dropdown (PopupMenu) każdego OptionButton
-	_scale_popup_font(_monitor_option, fs16)
-	_scale_popup_font(_res_option,     fs16)
-	_scale_popup_font(_scale_option,   fs16)
+	_scale_popup_font(_monitor_option, main_size)
+	_scale_popup_font(_res_option,     main_size)
+	_scale_popup_font(_scale_option,   main_size)
 	# Dźwięk
-	_lbl_master.add_theme_font_size_override("font_size", fs16)
-	_lbl_music.add_theme_font_size_override("font_size",  fs16)
-	_lbl_sfx.add_theme_font_size_override("font_size",    fs16)
+	_lbl_master.add_theme_font_size_override("font_size", main_size)
+	_lbl_music.add_theme_font_size_override("font_size",  main_size)
+	_lbl_sfx.add_theme_font_size_override("font_size",    main_size)
 	# Sterowanie
 	_lbl_info.add_theme_font_size_override("font_size", UIScaleManager.px(14))
 	for child in _binds_list.get_children():
 		if child is Label:
 			(child as Label).add_theme_font_size_override("font_size", UIScaleManager.px(14))
 	# Przyciski akcji
-	_btn_apply.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
-	_btn_close.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
-	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	_btn_apply.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	_btn_close.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(18))
 	_lbl_countdown.add_theme_font_size_override("font_size",UIScaleManager.px(22))
-	_btn_confirm.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
-	_btn_revert.add_theme_font_size_override("font_size",   UIScaleManager.px(16))
+	_btn_confirm.add_theme_font_size_override("font_size",  UIScaleManager.px(20))
+	_btn_revert.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
 	var fs_mode := UIScaleManager.px(15)
 	for btn in _mode_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
