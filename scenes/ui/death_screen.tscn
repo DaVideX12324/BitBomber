@@ -6,7 +6,6 @@
 [node name="DeathScreen" type="CanvasLayer" unique_id=1653189185]
 layer = 20
 visible = false
-follow_viewport_enabled = true
 script = ExtResource("1")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=2096915157]

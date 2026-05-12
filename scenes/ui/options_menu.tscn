@@ -5,7 +5,6 @@
 [node name="OptionsMenu" type="CanvasLayer" unique_id=1606057796]
 layer = 25
 visible = false
-follow_viewport_enabled = true
 script = ExtResource("1")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=1136623010]
