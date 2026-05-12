@@ -11,6 +11,7 @@ enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
 @onready var _overlay     : ColorRect      = $Overlay
 @onready var _panel       : PanelContainer = $Panel
+@onready var _vbox        : VBoxContainer  = $Panel/VBox
 @onready var _icon        : Label          = $Panel/VBox/Icon
 @onready var _title       : Label          = $Panel/VBox/Title
 @onready var _subtitle    : Label          = $Panel/VBox/Subtitle
@@ -24,6 +25,13 @@ enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 @onready var _btn_cont    : Button         = $Panel/VBox/BtnContinue
 @onready var _btn_menu    : Button         = $Panel/VBox/BtnMenu
 @onready var _quiz_overlay : CanvasLayer   = $QuizOverlay
+
+# Bazowe rozmiary z .tscn
+const BASE_PANEL_HALF_W := 300.0
+const BASE_PANEL_HALF_H := 240.0
+const BASE_BTN_SIZE     := Vector2(160.0, 44.0)
+const BASE_SEP_VBOX     := 16
+const BASE_SEP_SCORE    := 4
 
 var _mode           : Mode = Mode.ROUND_END
 var _dead_player_id : int  = -1
@@ -41,6 +49,33 @@ func _ready() -> void:
 	RoundManager.session_ended.connect(_on_session_ended)
 	_quiz_overlay.quiz_result.connect(_on_quiz_result)
 	_quiz_overlay.visible = false
+	UIScaleManager.scale_changed.connect(_on_scale_changed)
+	_on_scale_changed(UIScaleManager.scale_factor)
+
+
+func _on_scale_changed(_s: float) -> void:
+	# Panel
+	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
+	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
+	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
+	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
+	# Separation
+	_vbox.add_theme_constant_override("separation",        UIScaleManager.px(BASE_SEP_VBOX))
+	_score_table.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_SCORE))
+	# Czcionki
+	_icon.add_theme_font_size_override("font_size",     UIScaleManager.px(52))
+	_title.add_theme_font_size_override("font_size",    UIScaleManager.px(32))
+	_subtitle.add_theme_font_size_override("font_size", UIScaleManager.px(16))
+	var fs_row := UIScaleManager.px(20)
+	for row in _score_rows:
+		(row as Label).add_theme_font_size_override("font_size", fs_row)
+	# Przyciski
+	var btn_size := UIScaleManager.sz2(BASE_BTN_SIZE.x, BASE_BTN_SIZE.y)
+	var fs_btn   := UIScaleManager.px(21)
+	_btn_cont.custom_minimum_size = btn_size
+	_btn_cont.add_theme_font_size_override("font_size", fs_btn)
+	_btn_menu.custom_minimum_size = btn_size
+	_btn_menu.add_theme_font_size_override("font_size", fs_btn)
 
 
 # ---------------------------------------------------------------------------
@@ -238,8 +273,6 @@ func show_game_over(winner_id: int) -> void:
 	_do_pause()
 
 
-## Wypełnia wiersze ScoreTable danymi z RoundManagera.
-## Nieaktywne wiersze są ukrywane.
 func _fill_score_table() -> void:
 	var lines : Array[String] = []
 	for pid in range(1, GameManager.num_human_players + 1):
@@ -261,12 +294,8 @@ func _fill_score_table() -> void:
 # Pauza / wznowienie
 # ---------------------------------------------------------------------------
 
-func _do_pause() -> void:
-	get_tree().paused = true
-
-
-func _do_resume() -> void:
-	get_tree().paused = false
+func _do_pause()  -> void: get_tree().paused = true
+func _do_resume() -> void: get_tree().paused = false
 
 
 # ---------------------------------------------------------------------------
