@@ -24,7 +24,7 @@ extends Node
 enum ScaleMode { XSMALL, SMALL, NORMAL, LARGE, XLARGE }
 
 const SCALE_VALUES : Dictionary = {
-	ScaleMode.XSMALL: 0.6,
+	ScaleMode.XSMALL: 0.5,
 	ScaleMode.SMALL:  0.75,
 	ScaleMode.NORMAL: 1.0,
 	ScaleMode.LARGE:  1.5,
@@ -32,7 +32,7 @@ const SCALE_VALUES : Dictionary = {
 }
 
 const SCALE_LABELS : Dictionary = {
-	ScaleMode.XSMALL:  "B. Małe (0.6×)",
+	ScaleMode.XSMALL:  "B. Małe (0.5×)",
 	ScaleMode.SMALL:  "Małe (0.75×)",
 	ScaleMode.NORMAL: "Normalne (1×)",
 	ScaleMode.LARGE:  "Duże (1.5×)",
@@ -68,8 +68,27 @@ func _ready() -> void:
 ## Ręczny wybór trybu przez gracza — blokuje auto-detekcję i zapisuje.
 func set_mode(mode: ScaleMode) -> void:
 	_user_picked = true
-	current_mode = mode
+	current_mode = _clamp_mode_to_screen(mode)  # ← clamp
 	_save()
+	
+func _clamp_mode_to_screen(mode: ScaleMode) -> ScaleMode:
+	var screen_h := SettingsManager.resolution.y
+	if screen_h <= 0:
+		screen_h = DisplayServer.screen_get_size(0).y
+	# Progi minimalne wysokości ekranu per tryb
+	# (bazowa wysokość HUD w NORMAL to ~826px, więc np. LARGE wymaga min ~900px)
+	const MIN_HEIGHT : Dictionary = {
+		ScaleMode.XLARGE: 2160,
+		ScaleMode.LARGE:  1081,
+		ScaleMode.NORMAL: 901,
+		ScaleMode.SMALL:  721,
+		ScaleMode.XSMALL: 0,
+	}
+	while mode > ScaleMode.SMALL and screen_h < MIN_HEIGHT[mode]:
+		mode -= 1
+	return mode
+	
+
 
 
 ## Czyści ręczny wybór — od tej pory skala zmienia się wraz z rozdzielczością.
@@ -108,7 +127,7 @@ func sz2(w: float, h: float) -> Vector2:
 func _on_resolution_changed(_new_res: Vector2i) -> void:
 	if _user_picked:
 		return  # gracz ma ręczny wybór — nie nadpisuj
-	current_mode = _detect_mode()
+	current_mode = _clamp_mode_to_screen(current_mode)
 
 
 # ---------------------------------------------------------------------------
@@ -155,4 +174,4 @@ func _load_saved() -> void:
 				_user_picked = true
 				current_mode = saved as ScaleMode
 				return
-	current_mode = _detect_mode()
+			current_mode = _clamp_mode_to_screen(saved as ScaleMode)
