@@ -60,8 +60,10 @@ const BASE_SEP_SUBBOX   := 6
 
 # true_false
 @onready var _tf_box   : VBoxContainer = $Panel/VBox/TF_Box
-@onready var _btn_true  : Button        = $Panel/VBox/TF_Box/BtnTrue
-@onready var _btn_false : Button        = $Panel/VBox/TF_Box/BtnFalse
+@onready var _tf_btns : Array[Button] = [
+	$Panel/VBox/TF_Box/BtnTrue,
+	$Panel/VBox/TF_Box/BtnFalse,
+]
 
 # fill_text
 @onready var _fill_text_box    : VBoxContainer = $Panel/VBox/FillText_Box
@@ -116,9 +118,11 @@ func _ready() -> void:
 	_match_confirm.pressed.connect(_on_matching_confirm)
 	for i in _mc_btns.size():
 		var idx := i
-		_mc_btns[i].pressed.connect(func(): _on_mc_button(idx))
-	_btn_true.pressed.connect(func(): _on_tf_button(true))
-	_btn_false.pressed.connect(func(): _on_tf_button(false))
+		_mc_btns[i].pressed.connect(func(): _on_mc_button(idx))	
+	for i in _tf_btns.size():
+		var idx := i
+		_tf_btns[i].pressed.connect(func(): _on_tf_button(idx))
+
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
 
@@ -151,8 +155,8 @@ func _on_scale_changed(_s: float) -> void:
 	var fs_btn := UIScaleManager.px(BASE_FS_ANSWER_BTN)
 	for btn in _mc_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
-	_btn_true.add_theme_font_size_override("font_size",  fs_btn)
-	_btn_false.add_theme_font_size_override("font_size", fs_btn)
+	for btn in _tf_btns:
+		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
 	# FillText
 	_fill_pattern_lbl.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
 	_fill_input.add_theme_font_size_override("font_size",       UIScaleManager.px(BASE_FS_ANSWER_BTN))
@@ -288,15 +292,15 @@ func _build_tf() -> void:
 	var k1 : Array[String] = ["W", "S"]
 	var k2 : Array[String] = ["↑", "↓"]
 	var labels := ["Prawda", "Fałsz"]
-	var btns   := [_btn_true, _btn_false]
 	for i in 2:
+		var btn := _tf_btns[i]
 		if _mode == RivalMode.VERSUS:
-			btns[i].text = "[%s/%s]  %s" % [k1[i], k2[i], labels[i]]
+			btn.text = "[%s/%s]  %s" % [k1[i], k2[i], labels[i]]
 		elif _mode == RivalMode.DUEL_P2:
-			btns[i].text = "[%s]  %s" % [k2[i], labels[i]]
+			btn.text = "[%s]  %s" % [k2[i], labels[i]]
 		else:
-			btns[i].text = "[%s]  %s" % [k1[i], labels[i]]
-		btns[i].remove_theme_color_override("font_color")
+			btn.text = "[%s]  %s" % [k1[i], labels[i]]
+		btn.remove_theme_color_override("font_color")
 
 
 # --- fill_text ---
@@ -545,21 +549,13 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 	elif qtype == "true_false":
 		is_correct = ((answer_index == 0) == _question.get("correct_answer", false) as bool)
 	_dbg("Gracz %d odpowiedział (idx: %d). Poprawnie? %s" % [player_id, answer_index, str(is_correct)])
-	var highlight_btns : Array[Button] = _mc_btns if qtype == "multiple_choice" else _tf_btns()
+	var highlight_btns : Array[Button] = _mc_btns if qtype == "multiple_choice" else _tf_btns
 	if answer_index < highlight_btns.size():
 		highlight_btns[answer_index].add_theme_color_override("font_color",
 			Color(0.3, 1.0, 0.4) if is_correct else Color(1.0, 0.3, 0.3))
 	if player_id == 1: _answered_p1 = true; _correct_p1 = is_correct
 	else:              _answered_p2 = true; _correct_p2 = is_correct
 	_check_versus_done()
-
-
-func _tf_btns() -> Array[Button]:
-	var arr : Array[Button] = []
-	arr.append(_btn_true)
-	arr.append(_btn_false)
-	return arr
-
 
 func _finish_complex(correct: bool) -> void:
 	_timer_node.stop()
