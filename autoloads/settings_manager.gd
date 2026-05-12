@@ -34,29 +34,25 @@ func apply_settings(mode_idx: int, res: Vector2i, screen: int) -> void:
 	var screen_pos  := DisplayServer.screen_get_position(monitor_idx)
 	var screen_size := DisplayServer.screen_get_size(monitor_idx)
 
+	# Zawsze najpierw wróć do czystego trybu okienkowego z ramką.
+	# To zdejmuje zarówno flagę BORDERLESS jak i fullscreen —
+	# bez tego zmiana z bezramkowego na okienkowy nie działa za pierwszym razem.
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+
+	# Dopiero teraz ustaw rozmiar i pozycję
+	DisplayServer.window_set_size(res)
+	DisplayServer.window_set_position(
+		screen_pos + (screen_size - res) / 2
+	)
+
 	match mode_idx:
-		0: # Okienkowy z ramką
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-			DisplayServer.window_set_size(res)
-			DisplayServer.window_set_position(
-				screen_pos + (screen_size - res) / 2
-			)
 		1: # Bez ramki
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
-			DisplayServer.window_set_size(res)
-			DisplayServer.window_set_position(
-				screen_pos + (screen_size - res) / 2
-			)
 		2: # Pełny ekran (exclusive)
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
-			DisplayServer.window_set_size(res)
-			DisplayServer.window_set_position(
-				screen_pos + (screen_size - res) / 2
-			)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+		# 0: okienkowy z ramką — już ustawiony powyżej, nic więcej
+
 	_save()
 	if res != prev_res:
 		resolution_changed.emit(resolution)
