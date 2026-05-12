@@ -24,14 +24,22 @@ const BASE_FONT_HEARTS := 20.0
 const BASE_FONT_STATS  := 20.0
 const BASE_FONT_TOAST  := 26.0
 
+const BASE_CARDS_HALF_H  := 413.0   # offset_top = -413, offset_bottom = 413
+const BASE_SEP_CARDS     := 6       # separation między kartami
+const BASE_SEP_VBOX      := 6       # separation wewnątrz VBox karty
+const BASE_SEP_HEADER    := 6       # separation w HBoxContainer Header
+const BASE_TOAST_HALF_W  := 240.0   # offset_left = -240, offset_right = 240
+const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
+
 @onready var _cards_nodes: Array[Control] = [
 	$Root/Cards/Card1,
 	$Root/Cards/Card2,
 	$Root/Cards/Card3,
 	$Root/Cards/Card4,
 ]
-@onready var _round_label : Label         = $Root/Cards/RoundPanel/RoundLabel
-@onready var _toast       : Label         = $Root/ToastLabel
+@onready var _cards_box   : VBoxContainer  = $Root/Cards
+@onready var _round_label : Label          = $Root/Cards/RoundPanel/RoundLabel
+@onready var _toast       : Label          = $Root/ToastLabel
 @onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
 
 
@@ -51,16 +59,38 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
+	# Cards VBoxContainer — pionowe wycentrowanie i odstęp między kartami
+	var ch := UIScaleManager.sz(BASE_CARDS_HALF_H)
+	_cards_box.offset_top    = -ch
+	_cards_box.offset_bottom =  ch
+	_cards_box.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_CARDS))
+
+	# RoundLabel
 	_round_label.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FONT_ROUND))
-	_toast.add_theme_font_size_override("font_size",       UIScaleManager.px(BASE_FONT_TOAST))
+
+	# ToastLabel
+	var tw := UIScaleManager.sz(BASE_TOAST_HALF_W)
+	var th := UIScaleManager.sz(BASE_TOAST_HALF_H)
+	_toast.offset_left   = -tw
+	_toast.offset_top    = -th
+	_toast.offset_right  =  tw
+	_toast.offset_bottom =  th
+	_toast.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FONT_TOAST))
+
+	# Karty gracza
+	var fs_btn := UIScaleManager.px(BASE_FONT_TITLE)
 	for card: Control in _cards_nodes:
-		(card.get_node("VBox/Header/Title") as Label).add_theme_font_size_override(
-				"font_size", UIScaleManager.px(BASE_FONT_TITLE))
-		(card.get_node("VBox/HeartsLabel") as Label).add_theme_font_size_override(
+		var vbox := card.get_node("VBox") as VBoxContainer
+		vbox.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_VBOX))
+		var header := vbox.get_node("Header") as HBoxContainer
+		header.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_HEADER))
+		(vbox.get_node("Header/Title") as Label).add_theme_font_size_override(
+				"font_size", fs_btn)
+		(vbox.get_node("HeartsLabel") as Label).add_theme_font_size_override(
 				"font_size", UIScaleManager.px(BASE_FONT_HEARTS))
-		(card.get_node("VBox/StatsLabel") as Label).add_theme_font_size_override(
+		(vbox.get_node("StatsLabel") as Label).add_theme_font_size_override(
 				"font_size", UIScaleManager.px(BASE_FONT_STATS))
-		(card.get_node("VBox/Header/Dot") as ColorRect).custom_minimum_size = \
+		(vbox.get_node("Header/Dot") as ColorRect).custom_minimum_size = \
 				UIScaleManager.sz2(BASE_DOT_SIZE.x, BASE_DOT_SIZE.y)
 
 
