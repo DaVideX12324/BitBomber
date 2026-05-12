@@ -28,21 +28,26 @@ extends CanvasLayer
 const CONFIRM_TIMEOUT := 20.0
 
 # Bazowe wymiary z .tscn (NORMAL = 1×)
-const BASE_PANEL_HALF_W  := 280.0
-const BASE_PANEL_HALF_H  := 340.0
-const BASE_CONFIRM_HALF_W := 220.0
-const BASE_CONFIRM_HALF_H := 100.0
-const BASE_BTN_MODE_SIZE  := Vector2(80.0, 36.0)
+const BASE_PANEL_HALF_W    := 280.0
+const BASE_PANEL_HALF_H    := 340.0
+const BASE_CONFIRM_HALF_W  := 220.0
+const BASE_CONFIRM_HALF_H  := 100.0
+const BASE_BTN_MODE_SIZE   := Vector2(80.0,  36.0)
 const BASE_BTN_ACTION_SIZE := Vector2(130.0, 40.0)
 const BASE_BTN_CONFIRM_SIZE := Vector2(140.0, 40.0)
 
 var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
-var _sel_mode    : int             = 0
 
-var _prev_mode    : int      = 0
-var _prev_res     : Vector2i = Vector2i(1280, 720)
-var _prev_monitor : int      = 0
+# Aktualnie zaznaczony w UI (jeszcze nie zastosowany)
+var _sel_mode    : int                      = 0
+var _sel_scale   : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
+
+# Snapshot stanu sprzed kliknięcia Zastosuj — używany przez Anuluj
+var _prev_mode    : int                      = 0
+var _prev_res     : Vector2i                 = Vector2i(1280, 720)
+var _prev_monitor : int                      = 0
+var _prev_scale   : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
 
 var _countdown  : float = 0.0
 var _confirming : bool  = false
@@ -93,7 +98,6 @@ func _input(event: InputEvent) -> void:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	# Czcionki
 	_title_label.add_theme_font_size_override("font_size",    UIScaleManager.px(26))
 	_mode_label.add_theme_font_size_override("font_size",     UIScaleManager.px(16))
 	_monitor_label.add_theme_font_size_override("font_size",  UIScaleManager.px(16))
@@ -112,19 +116,17 @@ func _on_scale_changed(_s: float) -> void:
 	var fs_mode := UIScaleManager.px(15)
 	for btn in _mode_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
-	# Rozmiary przycisków
 	for btn in _mode_btns:
 		(btn as Button).custom_minimum_size = UIScaleManager.sz2(
 				BASE_BTN_MODE_SIZE.x, BASE_BTN_MODE_SIZE.y)
-	_btn_apply.custom_minimum_size = UIScaleManager.sz2(
+	_btn_apply.custom_minimum_size  = UIScaleManager.sz2(
 			BASE_BTN_ACTION_SIZE.x, BASE_BTN_ACTION_SIZE.y)
-	_btn_close.custom_minimum_size = UIScaleManager.sz2(
+	_btn_close.custom_minimum_size  = UIScaleManager.sz2(
 			BASE_BTN_ACTION_SIZE.x, BASE_BTN_ACTION_SIZE.y)
 	_btn_confirm.custom_minimum_size = UIScaleManager.sz2(
 			BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
 	_btn_revert.custom_minimum_size  = UIScaleManager.sz2(
 			BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
-	# Rozmiar paneli (offsety względem środka)
 	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
 	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
 	_panel.offset_left   = -ph
@@ -143,11 +145,19 @@ func _on_scale_changed(_s: float) -> void:
 # Otwieranie / zamykanie
 # ---------------------------------------------------------------------------
 
+## Zapisuje aktualny stan jako snapshot i otwiera panel.
 func open() -> void:
-	_sel_mode = SettingsManager.window_mode_idx
+	# Snapshot — będzie używany przez Anuluj
+	_prev_mode    = SettingsManager.window_mode_idx
+	_prev_res     = SettingsManager.resolution
+	_prev_monitor = SettingsManager.monitor_idx
+	_prev_scale   = UIScaleManager.current_mode
+	# Wypełnij UI aktualnym stanem
+	_sel_mode  = _prev_mode
+	_sel_scale = _prev_scale
 	_sync_mode_buttons()
-	_monitor_option.selected = SettingsManager.monitor_idx
-	_populate_resolutions(SettingsManager.monitor_idx)
+	_monitor_option.selected = _prev_monitor
+	_populate_resolutions(_prev_monitor)
 	_sync_resolution()
 	_sync_scale()
 	visible = true
@@ -157,6 +167,9 @@ func _on_close() -> void:
 	if _confirming:
 		_on_revert()
 	else:
+		# Zamknięcie bez Zastosuj — przywróć skalę jeśli została zmieniona w UI
+		if UIScaleManager.current_mode != _prev_scale:
+			UIScaleManager.set_mode(_prev_scale)
 		hide()
 
 
@@ -222,7 +235,7 @@ func _populate_resolutions(screen: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Skalowanie UI
+# Skalowanie UI — tylko zaznaczenie w dropdownie, NIE aplikuj od razu
 # ---------------------------------------------------------------------------
 
 func _populate_scale() -> void:
@@ -233,8 +246,9 @@ func _populate_scale() -> void:
 	_scale_option.item_selected.connect(_on_scale_item_selected)
 
 
+## Zmiana w dropdownie — tylko zapamiętaj wybór, nie aplikuj jeszcze.
 func _on_scale_item_selected(idx: int) -> void:
-	UIScaleManager.set_mode(idx as UIScaleManager.ScaleMode)
+	_sel_scale = idx as UIScaleManager.ScaleMode
 
 
 # ---------------------------------------------------------------------------
@@ -256,15 +270,13 @@ func _update_res_note() -> void:
 # ---------------------------------------------------------------------------
 
 func _on_apply() -> void:
-	_prev_mode    = SettingsManager.window_mode_idx
-	_prev_res     = SettingsManager.resolution
-	_prev_monitor = SettingsManager.monitor_idx
 	var res_idx := _res_option.selected
-	var res := SettingsManager.resolution
+	var res     := SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
 	var screen := _monitor_option.selected
 	SettingsManager.apply_settings(_sel_mode, res, screen)
+	UIScaleManager.set_mode(_sel_scale)
 	_start_confirm()
 
 
@@ -285,8 +297,11 @@ func _on_revert() -> void:
 	_confirming = false
 	_confirm_popup.visible = false
 	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
-	_sel_mode = _prev_mode
+	UIScaleManager.set_mode(_prev_scale)
+	_sel_mode  = _prev_mode
+	_sel_scale = _prev_scale
 	_sync_mode_buttons()
 	_monitor_option.selected = _prev_monitor
 	_populate_resolutions(_prev_monitor)
 	_sync_resolution()
+	_sync_scale()
