@@ -30,7 +30,7 @@ const BASE_FS_HINT       := 15
 const BASE_FS_ANSWER_BTN := 20
 const BASE_FS_RESULT     := 22
 const BASE_FS_CORRECT    := 18
-const BASE_FS_CONFIRM_MATCH := 18   # Matching_Box/Confirm ma 15 w .tscn
+const BASE_FS_CONFIRM_MATCH := 18
 
 # Bazowe rozmiary panelu i separatorow z .tscn
 const BASE_PANEL_HALF_W := 340.0
@@ -545,13 +545,20 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 	elif qtype == "true_false":
 		is_correct = ((answer_index == 0) == _question.get("correct_answer", false) as bool)
 	_dbg("Gracz %d odpowiedział (idx: %d). Poprawnie? %s" % [player_id, answer_index, str(is_correct)])
-	var highlight_btns : Array[Button] = _mc_btns if qtype == "multiple_choice" else [_btn_true, _btn_false]
+	var highlight_btns : Array[Button] = _mc_btns if qtype == "multiple_choice" else _tf_btns()
 	if answer_index < highlight_btns.size():
 		highlight_btns[answer_index].add_theme_color_override("font_color",
 			Color(0.3, 1.0, 0.4) if is_correct else Color(1.0, 0.3, 0.3))
 	if player_id == 1: _answered_p1 = true; _correct_p1 = is_correct
 	else:              _answered_p2 = true; _correct_p2 = is_correct
 	_check_versus_done()
+
+
+func _tf_btns() -> Array[Button]:
+	var arr : Array[Button] = []
+	arr.append(_btn_true)
+	arr.append(_btn_false)
+	return arr
 
 
 func _finish_complex(correct: bool) -> void:
