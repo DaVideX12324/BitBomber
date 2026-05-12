@@ -37,14 +37,12 @@ theme_override_constants/separation = 16
 
 [node name="Title" type="Label" parent="Center/Panel/VBox" unique_id=2128057794]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
 text = "💣 BitBomber"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Panel/VBox" unique_id=360151117]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 20
 text = "Edukacyjna gra bomberman"
 horizontal_alignment = 1
 
@@ -54,7 +52,6 @@ layout_mode = 2
 [node name="Controls" type="Label" parent="Center/Panel/VBox" unique_id=23378163]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.75, 0.65, 1)
-theme_override_font_sizes/font_size = 18
 text = "P1: WASD + Spacja   |   P2: Strzalki + Enter"
 horizontal_alignment = 1
 
@@ -64,7 +61,7 @@ layout_mode = 2
 [node name="PlayersLabel" type="Label" parent="Center/Panel/VBox" unique_id=500000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 17
+
 text = "Liczba graczy:"
 horizontal_alignment = 1
 
@@ -77,7 +74,7 @@ alignment = 1
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 button_pressed = true
 text = "1 Gracz"
@@ -86,7 +83,7 @@ text = "1 Gracz"
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "2 Graczy"
 
@@ -95,7 +92,7 @@ visible = false
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "3 Graczy"
 
@@ -104,14 +101,14 @@ visible = false
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "4 Graczy"
 
 [node name="BotsLabel" type="Label" parent="Center/Panel/VBox" unique_id=600000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 17
+
 text = "Liczba botow:"
 horizontal_alignment = 1
 
@@ -124,7 +121,7 @@ alignment = 1
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "0 Botow"
 
@@ -132,7 +129,7 @@ text = "0 Botow"
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 button_pressed = true
 text = "1 Bot"
@@ -141,7 +138,7 @@ text = "1 Bot"
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "2 Boty"
 
@@ -149,14 +146,14 @@ text = "2 Boty"
 custom_minimum_size = Vector2(72, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "3 Boty"
 
 [node name="DiffLabel" type="Label" parent="Center/Panel/VBox" unique_id=700000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 17
+
 text = "Trudnosc botow i pytan:"
 horizontal_alignment = 1
 
@@ -169,7 +166,7 @@ alignment = 1
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 button_pressed = true
 text = "🟢 Latwy"
@@ -178,7 +175,7 @@ text = "🟢 Latwy"
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "🟡 Sredni"
 
@@ -186,14 +183,14 @@ text = "🟡 Sredni"
 custom_minimum_size = Vector2(88, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "🔴 Trudny"
 
 [node name="WinLabel" type="Label" parent="Center/Panel/VBox" unique_id=800000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 17
+
 text = "Tryb wygranej:"
 horizontal_alignment = 1
 
@@ -206,7 +203,7 @@ alignment = 1
 custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 button_pressed = true
 text = "🏆 Pierwszy do X"
@@ -215,7 +212,7 @@ text = "🏆 Pierwszy do X"
 custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 19
+
 toggle_mode = true
 text = "📊 Max Y rund"
 
@@ -227,7 +224,7 @@ alignment = 1
 [node name="RoundsLabel" type="Label" parent="Center/Panel/VBox/HBoxRounds" unique_id=800000006]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 20
+
 text = "Wygrane rundy do zwyciestwa (X):"
 
 [node name="RoundsSpin" type="SpinBox" parent="Center/Panel/VBox/HBoxRounds" unique_id=800000007]
@@ -239,13 +236,13 @@ alignment = 1
 
 [node name="QuizOpt" type="OptionButton" parent="Center/Panel/VBox" unique_id=900000001]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+
 
 [node name="BtnStart" type="Button" parent="Center/Panel/VBox" unique_id=900000002]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
-theme_override_font_sizes/font_size = 20
+
 text = "▶ Zagraj!"
 
 [node name="Sep3" type="HSeparator" parent="Center/Panel/VBox" unique_id=33520659]
@@ -259,20 +256,20 @@ alignment = 1
 [node name="BtnHelp" type="Button" parent="Center/Panel/VBox/HBoxMeta" unique_id=2043692537]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
+
 text = "Instrukcja"
 
 [node name="BtnOptions" type="Button" parent="Center/Panel/VBox/HBoxMeta" unique_id=111111112]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
+
 text = "⚙ Opcje"
 
 [node name="BtnQuit" type="Button" parent="Center/Panel/VBox" unique_id=196722966]
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 20
+
 text = "✕ Wyjscie"
 
 [node name="VerLabel" type="Label" parent="." unique_id=899343667]
@@ -288,7 +285,7 @@ offset_bottom = -6.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
-theme_override_font_sizes/font_size = 11
+
 text = "v0.1-dev"
 horizontal_alignment = 2
 
