@@ -26,11 +26,11 @@ const TYPE_MULTIPLIER : Dictionary = {
 const BASE_FS_TITLE      := 24
 const BASE_FS_QUESTION   := 21
 const BASE_FS_TIMER      := 20
-const BASE_FS_HINT       := 13
+const BASE_FS_HINT       := 15
 const BASE_FS_ANSWER_BTN := 20
 const BASE_FS_RESULT     := 22
 const BASE_FS_CORRECT    := 18
-const BASE_FS_CONFIRM_MATCH := 15   # Matching_Box/Confirm ma 15 w .tscn
+const BASE_FS_CONFIRM_MATCH := 18   # Matching_Box/Confirm ma 15 w .tscn
 
 # Bazowe rozmiary panelu i separatorow z .tscn
 const BASE_PANEL_HALF_W := 340.0
