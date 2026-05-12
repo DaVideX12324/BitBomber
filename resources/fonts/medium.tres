@@ -1,3 +1,13 @@
 [gd_resource type="FontVariation" format=3 uid="uid://cjyf4inwpkybt"]
 
+[ext_resource type="FontFile" uid="uid://cifsnravkbggb" path="res://resources/fonts/Inter-VariableFont_opsz,wght.ttf" id="1_ai4aa"]
+
 [resource]
+base_font = ExtResource("1_ai4aa")
+variation_opentype = {
+1869640570: 14,
+2003265652: 500
+}
+opentype_features = {
+1667329140: 0
+}
