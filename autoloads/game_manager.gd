@@ -82,7 +82,7 @@ func go_to_menu() -> void:
 	elif game_node:
 		game_node.load_menu()
 	else:
-		get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 		
 		# W game_manager.gd
 func log_debug(message: Variant, category: String = "GENERAL") -> void:
