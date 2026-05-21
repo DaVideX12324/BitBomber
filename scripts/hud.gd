@@ -23,6 +23,7 @@ const BASE_FONT_ROUND  := 25.0
 const BASE_FONT_HEARTS := 20.0
 const BASE_FONT_STATS  := 20.0
 const BASE_FONT_TOAST  := 26.0
+const BASE_CARDS_WIDTH := 270.0 
 
 const BASE_CARDS_HALF_H  := 413.0   # offset_top = -413, offset_bottom = 413
 const BASE_SEP_CARDS     := 6       # separation między kartami
@@ -64,7 +65,8 @@ func _on_scale_changed(_s: float) -> void:
 	_cards_box.offset_top    = -ch
 	_cards_box.offset_bottom =  ch
 	_cards_box.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_CARDS))
-
+	_cards_box.offset_right = UIScaleManager.sz(BASE_CARDS_WIDTH)
+	
 	# RoundLabel
 	_round_label.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FONT_ROUND))
 
@@ -118,7 +120,7 @@ func update_lives(pid: int, lives_left: int) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
-	(card.get_node("VBox/HeartsLabel") as Label).text = "\u2764\ufe0f:%d" % lives_left
+	(card.get_node("VBox/HeartsLabel") as Label).text = "❤️:%d" % lives_left
 
 
 func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
@@ -127,7 +129,7 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
 		return
 	var speed_level := int((speed - 1.0) / 50.0) + 1
 	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"\uD83D\uDCA3:%d\n\uD83C\uDFAF:%d\n\u26A1:%d\n" % [bombs, bomb_range, speed_level]
+		"💣:%d\n↔️:%d\n⚡:%d\n" % [bombs, bomb_range, speed_level]
 
 
 func update_round(round_num: int) -> void:
