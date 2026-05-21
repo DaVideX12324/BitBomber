@@ -214,7 +214,7 @@ func _sync_mode_buttons() -> void:
 
 
 func _sync_resolution() -> void:
-	var cur_res := SettingsManager.resolution
+	var cur_res : Vector2i = SettingsManager.resolution
 	for i in _resolutions.size():
 		if _resolutions[i] == cur_res:
 			_res_option.selected = i
@@ -242,7 +242,7 @@ func _on_monitor_changed(idx: int) -> void:
 
 
 func _populate_resolutions(screen: int) -> void:
-	var saved_idx := SettingsManager.monitor_idx
+	var saved_idx : int = SettingsManager.monitor_idx
 	SettingsManager.monitor_idx = screen
 	_resolutions = SettingsManager.get_available_resolutions()
 	SettingsManager.monitor_idx = saved_idx
@@ -355,7 +355,7 @@ func _populate_binds() -> void:
 
 func _on_apply() -> void:
 	var res_idx := _res_option.selected
-	var res     := SettingsManager.resolution
+	var res     : Vector2i = SettingsManager.resolution
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
 	# Najpierw ustaw skalową — apply_settings wywoła _save() który już zapisze aktualny stan.

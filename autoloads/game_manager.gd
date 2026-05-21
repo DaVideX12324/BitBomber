@@ -1,5 +1,7 @@
 extends Node
 
+const BBRuntime = preload("../scripts/bb_runtime.gd")
+
 ## Główny menedżer gry BitBomber.
 ## Zarządza stanami gry i przejściami między nimi.
 
@@ -72,7 +74,7 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 	if game_node:
 		game_node.load_arena()
 	else:
-		get_tree().change_scene_to_file("res://scenes/maps/arena.tscn")
+		get_tree().change_scene_to_file(BBRuntime.path("scenes/maps/arena.tscn"))
 
 
 func go_to_menu() -> void:
@@ -82,7 +84,7 @@ func go_to_menu() -> void:
 	elif game_node:
 		game_node.load_menu()
 	else:
-		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+		get_tree().change_scene_to_file(BBRuntime.path("scenes/ui/main_menu.tscn"))
 		
 		# W game_manager.gd
 func log_debug(message: Variant, category: String = "GENERAL") -> void:

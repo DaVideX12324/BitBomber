@@ -11,7 +11,9 @@ extends Node
 ## load_arena()    — nowa sesja (tworzy graczy od nowa)
 ## next_round()    — kolejna runda (gracze zostają, reset statsy + nowa mapa)
 
-const PLAYER_SCENE = preload("res://scenes/players/player.tscn")
+const BBRuntime = preload("bb_runtime.gd")
+
+var _player_scene: PackedScene = load(BBRuntime.path("scenes/players/player.tscn"))
 
 @onready var hud         : CanvasLayer = $HUD
 @onready var players_root: Node2D      = $Players
@@ -46,7 +48,7 @@ func _load_menu() -> void:
 	if _current_map:
 		_current_map.queue_free()
 		_current_map = null
-	var menu : Node = load("res://scenes/ui/main_menu.tscn").instantiate()
+	var menu : Node = load(BBRuntime.path("scenes/ui/main_menu.tscn")).instantiate()
 	_current_map = menu
 	add_child(menu)
 	move_child(menu, 0)
@@ -56,7 +58,7 @@ func _load_menu() -> void:
 func load_arena() -> void:
 	_clear_players()
 	_spawn_players()
-	_load_map("res://scenes/maps/arena.tscn")
+	_load_map(BBRuntime.path("scenes/maps/arena.tscn"))
 	_set_players_visible(true)
 	_connect_players_to_hud()
 	RoundManager.start_round()
@@ -67,7 +69,7 @@ func load_arena() -> void:
 ## Kolejna runda — gracze zostają, resetuje statsy i ładuje nową arenę
 func next_round() -> void:
 	_reset_players()
-	_load_map("res://scenes/maps/arena.tscn")
+	_load_map(BBRuntime.path("scenes/maps/arena.tscn"))
 	_set_players_visible(true)
 	RoundManager.start_round()
 
@@ -91,7 +93,7 @@ func load_menu() -> void:
 func _spawn_players() -> void:
 	var humans : int = GameManager.num_human_players
 	for i in range(humans):
-		var p := PLAYER_SCENE.instantiate() as CharacterBody2D
+		var p := _player_scene.instantiate() as CharacterBody2D
 		p.player_id = i + 1
 		p.is_bot    = false
 		players_root.add_child(p)
@@ -99,7 +101,7 @@ func _spawn_players() -> void:
 		p.died.connect(_on_player_died)
 
 	for i in range(GameManager.num_bots):
-		var bot := PLAYER_SCENE.instantiate() as CharacterBody2D
+		var bot := _player_scene.instantiate() as CharacterBody2D
 		bot.player_id      = humans + i + 1
 		bot.is_bot         = true
 		bot.bot_difficulty = GameManager.bot_difficulty

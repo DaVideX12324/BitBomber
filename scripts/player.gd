@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const BBRuntime = preload("bb_runtime.gd")
+
 ## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system życ.
 ##
 ## collision_layer = 2  (warstwa graczy)
@@ -15,7 +17,7 @@ const GRID_SIZE  : int   = 64
 const MOVE_SPEED : float = 250
 const CORNER_SLIDE_SPEED : float = 150.0
 
-const BOMB_SCENE = preload("res://scenes/objects/bomb.tscn")
+var _bomb_scene: PackedScene = load(BBRuntime.path("scenes/objects/bomb.tscn"))
 
 const DEFAULT_LIVES    : int   = 1
 const DEFAULT_BOMBS    : int   = 1
@@ -82,7 +84,7 @@ func _init_ai() -> void:
 	if arena == null:
 		return
 
-	var BotAIScript = load("res://scripts/bot_ai.gd")
+	var BotAIScript = load(BBRuntime.path("scripts/bot_ai.gd"))
 	var ai_node = Node.new()
 	ai_node.set_script(BotAIScript)
 	ai_node.name = "BotAI"
@@ -273,7 +275,7 @@ func _place_bomb() -> void:
 			return
 
 	var map_root := _get_map_root()
-	var bomb := BOMB_SCENE.instantiate()
+	var bomb := _bomb_scene.instantiate()
 	bomb.global_position = _grid_to_pixel(bomb_cell)
 	bomb.explosion_range = bomb_range
 	bomb.owner_player    = self

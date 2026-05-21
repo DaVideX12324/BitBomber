@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://cgv1i5mt2jggp"]
 
-[ext_resource type="Script" uid="uid://ky1a233wsr1s" path="res://scripts/game.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://bvhud000001" path="res://scenes/ui/hud.tscn" id="2"]
-[ext_resource type="PackedScene" uid="uid://durkd13kos1xe" path="res://scenes/ui/death_screen.tscn" id="3"]
-[ext_resource type="PackedScene" uid="uid://dnu7tdv6y78we" path="res://scenes/ui/pause_menu.tscn" id="4"]
-[ext_resource type="Script" uid="uid://5wyvhd4oh643" path="res://scripts/game_settings.gd" id="5_iywne"]
+[ext_resource type="Script" uid="uid://ky1a233wsr1s" path="../scripts/game.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bvhud000001" path="ui/hud.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://durkd13kos1xe" path="ui/death_screen.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://dnu7tdv6y78we" path="ui/pause_menu.tscn" id="4"]
+[ext_resource type="Script" uid="uid://5wyvhd4oh643" path="../scripts/game_settings.gd" id="5_iywne"]
 
 [node name="Game" type="Node" unique_id=523497370]
 script = ExtResource("1")

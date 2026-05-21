@@ -1,5 +1,7 @@
 extends Node
 
+const BBRuntime = preload("../scripts/bb_runtime.gd")
+
 ## Zarządza bazą pytań quizowych, ładowaniem z JSON i walidacją odpowiedzi.
 ## Oddziela warstwę merytoryczną od prezentacji — pytania ładowane z plików JSON.
 ##
@@ -30,6 +32,8 @@ var _current_score: int = 0
 
 
 func _ready() -> void:
+	if _get_host_quiz_service():
+		return
 	_load_all_quizzes()
 
 
@@ -39,7 +43,8 @@ func _ready() -> void:
 
 ## Ładuje wszystkie pliki .json z folderu res://resources/quizzes/
 func _load_all_quizzes() -> void:
-	var dir = DirAccess.open("res://resources/quizzes/")
+	var dir_path: String = BBRuntime.path("resources/quizzes/")
+	var dir = DirAccess.open(dir_path)
 	if not dir:
 		push_warning("QuizManager: Brak folderu quizzes!")
 		return
@@ -49,7 +54,7 @@ func _load_all_quizzes() -> void:
 	while file_name != "":
 		if file_name.ends_with(".json"):
 			var quiz_id = file_name.get_basename()
-			_load_quiz_file("res://resources/quizzes/" + file_name, quiz_id)
+			_load_quiz_file(dir_path + "/" + file_name, quiz_id)
 		file_name = dir.get_next()
 	dir.list_dir_end()
 	print("QuizManager: Załadowano %d quizów" % _quizzes.size())
@@ -88,6 +93,10 @@ func get_questions(
 	count: int = 5, 
 	allowed_types: Array = []
 	) -> Array:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		return host_quiz_service.get_questions(quiz_id, difficulty_range, count, allowed_types)
+
 	if not _quizzes.has(quiz_id):
 		push_warning("QuizManager: Quiz '%s' nie istnieje" % quiz_id)
 		return []
@@ -136,6 +145,10 @@ func start_quiz(
 	count: int = 5,
 	allowed_types: Array = []
 ) -> Dictionary:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		return host_quiz_service.start_quiz(quiz_id, difficulty_range, count, allowed_types)
+
 	_current_questions = get_questions(quiz_id, difficulty_range, count, allowed_types)
 	_current_quiz_id = quiz_id
 	_current_question_index = 0
@@ -152,6 +165,10 @@ func start_quiz(
 ## player_answer: Dictionary — format zależy od pola "type" pytania (patrz nagłówek).
 ## Zwraca słownik z wynikiem lub {} jeśli quiz już skończony.
 func answer_current(player_answer: Dictionary) -> Dictionary:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		return host_quiz_service.answer_current(player_answer)
+
 	if _current_question_index >= _current_questions.size():
 		return {}
 
@@ -194,12 +211,20 @@ func answer_current(player_answer: Dictionary) -> Dictionary:
 
 ## Zwraca bieżące pytanie bez przesuwania indeksu.
 func get_current_question() -> Dictionary:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		return host_quiz_service.get_current_question()
+
 	if _current_question_index < _current_questions.size():
 		return _current_questions[_current_question_index]
 	return {}
 
 
 func get_quiz_ids() -> Array:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		return host_quiz_service.get_quiz_ids()
+
 	return _quizzes.keys()
 
 
@@ -272,6 +297,10 @@ func _compare_pairs(player: Array, correct: Array) -> bool:
 
 ## Dokładność per kategoria (do DifficultyManager / własnych analiz)
 func get_accuracy_for_category(category: String) -> float:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("get_accuracy_for_category"):
+		return host_quiz_service.get_accuracy_for_category(category)
+
 	var correct_count := 0
 	var total_count := 0
 	for quiz_id in _quizzes:
@@ -287,6 +316,10 @@ func get_accuracy_for_category(category: String) -> float:
 
 
 func get_overall_accuracy() -> float:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("get_overall_accuracy"):
+		return host_quiz_service.get_overall_accuracy()
+
 	var correct_count := 0
 	var total_count := 0
 	for qid in _answered_questions:
@@ -302,18 +335,42 @@ func get_overall_accuracy() -> float:
 # ---------------------------------------------------------------------------
 
 func get_save_data() -> Dictionary:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("get_save_data"):
+		return host_quiz_service.get_save_data()
+
 	return {
 		"answered_questions": _answered_questions.duplicate(true),
 	}
 
 
 func load_save_data(data: Dictionary) -> void:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("load_save_data"):
+		host_quiz_service.load_save_data(data)
+		return
+
 	_answered_questions = data.get("answered_questions", {})
 
 
 func reset() -> void:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("reset"):
+		host_quiz_service.reset()
+		return
+
 	_answered_questions.clear()
 	_current_quiz_id = ""
 	_current_questions.clear()
 	_current_question_index = 0
 	_current_score = 0
+
+
+func _get_host_quiz_service() -> Node:
+	var root := get_tree().root if get_tree() else null
+	if not root:
+		return null
+	var service := root.get_node_or_null("QuizService")
+	if service == self:
+		return null
+	return service

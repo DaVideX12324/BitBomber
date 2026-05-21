@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://powerup"]
 
-[ext_resource type="Script" uid="uid://c7ifeqbukldt8" path="res://scripts/powerup.gd" id="1"]
+[ext_resource type="Script" uid="uid://c7ifeqbukldt8" path="../../scripts/powerup.gd" id="1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_82byj"]
 size = Vector2(48, 48)

@@ -1,5 +1,7 @@
 extends Node2D
 
+const BBRuntime = preload("bb_runtime.gd")
+
 ## Scena areny odpowiada TYLKO za mapę:
 ## budowanie siatki, kolizje, API dla bomb/eksplozji, spawn pointy.
 ## Gracze są spawnowani przez game.gd.
@@ -35,7 +37,7 @@ var spawn_points : Array[Vector2i] = []
 ## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
 const POWERUP_CHANCE : float = 0.40
 
-const POWERUP_SCENE = preload("res://scenes/objects/powerup.tscn")
+var _powerup_scene: PackedScene = load(BBRuntime.path("scenes/objects/powerup.tscn"))
 
 ## Pula typów (wagi: range_up 4×, bomb_up 4×, speed_up 3×, life_up 1×)
 const POWERUP_POOL : Array[String] = [
@@ -196,7 +198,7 @@ func break_cell(cell: Vector2i) -> bool:
 
 
 func _spawn_powerup(cell: Vector2i) -> void:
-	var pu   := POWERUP_SCENE.instantiate()
+	var pu   := _powerup_scene.instantiate()
 	var type : String = POWERUP_POOL[randi() % POWERUP_POOL.size()]
 	pu.powerup_type    = type
 	pu.position        = Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://nxfxhx8egip5"]
 
-[ext_resource type="Script" uid="uid://cw2y2pg21ve0q" path="res://scripts/bomb.gd" id="1"]
+[ext_resource type="Script" uid="uid://cw2y2pg21ve0q" path="../../scripts/bomb.gd" id="1"]
 [ext_resource type="Shader" uid="uid://byuec8inr4t8x" path="res://shaders/bomb.gdshader" id="2_cyuu0"]
 
 [sub_resource type="Shader" id="Shader_unqwv"]

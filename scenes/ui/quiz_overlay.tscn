@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://belt4sxp0pq2l"]
 
-[ext_resource type="Script" uid="uid://dbd58lwrqgtl1" path="res://scripts/quiz_overlay.gd" id="1"]
+[ext_resource type="Script" uid="uid://dbd58lwrqgtl1" path="../../scripts/quiz_overlay.gd" id="1"]
 
 [node name="QuizOverlay" type="CanvasLayer" unique_id=377216357]
 layer = 20

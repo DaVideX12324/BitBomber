@@ -1,6 +1,8 @@
 extends StaticBody2D
 
-const EXPLOSION_SCENE = preload("res://scenes/objects/explosion.tscn")
+const BBRuntime = preload("bb_runtime.gd")
+
+var _explosion_scene: PackedScene = load(BBRuntime.path("scenes/objects/explosion.tscn"))
 const GRID_SIZE : int   = 64
 const FUSE_TIME : float = 2.0
 
@@ -86,7 +88,7 @@ func _explode() -> void:
 
 
 func _spawn_explosion(pos: Vector2) -> void:
-	var exp := EXPLOSION_SCENE.instantiate()
+	var exp := _explosion_scene.instantiate()
 	exp.global_position = pos
 	var target := _get_map_root()
 	if target:
