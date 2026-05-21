@@ -132,7 +132,7 @@ func _get_weighted_question(allowed_types: Array = []) -> Dictionary:
 	var valid_questions : Array = []
 	var diffs_available : Array[int] = []
 	for quiz_id in all_ids:
-		for q in QuizManager._quizzes[quiz_id]:
+		for q in QuizManager.get_questions(quiz_id, range_v, 999, allowed_types):
 			if not allowed_types.is_empty():
 				var t = q.get("type", "multiple_choice")
 				if not t in allowed_types: continue
@@ -176,8 +176,7 @@ func _start_quiz_flow(dead_player_id: int) -> void:
 	var simple     := _is_simple_type(q)
 	if simple: _duel_allowed_types = ["multiple_choice", "true_false"]
 	else:      _duel_allowed_types = ["fill_tiles", "fill_text", "matching"]
-	QuizManager._current_questions = [q]
-	QuizManager._current_question_index = 0
+	QuizManager.start_custom_questions([q], "last_chance")
 	var mode = _quiz_overlay.RivalMode.SOLO
 	if two_player:
 		if simple:
@@ -190,16 +189,14 @@ func _start_quiz_flow(dead_player_id: int) -> void:
 func _ask_question_p1() -> void:
 	var q := _get_weighted_question(_duel_allowed_types)
 	if q.is_empty(): _on_quiz_result(1); return
-	QuizManager._current_questions = [q]
-	QuizManager._current_question_index = 0
+	QuizManager.start_custom_questions([q], "last_chance")
 	_quiz_overlay.show_quiz(q, _quiz_overlay.RivalMode.DUEL_P1, _get_time_limit(), _dead_player_id)
 
 
 func _ask_question_p2() -> void:
 	var q := _get_weighted_question(_duel_allowed_types)
 	if q.is_empty(): _on_quiz_result(1); return
-	QuizManager._current_questions = [q]
-	QuizManager._current_question_index = 0
+	QuizManager.start_custom_questions([q], "last_chance")
 	_quiz_overlay.show_quiz(q, _quiz_overlay.RivalMode.DUEL_P2, _get_time_limit(), _dead_player_id)
 
 

@@ -73,6 +73,65 @@ const BUS_MUSIC  := "Music"
 const BUS_SFX    := "SFX"
 
 
+func _display_state() -> Node:
+	var host_window: Node = get_node_or_null("/root/WindowService")
+	if host_window:
+		return host_window
+	return get_node_or_null("/root/SettingsManager")
+
+
+func _settings_state() -> Node:
+	var host_settings: Node = get_node_or_null("/root/SettingsService")
+	if host_settings:
+		return host_settings
+	return get_node_or_null("/root/SettingsManager")
+
+
+func _display_mode_idx() -> int:
+	var value: Variant = _display_state().get("window_mode_idx")
+	return value if value is int else 0
+
+
+func _display_monitor_idx() -> int:
+	var value: Variant = _display_state().get("monitor_idx")
+	return value if value is int else 0
+
+
+func _display_resolution() -> Vector2i:
+	var value: Variant = _display_state().get("resolution")
+	return value if value is Vector2i else Vector2i(1280, 720)
+
+
+func _ui_scale_user_picked() -> bool:
+	var current: Variant = UIScaleManager.get("user_picked")
+	if current != null:
+		return bool(current)
+	return bool(UIScaleManager.get("_user_picked"))
+
+
+func _available_resolutions_for(screen: int) -> Array[Vector2i]:
+	var settings_state := _settings_state()
+	if settings_state == null or not settings_state.has_method("get_available_resolutions"):
+		return []
+
+	var host_window: Node = get_node_or_null("/root/WindowService")
+	if host_window and host_window.has_method("get_available_resolutions"):
+		var from_window: Variant = host_window.call("get_available_resolutions", screen)
+		if from_window is Array:
+			return from_window as Array[Vector2i]
+
+	var previous_monitor: Variant = settings_state.get("monitor_idx")
+	if previous_monitor is int:
+		settings_state.set("monitor_idx", screen)
+	var from_settings: Variant = settings_state.call("get_available_resolutions")
+	if previous_monitor is int:
+		settings_state.set("monitor_idx", previous_monitor)
+	if from_settings is Array:
+		return from_settings as Array[Vector2i]
+
+	return []
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
@@ -179,11 +238,11 @@ func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
 # ---------------------------------------------------------------------------
 
 func open() -> void:
-	_prev_mode              = SettingsManager.window_mode_idx
-	_prev_res               = SettingsManager.resolution
-	_prev_monitor           = SettingsManager.monitor_idx
+	_prev_mode              = _display_mode_idx()
+	_prev_res               = _display_resolution()
+	_prev_monitor           = _display_monitor_idx()
 	_prev_scale             = UIScaleManager.current_mode
-	_prev_scale_user_picked = UIScaleManager._user_picked
+	_prev_scale_user_picked = _ui_scale_user_picked()
 	_sel_mode               = _prev_mode
 	_sel_scale              = _prev_scale
 	_scale_manually_changed = false
@@ -214,7 +273,7 @@ func _sync_mode_buttons() -> void:
 
 
 func _sync_resolution() -> void:
-	var cur_res : Vector2i = SettingsManager.resolution
+	var cur_res : Vector2i = _display_resolution()
 	for i in _resolutions.size():
 		if _resolutions[i] == cur_res:
 			_res_option.selected = i
@@ -242,10 +301,7 @@ func _on_monitor_changed(idx: int) -> void:
 
 
 func _populate_resolutions(screen: int) -> void:
-	var saved_idx : int = SettingsManager.monitor_idx
-	SettingsManager.monitor_idx = screen
-	_resolutions = SettingsManager.get_available_resolutions()
-	SettingsManager.monitor_idx = saved_idx
+	_resolutions = _available_resolutions_for(screen)
 	_res_option.clear()
 	var screen_size := DisplayServer.screen_get_size(screen)
 	for r in _resolutions:
@@ -355,7 +411,7 @@ func _populate_binds() -> void:
 
 func _on_apply() -> void:
 	var res_idx := _res_option.selected
-	var res     : Vector2i = SettingsManager.resolution
+	var res     : Vector2i = _display_resolution()
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
 	# Najpierw ustaw skalową — apply_settings wywoła _save() który już zapisze aktualny stan.

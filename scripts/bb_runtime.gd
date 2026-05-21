@@ -5,7 +5,7 @@ const STANDALONE_ROOT := "res://"
 
 
 static func module_root() -> String:
-	if ResourceLoader.exists(HOST_MODULE_ROOT + "/README.md"):
+	if FileAccess.file_exists(HOST_MODULE_ROOT + "/module_manifest.json"):
 		return HOST_MODULE_ROOT
 	return STANDALONE_ROOT
 

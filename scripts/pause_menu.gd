@@ -11,7 +11,7 @@ extends CanvasLayer
 @onready var _btn_resume   : Button          = $Panel/Margin/VBox/BtnResume
 @onready var _btn_options  : Button          = $Panel/Margin/VBox/BtnOptions
 @onready var _btn_menu     : Button          = $Panel/Margin/VBox/BtnMenu
-@onready var _options_menu                   = $OptionsMenu
+@onready var _local_options_menu: CanvasLayer = $OptionsMenu
 
 # Bazowe rozmiary z .tscn
 const BASE_PANEL_HALF_W := 220.0
@@ -22,17 +22,33 @@ const BASE_FS_TITLE     := 32
 const BASE_FS_BTN       := 20
 const BASE_BTN_SIZE     := Vector2(200.0, 44.0)
 const BASE_PANEL_PADDING  := 20
+const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 
 var _paused : bool = false
+var _options_menu: CanvasLayer
 
 
 func _ready() -> void:
+	_options_menu = _resolve_options_menu()
 	visible = false
 	_btn_resume.pressed.connect(resume)
 	_btn_options.pressed.connect(_on_options)
 	_btn_menu.pressed.connect(_on_menu)
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
+
+
+func _resolve_options_menu() -> CanvasLayer:
+	var host_settings := get_node_or_null("/root/SettingsService")
+	if host_settings and ResourceLoader.exists(HOST_OPTIONS_MENU_SCENE):
+		var host_scene := load(HOST_OPTIONS_MENU_SCENE) as PackedScene
+		if host_scene:
+			var host_menu := host_scene.instantiate() as CanvasLayer
+			if host_menu:
+				_local_options_menu.queue_free()
+				add_child(host_menu)
+				return host_menu
+	return _local_options_menu
 
 
 func _on_scale_changed(_s: float) -> void:

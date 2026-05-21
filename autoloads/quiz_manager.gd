@@ -228,6 +228,27 @@ func get_quiz_ids() -> Array:
 	return _quizzes.keys()
 
 
+func start_custom_questions(questions: Array, quiz_id: String = "custom") -> Dictionary:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service and host_quiz_service.has_method("start_custom_questions"):
+		var module_id := "bitbomber"
+		var core_manager := get_node_or_null("/root/CoreManager")
+		if core_manager and core_manager.has_method("get_active_module_id"):
+			var active_module_id := str(core_manager.call("get_active_module_id"))
+			if active_module_id != "":
+				module_id = active_module_id
+		return host_quiz_service.start_custom_questions(module_id, questions, quiz_id)
+
+	_current_questions = questions.duplicate(true)
+	_current_quiz_id = quiz_id
+	_current_question_index = 0
+	_current_score = 0
+	if _current_questions.is_empty():
+		return {}
+	quiz_loaded.emit(quiz_id)
+	return _current_questions[0]
+
+
 # ---------------------------------------------------------------------------
 # Sprawdzanie odpowiedzi — wewnętrzna logika per typ
 # ---------------------------------------------------------------------------

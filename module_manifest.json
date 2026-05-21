@@ -1,0 +1,8 @@
+{
+  "id": "bitbomber",
+  "name": "BitBomber",
+  "description": "Edukacyjna gra w stylu Bombermana z quizami i lokalnym multiplayerem.",
+  "version": "0.1.0",
+  "entry_scene": "module_root.tscn",
+  "quiz_path": "resources/quizzes"
+}

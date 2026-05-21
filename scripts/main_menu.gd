@@ -21,7 +21,7 @@ extends CanvasLayer
 @onready var _options_btn   : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnOptions
 @onready var _quit_btn      : Button       = $Center/Panel/Margin/VBox/BtnQuit
 @onready var _ver_label     : Label        = $VerLabel
-@onready var _options_menu                 = $OptionsMenu
+@onready var _local_options_menu: CanvasLayer = $OptionsMenu
 
 @onready var _players_btns : Array[Button] = [
 	$Center/Panel/Margin/VBox/HBoxPlayers/Players_1,
@@ -61,9 +61,13 @@ var _sel_diff    : int = 0
 var _sel_win     : int = 0
 
 var _help_overlay : ColorRect
+var _options_menu: CanvasLayer
+
+const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 
 
 func _ready() -> void:
+	_options_menu = _resolve_options_menu()
 	for i in _players_btns.size():
 		var idx := i
 		_players_btns[i].pressed.connect(func(): _set_players(idx + 1))
@@ -97,6 +101,19 @@ func _ready() -> void:
 	_build_help_overlay()
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
+
+
+func _resolve_options_menu() -> CanvasLayer:
+	var host_settings := get_node_or_null("/root/SettingsService")
+	if host_settings and ResourceLoader.exists(HOST_OPTIONS_MENU_SCENE):
+		var host_scene := load(HOST_OPTIONS_MENU_SCENE) as PackedScene
+		if host_scene:
+			var host_menu := host_scene.instantiate() as CanvasLayer
+			if host_menu:
+				_local_options_menu.queue_free()
+				add_child(host_menu)
+				return host_menu
+	return _local_options_menu
 
 
 # ---------------------------------------------------------------------------
