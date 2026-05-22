@@ -81,7 +81,7 @@ func _ready() -> void:
 		var idx := i
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
-	_quit_btn.pressed.connect(get_tree().quit)
+	_quit_btn.pressed.connect(_on_quit_pressed)
 	_help_btn.pressed.connect(_show_help)
 	_options_btn.pressed.connect(func(): _options_menu.open())
 	var quizzes = QuizManager.get_quiz_ids()
@@ -99,6 +99,7 @@ func _ready() -> void:
 	_refresh_diff()
 	_refresh_win()
 	_build_help_overlay()
+	_update_quit_button()
 	UIScaleManager.scale_changed.connect(_on_scale_changed)
 	_on_scale_changed(UIScaleManager.scale_factor)
 
@@ -244,6 +245,20 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 	else:
 		GameManager.max_rounds = rounds
 	GameManager.start_game(humans, bots)
+
+
+func _on_quit_pressed() -> void:
+	if GameManager and GameManager.has_method("exit_game"):
+		GameManager.exit_game()
+	else:
+		get_tree().quit()
+
+
+func _update_quit_button() -> void:
+	if GameManager and GameManager.has_method("is_embedded") and GameManager.is_embedded():
+		_quit_btn.text = "✕ Powrot do menu glownego"
+	else:
+		_quit_btn.text = "✕ Wyjscie"
 
 
 # ---------------------------------------------------------------------------

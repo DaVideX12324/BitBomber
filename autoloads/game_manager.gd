@@ -79,14 +79,22 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 
 func go_to_menu() -> void:
 	change_state(GameState.MENU)
+	if game_node:
+		game_node.load_menu()
+	else:
+		get_tree().change_scene_to_file(BBRuntime.path("scenes/ui/main_menu.tscn"))
+
+
+func exit_game() -> void:
+	change_state(GameState.MENU)
 	if is_embedded():
 		host_module.emit_signal("exit_requested")
 	elif game_node:
 		game_node.load_menu()
 	else:
-		get_tree().change_scene_to_file(BBRuntime.path("scenes/ui/main_menu.tscn"))
-		
-		# W game_manager.gd
+		get_tree().quit()
+
+
 func log_debug(message: Variant, category: String = "GENERAL") -> void:
 	if OS.is_debug_build(): # Zwraca true tylko w edytorze i debugowych buildach
 		print("[%s] %s" % [category.to_upper(), str(message)])
