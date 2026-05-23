@@ -116,6 +116,39 @@ func _get_diff_range() -> Vector2i:
 		_: return Vector2i(2, 4)
 
 
+func _is_quizless_mode_enabled() -> bool:
+	var host_settings: Node = get_node_or_null("/root/SettingsService")
+	if host_settings and host_settings.has_method("is_quizless_mode_enabled"):
+		return bool(host_settings.call("is_quizless_mode_enabled"))
+
+	for key_name: String in ["quizless_mode", "disable_quizzes", "skip_quizzes"]:
+		var value: Variant = null
+		if host_settings:
+			if host_settings.has_method("get_global"):
+				value = host_settings.call("get_global", key_name, null)
+			elif host_settings.has_method("get_module"):
+				value = host_settings.call("get_module", "bitbomber", key_name, null)
+			if value != null:
+				return bool(value)
+
+		var local_settings: Node = get_node_or_null("/root/SettingsManager")
+		if local_settings:
+			if local_settings.has_method("get_global"):
+				value = local_settings.call("get_global", key_name, null)
+			else:
+				value = local_settings.get(key_name)
+			if value != null:
+				return bool(value)
+
+	return false
+
+
+func _auto_pass_last_chance() -> void:
+	_duel_active = false
+	_do_resume()
+	RoundManager.resolve_last_chance(true)
+
+
 func _get_weighted_question(allowed_types: Array = []) -> Dictionary:
 	var range_v : Vector2i = _get_diff_range()
 	var weights : Array[int]
@@ -167,10 +200,13 @@ func _is_simple_type(q: Dictionary) -> bool:
 func _start_quiz_flow(dead_player_id: int) -> void:
 	_duel_active   = false
 	_duel_p1_score = 0
+	if _is_quizless_mode_enabled():
+		_auto_pass_last_chance()
+		return
 	_do_pause()
 	var q := _get_weighted_question([])
 	if q.is_empty():
-		_on_quiz_result(1)
+		_auto_pass_last_chance()
 		return
 	var two_player := GameManager.num_human_players >= 2
 	var simple     := _is_simple_type(q)
