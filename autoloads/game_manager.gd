@@ -89,8 +89,6 @@ func exit_game() -> void:
 	change_state(GameState.MENU)
 	if is_embedded():
 		host_module.emit_signal("exit_requested")
-	elif game_node:
-		game_node.load_menu()
 	else:
 		get_tree().quit()
 
