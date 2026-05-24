@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://cifsnravkbggb"
-path="res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-1adc262594a563de32df5b3642e087c8.fontdata"
+path="res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-2297122da6a12bf5aa3f537cbc35b182.fontdata"
 
 [deps]
 
-source_file="res://resources/fonts/Inter-VariableFont_opsz,wght.ttf"
-dest_files=["res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-1adc262594a563de32df5b3642e087c8.fontdata"]
+source_file="res://modules/BitBomber/resources/fonts/Inter-VariableFont_opsz,wght.ttf"
+dest_files=["res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-2297122da6a12bf5aa3f537cbc35b182.fontdata"]
 
 [params]
 
