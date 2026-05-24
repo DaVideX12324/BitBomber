@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://cdb5t0mrfdnjs"
-path="res://.godot/imported/Inter-Italic-VariableFont_opsz,wght.ttf-48f7ad8f8614e1d63172bc07b38f1f71.fontdata"
+path="res://.godot/imported/Inter-Italic-VariableFont_opsz,wght.ttf-e2e9ae0a6e67cdaa3285c1f9578fc45a.fontdata"
 
 [deps]
 
-source_file="res://modules/BitBomber/resources/fonts/Inter-Italic-VariableFont_opsz,wght.ttf"
-dest_files=["res://.godot/imported/Inter-Italic-VariableFont_opsz,wght.ttf-48f7ad8f8614e1d63172bc07b38f1f71.fontdata"]
+source_file="res://resources/fonts/Inter-Italic-VariableFont_opsz,wght.ttf"
+dest_files=["res://.godot/imported/Inter-Italic-VariableFont_opsz,wght.ttf-e2e9ae0a6e67cdaa3285c1f9578fc45a.fontdata"]
 
 [params]
 
