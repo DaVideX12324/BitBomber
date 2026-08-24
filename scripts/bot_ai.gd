@@ -82,7 +82,9 @@ func _make_settings(state_name: String) -> StateSettings:
 		Difficulty.EASY:
 			match state_name:
 				"escape":
-					s.percentage = 1.0;  s.dodge_on_step = 0.5
+					# EASY: bardzo rzadko decyduje się uciec (15% szans),
+					# a gdy już ucieka, robi to powoli i niechlujnie (dodge_on_step = 0.2)
+					s.percentage = 0.15; s.dodge_on_step = 0.2
 				"box":
 					s.percentage = 0.6;  s.bomb_chance = 0.4
 					s.dodge_on_step = 0.3; s.noise_chance = 0.35
@@ -96,7 +98,10 @@ func _make_settings(state_name: String) -> StateSettings:
 		Difficulty.MEDIUM:
 			match state_name:
 				"escape":
-					s.percentage = 1.0;  s.dodge_on_step = 1.0
+					# MEDIUM: ucieka częściej niż EASY (55% szans),
+					# ale dodge_on_step = 0.55 — reaguje wolniej niż HARD (1.0),
+					# częściej niż EASY (0.2)
+					s.percentage = 0.55; s.dodge_on_step = 0.55
 				"box":
 					s.percentage = 0.75; s.bomb_chance = 0.75; s.dodge_on_step = 0.8
 				"get_item":
