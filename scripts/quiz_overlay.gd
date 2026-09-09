@@ -507,6 +507,7 @@ func _on_matching_confirm() -> void:
 
 
 func _on_match_left(index: int) -> void:
+	if _locked: return
 	_match_selected = index
 	for i in _match_left_btns.size():
 		if i == index: _match_left_btns[i].add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
@@ -514,6 +515,7 @@ func _on_match_left(index: int) -> void:
 
 
 func _on_match_right(index: int) -> void:
+	if _locked: return
 	if _match_selected < 0: return
 	var left_items : Array = _question.get("left_items", [])
 	for key in _match_pairs.keys():
@@ -524,11 +526,13 @@ func _on_match_right(index: int) -> void:
 				_match_left_btns[key].remove_theme_color_override("font_color")
 	_match_pairs[_match_selected] = index
 	if _match_selected < _match_left_btns.size():
-		_match_left_btns[_match_selected].text = str(left_items[_match_selected]) + " ✓"
+		var right_items : Array = _question.get("right_items", [])
+		var r_txt := str(right_items[index]) if index < right_items.size() else ""
+		_match_left_btns[_match_selected].text = "%s ➔ %s" % [str(left_items[_match_selected]), r_txt]
 	_match_selected = -1
 	for btn in _match_left_btns:  btn.remove_theme_color_override("font_color")
 	for i in _match_right_btns.size():
-		if _match_pairs.values().has(i): _match_right_btns[i].add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+		if _match_pairs.values().has(i): _match_right_btns[i].add_theme_color_override("font_color", Color(0.3, 0.75, 1.0))
 		else: _match_right_btns[i].remove_theme_color_override("font_color")
 
 
@@ -591,6 +595,25 @@ func _show_result_label(correct: bool) -> void:
 		"matching":
 			var li : Array = _question.get("left_items", [])
 			var ri : Array = _question.get("right_items", [])
+			var correct_pairs : Array = _question.get("pairs", [])
+			for left_idx in range(_match_left_btns.size()):
+				var is_pair_correct := false
+				var right_idx: int = int(_match_pairs.get(left_idx, -1))
+				if _match_pairs.has(left_idx):
+					for cp in correct_pairs:
+						if int(cp.get("left_index", -1)) == left_idx and int(cp.get("right_index", -1)) == right_idx:
+							is_pair_correct = true
+							break
+				_match_left_btns[left_idx].add_theme_color_override("font_color", Color(0.3, 1.0, 0.4) if is_pair_correct else Color(1.0, 0.3, 0.3))
+			for right_idx in range(_match_right_btns.size()):
+				var is_paired_correctly := false
+				for key in _match_pairs.keys():
+					if int(_match_pairs[key]) == right_idx:
+						for cp in correct_pairs:
+							if int(cp.get("left_index", -1)) == int(key) and int(cp.get("right_index", -1)) == right_idx:
+								is_paired_correctly = true
+								break
+				_match_right_btns[right_idx].add_theme_color_override("font_color", Color(0.3, 1.0, 0.4) if is_paired_correctly else Color(1.0, 0.3, 0.3))
 			var lines : Array[String] = []
 			for pair in _question.get("pairs", []):
 				var l : int = pair.get("left_index", -1)
