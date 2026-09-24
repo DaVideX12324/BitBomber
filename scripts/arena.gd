@@ -142,28 +142,28 @@ func _near_spawn(cell: Vector2i, spawn: Vector2i) -> bool:
 
 func _spawn_solid_block(parent: Node, px: Vector2) -> void:
 	var body := StaticBody2D.new()
-	body.position = px + Vector2(GRID_SIZE/2, GRID_SIZE/2)
+	body.position = px + Vector2(GRID_SIZE / 2.0, GRID_SIZE / 2.0)
 	body.collision_layer = 1; body.collision_mask = 2
 	parent.add_child(body)
 	var shape := CollisionShape2D.new()
 	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
-	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE/2,-GRID_SIZE/2), COLOR_SOLID)
-	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_SOLID_HL)
-	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_SOLID_HL)
+	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_SOLID)
+	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
+	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
 
 
 func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
 	var body := StaticBody2D.new()
-	body.position = px + Vector2(GRID_SIZE/2, GRID_SIZE/2)
+	body.position = px + Vector2(GRID_SIZE / 2.0, GRID_SIZE / 2.0)
 	body.collision_layer = 1; body.collision_mask = 2
 	body.add_to_group("breakable"); parent.add_child(body)
 	var shape := CollisionShape2D.new()
 	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
-	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE/2,-GRID_SIZE/2), COLOR_BREAKABLE)
-	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_BREAKABLE_HL)
-	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE/2+2,-GRID_SIZE/2+2), COLOR_BREAKABLE_HL)
+	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_BREAKABLE)
+	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
+	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
 	return body
 
 
@@ -217,4 +217,4 @@ func pixel_to_grid(px: Vector2) -> Vector2i:
 ## Pixel-center n-tego spawna (losowa permutacja co rundę)
 func spawn_pixel(idx: int) -> Vector2:
 	var sp : Vector2i = spawn_points[idx % spawn_points.size()]
-	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2, sp.y * GRID_SIZE + GRID_SIZE / 2)
+	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2.0, sp.y * GRID_SIZE + GRID_SIZE / 2.0)

@@ -15,7 +15,7 @@ func _center_on_cursor_screen() -> void:
 	var screen_pos  : Vector2i = DisplayServer.screen_get_position(screen_idx)
 	var screen_size : Vector2i = DisplayServer.screen_get_size(screen_idx)
 	var window_size : Vector2i = DisplayServer.window_get_size()
-	var centered    : Vector2i = screen_pos + (screen_size - window_size) / 2
+	var centered    : Vector2i = screen_pos + Vector2i((screen_size.x - window_size.x) >> 1, (screen_size.y - window_size.y) >> 1)
 	DisplayServer.window_set_position(centered)
 
 
