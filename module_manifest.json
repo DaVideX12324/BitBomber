@@ -4,5 +4,68 @@
   "description": "Edukacyjna gra w stylu Bombermana z quizami i lokalnym multiplayerem.",
   "version": "0.1.0",
   "entry_scene": "module_root.tscn",
-  "quiz_path": "resources/quizzes"
+  "quiz_path": "resources/quizzes",
+  "controls": [
+    {
+      "label": "Gracz 1 — ruch",
+      "actions": [
+        "p1_up",
+        "p1_down",
+        "p1_left",
+        "p1_right"
+      ],
+      "keys": "W, S, A, D"
+    },
+    {
+      "label": "Gracz 1 — bomba",
+      "actions": [
+        "p1_bomb"
+      ],
+      "keys": "Spacja"
+    },
+    {
+      "label": "Gracz 1 — odpowiedzi",
+      "actions": [
+        "quiz_p1_a",
+        "quiz_p1_b",
+        "quiz_p1_c",
+        "quiz_p1_d"
+      ],
+      "keys": "1, 2, 3, 4"
+    },
+    {
+      "label": "Gracz 2 — ruch",
+      "actions": [
+        "p2_up",
+        "p2_down",
+        "p2_left",
+        "p2_right"
+      ],
+      "keys": "Strzałki"
+    },
+    {
+      "label": "Gracz 2 — bomba",
+      "actions": [
+        "p2_bomb"
+      ],
+      "keys": "Enter, Num 0"
+    },
+    {
+      "label": "Gracz 2 — odpowiedzi",
+      "actions": [
+        "quiz_p2_a",
+        "quiz_p2_b",
+        "quiz_p2_c",
+        "quiz_p2_d"
+      ],
+      "keys": "Num 1, 2, 3, 4"
+    },
+    {
+      "label": "Pauza",
+      "actions": [
+        "pause"
+      ],
+      "keys": "Esc"
+    }
+  ]
 }
