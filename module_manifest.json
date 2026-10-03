@@ -5,6 +5,27 @@
   "version": "0.1.0",
   "entry_scene": "module_root.tscn",
   "quiz_path": "resources/quizzes",
+  "action_labels": {
+    "p1_up": "Góra",
+    "p1_down": "Dół",
+    "p1_left": "Lewo",
+    "p1_right": "Prawo",
+    "p1_bomb": "Bomba",
+    "quiz_p1_a": "Odpowiedź A",
+    "quiz_p1_b": "Odpowiedź B",
+    "quiz_p1_c": "Odpowiedź C",
+    "quiz_p1_d": "Odpowiedź D",
+    "p2_up": "Góra",
+    "p2_down": "Dół",
+    "p2_left": "Lewo",
+    "p2_right": "Prawo",
+    "p2_bomb": "Bomba",
+    "quiz_p2_a": "Odpowiedź A",
+    "quiz_p2_b": "Odpowiedź B",
+    "quiz_p2_c": "Odpowiedź C",
+    "quiz_p2_d": "Odpowiedź D",
+    "pause": "Pauza"
+  },
   "controls": [
     {
       "label": "Gracz 1 — ruch",
