@@ -1,6 +1,6 @@
 # 💣 BitBomber
 
-BitBomber to gra w stylu Bombermana stworzona w **Godot 4** jako samodzielny projekt oraz osadzalny moduł edukacyjny (plug-and-play) dla systemu [Artefakt Wiedzy](https://github.com/DaVideX12324/Artefakt-Wiedzy).
+BitBomber to gra w stylu Bombermana stworzona w **Godot 4** jako samodzielny projekt oraz osadzalny moduł edukacyjny (plug-and-play) dla platformy [Artefakt Wiedzy](https://github.com/DaVideX12324/Artefakt-Wiedzy-modular) (w hoście leży jako submoduł `modules/BitBomber`).
 
 Gracze (i boty) kładą bomby, niszczą skrzynki, zbierają power-upy i rywalizują o wygraną. Po śmierci gracza aktywuje się tryb **Last Chance** — krótki quiz, który daje szansę na respawn.
 
@@ -38,62 +38,50 @@ AI używa **Godot `AStarGrid2D`** do pathfindingu oraz **BFS** do wykrywania bez
 
 ```
 BitBomber/
-├── autoloads/          # Singletony: GameManager, RoundManager, QuizManager
+├── module_manifest.json    # Rejestracja modułu w hoście (id, entry_scene, opis sterowania dla opcji hosta)
+├── module_root.tscn/.gd    # Cienki wrapper modułu: otwiera scenę gry, rejestruje akcje wejścia, request_exit()
+├── project.godot.off       # Konfiguracja projektu do uruchomienia samodzielnego (zmień nazwę na project.godot)
+├── autoloads/              # GameManager, RoundManager, SpriteLoader (także w hoście) + Quiz/Settings/UIScale/WindowManager (tylko samodzielnie)
 ├── scenes/
-│   ├── maps/           # Sceny aren
-│   └── menus/          # Menu główne, UI
+│   ├── game.tscn           # Persistentny root gry
+│   ├── maps/               # Sceny aren
+│   ├── objects/            # Bomba, eksplozja, power-up
+│   ├── players/            # Gracz
+│   └── ui/                 # Menu główne, pauza, opcje, HUD, ekran śmierci, nakładka quizu
 ├── scripts/
-│   ├── arena.gd        # Logika mapy (siatka, skrzynki, spawny)
-│   ├── bomb.gd         # Zachowanie bomby i eksplozji
-│   ├── bot_ai.gd       # System AI bota (FSM + A* + BFS)
-│   ├── BitBomberModule.gd  # API trybu embedded
-│   ├── death_screen.gd # Overlay śmierci / końca rundy / quizu
-│   ├── explosion.gd    # Obszar eksplozji
-│   ├── game.gd         # Persistentny root gry (zarządza mapą i graczami)
-│   ├── game_manager.gd # Globalny menedżer stanów gry
-│   ├── hud.gd          # HUD (życia, wyniki, ikony)
-│   ├── main_menu.gd    # Logika menu głównego
-│   ├── pause_menu.gd   # Menu pauzy
-│   ├── player.gd       # Logika gracza (ruch, bomby, życia, last chance)
-│   ├── powerup.gd      # Power-upy
-│   ├── quiz_overlay.gd # Nakładka quizowa (DUEL / VERSUS)
-│   └── room_base.gd    # Bazowa klasa mapy
-└── resources/          # Dane quizów (JSON), style, motywy
+│   ├── arena.gd            # Logika mapy (siatka, skrzynki, spawny)
+│   ├── bomb.gd, explosion.gd, powerup.gd
+│   ├── bot_ai.gd           # System AI bota (FSM + A* + BFS)
+│   ├── bb_runtime.gd       # Ścieżki modułu: res://modules/BitBomber/… w hoście, res://… samodzielnie
+│   ├── game.gd, game_settings.gd, room_base.gd
+│   ├── player.gd           # Ruch, bomby, życia, last chance
+│   ├── hud.gd, main_menu.gd, options_menu.gd, pause_menu.gd, death_screen.gd, quiz_overlay.gd
+├── resources/              # Quizy (JSON), fonty (kopia fontów hosta, ukryta .gdignore), ikona
+└── shaders/                # Shader bomby
 ```
 
 ---
 
 ## 🔌 Tryb Embedded (Artefakt Wiedzy)
 
-BitBomber może działać jako osadzony moduł w innej aplikacji Godot. W trybie standalone zachowuje się identycznie jak normalna gra.
+BitBomber jest modułem platformy [Artefakt Wiedzy](https://github.com/DaVideX12324/Artefakt-Wiedzy-modular): host znajduje
+go po `module_manifest.json`, ładuje `module_root.tscn` i wywołuje `embedded_start(host_api, manifest)`.
+Samodzielnie ta sama gra działa jako zwykły projekt Godota (`project.godot.off` → `project.godot`).
 
-### Integracja:
-
-```gdscript
-var bb = preload("res://scripts/BitBomberModule.gd").new()
-add_child(bb)
-bb.exit_requested.connect(_on_bb_exit)
-bb.session_finished.connect(_on_bb_done)
-bb.start_session({
-    "players":      1,
-    "bots":         1,
-    "rounds_to_win": 3,
-    "difficulty":   1   # 0=Easy, 1=Medium, 2=Hard
-})
-```
-
-### Sygnały modułu:
-
-| Sygnał | Opis |
-|--------|------|
-| `exit_requested` | Gracz wcisnął "Menu główne" — host decyduje co dalej |
-| `session_finished(result)` | Sesja zakończona, `result` zawiera `winner_id`, `rounds_p1`, `rounds_p2` |
+- **Wyjście do hosta:** `module_root.gd` — `request_exit()` woła `host_api.request_exit()`, a bez hosta emituje sygnał
+  `exit_requested`.
+- **Ścieżki:** przez `BBRuntime.path("…")` (`scripts/bb_runtime.gd`), nigdy na twardo `res://modules/BitBomber/…`.
+- **Sterowanie:** akcje wejścia rejestruje `module_root.gd`, a ich opis dla zakładki „Sterowanie” w opcjach hosta jest
+  w manifeście (`controls`, `action_labels`).
+- **Quizy:** samodzielnie `QuizManager` BitBombera ładuje zestawy z `resources/quizzes`; w hoście `QuizManager`,
+  `SettingsManager`, `UIScaleManager` i `WindowManager` to usługi / adaptery hosta (`autoloads/compat/`), a BitBomber
+  korzysta przez nie z `QuizService`.
 
 ---
 
 ## 🛠️ Wymagania
 
-- **Godot 4.3+**
+- **Godot 4.7** (projekt hosta; `project.godot.off` zapisano w 4.6 — po otwarciu w 4.7 Godot przestawi wersję)
 - Brak zewnętrznych zależności
 
 ---
@@ -104,6 +92,7 @@ bb.start_session({
 - [ ] Power-up: tarcza / freeze
 - [ ] Obsługa pytań dostarczanych przez hosta (tryb embedded)
 - [ ] Wyniki i statystyki sesji
+- [ ] Konfiguracja sesji przez hosta i wynik na koniec (dawne `BitBomberModule.start_session(config)` z liczbą graczy, botów, rund i trudnością oraz sygnał `session_finished(result)` z `winner_id` i wygranymi rundami — wycofane przy przejściu na `module_root.gd`, maj 2026)
 
 ---
 
