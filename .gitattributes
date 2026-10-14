@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Auto detect text files and perform LF normalization (Godot zapisuje .import z LF; eol=lf wylacza konwersje na CRLF przy autocrlf=true)
+* text=auto eol=lf
