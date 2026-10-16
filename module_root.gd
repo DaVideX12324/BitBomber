@@ -12,6 +12,7 @@ var _current_scene: Node
 
 
 func _ready() -> void:
+	BbI18n.register()
 	_scene_root = get_node_or_null("SceneRoot")
 	if _scene_root == null:
 		_scene_root = Node.new()
@@ -23,6 +24,7 @@ func _ready() -> void:
 
 
 func embedded_start(host_api, manifest: Dictionary = {}) -> void:
+	BbI18n.register()
 	_host_api = host_api
 	_manifest = manifest.duplicate(true)
 	_mark_embedded_mode()

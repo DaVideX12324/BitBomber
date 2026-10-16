@@ -84,11 +84,11 @@ func reset_to_auto() -> void:
 
 func get_mode_labels() -> Array[String]:
 	return [
-		SCALE_LABELS[ScaleMode.XSMALL],
-		SCALE_LABELS[ScaleMode.SMALL],
-		SCALE_LABELS[ScaleMode.NORMAL],
-		SCALE_LABELS[ScaleMode.LARGE],
-		SCALE_LABELS[ScaleMode.XLARGE],
+		BbI18n.t("bb.scale.xsmall", SCALE_LABELS[ScaleMode.XSMALL]),
+		BbI18n.t("bb.scale.small", SCALE_LABELS[ScaleMode.SMALL]),
+		BbI18n.t("bb.scale.normal", SCALE_LABELS[ScaleMode.NORMAL]),
+		BbI18n.t("bb.scale.large", SCALE_LABELS[ScaleMode.LARGE]),
+		BbI18n.t("bb.scale.xlarge", SCALE_LABELS[ScaleMode.XLARGE]),
 	]
 
 
@@ -138,7 +138,8 @@ func on_resolution_changed(_new_res: Vector2i) -> void:
 # ---------------------------------------------------------------------------
 
 func _detect_mode() -> ScaleMode:
-	var y : int = SettingsManager.resolution.y
+	var sm = get_node_or_null("/root/SettingsManager")
+	var y : int = sm.resolution.y if sm and sm.get("resolution") != null else 0
 	if y <= 0:
 		y = DisplayServer.window_get_size().y
 	if   y >= 2160: return ScaleMode.XLARGE
@@ -149,7 +150,8 @@ func _detect_mode() -> ScaleMode:
 
 
 func _clamp_mode_to_screen(mode: ScaleMode) -> ScaleMode:
-	var h : int = SettingsManager.resolution.y
+	var sm = get_node_or_null("/root/SettingsManager")
+	var h : int = sm.resolution.y if sm and sm.get("resolution") != null else 0
 	if h <= 0:
 		h = DisplayServer.window_get_size().y
 	while mode > ScaleMode.XSMALL and h < MIN_SCREEN_H[mode]:

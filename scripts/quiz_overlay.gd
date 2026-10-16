@@ -108,6 +108,30 @@ var _match_left_btns  : Array[Button] = []
 var _match_right_btns : Array[Button] = []
 
 
+
+
+func _gm() -> Node:
+	return get_node_or_null("/root/GameManager")
+
+
+func _qm() -> Node:
+	return get_node_or_null("/root/QuizManager")
+
+
+func _px(val: float) -> int:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return int(sm.call("px", val)) if sm and sm.has_method("px") else roundi(val)
+
+
+func _sz(val: float) -> float:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return float(sm.call("sz", val)) if sm and sm.has_method("sz") else val
+
+
+func _sz2(w: float, h: float) -> Vector2:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return sm.call("sz2", w, h) if sm and sm.has_method("sz2") else Vector2(w, h)
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
@@ -122,8 +146,10 @@ func _ready() -> void:
 	_tf_btns[0].pressed.connect(func(): _on_tf_button(true))   # BtnTrue
 	_tf_btns[1].pressed.connect(func(): _on_tf_button(false))  # BtnFalse
 
-	UIScaleManager.scale_changed.connect(_on_scale_changed)
-	_on_scale_changed(UIScaleManager.scale_factor)
+	var sm := get_node_or_null("/root/UIScaleManager")
+	if sm and sm.has_signal("scale_changed"):
+		sm.scale_changed.connect(_on_scale_changed)
+		_on_scale_changed(float(sm.get("scale_factor")))
 
 
 # ---------------------------------------------------------------------------
@@ -132,38 +158,38 @@ func _ready() -> void:
 
 func _on_scale_changed(_s: float) -> void:
 	# Panel
-	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
-	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
+	var ph := _sz(BASE_PANEL_HALF_W)
+	var pv := _sz(BASE_PANEL_HALF_H)
 	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
 	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
 	# Separation
-	_vbox.add_theme_constant_override("separation",           UIScaleManager.px(BASE_SEP_VBOX))
-	_mc_box.add_theme_constant_override("separation",         UIScaleManager.px(BASE_SEP_SUBBOX))
-	_tf_box.add_theme_constant_override("separation",         UIScaleManager.px(BASE_SEP_SUBBOX))
-	_fill_text_box.add_theme_constant_override("separation",  UIScaleManager.px(BASE_SEP_SUBBOX))
-	_fill_tiles_box.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_SUBBOX))
-	_matching_box.add_theme_constant_override("separation",   UIScaleManager.px(BASE_SEP_SUBBOX))
+	_vbox.add_theme_constant_override("separation",           _px(BASE_SEP_VBOX))
+	_mc_box.add_theme_constant_override("separation",         _px(BASE_SEP_SUBBOX))
+	_tf_box.add_theme_constant_override("separation",         _px(BASE_SEP_SUBBOX))
+	_fill_text_box.add_theme_constant_override("separation",  _px(BASE_SEP_SUBBOX))
+	_fill_tiles_box.add_theme_constant_override("separation", _px(BASE_SEP_SUBBOX))
+	_matching_box.add_theme_constant_override("separation",   _px(BASE_SEP_SUBBOX))
 	# Etykiety nagłówkowe
-	_lbl_title.add_theme_font_size_override("font_size",    UIScaleManager.px(BASE_FS_TITLE))
-	_lbl_question.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_QUESTION))
-	_lbl_timer.add_theme_font_size_override("font_size",    UIScaleManager.px(BASE_FS_TIMER))
-	_lbl_hint.add_theme_font_size_override("font_size",     UIScaleManager.px(BASE_FS_HINT))
-	_result_label.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_RESULT))
-	_correct_lbl.add_theme_font_size_override("font_size",  UIScaleManager.px(BASE_FS_CORRECT))
+	_lbl_title.add_theme_font_size_override("font_size",    _px(BASE_FS_TITLE))
+	_lbl_question.add_theme_font_size_override("font_size", _px(BASE_FS_QUESTION))
+	_lbl_timer.add_theme_font_size_override("font_size",    _px(BASE_FS_TIMER))
+	_lbl_hint.add_theme_font_size_override("font_size",     _px(BASE_FS_HINT))
+	_result_label.add_theme_font_size_override("font_size", _px(BASE_FS_RESULT))
+	_correct_lbl.add_theme_font_size_override("font_size",  _px(BASE_FS_CORRECT))
 	# Statyczne przyciski odpowiedzi (MC / TF)
-	var fs_btn := UIScaleManager.px(BASE_FS_ANSWER_BTN)
+	var fs_btn := _px(BASE_FS_ANSWER_BTN)
 	for btn in _mc_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_btn)
 	_tf_btns[0].add_theme_font_size_override("font_size", fs_btn)
 	_tf_btns[1].add_theme_font_size_override("font_size", fs_btn)
 	# FillText
-	_fill_pattern_lbl.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
-	_fill_input.add_theme_font_size_override("font_size",       UIScaleManager.px(BASE_FS_ANSWER_BTN))
-	_fill_confirm.add_theme_font_size_override("font_size",     UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	_fill_pattern_lbl.add_theme_font_size_override("font_size", _px(BASE_FS_ANSWER_BTN))
+	_fill_input.add_theme_font_size_override("font_size",       _px(BASE_FS_ANSWER_BTN))
+	_fill_confirm.add_theme_font_size_override("font_size",     _px(BASE_FS_ANSWER_BTN))
 	# FillTiles confirm
-	_tiles_confirm.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_ANSWER_BTN))
+	_tiles_confirm.add_theme_font_size_override("font_size", _px(BASE_FS_ANSWER_BTN))
 	# Matching confirm
-	_match_confirm.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FS_CONFIRM_MATCH))
+	_match_confirm.add_theme_font_size_override("font_size", _px(BASE_FS_CONFIRM_MATCH))
 
 
 # ---------------------------------------------------------------------------
@@ -229,10 +255,10 @@ func _build_ui() -> void:
 	_matching_box.visible   = false
 
 	match _mode:
-		RivalMode.SOLO:    _lbl_title.text = "⚡ Ostatnia szansa – Gracz 1"
-		RivalMode.VERSUS:  _lbl_title.text = "⚡ Rywalizacja!"
-		RivalMode.DUEL_P1: _lbl_title.text = "⚡ Kolej Gracza 1"
-		RivalMode.DUEL_P2: _lbl_title.text = "⚡ Kolej Gracza 2"
+		RivalMode.SOLO:    _lbl_title.text = BbI18n.t("bb.quiz.title_solo", "⚡ Ostatnia szansa – Gracz 1")
+		RivalMode.VERSUS:  _lbl_title.text = BbI18n.t("bb.quiz.title_versus", "⚡ Rywalizacja!")
+		RivalMode.DUEL_P1: _lbl_title.text = BbI18n.t("bb.quiz.title_duel_p1", "⚡ Kolej Gracza 1")
+		RivalMode.DUEL_P2: _lbl_title.text = BbI18n.t("bb.quiz.title_duel_p2", "⚡ Kolej Gracza 2")
 
 	match qtype:
 		"true_false": _lbl_question.text = _question.get("statement", "")
@@ -242,17 +268,17 @@ func _build_ui() -> void:
 	match qtype:
 		"multiple_choice", "true_false":
 			if _mode == RivalMode.VERSUS:
-				_lbl_hint.text = "P1: W/S/A/D  |  P2: ↑↓←→"
+				_lbl_hint.text = BbI18n.t("bb.quiz.hint_versus", "P1: W/S/A/D  |  P2: ↑↓←→")
 			elif _mode == RivalMode.DUEL_P2:
-				_lbl_hint.text = "P2: ↑↓←→  lub  LPM"
+				_lbl_hint.text = BbI18n.t("bb.quiz.hint_duel_p2", "P2: ↑↓←→  lub  LPM")
 			else:
-				_lbl_hint.text = "P1: W/S/A/D  lub  LPM"
+				_lbl_hint.text = BbI18n.t("bb.quiz.hint_p1", "P1: W/S/A/D  lub  LPM")
 		"fill_text":
-			_lbl_hint.text = "P%d: wpisz odpowiedź – Enter aby zatwierdzić" % (2 if _mode == RivalMode.DUEL_P2 else 1)
+			_lbl_hint.text = BbI18n.tf("bb.quiz.hint_fill_text", {"player": 2 if _mode == RivalMode.DUEL_P2 else 1})
 		"fill_tiles":
-			_lbl_hint.text = "Kliknij kafle aby wypełnić lukę | Tab – zmień lukę"
+			_lbl_hint.text = BbI18n.t("bb.quiz.hint_fill_tiles", "Kliknij kafle aby wypełnić lukę | Tab – zmień lukę")
 		"matching":
-			_lbl_hint.text = "Kliknij element po lewej, potem po prawej | Enter – zatwierdź"
+			_lbl_hint.text = BbI18n.t("bb.quiz.hint_matching", "Kliknij element po lewej, potem po prawej | Enter – zatwierdź")
 
 	match qtype:
 		"multiple_choice": _build_mc()
@@ -290,7 +316,7 @@ func _build_tf() -> void:
 	_tf_box.visible = true
 	var k1 : Array[String] = ["W", "S"]
 	var k2 : Array[String] = ["↑", "↓"]
-	var labels := ["Prawda", "Fałsz"]
+	var labels := [BbI18n.t("bb.quiz.true", "Prawda"), BbI18n.t("bb.quiz.false", "Fałsz")]
 	for i in 2:
 		var btn := _tf_btns[i]
 		if _mode == RivalMode.VERSUS:
@@ -306,7 +332,7 @@ func _build_tf() -> void:
 func _build_fill_text() -> void:
 	_fill_text_box.visible = true
 	var pattern : String = _question.get("prefilled_pattern", "")
-	_fill_pattern_lbl.text    = "Podpowiedź: %s" % pattern
+	_fill_pattern_lbl.text    = BbI18n.tf("bb.quiz.pattern_hint", {"pattern": pattern})
 	_fill_pattern_lbl.visible = pattern != ""
 	_fill_input.text = ""
 	_fill_input.grab_focus()
@@ -322,7 +348,7 @@ func _build_fill_tiles() -> void:
 	var tiles : Array = _question.get("tiles", [])
 	_tile_slots.resize(gaps.size())
 	_tile_slots.fill("")
-	var fs := UIScaleManager.px(BASE_FS_ANSWER_BTN)
+	var fs := _px(BASE_FS_ANSWER_BTN)
 	var parts := text_with_gaps.split("___")
 	for i in parts.size():
 		var lbl := Label.new()
@@ -333,7 +359,7 @@ func _build_fill_tiles() -> void:
 			var gap_btn := Button.new()
 			gap_btn.add_theme_font_size_override("font_size", fs)
 			gap_btn.focus_mode = Control.FOCUS_NONE
-			gap_btn.custom_minimum_size = UIScaleManager.sz2(120, 36)
+			gap_btn.custom_minimum_size = _sz2(120, 36)
 			gap_btn.text = "[ ___ ]"
 			var idx := i
 			gap_btn.pressed.connect(func(): _on_gap_clicked(idx))
@@ -358,7 +384,7 @@ func _build_matching() -> void:
 	for ch in _match_right.get_children(): ch.queue_free()
 	var left_items  : Array = _question.get("left_items", [])
 	var right_items : Array = _question.get("right_items", [])
-	var fs := UIScaleManager.px(BASE_FS_ANSWER_BTN)
+	var fs := _px(BASE_FS_ANSWER_BTN)
 	for i in left_items.size():
 		var btn := Button.new()
 		btn.add_theme_font_size_override("font_size", fs)
@@ -482,7 +508,8 @@ func _update_gap_highlight() -> void:
 func _on_fill_text_confirm() -> void:
 	if _locked: return
 	_locked = true
-	var result : Dictionary = QuizManager.answer_current({"text": _fill_input.text})
+	var qm := _qm()
+	var result : Dictionary = qm.answer_current({"text": _fill_input.text}) if qm else {}
 	_finish_complex(result.get("correct", false))
 
 
@@ -492,7 +519,8 @@ func _on_fill_tiles_confirm() -> void:
 	var placements : Dictionary = {}
 	for i in _tile_slots.size():
 		placements[str(i)] = _tile_slots[i]
-	var result : Dictionary = QuizManager.answer_current({"placements": placements})
+	var qm := _qm()
+	var result : Dictionary = qm.answer_current({"placements": placements}) if qm else {}
 	_finish_complex(result.get("correct", false))
 
 
@@ -502,7 +530,8 @@ func _on_matching_confirm() -> void:
 	var pairs : Array = []
 	for left_idx : int in _match_pairs:
 		pairs.append({"left_index": left_idx, "right_index": _match_pairs[left_idx]})
-	var result : Dictionary = QuizManager.answer_current({"pairs": pairs})
+	var qm := _qm()
+	var result : Dictionary = qm.answer_current({"pairs": pairs}) if qm else {}
 	_finish_complex(result.get("correct", false))
 
 
@@ -572,11 +601,11 @@ func _show_result_label(correct: bool) -> void:
 	var qtype : String = _question.get("type", "multiple_choice")
 	_result_label.visible = true
 	if correct:
-		_result_label.text = "✅ Poprawnie!"
+		_result_label.text = BbI18n.t("bb.quiz.correct", "✅ Poprawnie!")
 		_result_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4))
 		_correct_lbl.visible = false
 		return
-	_result_label.text = "❌ Błędna odpowiedź!"
+	_result_label.text = BbI18n.t("bb.quiz.incorrect", "❌ Błędna odpowiedź!")
 	_result_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
 	match qtype:
 		"fill_text":
@@ -584,13 +613,13 @@ func _show_result_label(correct: bool) -> void:
 			var alts : Array = _question.get("accepted_alternatives", [])
 			var all_c : Array[String] = [main_ans]
 			for a in alts: all_c.append(str(a))
-			_correct_lbl.text = "Poprawne: %s" % ", ".join(all_c)
+			_correct_lbl.text = BbI18n.tf("bb.quiz.correct_answer", {"answer": ", ".join(all_c)})
 			_correct_lbl.visible = true
 		"fill_tiles":
 			var gaps : Array = _question.get("gaps", [])
 			var correct_txts : Array[String] = []
 			for g in gaps: correct_txts.append(str(g.get("correct", "")))
-			_correct_lbl.text = "Poprawna kolejność: %s" % ", ".join(correct_txts)
+			_correct_lbl.text = BbI18n.tf("bb.quiz.correct_order", {"order": ", ".join(correct_txts)})
 			_correct_lbl.visible = true
 		"matching":
 			var li : Array = _question.get("left_items", [])
@@ -620,7 +649,7 @@ func _show_result_label(correct: bool) -> void:
 				var r : int = pair.get("right_index", -1)
 				if l >= 0 and l < li.size() and r >= 0 and r < ri.size():
 					lines.append("%s → %s" % [str(li[l]), str(ri[r])])
-			_correct_lbl.text = "Poprawne:\n" + "\n".join(lines)
+			_correct_lbl.text = BbI18n.t("bb.quiz.correct_prefix", "Poprawne:") + "\n" + "\n".join(lines)
 			_correct_lbl.visible = true
 		_:
 			_correct_lbl.visible = false
@@ -683,7 +712,7 @@ func _process(_delta: float) -> void:
 	_time_left = _timer_node.time_left
 	var pct : float = _time_left / _total_time
 	var color := Color(0.3, 1.0, 0.3).lerp(Color(1.0, 0.2, 0.2), 1.0 - pct)
-	_lbl_timer.text = "⏱ %.1f s" % _time_left
+	_lbl_timer.text = BbI18n.tf("bb.quiz.timer_format", {"time": "%.1f" % _time_left})
 	_lbl_timer.add_theme_color_override("font_color", color)
 
 
@@ -692,5 +721,7 @@ func _process(_delta: float) -> void:
 # ---------------------------------------------------------------------------
 
 func _dbg(msg: String) -> void:
-	if GameManager.debug_enabled:
+	var gm := _gm()
+	var dbg: bool = bool(gm.get("debug_enabled")) if gm else false
+	if dbg:
 		print("[QUIZ | %s | Dead:P%d] %s" % [RivalMode.keys()[_mode], current_dead_player, msg])

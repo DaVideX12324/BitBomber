@@ -65,6 +65,29 @@ var _options_menu: CanvasLayer
 
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 
+func _gm() -> Node:
+	return get_node_or_null("/root/GameManager")
+
+
+func _qm() -> Node:
+	return get_node_or_null("/root/QuizManager")
+
+
+func _px(val: float) -> int:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return int(sm.call("px", val)) if sm and sm.has_method("px") else roundi(val)
+
+
+func _sz(val: float) -> float:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return float(sm.call("sz", val)) if sm and sm.has_method("sz") else val
+
+
+func _sz2(w: float, h: float) -> Vector2:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return sm.call("sz2", w, h) if sm and sm.has_method("sz2") else Vector2(w, h)
+
+
 
 func _ready() -> void:
 	_options_menu = _resolve_options_menu()
@@ -84,8 +107,9 @@ func _ready() -> void:
 	_quit_btn.pressed.connect(_on_quit_pressed)
 	_help_btn.pressed.connect(_show_help)
 	_options_btn.pressed.connect(func(): _options_menu.open())
-	var quizzes = QuizManager.get_quiz_ids()
-	_quiz_opt.add_item("Wszystkie")
+	var qm := _qm()
+	var quizzes: Array = qm.get_quiz_ids() if qm else []
+	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
 	for q in quizzes:
 		_quiz_opt.add_item(q)
 	_start_btn.pressed.connect(func():
@@ -100,8 +124,10 @@ func _ready() -> void:
 	_refresh_win()
 	_build_help_overlay()
 	_update_quit_button()
-	UIScaleManager.scale_changed.connect(_on_scale_changed)
-	_on_scale_changed(UIScaleManager.scale_factor)
+	var sm := get_node_or_null("/root/UIScaleManager")
+	if sm and sm.has_signal("scale_changed"):
+		sm.scale_changed.connect(_on_scale_changed)
+		_on_scale_changed(float(sm.get("scale_factor")))
 
 
 func _resolve_options_menu() -> CanvasLayer:
@@ -123,48 +149,48 @@ func _resolve_options_menu() -> CanvasLayer:
 
 func _on_scale_changed(_s: float) -> void:
 	# Panel i VBox
-	_panel.custom_minimum_size = UIScaleManager.sz2(BASE_PANEL_SIZE.x, BASE_PANEL_SIZE.y)
+	_panel.custom_minimum_size = _sz2(BASE_PANEL_SIZE.x, BASE_PANEL_SIZE.y)
 	# Separation
-	_vbox.add_theme_constant_override("separation",        UIScaleManager.px(BASE_SEP_VBOX))
+	_vbox.add_theme_constant_override("separation",        _px(BASE_SEP_VBOX))
 	# Czcionki etykiet
-	_title.add_theme_font_size_override("font_size",    UIScaleManager.px(48))
-	_subtitle.add_theme_font_size_override("font_size", UIScaleManager.px(20))
-	_controls.add_theme_font_size_override("font_size", UIScaleManager.px(18))
-	_players_label.add_theme_font_size_override("font_size", UIScaleManager.px(17))
-	_bots_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
-	_diff_label.add_theme_font_size_override("font_size",    UIScaleManager.px(17))
-	_win_label.add_theme_font_size_override("font_size",     UIScaleManager.px(17))
-	_rounds_label.add_theme_font_size_override("font_size",  UIScaleManager.px(17))
-	_ver_label.add_theme_font_size_override("font_size",     UIScaleManager.px(11))
+	_title.add_theme_font_size_override("font_size",    _px(48))
+	_subtitle.add_theme_font_size_override("font_size", _px(20))
+	_controls.add_theme_font_size_override("font_size", _px(18))
+	_players_label.add_theme_font_size_override("font_size", _px(17))
+	_bots_label.add_theme_font_size_override("font_size",    _px(17))
+	_diff_label.add_theme_font_size_override("font_size",    _px(17))
+	_win_label.add_theme_font_size_override("font_size",     _px(17))
+	_rounds_label.add_theme_font_size_override("font_size",  _px(17))
+	_ver_label.add_theme_font_size_override("font_size",     _px(11))
 	# QuizOpt + dropdown
-	_quiz_opt.add_theme_font_size_override("font_size", UIScaleManager.px(18))
-	_scale_popup_font(_quiz_opt, UIScaleManager.px(18))
+	_quiz_opt.add_theme_font_size_override("font_size", _px(18))
+	_scale_popup_font(_quiz_opt, _px(18))
 	# SpinBox
-	_rounds_spin.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	_rounds_spin.add_theme_font_size_override("font_size", _px(17))
 	var spin_edit := _rounds_spin.get_line_edit()
 	if spin_edit:
-		spin_edit.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+		spin_edit.add_theme_font_size_override("font_size", _px(17))
 	# Przyciski akcji
-	_start_btn.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
-	_help_btn.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
-	_options_btn.add_theme_font_size_override("font_size", UIScaleManager.px(20))
-	_quit_btn.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
+	_start_btn.add_theme_font_size_override("font_size",   _px(20))
+	_help_btn.add_theme_font_size_override("font_size",    _px(20))
+	_options_btn.add_theme_font_size_override("font_size", _px(20))
+	_quit_btn.add_theme_font_size_override("font_size",    _px(20))
 	# Grupy przycisków
 	for btn in _players_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size", _px(19))
 	for btn in _bots_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
+		(btn as Button).add_theme_font_size_override("font_size", _px(19))
 	for btn in _diff_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
-		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
+		(btn as Button).add_theme_font_size_override("font_size", _px(19))
 	for btn in _win_btns:
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
-		(btn as Button).add_theme_font_size_override("font_size", UIScaleManager.px(19))
-	_start_btn.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_START.x, BASE_BTN_START.y)
-	_quit_btn.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
-	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
+		(btn as Button).add_theme_font_size_override("font_size", _px(19))
+	_start_btn.custom_minimum_size = _sz2(BASE_BTN_START.x, BASE_BTN_START.y)
+	_quit_btn.custom_minimum_size  = _sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
+	var pad := _px(BASE_PANEL_PADDING)
 	_margin.add_theme_constant_override("margin_left", pad)
 	_margin.add_theme_constant_override("margin_top", pad)
 	_margin.add_theme_constant_override("margin_right", pad)
@@ -203,9 +229,9 @@ func _set_win(idx: int) -> void:
 
 func _on_rounds_changed(_value: float) -> void:
 	if _sel_win == 0:
-		_rounds_label.text = "Wygrane rundy do zwyci\u0119stwa (X):"
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Wygrane rundy do zwyci\u0119stwa (X):")
 	else:
-		_rounds_label.text = "Liczba rund w sesji (Y):"
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund w sesji (Y):")
 
 
 func _refresh_players() -> void:
@@ -230,35 +256,39 @@ func _refresh_win() -> void:
 	for i in _win_btns.size():
 		_win_btns[i].button_pressed = (i == _sel_win)
 	if _sel_win == 0:
-		_rounds_label.text = "Wygrane rundy do zwyci\u0119stwa (X):"
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Wygrane rundy do zwyci\u0119stwa (X):")
 	else:
-		_rounds_label.text = "Liczba rund w sesji (Y):"
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund w sesji (Y):")
 
 
 func _start(humans: int, bots: int, diff: int, win_mode: int,
 		rounds: int, quiz_id: String) -> void:
-	GameManager.bot_difficulty   = diff
-	GameManager.win_condition    = win_mode as GameManager.WinCondition
-	GameManager.selected_quiz_id = quiz_id
-	if win_mode == GameManager.WinCondition.FIRST_TO_X:
-		GameManager.rounds_to_win = rounds
-	else:
-		GameManager.max_rounds = rounds
-	GameManager.start_game(humans, bots)
+	var gm := _gm()
+	if gm:
+		gm.bot_difficulty   = diff
+		gm.win_condition    = win_mode
+		gm.selected_quiz_id = quiz_id
+		if win_mode == 0:
+			gm.rounds_to_win = rounds
+		else:
+			gm.max_rounds = rounds
+		gm.start_game(humans, bots)
 
 
 func _on_quit_pressed() -> void:
-	if GameManager and GameManager.has_method("exit_game"):
-		GameManager.exit_game()
+	var gm := _gm()
+	if gm and gm.has_method("exit_game"):
+		gm.exit_game()
 	else:
 		get_tree().quit()
 
 
 func _update_quit_button() -> void:
-	if GameManager and GameManager.has_method("is_embedded") and GameManager.is_embedded():
-		_quit_btn.text = "✕ Powrot do menu glownego"
+	var gm := _gm()
+	if gm and gm.has_method("is_embedded") and gm.is_embedded():
+		_quit_btn.text = BbI18n.t("bb.menu.btn_back_to_host", "✕ Powrot do menu glownego")
 	else:
-		_quit_btn.text = "✕ Wyjscie"
+		_quit_btn.text = BbI18n.t("bb.menu.btn_quit", "✕ Wyjscie")
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +318,7 @@ func _build_help_overlay() -> void:
 	vbox.add_theme_constant_override("separation", 12)
 	margin.add_child(vbox)
 	var title := Label.new()
-	title.text = "\u2665  Jak grać w BitBomber?"
+	title.text = BbI18n.t("bb.help.title", "\u2665  Jak grać w BitBomber?")
 	title.add_theme_font_size_override("font_size", 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
@@ -301,7 +331,7 @@ func _build_help_overlay() -> void:
 	content.fit_content = true
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_font_size_override("normal_font_size", 15)
-	content.text = """[b]Cel gry[/b]
+	content.text = BbI18n.t("bb.help.body", """[b]Cel gry[/b]
 Wyeliminuj przeciwnik\u00f3w za pomoc\u0105 bomb! Ostatni \u017cywy gracz (lub ten z najwi\u0119ksz\u0105 liczb\u0105 wygranych rund) zdobywa zwyci\u0119stwo.
 
 [b]Sterowanie \u2014 Gracz 1[/b]
@@ -328,11 +358,11 @@ Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. 
 [b]Trudno\u015b\u0107 bota[/b]
   [b]\u0141atwy[/b]   bot reaguje wolno, proste pytania
   [b]\u015arednii[/b]   wywa\u017cony balans
-  [b]Trudny[/b]   bot agresywny, trudniejsze pytania"""
+  [b]Trudny[/b]   bot agresywny, trudniejsze pytania""")
 	scroll.add_child(content)
 	vbox.add_child(HSeparator.new())
 	var btn_close := Button.new()
-	btn_close.text = "Zamknij  [ESC]"
+	btn_close.text = BbI18n.t("bb.help.btn_close", "Zamknij  [ESC]")
 	btn_close.pressed.connect(_hide_help)
 	vbox.add_child(btn_close)
 

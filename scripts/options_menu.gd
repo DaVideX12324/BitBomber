@@ -56,13 +56,13 @@ var _mode_btns   : Array[Button]   = []
 var _resolutions : Array[Vector2i] = []
 
 var _sel_mode  : int                      = 0
-var _sel_scale : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
+var _sel_scale : int                      = 2
 var _scale_manually_changed : bool        = false
 
 var _prev_mode              : int                      = 0
 var _prev_res               : Vector2i                 = Vector2i(1280, 720)
 var _prev_monitor           : int                      = 0
-var _prev_scale             : UIScaleManager.ScaleMode = UIScaleManager.ScaleMode.NORMAL
+var _prev_scale             : int                      = 2
 var _prev_scale_user_picked : bool                     = false
 
 var _countdown  : float = 0.0
@@ -71,6 +71,29 @@ var _confirming : bool  = false
 const BUS_MASTER := "Master"
 const BUS_MUSIC  := "Music"
 const BUS_SFX    := "SFX"
+
+func _sm() -> Node:
+	return get_node_or_null("/root/UIScaleManager")
+
+
+func _settings_manager() -> Node:
+	return get_node_or_null("/root/SettingsManager")
+
+
+func _px(val: float) -> int:
+	var sm := _sm()
+	return int(sm.call("px", val)) if sm and sm.has_method("px") else roundi(val)
+
+
+func _sz(val: float) -> float:
+	var sm := _sm()
+	return float(sm.call("sz", val)) if sm and sm.has_method("sz") else val
+
+
+func _sz2(w: float, h: float) -> Vector2:
+	var sm := _sm()
+	return sm.call("sz2", w, h) if sm and sm.has_method("sz2") else Vector2(w, h)
+
 
 
 func _display_state() -> Node:
@@ -103,10 +126,13 @@ func _display_resolution() -> Vector2i:
 
 
 func _ui_scale_user_picked() -> bool:
-	var current: Variant = UIScaleManager.get("user_picked")
-	if current != null:
-		return bool(current)
-	return bool(UIScaleManager.get("_user_picked"))
+	var sm := _sm()
+	if sm:
+		var current: Variant = sm.get("user_picked")
+		if current != null:
+			return bool(current)
+		return bool(sm.get("_user_picked"))
+	return false
 
 
 func _available_resolutions_for(screen: int) -> Array[Vector2i]:
@@ -149,8 +175,10 @@ func _ready() -> void:
 	_populate_scale()
 	_setup_audio_sliders()
 	_populate_binds()
-	UIScaleManager.scale_changed.connect(_on_scale_changed)
-	_on_scale_changed(UIScaleManager.scale_factor)
+	var sm := _sm()
+	if sm and sm.has_signal("scale_changed"):
+		sm.scale_changed.connect(_on_scale_changed)
+		_on_scale_changed(float(sm.get("scale_factor")))
 
 
 func _process(delta: float) -> void:
@@ -160,7 +188,7 @@ func _process(delta: float) -> void:
 	if _countdown <= 0.0:
 		_on_revert()
 		return
-	_lbl_countdown.text = "Przywrócenie za: %ds" % ceili(_countdown)
+	_lbl_countdown.text = BbI18n.tf("bb.options.revert_countdown", {"time": ceili(_countdown)})
 
 
 func _input(event: InputEvent) -> void:
@@ -179,13 +207,13 @@ func _input(event: InputEvent) -> void:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	var main_size := UIScaleManager.px(18)
-	_title_label.add_theme_font_size_override("font_size", UIScaleManager.px(26))
-	_tabs.add_theme_font_size_override("font_size", UIScaleManager.px(17))
+	var main_size := _px(18)
+	_title_label.add_theme_font_size_override("font_size", _px(26))
+	_tabs.add_theme_font_size_override("font_size", _px(17))
 	_mode_label.add_theme_font_size_override("font_size",    main_size)
 	_monitor_label.add_theme_font_size_override("font_size", main_size)
 	_res_label.add_theme_font_size_override("font_size",     main_size)
-	_res_note.add_theme_font_size_override("font_size",      UIScaleManager.px(15))
+	_res_note.add_theme_font_size_override("font_size",      _px(15))
 	_scale_label.add_theme_font_size_override("font_size",   main_size)
 	_monitor_option.add_theme_font_size_override("font_size", main_size)
 	_res_option.add_theme_font_size_override("font_size",     main_size)
@@ -196,33 +224,33 @@ func _on_scale_changed(_s: float) -> void:
 	_lbl_master.add_theme_font_size_override("font_size", main_size)
 	_lbl_music.add_theme_font_size_override("font_size",  main_size)
 	_lbl_sfx.add_theme_font_size_override("font_size",    main_size)
-	_lbl_info.add_theme_font_size_override("font_size", UIScaleManager.px(14))
+	_lbl_info.add_theme_font_size_override("font_size", _px(14))
 	for child in _binds_list.get_children():
 		if child is Label:
-			(child as Label).add_theme_font_size_override("font_size", UIScaleManager.px(14))
-	_btn_apply.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
-	_btn_close.add_theme_font_size_override("font_size",     UIScaleManager.px(20))
-	_lbl_question.add_theme_font_size_override("font_size",  UIScaleManager.px(18))
-	_lbl_countdown.add_theme_font_size_override("font_size", UIScaleManager.px(22))
-	_btn_confirm.add_theme_font_size_override("font_size",   UIScaleManager.px(20))
-	_btn_revert.add_theme_font_size_override("font_size",    UIScaleManager.px(20))
-	var fs_mode := UIScaleManager.px(15)
+			(child as Label).add_theme_font_size_override("font_size", _px(14))
+	_btn_apply.add_theme_font_size_override("font_size",     _px(20))
+	_btn_close.add_theme_font_size_override("font_size",     _px(20))
+	_lbl_question.add_theme_font_size_override("font_size",  _px(18))
+	_lbl_countdown.add_theme_font_size_override("font_size", _px(22))
+	_btn_confirm.add_theme_font_size_override("font_size",   _px(20))
+	_btn_revert.add_theme_font_size_override("font_size",    _px(20))
+	var fs_mode := _px(15)
 	for btn in _mode_btns:
 		(btn as Button).add_theme_font_size_override("font_size", fs_mode)
-		(btn as Button).custom_minimum_size = UIScaleManager.sz2(BASE_BTN_MODE_SIZE.x, BASE_BTN_MODE_SIZE.y)
-	_btn_apply.custom_minimum_size   = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
-	_btn_close.custom_minimum_size   = UIScaleManager.sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
-	_btn_confirm.custom_minimum_size = UIScaleManager.sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
-	_btn_revert.custom_minimum_size  = UIScaleManager.sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
-	var ph := UIScaleManager.sz(BASE_PANEL_HALF_W)
-	var pv := UIScaleManager.sz(BASE_PANEL_HALF_H)
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_MODE_SIZE.x, BASE_BTN_MODE_SIZE.y)
+	_btn_apply.custom_minimum_size   = _sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
+	_btn_close.custom_minimum_size   = _sz2(BASE_BTN_ACTION_SIZE.x,  BASE_BTN_ACTION_SIZE.y)
+	_btn_confirm.custom_minimum_size = _sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
+	_btn_revert.custom_minimum_size  = _sz2(BASE_BTN_CONFIRM_SIZE.x, BASE_BTN_CONFIRM_SIZE.y)
+	var ph := _sz(BASE_PANEL_HALF_W)
+	var pv := _sz(BASE_PANEL_HALF_H)
 	_panel.offset_left   = -ph ; _panel.offset_top    = -pv
 	_panel.offset_right  =  ph ; _panel.offset_bottom =  pv
-	var ch := UIScaleManager.sz(BASE_CONFIRM_HALF_W)
-	var cv := UIScaleManager.sz(BASE_CONFIRM_HALF_H)
+	var ch := _sz(BASE_CONFIRM_HALF_W)
+	var cv := _sz(BASE_CONFIRM_HALF_H)
 	_confirm_popup.offset_left   = -ch ; _confirm_popup.offset_top    = -cv
 	_confirm_popup.offset_right  =  ch ; _confirm_popup.offset_bottom =  cv
-	var pad := UIScaleManager.px(BASE_PANEL_PADDING)
+	var pad := _px(BASE_PANEL_PADDING)
 	_margin.add_theme_constant_override("margin_left",   pad)
 	_margin.add_theme_constant_override("margin_top",    pad)
 	_margin.add_theme_constant_override("margin_right",  pad)
@@ -241,7 +269,7 @@ func open() -> void:
 	_prev_mode              = _display_mode_idx()
 	_prev_res               = _display_resolution()
 	_prev_monitor           = _display_monitor_idx()
-	_prev_scale             = UIScaleManager.current_mode
+	_prev_scale             = int(_sm().get("current_mode")) if _sm() else 2
 	_prev_scale_user_picked = _ui_scale_user_picked()
 	_sel_mode               = _prev_mode
 	_sel_scale              = _prev_scale
@@ -282,7 +310,7 @@ func _sync_resolution() -> void:
 
 
 func _sync_scale() -> void:
-	_scale_option.selected = UIScaleManager.current_mode as int
+	_scale_option.selected = int(_sm().get("current_mode")) if _sm() else 2
 
 
 func _populate_monitors() -> void:
@@ -291,7 +319,7 @@ func _populate_monitors() -> void:
 		var size := DisplayServer.screen_get_size(i)
 		var label := "Monitor %d  (%d×%d)" % [i + 1, size.x, size.y]
 		if i == DisplayServer.get_primary_screen():
-			label += "  [główny]"
+			label += BbI18n.t("bb.options.primary_monitor_suffix", "  [główny]")
 		_monitor_option.add_item(label)
 
 
@@ -307,20 +335,22 @@ func _populate_resolutions(screen: int) -> void:
 	for r in _resolutions:
 		var label := "%d × %d" % [r.x, r.y]
 		if r == screen_size:
-			label += "  (natywna)"
+			label += BbI18n.t("bb.options.native_resolution_suffix", "  (natywna)")
 		_res_option.add_item(label)
 
 
 func _populate_scale() -> void:
 	_scale_option.clear()
-	for label in UIScaleManager.get_mode_labels():
-		_scale_option.add_item(label)
+	var sm := _sm()
+	var labels: Array = sm.call("get_mode_labels") if sm and sm.has_method("get_mode_labels") else []
+	for label in labels:
+		_scale_option.add_item(str(label))
 	_sync_scale()
 	_scale_option.item_selected.connect(_on_scale_item_selected)
 
 
 func _on_scale_item_selected(idx: int) -> void:
-	_sel_scale = idx as UIScaleManager.ScaleMode
+	_sel_scale = idx
 	_scale_manually_changed = true
 
 
@@ -388,7 +418,7 @@ func _populate_binds() -> void:
 		var actions : Array  = entry[1]
 		var lbl_sec := Label.new()
 		lbl_sec.text = section
-		lbl_sec.add_theme_font_size_override("font_size", UIScaleManager.px(14))
+		lbl_sec.add_theme_font_size_override("font_size", _px(14))
 		lbl_sec.add_theme_color_override("font_color", Color(0.8, 0.8, 1.0))
 		_binds_list.add_child(lbl_sec)
 		var keys : Array[String] = []
@@ -400,7 +430,7 @@ func _populate_binds() -> void:
 					break
 		var lbl_keys := Label.new()
 		lbl_keys.text = "  " + ", ".join(keys) if keys.size() > 0 else "  (brak)"
-		lbl_keys.add_theme_font_size_override("font_size", UIScaleManager.px(13))
+		lbl_keys.add_theme_font_size_override("font_size", _px(13))
 		lbl_keys.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6))
 		_binds_list.add_child(lbl_keys)
 
@@ -415,12 +445,17 @@ func _on_apply() -> void:
 	if res_idx >= 0 and res_idx < _resolutions.size():
 		res = _resolutions[res_idx]
 	# Najpierw ustaw skalową — apply_settings wywoła _save() który już zapisze aktualny stan.
+	var sm := _sm()
 	if _scale_manually_changed:
-		UIScaleManager.set_mode(_sel_scale)
+		if sm and sm.has_method("set_mode"):
+			sm.set_mode(_sel_scale)
 	else:
 		if not _prev_scale_user_picked:
-			UIScaleManager.reset_to_auto()
-	SettingsManager.apply_settings(_sel_mode, res, _monitor_option.selected)
+			if sm and sm.has_method("reset_to_auto"):
+				sm.reset_to_auto()
+	var settings := _settings_manager()
+	if settings and settings.has_method("apply_settings"):
+		settings.apply_settings(_sel_mode, res, _monitor_option.selected)
 	_start_confirm()
 
 
@@ -428,7 +463,7 @@ func _start_confirm() -> void:
 	_countdown  = CONFIRM_TIMEOUT
 	_confirming = true
 	_confirm_popup.visible = true
-	_lbl_countdown.text = "Przywrócenie za: %ds" % ceili(_countdown)
+	_lbl_countdown.text = BbI18n.tf("bb.options.revert_countdown", {"time": ceili(_countdown)})
 
 
 func _on_confirm() -> void:
@@ -442,11 +477,16 @@ func _on_revert() -> void:
 	_confirm_popup.visible = false
 	_scale_manually_changed = false
 	# Najpierw przywróć skalę — apply_settings zapisze wszystko razem.
+	var sm := _sm()
 	if _prev_scale_user_picked:
-		UIScaleManager.set_mode(_prev_scale)
+		if sm and sm.has_method("set_mode"):
+			sm.set_mode(_prev_scale)
 	else:
-		UIScaleManager.reset_to_auto()
-	SettingsManager.apply_settings(_prev_mode, _prev_res, _prev_monitor)
+		if sm and sm.has_method("reset_to_auto"):
+			sm.reset_to_auto()
+	var settings := _settings_manager()
+	if settings and settings.has_method("apply_settings"):
+		settings.apply_settings(_prev_mode, _prev_res, _prev_monitor)
 	_sel_mode  = _prev_mode
 	_sel_scale = _prev_scale
 	_sync_mode_buttons()

@@ -45,55 +45,74 @@ const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
 
 
 func _ready() -> void:
-	GameManager.state_changed.connect(_on_state_changed)
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and gm.has_signal("state_changed"):
+		gm.state_changed.connect(_on_state_changed)
 	for card: Control in _cards_nodes:
 		card.visible = false
 	_round_panel.visible = false
 	visible = false
 	$"Root/Cards".alignment = BoxContainer.ALIGNMENT_CENTER
-	UIScaleManager.scale_changed.connect(_on_scale_changed)
-	_on_scale_changed(UIScaleManager.scale_factor)
+	var sm := get_node_or_null("/root/UIScaleManager")
+	if sm and sm.has_signal("scale_changed"):
+		sm.scale_changed.connect(_on_scale_changed)
+		_on_scale_changed(float(sm.get("scale_factor")))
 
 
 # ---------------------------------------------------------------------------
 # Skalowanie
 # ---------------------------------------------------------------------------
 
+func _px(val: float) -> int:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return int(sm.call("px", val)) if sm and sm.has_method("px") else roundi(val)
+
+
+func _sz(val: float) -> float:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return float(sm.call("sz", val)) if sm and sm.has_method("sz") else val
+
+
+func _sz2(w: float, h: float) -> Vector2:
+	var sm := get_node_or_null("/root/UIScaleManager")
+	return sm.call("sz2", w, h) if sm and sm.has_method("sz2") else Vector2(w, h)
+
+
 func _on_scale_changed(_s: float) -> void:
 	# Cards VBoxContainer — pionowe wycentrowanie i odstęp między kartami
-	var ch := UIScaleManager.sz(BASE_CARDS_HALF_H)
+	var ch := _sz(BASE_CARDS_HALF_H)
 	_cards_box.offset_top    = -ch
 	_cards_box.offset_bottom =  ch
-	_cards_box.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_CARDS))
-	_cards_box.offset_right = UIScaleManager.sz(BASE_CARDS_WIDTH)
+	_cards_box.add_theme_constant_override("separation", _px(BASE_SEP_CARDS))
+	_cards_box.offset_right = _sz(BASE_CARDS_WIDTH)
 	
 	# RoundLabel
-	_round_label.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FONT_ROUND))
+	_round_label.add_theme_font_size_override("font_size", _px(BASE_FONT_ROUND))
 
 	# ToastLabel
-	var tw := UIScaleManager.sz(BASE_TOAST_HALF_W)
-	var th := UIScaleManager.sz(BASE_TOAST_HALF_H)
+	var tw := _sz(BASE_TOAST_HALF_W)
+	var th := _sz(BASE_TOAST_HALF_H)
 	_toast.offset_left   = -tw
 	_toast.offset_top    = -th
 	_toast.offset_right  =  tw
 	_toast.offset_bottom =  th
-	_toast.add_theme_font_size_override("font_size", UIScaleManager.px(BASE_FONT_TOAST))
+	_toast.add_theme_font_size_override("font_size", _px(BASE_FONT_TOAST))
 
 	# Karty gracza
-	var fs_btn := UIScaleManager.px(BASE_FONT_TITLE)
+	var fs_btn := _px(BASE_FONT_TITLE)
 	for card: Control in _cards_nodes:
 		var vbox := card.get_node("VBox") as VBoxContainer
-		vbox.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_VBOX))
+		vbox.add_theme_constant_override("separation", _px(BASE_SEP_VBOX))
 		var header := vbox.get_node("Header") as HBoxContainer
-		header.add_theme_constant_override("separation", UIScaleManager.px(BASE_SEP_HEADER))
+		header.add_theme_constant_override("separation", _px(BASE_SEP_HEADER))
 		(vbox.get_node("Header/Title") as Label).add_theme_font_size_override(
 				"font_size", fs_btn)
 		(vbox.get_node("HeartsLabel") as Label).add_theme_font_size_override(
-				"font_size", UIScaleManager.px(BASE_FONT_HEARTS))
+				"font_size", _px(BASE_FONT_HEARTS))
 		(vbox.get_node("StatsLabel") as Label).add_theme_font_size_override(
-				"font_size", UIScaleManager.px(BASE_FONT_STATS))
+				"font_size", _px(BASE_FONT_STATS))
 		(vbox.get_node("Header/Dot") as ColorRect).custom_minimum_size = \
-				UIScaleManager.sz2(BASE_DOT_SIZE.x, BASE_DOT_SIZE.y)
+				_sz2(BASE_DOT_SIZE.x, BASE_DOT_SIZE.y)
 
 
 # ---------------------------------------------------------------------------
@@ -113,7 +132,7 @@ func setup_players(player_list: Array) -> void:
 		card.visible = true
 		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
 		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
-		(card.get_node("VBox/Header/Title") as Label).text = "Gracz %d" % pid
+		(card.get_node("VBox/Header/Title") as Label).text = BbI18n.tf("bb.hud.player_title", {"player": pid})
 
 
 func update_lives(pid: int, lives_left: int) -> void:
@@ -133,7 +152,7 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
 
 
 func update_round(round_num: int) -> void:
-	_round_label.text = "Runda %d" % round_num
+	_round_label.text = BbI18n.tf("bb.hud.round_title", {"round": round_num})
 
 
 func show_message(msg: String, duration: float = 2.0) -> void:
@@ -155,5 +174,7 @@ func _get_card(pid: int) -> Control:
 	return _cards_nodes[idx]
 
 
-func _on_state_changed(_old: GameManager.GameState, new_state: GameManager.GameState) -> void:
-	visible = new_state == GameManager.GameState.PLAYING
+func _on_state_changed(_old: int, new_state: int) -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	var playing_state : int = gm.get("GameState").PLAYING if gm and "GameState" in gm else 1
+	visible = new_state == playing_state
