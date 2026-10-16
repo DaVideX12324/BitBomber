@@ -40,6 +40,7 @@ text = "⚡ Ostatnia szansa!"
 horizontal_alignment = 1
 
 [node name="Question" type="Label" parent="Panel/VBox" unique_id=722142091]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 21
@@ -63,6 +64,7 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [node name="MC_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=602506031]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
@@ -96,6 +98,7 @@ alignment = 0
 autowrap_mode = 3
 
 [node name="TF_Box" type="VBoxContainer" parent="Panel/VBox" unique_id=1243360646]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 6
@@ -126,6 +129,7 @@ theme_override_font_sizes/font_size = 20
 autowrap_mode = 3
 
 [node name="Input" type="LineEdit" parent="Panel/VBox/FillText_Box" unique_id=2126546061]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
@@ -142,6 +146,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="GapRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box" unique_id=894913835]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -149,6 +154,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 
 [node name="TileRow" type="HFlowContainer" parent="Panel/VBox/FillTiles_Box" unique_id=636476067]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -163,6 +169,7 @@ layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="MatchGrid" type="GridContainer" parent="Panel/VBox/Matching_Box" unique_id=1215399695]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 columns = 2
@@ -189,6 +196,7 @@ horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="CorrectAnswer" type="Label" parent="Panel/VBox" unique_id=1337338050]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
