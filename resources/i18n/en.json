@@ -92,5 +92,11 @@
   "bb.quiz.title_versus": "⚡ Rivalry!",
   "bb.quiz.title_duel_p1": "⚡ Player 1's turn",
   "bb.quiz.title_duel_p2": "⚡ Player 2's turn",
-  "bb.quiz.correct_prefix": "Correct:"
+  "bb.quiz.correct_prefix": "Correct:",
+  "bb.options.bind_p1_move": "Player 1 — move",
+  "bb.options.bind_p1_bomb": "Player 1 — bomb",
+  "bb.options.bind_p2_move": "Player 2 — move",
+  "bb.options.bind_p2_bomb": "Player 2 — bomb",
+  "bb.options.bind_pause": "Pause",
+  "bb.options.bind_none": "(none)"
 }

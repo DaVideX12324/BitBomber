@@ -92,5 +92,11 @@
   "bb.quiz.title_versus": "⚡ Rywalizacja!",
   "bb.quiz.title_duel_p1": "⚡ Kolej Gracza 1",
   "bb.quiz.title_duel_p2": "⚡ Kolej Gracza 2",
-  "bb.quiz.correct_prefix": "Poprawne:"
+  "bb.quiz.correct_prefix": "Poprawne:",
+  "bb.options.bind_p1_move": "Gracz 1 — ruch",
+  "bb.options.bind_p1_bomb": "Gracz 1 — bomba",
+  "bb.options.bind_p2_move": "Gracz 2 — ruch",
+  "bb.options.bind_p2_bomb": "Gracz 2 — bomba",
+  "bb.options.bind_pause": "Pauza",
+  "bb.options.bind_none": "(brak)"
 }

@@ -402,11 +402,11 @@ func _on_sfx_changed(v: float)    -> void: _set_bus_volume(BUS_SFX,    v)
 # ---------------------------------------------------------------------------
 
 const BINDS : Array = [
-	["Gracz 1 — ruch",  ["p1_up", "p1_down", "p1_left", "p1_right"]],
-	["Gracz 1 — bomba", ["p1_bomb"]],
-	["Gracz 2 — ruch",  ["p2_up", "p2_down", "p2_left", "p2_right"]],
-	["Gracz 2 — bomba", ["p2_bomb"]],
-	["Pauza",            ["pause"]],
+	["bb.options.bind_p1_move",  ["p1_up", "p1_down", "p1_left", "p1_right"]],
+	["bb.options.bind_p1_bomb", ["p1_bomb"]],
+	["bb.options.bind_p2_move",  ["p2_up", "p2_down", "p2_left", "p2_right"]],
+	["bb.options.bind_p2_bomb", ["p2_bomb"]],
+	["bb.options.bind_pause",            ["pause"]],
 ]
 
 
@@ -414,7 +414,7 @@ func _populate_binds() -> void:
 	for child in _binds_list.get_children():
 		child.queue_free()
 	for entry in BINDS:
-		var section : String = entry[0]
+		var section : String = BbI18n.t(str(entry[0]), "")
 		var actions : Array  = entry[1]
 		var lbl_sec := Label.new()
 		lbl_sec.text = section
@@ -429,7 +429,7 @@ func _populate_binds() -> void:
 					keys.append(event.as_text_physical_keycode())
 					break
 		var lbl_keys := Label.new()
-		lbl_keys.text = "  " + ", ".join(keys) if keys.size() > 0 else "  (brak)"
+		lbl_keys.text = "  " + ", ".join(keys) if keys.size() > 0 else "  " + BbI18n.t("bb.options.bind_none", "(brak)")
 		lbl_keys.add_theme_font_size_override("font_size", _px(13))
 		lbl_keys.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6))
 		_binds_list.add_child(lbl_keys)
