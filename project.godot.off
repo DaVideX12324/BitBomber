@@ -18,7 +18,7 @@ config/name="BitBomber"
 config/description="Edukacyjna gra Bomberman — lokalny multiplayer z quizami"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="uid://b8r7bhgsmub4e"
+config/icon="uid://c4bbicon7x2q"
 
 [autoload]
 
