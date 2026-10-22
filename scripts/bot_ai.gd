@@ -242,6 +242,20 @@ func _refresh_astar():
 			elif arena.has_method("is_breakable") and arena.is_breakable(cell):
 				solid = true
 			astar_grid.set_point_solid(cell, solid)
+	# Bomby i płonący ogień też są przeszkodą: przez bombę fizycznie się nie przejdzie, a ścieżka
+	# ucieczki przez ogień kończyła się śmiercią.
+	for bomb in get_tree().get_nodes_in_group(GROUP_BOMB):
+		var bc := _cell(bomb.global_position)
+		if not _out_of_bounds(bc):
+			astar_grid.set_point_solid(bc, true)
+	for exp in get_tree().get_nodes_in_group("explosion"):
+		var ec := _cell(exp.global_position)
+		if not _out_of_bounds(ec):
+			astar_grid.set_point_solid(ec, true)
+	# Pole bota zostaje przejezdne (stoi na własnej bombie) — A* z zablokowanego startu nie zwraca ścieżki.
+	var own := _cell(bot_node.global_position)
+	if not _out_of_bounds(own):
+		astar_grid.set_point_solid(own, false)
 
 # =====================
 # DANGER MAP
@@ -528,7 +542,10 @@ func _on_path_complete():
 			if _active_bombs() < _max_bombs() and _plant_bomb_possible(pos):
 				_dbg("Cel osiągnięty (BOX/ATTACK) - podkładam bombę na %s!" % pos)
 				bot_node.set(BOT_BOMB_PROP, true)
-				_update_sense() 
+				_update_sense()
+				# Bomba powstanie dopiero w następnej klatce gracza — bez tego własne pole
+				# wyglądało na bezpieczne i ucieczka kończyła się w miejscu.
+				_mark_danger(pos, _bomb_range())
 				_exit_state(current_state)
 				current_state = BotState.ESCAPE
 				_enter_state(BotState.ESCAPE)
