@@ -15,8 +15,8 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
 - **czeka na decyzję:** A9 (boty jako jeden „gracz 999”), D3 (quiz w mechanice), G1–G2 (API hosta na
   konfigurację sesji i wynik — trzeba dopisać w hoście), muzyka (F3);
-- **do zrobienia:** C1 (bot: unik przed kopniętą bombą, sam kopie), C3 (profile trudności z pliku),
-  D4 (kampania), F4 (ikony w HUD zamiast emoji), F5 (UI w .tscn).
+- **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
+  D4 (kampania), F5 (UI w .tscn).
 
 ## Decyzje usera (2026-10-23)
 
@@ -70,7 +70,7 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 
 ## C. Bot
 
-1. **[O] Porównać z AI Bomb It** (`gameEngine/ai/state`): oni mają 13 stanów (m.in. Defence, Evade,
+1. ✅ (częściowo: unik przed kopniętą bombą; bot sam nie kopie celowo) **[O] Porównać z AI Bomb It** (`gameEngine/ai/state`): oni mają 13 stanów (m.in. Defence, Evade,
    Follow, Kick, Flag), my 5. Dołożyć przynajmniej Evade (unik przed kopniętą bombą) i Kick.
 2. ✅ **[O] Rozumienie reakcji łańcuchowej** (+ bomby i ogień jako przeszkody w A*; samobójstwa 40% → ~20% zgonów) w mapie zagrożeń (po A2) — inaczej boty zaczną ginąć seriami.
 3. **[S] Profile trudności z danych** — Bomb It koduje je ciągami `010101|010201|010301`; u nas
@@ -108,7 +108,7 @@ kto ma ich najwięcej. W obu trybach po 45 s co 15 s pojawiają się na mapie no
 2. ✅ **[S] Animacja ognia segmentami** (środek, ramię, końcówka) zamiast kwadratów.
 3. ✅ **[S] Dźwięki** (`tools/gen_sounds.py`; muzyki brak) i muzyka — zero audio teraz. Wybuch, kładzenie bomby, podniesienie przedmiotu,
    śmierć, start rundy, muzyka.
-4. ✅ **[S] HUD** (licznik czasu jest, ikony nie) — licznik czasu rundy (jest w `RoundManager`, nie ma na ekranie), ikony zamiast liczb.
+4. ✅ **[S] HUD** (licznik czasu, ikony power-upów w kartach) — licznik czasu rundy (jest w `RoundManager`, nie ma na ekranie), ikony zamiast liczb.
 5. **[O] Sceny UI jako .tscn (WYSIWYG)** — `quiz_overlay`, `death_screen`, `main_menu`, `hud` budują UI
    w kodzie (~1700 linii). Przenieść do scen edytowalnych w edytorze.
 

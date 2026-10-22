@@ -67,15 +67,14 @@ theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card1/VBox" unique_id=1892766415]
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card1/VBox" unique_id=1892766415]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "💣: 1
-↔️: 2
-⚡: 1
-"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]1  1  1[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="Card2" type="PanelContainer" parent="Root/Cards" unique_id=1793614447]
 layout_mode = 2
@@ -108,14 +107,14 @@ theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card2/VBox" unique_id=2005615640]
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card2/VBox" unique_id=2005615640]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "💣: 1
-↔️: 2
-⚡: 1
-"
-horizontal_alignment = 1
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]1  1  1[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="Card3" type="PanelContainer" parent="Root/Cards" unique_id=1452550029]
 layout_mode = 2
@@ -148,14 +147,14 @@ theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card3/VBox" unique_id=803527938]
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card3/VBox" unique_id=803527938]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "💣: 1
-↔️: 2
-⚡: 1
-"
-horizontal_alignment = 1
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]1  1  1[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="Card4" type="PanelContainer" parent="Root/Cards" unique_id=221313777]
 layout_mode = 2
@@ -188,14 +187,14 @@ theme_override_font_sizes/font_size = 20
 text = "❤️❤️❤️"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="Root/Cards/Card4/VBox" unique_id=1668993246]
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card4/VBox" unique_id=1668993246]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "💣: 1
-↔️: 2
-⚡: 1
-"
-horizontal_alignment = 1
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]1  1  1[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="ToastLabel" type="Label" parent="Root" unique_id=1020413542]
 modulate = Color(1, 1, 1, 0)

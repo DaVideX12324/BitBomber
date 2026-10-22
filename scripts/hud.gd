@@ -9,6 +9,10 @@ extends CanvasLayer
 ##   hud.show_message(text, duration)
 
 const PlayerScript = preload("player.gd")
+const BBRuntime = preload("bb_runtime.gd")
+const ICON_FALLBACK : Dictionary = {
+	"bomb_up": "💣", "range_up": "↔️", "speed_up": "⚡", "kick": "🦶", "shield": "🛡",
+}
 
 const PLAYER_COLORS: Array[Color] = [
 	Color("#3b82f6"),
@@ -118,8 +122,8 @@ func _on_scale_changed(_s: float) -> void:
 				"font_size", fs_btn)
 		(vbox.get_node("HeartsLabel") as Label).add_theme_font_size_override(
 				"font_size", _px(BASE_FONT_HEARTS))
-		(vbox.get_node("StatsLabel") as Label).add_theme_font_size_override(
-				"font_size", _px(BASE_FONT_STATS))
+		(vbox.get_node("StatsLabel") as RichTextLabel).add_theme_font_size_override(
+				"normal_font_size", _px(BASE_FONT_STATS))
 		(vbox.get_node("Header/Dot") as ColorRect).custom_minimum_size = \
 				_sz2(BASE_DOT_SIZE.x, BASE_DOT_SIZE.y)
 
@@ -179,9 +183,19 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float,
 	if not card:
 		return
 	var speed_level := roundi((speed_mult - 1.0) / PlayerScript.SPEED_STEP) + 1
-	var extras := ("🦶" if kick else "") + ("🛡" if shield else "")
-	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"💣:%d\n↔️:%d\n⚡:%d\n%s" % [bombs, bomb_range, speed_level, extras]
+	var line := "%s %d   %s %d   %s %d" % [_icon("bomb_up"), bombs, _icon("range_up"), bomb_range, _icon("speed_up"), speed_level]
+	var extras := (_icon("kick") if kick else "") + (" " + _icon("shield") if shield else "")
+	(card.get_node("VBox/StatsLabel") as RichTextLabel).text = \
+		"[center]%s%s[/center]" % [line, ("\n" + extras) if extras != "" else ""]
+
+
+## Ikona power-upu w BBCode (ta sama grafika co na planszy); bez pliku — emoji.
+func _icon(kind: String) -> String:
+	var path := BBRuntime.path("resources/sprites/objects/powerup_%s.png" % kind)
+	if ResourceLoader.exists(path):
+		var px := _px(BASE_FONT_STATS + 6)
+		return "[img=%dx%d]%s[/img]" % [px, px, path]
+	return ICON_FALLBACK.get(kind, "?")
 
 
 ## Panel rundy: numer + czas do nagłej śmierci (wcześniej zawsze „Runda 1” — nikt nie wołał update_round).
