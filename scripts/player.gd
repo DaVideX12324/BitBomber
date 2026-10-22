@@ -23,12 +23,15 @@ const DEFAULT_LIVES    : int   = 1
 const DEFAULT_BOMBS    : int   = 1
 const DEFAULT_RANGE    : int   = 1
 const DEFAULT_SPEED    : float = 1.0
+## Mnożnik MOVE_SPEED: +SPEED_STEP za power-up, do MAX_SPEED (jak Bomb It: 1,3–2,1 px/kl.).
+const SPEED_STEP       : float = 0.15
+const MAX_SPEED        : float = 1.75
 const MAX_LIVES        : int   = 5
 
 var lives            : int   = DEFAULT_LIVES
 var max_bombs        : int   = DEFAULT_BOMBS
 var bomb_range       : int   = DEFAULT_RANGE
-var speed_addition : float = DEFAULT_SPEED
+var speed_mult     : float = DEFAULT_SPEED
 var _active_bombs    : int   = 0
 
 var has_remote_detonator : bool = false
@@ -161,7 +164,7 @@ func reset_for_new_game() -> void:
 	lives          = DEFAULT_LIVES
 	max_bombs      = DEFAULT_BOMBS
 	bomb_range     = DEFAULT_RANGE
-	speed_addition = DEFAULT_SPEED
+	speed_mult     = DEFAULT_SPEED
 	_active_bombs  = 0
 	has_remote_detonator = false
 	has_bomb_pierce      = false
@@ -175,7 +178,7 @@ func reset_for_new_round() -> void:
 	lives          = DEFAULT_LIVES
 	max_bombs      = DEFAULT_BOMBS
 	bomb_range     = DEFAULT_RANGE
-	speed_addition = DEFAULT_SPEED
+	speed_mult     = DEFAULT_SPEED
 	_active_bombs  = 0
 	has_remote_detonator = false
 	has_bomb_pierce      = false
@@ -226,7 +229,7 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 				direction.x = 0
 
 		direction = direction.normalized()
-		velocity = direction * (MOVE_SPEED + speed_addition)
+		velocity = direction * MOVE_SPEED * speed_mult
 		move_and_slide()
 
 		if get_slide_collision_count() > 0:
@@ -374,7 +377,7 @@ func apply_powerup(type: String) -> void:
 	match type:
 		"range_up":  bomb_range    = min(bomb_range + 1, 7)
 		"bomb_up":   max_bombs     = min(max_bombs + 1, 4)
-		"speed_up":  speed_addition = min(speed_addition + 50, 500)
+		"speed_up":  speed_mult     = minf(speed_mult + SPEED_STEP, MAX_SPEED)
 		"life_up":   lives          = min(lives + 1, MAX_LIVES)
 	if type == "life_up":
 		lives_changed.emit(player_id, lives)

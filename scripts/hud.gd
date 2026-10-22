@@ -5,9 +5,11 @@ extends CanvasLayer
 ## Publiczne API:
 ##   hud.setup_players(player_list: Array)
 ##   hud.update_lives(pid, lives_left)
-##   hud.update_player(pid, bombs, bomb_range, speed)
+##   hud.update_player(pid, bombs, bomb_range, speed_mult)
 ##   hud.update_round(round_num)
 ##   hud.show_message(text, duration)
+
+const PlayerScript = preload("player.gd")
 
 const PLAYER_COLORS: Array[Color] = [
 	Color(0.18, 0.45, 0.85),
@@ -142,11 +144,11 @@ func update_lives(pid: int, lives_left: int) -> void:
 	(card.get_node("VBox/HeartsLabel") as Label).text = "❤️:%d" % lives_left
 
 
-func update_player(pid: int, bombs: int, bomb_range: int, speed: float) -> void:
+func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
-	var speed_level := int((speed - 1.0) / 50.0) + 1
+	var speed_level := roundi((speed_mult - 1.0) / PlayerScript.SPEED_STEP) + 1
 	(card.get_node("VBox/StatsLabel") as Label).text = \
 		"💣:%d\n↔️:%d\n⚡:%d\n" % [bombs, bomb_range, speed_level]
 
