@@ -54,8 +54,13 @@ func _run() -> void:
 	await _frames(2)
 	var bomb := _bomb_at(Vector2i(1, 6), p1, 30.0)
 	Input.action_press("p1_down")
-	await _frames(20)
+	var path_seen := false
+	for i in 20:
+		await physics_frame
+		if bomb.is_sliding() and not bomb.slide_path().is_empty():
+			path_seen = true
 	Input.action_release("p1_down")
+	_check(path_seen, "sunąca bomba zna swoją drogę (slide_path, dla bota)")
 	await _frames(60)
 	var cell: Vector2i = bomb.get_cell()
 	_check(cell.x == 1 and cell.y > 6, "kopnięta bomba pojechała w dół: %s" % cell)

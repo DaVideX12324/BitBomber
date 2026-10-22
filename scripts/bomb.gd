@@ -74,6 +74,20 @@ func is_sliding() -> bool:
 	return _kick_dir != Vector2i.ZERO
 
 
+## Pola, przez które sunąca bomba jeszcze przejedzie (puste, gdy stoi).
+func slide_path() -> Array[Vector2i]:
+	var out : Array[Vector2i] = []
+	if not is_sliding():
+		return out
+	var c := get_cell()
+	while out.size() < 32:
+		c += _kick_dir
+		if not _cell_free(c):
+			break
+		out.append(c)
+	return out
+
+
 ## Kopnięcie w kierunku dir; false, gdy następne pole jest zajęte albo bomba już sunie.
 func kick(dir: Vector2i) -> bool:
 	if _exploded or is_sliding() or not _cell_free(get_cell() + dir):

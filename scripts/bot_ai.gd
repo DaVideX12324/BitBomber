@@ -267,6 +267,10 @@ func _update_sense():
 	for bomb in get_tree().get_nodes_in_group(GROUP_BOMB):
 		var brange = int(bomb.get("explosion_range")) if bomb.get("explosion_range") != null else 1
 		_mark_danger(_cell(bomb.global_position), brange)
+		# Kopnięta bomba: wybuch może nastąpić na każdym polu przed nią, aż do przeszkody.
+		if bomb.has_method("slide_path"):
+			for c in bomb.slide_path():
+				_mark_danger(c, brange)
 	
 	if arena and arena.has_method("sudden_death_danger"):
 		for c in arena.sudden_death_danger():
