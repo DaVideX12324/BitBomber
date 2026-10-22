@@ -20,14 +20,14 @@ const ICONS : Dictionary = {
 }
 
 var powerup_type : String = "range_up"
+var _age : float = 0.0
+
+## Dłużej niż płomień (Explosion.LIFETIME = 0,5 s).
+const SPAWN_FIRE_GRACE : float = 0.6
 
 @onready var _fallback : ColorRect        = $Fallback
 @onready var _label    : Label            = $Label
 @onready var _sprite   : Sprite2D         = $Sprite2D
-@onready var Hitbox    : CollisionShape2D =$Hitbox/CollisionShape2D
-
-signal collected(powerup_type: String)
-
 
 func _ready() -> void:
 	var col : Color = COLORS.get(powerup_type, Color.WHITE)
@@ -36,9 +36,10 @@ func _ready() -> void:
 	_label.text = icon
 	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
 	_bob()
-	Hitbox.disabled = 1
-	await get_tree().create_timer(0.21).timeout
-	Hitbox.disabled = 0
+
+func _process(delta: float) -> void:
+	_age += delta
+
 
 func _bob() -> void:
 	var tw := create_tween().set_loops()
@@ -50,8 +51,10 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 	var stuff = area.get_parent()
 	if stuff.has_method("apply_powerup"):
 		stuff.apply_powerup(powerup_type)
-		collected.emit(powerup_type)
 		queue_free()
 
+## Ogień, który odsłonił power-up (skrzynka pod nim), jeszcze płonie — ten go nie niszczy.
 func take_hit() -> void:
+	if _age < SPAWN_FIRE_GRACE:
+		return
 	queue_free()

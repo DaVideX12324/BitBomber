@@ -16,6 +16,7 @@ signal exploded
 @onready var _fuse_mat : ShaderMaterial = $Sprite2D.material
 
 var _timer : float = 0.0
+var _exploded : bool = false
 
 
 func _ready() -> void:
@@ -59,7 +60,19 @@ func time_left() -> float:
 	return maxf(FUSE_TIME - _timer, 0.0)
 
 
+func get_cell() -> Vector2i:
+	return _pixel_to_grid(global_position)
+
+
+## Wybuch od razu — ogień innej bomby (reakcja łańcuchowa).
+func detonate() -> void:
+	_explode()
+
+
 func _explode() -> void:
+	if _exploded:
+		return
+	_exploded = true
 	set_process(false)
 	exploded.emit()
 

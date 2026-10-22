@@ -215,12 +215,13 @@ func _spawn_powerup(cell: Vector2i) -> void:
 	var type : String = POWERUP_POOL[randi() % POWERUP_POOL.size()]
 	pu.powerup_type    = type
 	pu.position        = Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
-	pu.collected.connect(_on_powerup_collected.bind(cell))
+	pu.tree_exiting.connect(_on_powerup_gone.bind(cell))
 	add_child(pu)
 	powerup_cells[cell] = pu
 
 
-func _on_powerup_collected(_type: String, cell: Vector2i) -> void:
+## Zebrany albo spalony.
+func _on_powerup_gone(cell: Vector2i) -> void:
 	powerup_cells.erase(cell)
 
 
