@@ -77,6 +77,7 @@ func next_round() -> void:
 	_reset_players()
 	_load_map(BBRuntime.path("scenes/maps/arena.tscn"))
 	_set_players_visible(true)
+	_refresh_hud()
 	RoundManager.start_round()
 
 
@@ -151,16 +152,23 @@ func _connect_players_to_hud() -> void:
 			player_list.append({ "id": p.player_id, "is_bot": p.is_bot })
 	hud.setup_players(player_list)
 
+	_refresh_hud()
 	for p in _players:
 		if not is_instance_valid(p):
 			continue
-		hud.update_lives(p.player_id, p.lives)
-		hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_mult)
 		p.lives_changed.connect(
 				func(pid: int, left: int): hud.update_lives(pid, left))
 		p.powerup_collected.connect(
 				func(_pid: int, _type: String): hud.update_player(
-					p.player_id, p.max_bombs, p.bomb_range, p.speed_mult))
+					p.player_id, p.max_bombs, p.bomb_range, p.speed_mult, p.has_kick, p.has_shield))
+
+
+## Karty graczy od nowa (na start rundy statystyki wracają do domyślnych).
+func _refresh_hud() -> void:
+	for p in _players:
+		if is_instance_valid(p):
+			hud.update_lives(p.player_id, p.lives)
+			hud.update_player(p.player_id, p.max_bombs, p.bomb_range, p.speed_mult, p.has_kick, p.has_shield)
 
 
 # ---------------------------------------------------------------------------

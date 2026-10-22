@@ -18,6 +18,11 @@ signal exploded
 var _timer : float = 0.0
 var _exploded : bool = false
 
+## Kopnięcie (Bomb It: BombShoesProp): sunie z tą prędkością pole po polu, aż następne będzie zajęte.
+const KICK_SPEED : float = 480.0
+var _kick_dir    : Vector2i = Vector2i.ZERO
+var _kick_target : Vector2 = Vector2.ZERO
+
 
 func _ready() -> void:
 	add_to_group("bomb")
@@ -64,6 +69,45 @@ func get_cell() -> Vector2i:
 	return _pixel_to_grid(global_position)
 
 
+func is_sliding() -> bool:
+	return _kick_dir != Vector2i.ZERO
+
+
+## Kopnięcie w kierunku dir; false, gdy następne pole jest zajęte albo bomba już sunie.
+func kick(dir: Vector2i) -> bool:
+	if _exploded or is_sliding() or not _cell_free(get_cell() + dir):
+		return false
+	_kick_dir = dir
+	_kick_target = _grid_to_pixel(get_cell() + dir)
+	return true
+
+
+func _physics_process(delta: float) -> void:
+	if not is_sliding():
+		return
+	global_position = global_position.move_toward(_kick_target, KICK_SPEED * delta)
+	if global_position.is_equal_approx(_kick_target):
+		var next := get_cell() + _kick_dir
+		if _cell_free(next):
+			_kick_target = _grid_to_pixel(next)
+		else:
+			_kick_dir = Vector2i.ZERO
+
+
+## Wolne dla sunącej bomby: bez ściany, skrzynki, innej bomby i żywego gracza.
+func _cell_free(cell: Vector2i) -> bool:
+	var arena := _get_arena()
+	if arena and (arena.is_solid(cell) or arena.is_breakable(cell)):
+		return false
+	for b in get_tree().get_nodes_in_group("bomb"):
+		if b != self and b.get_cell() == cell:
+			return false
+	for p in get_tree().get_nodes_in_group("players"):
+		if p.is_alive and p.get_grid_pos() == cell:
+			return false
+	return true
+
+
 ## Wybuch od razu — ogień innej bomby (reakcja łańcuchowa).
 func detonate() -> void:
 	_explode()
@@ -83,6 +127,10 @@ func _explode() -> void:
 		return
 	_exploded = true
 	set_process(false)
+	if is_sliding():
+		# Wybuch w biegu — na polu, nad którym bomba właśnie jest.
+		_kick_dir = Vector2i.ZERO
+		global_position = _grid_to_pixel(get_cell())
 	exploded.emit()
 
 	var arena  : Node     = _get_arena()

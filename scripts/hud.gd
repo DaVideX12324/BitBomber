@@ -5,7 +5,7 @@ extends CanvasLayer
 ## Publiczne API:
 ##   hud.setup_players(player_list: Array)
 ##   hud.update_lives(pid, lives_left)
-##   hud.update_player(pid, bombs, bomb_range, speed_mult)
+##   hud.update_player(pid, bombs, bomb_range, speed_mult, kick, shield)
 ##   hud.show_message(text, duration)
 
 const PlayerScript = preload("player.gd")
@@ -173,13 +173,15 @@ func _on_round_started(_n: int) -> void:
 		_render_hearts(pid)
 
 
-func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float) -> void:
+func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float,
+		kick: bool = false, shield: bool = false) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
 	var speed_level := roundi((speed_mult - 1.0) / PlayerScript.SPEED_STEP) + 1
+	var extras := ("🦶" if kick else "") + ("🛡" if shield else "")
 	(card.get_node("VBox/StatsLabel") as Label).text = \
-		"💣:%d\n↔️:%d\n⚡:%d\n" % [bombs, bomb_range, speed_level]
+		"💣:%d\n↔️:%d\n⚡:%d\n%s" % [bombs, bomb_range, speed_level, extras]
 
 
 ## Panel rundy: numer + czas do nagłej śmierci (wcześniej zawsze „Runda 1” — nikt nie wołał update_round).

@@ -1,7 +1,7 @@
 extends Sprite2D
 
 ## Power-up leżący na planszy.
-## Typy: range_up, bomb_up, speed_up, life_up
+## Typy: range_up, bomb_up, speed_up, life_up, kick, shield, star
 
 const GRID_SIZE : int = 64
 
@@ -10,6 +10,9 @@ const COLORS : Dictionary = {
 	"bomb_up":   Color(1.0, 0.4, 0.1),
 	"speed_up":  Color(0.2, 0.9, 0.4),
 	"life_up":   Color(1.0, 0.2, 0.4),
+	"kick":      Color(0.3, 0.6, 1.0),
+	"shield":    Color(0.6, 0.85, 1.0),
+	"star":      Color(1.0, 0.95, 0.4),
 }
 
 const ICONS : Dictionary = {
@@ -17,6 +20,9 @@ const ICONS : Dictionary = {
 	"bomb_up":   "🧨",
 	"speed_up":  "👟",
 	"life_up":   "♥",
+	"kick":      "🦶",
+	"shield":    "🛡",
+	"star":      "⭐",
 }
 
 var powerup_type : String = "range_up"

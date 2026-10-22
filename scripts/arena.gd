@@ -51,6 +51,9 @@ const POWERUP_WEIGHTS : Dictionary = {
 	"range_up": 24,
 	"speed_up": 25,
 	"life_up":  4,
+	"kick":     10,
+	"shield":   4,
+	"star":     2,
 }
 
 ## Dorzucanie przedmiotów (Bomb It, timePassed): po ITEM_DROP_START s co ITEM_DROP_EVERY s

@@ -36,6 +36,13 @@ var bomb_range       : int   = DEFAULT_RANGE
 var speed_mult     : float = DEFAULT_SPEED
 var _active_bombs    : int   = 0
 
+## Power-upy specjalne (Bomb It: BombShoesProp, ShieldProp, InvincibilityProp)
+var has_kick   : bool  = false
+var has_shield : bool  = false
+var _star_time : float = 0.0
+## Nieśmiertelność z gwiazdki trwa tyle sekund
+const STAR_DURATION : float = 8.0
+
 
 # --- ZMIENNE DLA AI ---
 var bot_input_direction := Vector2.ZERO
@@ -127,6 +134,9 @@ func _physics_process(delta: float) -> void:
 
 	_handle_movement(delta, raw_dir)
 	_grid_pos = _closest_grid_pos()
+	if _star_time > 0.0:
+		_star_time = maxf(_star_time - delta, 0.0)
+		modulate = Color.from_hsv(fmod(_star_time * 1.5, 1.0), 0.5, 1.0) if _star_time > 0.0 else Color.WHITE
 	_check_bomb_exits()
 
 
@@ -171,6 +181,9 @@ func reset_for_new_round() -> void:
 	bomb_range     = DEFAULT_RANGE
 	speed_mult     = DEFAULT_SPEED
 	_active_bombs  = 0
+	has_kick       = false
+	has_shield     = false
+	_star_time     = 0.0
 	# Czyśzczenie bomb, na których się stoi
 	_bombs_inside.clear()
 	# Reset flag stanu
@@ -220,6 +233,8 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 		direction = direction.normalized()
 		velocity = direction * MOVE_SPEED * speed_mult
 		move_and_slide()
+		if has_kick:
+			_try_kick(direction)
 
 		if get_slide_collision_count() > 0:
 			var collision = get_slide_collision(0)
@@ -232,6 +247,17 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 	else:
 		velocity = Vector2.ZERO
 		move_and_slide()
+
+
+## Wejście w bombę z kopnięciem — bomba sunie w kierunku ruchu.
+func _try_kick(direction: Vector2) -> void:
+	var dir := Vector2i(roundi(direction.x), roundi(direction.y))
+	for i in get_slide_collision_count():
+		var col := get_slide_collision(i)
+		var body := col.get_collider()
+		if body and body.is_in_group("bomb") and body.has_method("kick") \
+				and Vector2i(-col.get_normal().round()) == dir:
+			body.kick(dir)
 
 
 func _apply_corner_assist(axis: String, direction: Vector2, delta: float) -> void:
@@ -297,7 +323,13 @@ func _get_map_root() -> Node:
 
 
 func take_hit(attacker_id: int = 0) -> void:
-	if not is_alive or _invincible:
+	if not is_alive or _invincible or _star_time > 0.0:
+		return
+	if has_shield:
+		# Tarcza zjada jedno trafienie, potem chwila nieśmiertelności na wyjście z ognia.
+		has_shield = false
+		powerup_collected.emit(player_id, "shield_lost")
+		_start_iframes(1.0)
 		return
 	# Natychmiastowe ustawienie invincible — blokuje kolejne eksplozje
 	# trafiające gracza w tym samym lub następnym framie (multi-bomb insta-kill).
@@ -399,6 +431,9 @@ func apply_powerup(type: String) -> void:
 		"bomb_up":   max_bombs     = min(max_bombs + 1, 4)
 		"speed_up":  speed_mult     = minf(speed_mult + SPEED_STEP, MAX_SPEED)
 		"life_up":   lives          = min(lives + 1, MAX_LIVES)
+		"kick":      has_kick       = true
+		"shield":    has_shield     = true
+		"star":      _star_time     = STAR_DURATION
 	if type == "life_up":
 		lives_changed.emit(player_id, lives)
 	powerup_collected.emit(player_id, type)
