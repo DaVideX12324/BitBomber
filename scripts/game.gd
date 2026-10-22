@@ -12,6 +12,7 @@ extends Node
 ## next_round()    — kolejna runda (gracze zostają, reset statsy + nowa mapa)
 
 const BBRuntime = preload("bb_runtime.gd")
+const BbSfx = preload("bb_sfx.gd")
 
 var _player_scene: PackedScene = load(BBRuntime.path("scenes/players/player.tscn"))
 
@@ -27,6 +28,7 @@ func _ready() -> void:
 	players_root.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	GameManager.state_changed.connect(_on_state_changed)
 	RoundManager.sudden_death_started.connect(_on_sudden_death)
+	RoundManager.round_ended.connect(_on_round_ended)
 	_load_menu()
 
 
@@ -69,6 +71,7 @@ func load_arena() -> void:
 	_set_players_visible(true)
 	_connect_players_to_hud()
 	RoundManager.start_round()
+	BbSfx.play("round_start", -4.0)
 	if not RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 
@@ -80,6 +83,7 @@ func next_round() -> void:
 	_set_players_visible(true)
 	_refresh_hud()
 	RoundManager.start_round()
+	BbSfx.play("round_start", -4.0)
 
 
 func load_menu() -> void:
@@ -211,7 +215,13 @@ func _on_player_killed(victim_id: int, killer_id: int) -> void:
 	RoundManager.add_kill(killer_id, victim_id)
 
 
+func _on_round_ended(winner_id: int) -> void:
+	if winner_id > 0:
+		BbSfx.play("round_win", -3.0)
+
+
 func _on_sudden_death() -> void:
+	BbSfx.play("sudden_death", -2.0)
 	if _current_map and _current_map.has_method("start_sudden_death"):
 		_current_map.start_sudden_death()
 	hud.show_message(BbI18n.t("bb.hud.sudden_death", "☠ Nagła śmierć!"), 3.0)

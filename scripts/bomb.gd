@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 const BBRuntime = preload("bb_runtime.gd")
+const BbSfx = preload("bb_sfx.gd")
 
 var _explosion_scene: PackedScene = load(BBRuntime.path("scenes/objects/explosion.tscn"))
 const GRID_SIZE : int   = 64
@@ -132,6 +133,7 @@ func _explode() -> void:
 		_kick_dir = Vector2i.ZERO
 		global_position = _grid_to_pixel(get_cell())
 	exploded.emit()
+	BbSfx.play("explosion", -2.0, 0.1)
 
 	var arena  : Node     = _get_arena()
 	var origin : Vector2i = _pixel_to_grid(global_position)

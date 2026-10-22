@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const BBRuntime = preload("bb_runtime.gd")
+const BbSfx = preload("bb_sfx.gd")
 
 ## Gracz BitBomber — snap-ruch na gridzie 64px, kładzenie bomb, system życ.
 ##
@@ -286,7 +287,8 @@ func _try_kick(direction: Vector2) -> void:
 		var body := col.get_collider()
 		if body and body.is_in_group("bomb") and body.has_method("kick") \
 				and Vector2i(-col.get_normal().round()) == dir:
-			body.kick(dir)
+			if body.kick(dir):
+				BbSfx.play("kick", -4.0, 0.08)
 
 
 func _apply_corner_assist(axis: String, direction: Vector2, delta: float) -> void:
@@ -337,6 +339,7 @@ func _place_bomb() -> void:
 	bomb.exploded.connect(_on_bomb_exploded)
 	map_root.add_child(bomb)
 	_active_bombs += 1
+	BbSfx.play("bomb_place", -6.0, 0.06)
 	bomb_placed.emit(bomb_cell, self)
 
 
@@ -357,6 +360,7 @@ func take_hit(attacker_id: int = 0) -> void:
 	if has_shield:
 		# Tarcza zjada jedno trafienie, potem chwila nieśmiertelności na wyjście z ognia.
 		has_shield = false
+		BbSfx.play("shield_break", -4.0)
 		powerup_collected.emit(player_id, "shield_lost")
 		_start_iframes(1.0)
 		return
@@ -367,6 +371,7 @@ func take_hit(attacker_id: int = 0) -> void:
 	lives_changed.emit(player_id, lives)
 	if lives <= 0:
 		is_alive      = false
+		BbSfx.play("death", -3.0, 0.05)
 		if GameManager.is_kill_mode():
 			_die_and_respawn(attacker_id)
 			return
@@ -436,6 +441,7 @@ func crush() -> void:
 		return
 	lives = 0
 	lives_changed.emit(player_id, lives)
+	BbSfx.play("death", -3.0, 0.05)
 	_eliminate()
 
 
@@ -463,6 +469,7 @@ func apply_powerup(type: String) -> void:
 		"kick":      has_kick       = true
 		"shield":    has_shield     = true
 		"star":      _star_time     = STAR_DURATION
+	BbSfx.play("pickup", -6.0, 0.03)
 	if type == "life_up":
 		lives_changed.emit(player_id, lives)
 	powerup_collected.emit(player_id, type)

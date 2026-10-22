@@ -1,6 +1,7 @@
 extends Node2D
 
 const BBRuntime = preload("bb_runtime.gd")
+const BbSfx = preload("bb_sfx.gd")
 
 ## Scena areny odpowiada TYLKO za mapę:
 ## budowanie siatki, kolizje, API dla bomb/eksplozji, spawn pointy.
@@ -490,6 +491,7 @@ func _spiral_cells() -> Array[Vector2i]:
 
 
 func _drop_block(cell: Vector2i) -> void:
+	BbSfx.play("block_drop", -12.0, 0.1)
 	if breakable_cells.has(cell):
 		var box = breakable_cells[cell]
 		breakable_cells.erase(cell)

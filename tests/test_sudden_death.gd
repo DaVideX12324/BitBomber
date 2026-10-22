@@ -47,6 +47,11 @@ func _run() -> void:
 	for p in get_nodes_in_group("players"):
 		if p.player_id == 1:
 			p1 = p
+	# P2 z dala od spirali (spawny są losowe — mógł stać na jej pierwszym polu).
+	for p in get_nodes_in_group("players"):
+		if p.player_id == 2:
+			var safe: Vector2i = arena.nearest_free_cell(Vector2i(arena.cols / 2, arena.rows / 2))
+			p.teleport_to(Vector2(safe) * 64 + Vector2(32, 32))
 	var c: Vector2i = arena.sudden_death_danger()[0]
 	p1.teleport_to(Vector2(c) * 64 + Vector2(32, 32))
 
