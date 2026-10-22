@@ -49,12 +49,12 @@ func _bob() -> void:
 
 func _on_hitbox_area_entered(area: Area2D) -> void:	
 	var stuff = area.get_parent()
-	if stuff.has_method("apply_powerup"):
+	if stuff.has_method("apply_powerup") and stuff.is_alive:
 		stuff.apply_powerup(powerup_type)
 		queue_free()
 
 ## Ogień, który odsłonił power-up (skrzynka pod nim), jeszcze płonie — ten go nie niszczy.
-func take_hit() -> void:
+func take_hit(_attacker_id: int = 0) -> void:
 	if _age < SPAWN_FIRE_GRACE:
 		return
 	queue_free()

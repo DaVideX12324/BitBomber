@@ -27,6 +27,8 @@ const DEFAULT_SPEED    : float = 1.0
 const SPEED_STEP       : float = 0.15
 const MAX_SPEED        : float = 1.75
 const MAX_LIVES        : int   = 5
+## Tryb KILL: po tylu sekundach odrodzenie na swoim spawnie
+const KILL_RESPAWN_DELAY : float = 2.0
 
 var lives            : int   = DEFAULT_LIVES
 var max_bombs        : int   = DEFAULT_BOMBS
@@ -51,6 +53,8 @@ var _ai : Node = null
 var _bombs_inside : Array[Node] = []
 
 signal died(player_id: int)
+## Tryb KILL: zginął i zaraz się odrodzi (killer_id 0 = nieznany)
+signal killed(player_id: int, killer_id: int)
 signal lives_changed(player_id: int, lives_left: int)
 signal bomb_placed(grid_pos: Vector2i, player_ref: Node)
 signal powerup_collected(player_id: int, powerup_type: String)
@@ -292,7 +296,7 @@ func _get_map_root() -> Node:
 	return get_parent()
 
 
-func take_hit() -> void:
+func take_hit(attacker_id: int = 0) -> void:
 	if not is_alive or _invincible:
 		return
 	# Natychmiastowe ustawienie invincible — blokuje kolejne eksplozje
@@ -302,6 +306,9 @@ func take_hit() -> void:
 	lives_changed.emit(player_id, lives)
 	if lives <= 0:
 		is_alive      = false
+		if GameManager.is_kill_mode():
+			_die_and_respawn(attacker_id)
+			return
 		_pending_elim = true
 		if is_bot:
 			_eliminate()
@@ -345,6 +352,21 @@ func _respawn() -> void:
 		_pixel_target = _grid_to_pixel(arena.nearest_free_cell(_pixel_to_grid(_pixel_target)))
 	global_position = _pixel_target
 	_start_iframes(2.0)
+
+
+## Tryb KILL: znika, po KILL_RESPAWN_DELAY wraca na swój spawn z pełnym życiem i chwilą nieśmiertelności.
+## Power-upy zostają (jak w Bomb It).
+func _die_and_respawn(killer_id: int) -> void:
+	visible  = false
+	velocity = Vector2.ZERO
+	killed.emit(player_id, killer_id)
+	await get_tree().create_timer(KILL_RESPAWN_DELAY, false).timeout
+	if not is_inside_tree() or is_alive or not RoundManager._round_active:
+		return
+	lives = DEFAULT_LIVES
+	lives_changed.emit(player_id, lives)
+	visible = true
+	_respawn()
 
 
 ## Nagła śmierć: spadający blok zabija od razu — bez nieśmiertelności i ostatniej szansy.

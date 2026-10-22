@@ -20,6 +20,11 @@ enum WinCondition {
 	MOST_WINS_IN_Y ## Wygrywa ten, kto ma więcej wygranych po Y rundach
 }
 
+enum GameMode {
+	LAST_STANDING, ## Ostatni żywy wygrywa rundę (zabici czekają do następnej, poza ostatnią szansą)
+	KILL,          ## Zabici odradzają się; rundę wygrywa pierwszy z kills_to_win zabójstwami (Kill z Bomb It)
+}
+
 signal state_changed(old_state: GameState, new_state: GameState)
 
 var current_state: GameState = GameState.MENU
@@ -40,6 +45,10 @@ var bot_difficulty: int = 0
 ## Warunek wygranej sesji
 var win_condition: WinCondition = WinCondition.FIRST_TO_X
 
+var game_mode: GameMode = GameMode.LAST_STANDING
+## Tryb KILL: tyle zabójstw wygrywa rundę
+var kills_to_win: int = 5
+
 ## Referencja do persistentnego roota (ustawiana przez game.gd)
 var game_node: Node = null
 
@@ -59,6 +68,10 @@ func change_state(new_state: GameState) -> void:
 
 func is_playing() -> bool:
 	return current_state == GameState.PLAYING
+
+
+func is_kill_mode() -> bool:
+	return game_mode == GameMode.KILL
 
 
 func is_in_quiz() -> bool:

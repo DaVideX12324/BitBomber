@@ -56,6 +56,31 @@ horizontal_alignment = 1
 [node name="Sep2" type="HSeparator" parent="Center/Panel/Margin/VBox" unique_id=1925169792]
 layout_mode = 2
 
+[node name="HBoxMode" type="HBoxContainer" parent="Center/Panel/Margin/VBox" unique_id=900000020]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="ModeLabel" type="Label" parent="Center/Panel/Margin/VBox/HBoxMode" unique_id=900000021]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+text = "Tryb gry:"
+
+[node name="Mode_Last" type="Button" parent="Center/Panel/Margin/VBox/HBoxMode" unique_id=900000022]
+custom_minimum_size = Vector2(140, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "💣 Ostatni żywy"
+
+[node name="Mode_Kill" type="Button" parent="Center/Panel/Margin/VBox/HBoxMode" unique_id=900000023]
+custom_minimum_size = Vector2(140, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "🎯 Zabójstwa"
+
 [node name="PlayersLabel" type="Label" parent="Center/Panel/Margin/VBox" unique_id=500000001]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)

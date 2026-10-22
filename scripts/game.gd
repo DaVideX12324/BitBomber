@@ -34,9 +34,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func _load_map(path: String) -> void:
-	if _current_map:
-		_current_map.queue_free()
-		_current_map = null
+	_free_current_map()
 	var scene : Node2D = load(path).instantiate() as Node2D
 	_current_map = scene
 	add_child(_current_map)
@@ -44,11 +42,18 @@ func _load_map(path: String) -> void:
 	_teleport_players()
 
 
-func _load_menu() -> void:
-	_set_players_visible(false)
+## Stara mapa wypada z drzewa od razu: jej płonący ogień i bomby nie mogą już
+## trafić graczy przeniesionych na nową mapę (queue_free działa dopiero na końcu klatki).
+func _free_current_map() -> void:
 	if _current_map:
+		remove_child(_current_map)
 		_current_map.queue_free()
 		_current_map = null
+
+
+func _load_menu() -> void:
+	_set_players_visible(false)
+	_free_current_map()
 	var menu : Node = load(BBRuntime.path("scenes/ui/main_menu.tscn")).instantiate()
 	_current_map = menu
 	add_child(menu)
@@ -95,6 +100,7 @@ func _spawn_players() -> void:
 		players_root.add_child(p)
 		_players.append(p)
 		p.died.connect(_on_player_died)
+		p.killed.connect(_on_player_killed)
 
 	for i in range(GameManager.num_bots):
 		var bot := _player_scene.instantiate() as CharacterBody2D
@@ -104,6 +110,7 @@ func _spawn_players() -> void:
 		players_root.add_child(bot)
 		_players.append(bot)
 		bot.died.connect(_on_player_died)
+		bot.killed.connect(_on_player_killed)
 
 
 ## Resetuje wszystkich graczy na początek rundy (pełne życia, domyślne statsy)
@@ -190,6 +197,10 @@ func _deferred_check_round() -> void:
 			# Kończymy rundę od razu, żeby nie patrzeć jak boty ze sobą walczą.
 			RoundManager.end_round(999) # '999' to kod oznaczający wygraną botów
 			
+
+func _on_player_killed(victim_id: int, killer_id: int) -> void:
+	RoundManager.add_kill(killer_id, victim_id)
+
 
 func _on_sudden_death() -> void:
 	if _current_map and _current_map.has_method("start_sudden_death"):

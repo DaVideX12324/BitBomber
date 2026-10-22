@@ -42,6 +42,11 @@ extends CanvasLayer
 	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Medium,
 	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Hard,
 ]
+@onready var _mode_label : Label = $Center/Panel/Margin/VBox/HBoxMode/ModeLabel
+@onready var _mode_btns : Array[Button] = [
+	$Center/Panel/Margin/VBox/HBoxMode/Mode_Last,
+	$Center/Panel/Margin/VBox/HBoxMode/Mode_Kill,
+]
 @onready var _win_btns : Array[Button] = [
 	$Center/Panel/Margin/VBox/HBoxWin/Win_FirstTo,
 	$Center/Panel/Margin/VBox/HBoxWin/Win_MostWins,
@@ -61,6 +66,7 @@ var _sel_players : int = 1
 var _sel_bots    : int = 1
 var _sel_diff    : int = 0
 var _sel_win     : int = 0
+var _sel_mode    : int = 0
 
 var _help_overlay : ColorRect
 var _options_menu: CanvasLayer
@@ -106,6 +112,12 @@ func _ready() -> void:
 	for i in _win_btns.size():
 		var idx := i
 		_win_btns[i].pressed.connect(func(): _set_win(idx))
+	for i in _mode_btns.size():
+		var idx := i
+		_mode_btns[i].pressed.connect(func(): _set_mode(idx))
+	var gm0 := _gm()
+	if gm0 and gm0.get("game_mode") != null:
+		_sel_mode = int(gm0.game_mode)
 	_rounds_spin.value_changed.connect(_on_rounds_changed)
 	_quit_btn.pressed.connect(_on_quit_pressed)
 	_help_btn.pressed.connect(_show_help)
@@ -126,6 +138,7 @@ func _ready() -> void:
 	_refresh_bots()
 	_refresh_diff()
 	_refresh_win()
+	_refresh_mode()
 	_build_help_overlay()
 	_update_quit_button()
 	var sm := get_node_or_null("/root/UIScaleManager")
@@ -195,6 +208,10 @@ func _on_scale_changed(_s: float) -> void:
 	for btn in _win_btns:
 		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
 		(btn as Button).add_theme_font_size_override("font_size", _px(19))
+	for btn in _mode_btns:
+		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
+		(btn as Button).add_theme_font_size_override("font_size", _px(19))
+	_mode_label.add_theme_font_size_override("font_size", _px(17))
 	_start_btn.custom_minimum_size = _sz2(BASE_BTN_START.x, BASE_BTN_START.y)
 	_quit_btn.custom_minimum_size  = _sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
 	var pad := _px(BASE_PANEL_PADDING)
@@ -232,6 +249,16 @@ func _set_diff(idx: int) -> void:
 func _set_win(idx: int) -> void:
 	_sel_win = idx
 	_refresh_win()
+
+
+func _set_mode(idx: int) -> void:
+	_sel_mode = idx
+	_refresh_mode()
+
+
+func _refresh_mode() -> void:
+	for i in _mode_btns.size():
+		_mode_btns[i].button_pressed = (i == _sel_mode)
 
 
 func _on_rounds_changed(_value: float) -> void:
@@ -273,6 +300,9 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 	var gm := _gm()
 	if gm:
 		gm.bot_difficulty   = diff
+		gm.game_mode        = _sel_mode
+		# Bomb It: skrzynki 0,6–0,8 w arcade, 0,5 w kill (więcej miejsca na walkę)
+		gm.box_density      = 0.5 if _sel_mode == gm.GameMode.KILL else 0.7
 		gm.win_condition    = win_mode
 		gm.selected_quiz_id = quiz_id
 		gm.selected_map     = str(_map_opt.get_item_metadata(_map_opt.selected))

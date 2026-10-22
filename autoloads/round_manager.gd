@@ -9,6 +9,8 @@ signal last_chance_resolved(dead_player_id: int, respawned: bool)
 signal session_ended(winner_id: int)
 ## Minął round_time_limit — arena zaczyna zrzucać bloki (runda trwa dalej).
 signal sudden_death_started
+## Tryb KILL: zmiana licznika zabójstw
+signal kills_changed(player_id: int, kills: int)
 
 ## Wyniki rund per gracz (player_id -> liczba wygranych rund)
 var round_wins: Dictionary = {}
@@ -21,15 +23,22 @@ var round_time_limit: float = 180.0
 var _round_timer: float = 0.0
 var _round_active: bool = false
 var sudden_death: bool = false
+## Tryb KILL: player_id → zabójstwa w tej rundzie
+var kills: Dictionary = {}
+## Tryb KILL po czasie przy remisie: następne zabójstwo kończy rundę
+var overtime: bool = false
 
 
 func _process(delta: float) -> void:
-	if not _round_active or round_time_limit <= 0.0 or sudden_death:
+	if not _round_active or round_time_limit <= 0.0 or sudden_death or overtime:
 		return
 	_round_timer += delta
 	if _round_timer >= round_time_limit:
-		sudden_death = true
-		sudden_death_started.emit()
+		if GameManager.is_kill_mode():
+			_kill_timeout()
+		else:
+			sudden_death = true
+			sudden_death_started.emit()
 
 
 ## Sekundy do nagłej śmierci (0 = już trwa albo brak limitu).
@@ -47,6 +56,8 @@ func reset_session() -> void:
 	_round_active = false
 	_round_timer = 0.0
 	sudden_death = false
+	overtime = false
+	kills.clear()
 	_last_chance_queue.clear()  # ← dodaj
 	_last_chance_player_id = -1
 
@@ -58,6 +69,8 @@ func start_round() -> void:
 	current_round += 1
 	_round_timer = 0.0
 	sudden_death = false
+	overtime = false
+	kills.clear()
 	_round_active = true
 	round_started.emit(current_round)
 
@@ -107,6 +120,39 @@ func _compute_session_winner(winner_id: int) -> int:
 			
 	return -2  # ZMIANA 4: Zwracamy -2 zamiast 0, gdy sesja trwa nadal
 	
+
+# ---------------------------------------------------------------------------
+# Tryb KILL
+# ---------------------------------------------------------------------------
+
+## Zabójstwo (killer_id 0 = nieznany sprawca, killer == victim = samobójstwo — nie liczy się).
+func add_kill(killer_id: int, victim_id: int) -> void:
+	if not _round_active or killer_id <= 0 or killer_id == victim_id:
+		return
+	kills[killer_id] = kills.get(killer_id, 0) + 1
+	kills_changed.emit(killer_id, kills[killer_id])
+	if overtime or kills[killer_id] >= GameManager.kills_to_win:
+		end_round(killer_id)
+
+
+func get_kills(player_id: int) -> int:
+	return kills.get(player_id, 0)
+
+
+func _kill_timeout() -> void:
+	var best_id := -1
+	var best := -1
+	var tie := false
+	for pid in kills:
+		if kills[pid] > best:
+			best = kills[pid]; best_id = pid; tie = false
+		elif kills[pid] == best:
+			tie = true
+	if best_id > 0 and not tie:
+		end_round(best_id)
+	else:
+		overtime = true
+
 
 # ---------------------------------------------------------------------------
 # Quiz — last chance

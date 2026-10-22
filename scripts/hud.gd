@@ -45,10 +45,18 @@ const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
 @onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
 
 
+var _lives : Dictionary = {}   # pid → życia (do odświeżania karty)
+var _overtime_shown : bool = false
+
+
 func _ready() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if gm and gm.has_signal("state_changed"):
 		gm.state_changed.connect(_on_state_changed)
+	var rm := get_node_or_null("/root/RoundManager")
+	if rm:
+		rm.kills_changed.connect(_on_kills_changed)
+		rm.round_started.connect(_on_round_started)
 	for card: Control in _cards_nodes:
 		card.visible = false
 	_round_panel.visible = false
@@ -137,10 +145,32 @@ func setup_players(player_list: Array) -> void:
 
 
 func update_lives(pid: int, lives_left: int) -> void:
+	_lives[pid] = lives_left
+	_render_hearts(pid)
+
+
+## Życia, a w trybie KILL też zabójstwa „🎯:2/5”.
+func _render_hearts(pid: int) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
-	(card.get_node("VBox/HeartsLabel") as Label).text = "❤️:%d" % lives_left
+	var text := "❤️:%d" % _lives.get(pid, 0)
+	var gm := get_node_or_null("/root/GameManager")
+	var rm := get_node_or_null("/root/RoundManager")
+	if gm and rm and gm.is_kill_mode():
+		text += "  " + BbI18n.tf("bb.hud.kills", {"kills": rm.get_kills(pid), "goal": gm.kills_to_win}, "🎯:{kills}/{goal}")
+	(card.get_node("VBox/HeartsLabel") as Label).text = text
+
+
+func _on_kills_changed(_pid: int, _kills: int) -> void:
+	for pid in _lives:
+		_render_hearts(pid)
+
+
+func _on_round_started(_n: int) -> void:
+	_overtime_shown = false
+	for pid in _lives:
+		_render_hearts(pid)
 
 
 func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float) -> void:
@@ -160,7 +190,12 @@ func _process(_delta: float) -> void:
 	if rm == null:
 		return
 	var round_num : int = rm.current_round
-	if rm.sudden_death:
+	if rm.overtime:
+		_round_label.text = BbI18n.tf("bb.hud.round_overtime", {"round": round_num}, "Runda {round} · dogrywka")
+		if not _overtime_shown:
+			_overtime_shown = true
+			show_message(BbI18n.t("bb.hud.overtime", "⏱ Dogrywka — następne zabójstwo wygrywa!"), 3.0)
+	elif rm.sudden_death:
 		_round_label.text = BbI18n.tf("bb.hud.round_sudden", {"round": round_num}, "Runda {round} · ☠")
 	else:
 		var left := ceili(rm.time_left())

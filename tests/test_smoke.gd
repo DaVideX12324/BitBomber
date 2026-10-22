@@ -3,7 +3,7 @@ extends SceneTree
 ## Cała gra: moduł → start sesji 1 człowiek + 3 boty → SMOKE_SECONDS sekund gry.
 ## Gracz-człowiek stoi; liczy się, że nic nie sypie błędami (sprawdź SCRIPT ERROR w wyjściu).
 ## godot --headless --path <host> --fixed-fps 60 -s res://modules/BitBomber/tests/test_smoke.gd
-## env: SMOKE_SECONDS (domyślnie 60), SMOKE_BOTS (3), SMOKE_DIFF (2)
+## env: SMOKE_SECONDS (domyślnie 60), SMOKE_BOTS (3), SMOKE_DIFF (2), SMOKE_KILL=1 (tryb KILL)
 
 const BBRuntime = preload("../scripts/bb_runtime.gd")
 
@@ -27,6 +27,10 @@ func _run() -> void:
 	rm.round_ended.connect(func(w: int): print("round_ended winner=%d t=%.1f" % [w, rm._round_timer]))
 	rm.last_chance_triggered.connect(func(p: int): print("last_chance p=%d" % p))
 	gm.bot_difficulty = diff
+	if OS.get_environment("SMOKE_KILL") == "1":
+		gm.game_mode = gm.GameMode.KILL
+		gm.box_density = 0.5
+		rm.kills_changed.connect(func(p: int, k: int): print("kill p=%d -> %d t=%.1f" % [p, k, rm._round_timer]))
 	gm.start_game(1, bots)
 
 	var frames := seconds * 60

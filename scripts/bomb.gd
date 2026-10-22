@@ -102,6 +102,7 @@ func _explode() -> void:
 func _spawn_explosion(pos: Vector2) -> void:
 	var exp := _explosion_scene.instantiate()
 	exp.global_position = pos
+	exp.owner_id = int(owner_player.player_id) if is_instance_valid(owner_player) else 0
 	var target := _get_map_root()
 	if target:
 		target.add_child(exp)

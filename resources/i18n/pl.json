@@ -113,5 +113,11 @@
   "bb.map.toy_shop": "Sklep z zabawkami",
   "bb.hud.round_timer": "Runda {round} · {time}",
   "bb.hud.round_sudden": "Runda {round} · ☠",
-  "bb.hud.sudden_death": "☠ Nagła śmierć!"
+  "bb.hud.sudden_death": "☠ Nagła śmierć!",
+  "bb.menu.mode_label": "Tryb gry:",
+  "bb.menu.mode_last": "💣 Ostatni żywy",
+  "bb.menu.mode_kill": "🎯 Zabójstwa",
+  "bb.hud.round_overtime": "Runda {round} · dogrywka",
+  "bb.hud.kills": "🎯:{kills}/{goal}",
+  "bb.hud.overtime": "⏱ Dogrywka — następne zabójstwo wygrywa!"
 }

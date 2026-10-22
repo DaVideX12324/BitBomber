@@ -16,6 +16,8 @@ const GRID_SIZE: int = 64
 
 var _timer: float = 0.0
 var _cell: Vector2i
+## player_id właściciela bomby (0 = brak) — do liczenia zabójstw
+var owner_id: int = 0
 
 
 func _ready() -> void:
@@ -36,7 +38,7 @@ func _physics_process(_delta: float) -> void:
 	for area in get_overlapping_areas():
 		var stuff = area.get_parent()
 		if stuff.has_method("take_hit"):
-			stuff.take_hit()
+			stuff.take_hit(owner_id)
 	for bomb in get_tree().get_nodes_in_group("bomb"):
 		if bomb.has_method("detonate") and bomb.get_cell() == _cell:
 			bomb.detonate()
