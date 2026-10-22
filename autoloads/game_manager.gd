@@ -29,6 +29,10 @@ var num_bots: int = 1
 var rounds_to_win: int = 3   ## Używane w trybie FIRST_TO_X
 var max_rounds: int = 5      ## Używane w trybie MOST_WINS_IN_Y (max 20)
 var selected_quiz_id: String = ""
+## Id mapy z resources/maps ("" = losowa co rundę)
+var selected_map: String = ""
+## Szansa na skrzynkę na polu 'b' mapy (Bomb It: 0,6–0,8 arcade, 0,5 kill)
+var box_density: float = 0.7
 
 ## Poziom trudności botów: 0=Easy 1=Medium 2=Hard (mapowane na BotAI.Difficulty)
 var bot_difficulty: int = 0

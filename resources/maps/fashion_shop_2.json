@@ -1,0 +1,17 @@
+{"name_key": "bb.map.fashion_shop", "variant": 2, "source": "Bomb It 7: FashionShop_CONFIG2", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..bbbbb#bbbbb..#",
+	"#.###b#b#b#b###.#",
+	"#bbb#b#bbb#b#bbb#",
+	"###b#b#b#b#b#b###",
+	"#bbbbbbbbbbbbbbb#",
+	"#b#b##bCCCb##b#b#",
+	"#bbbb#bCCCb#bbbb#",
+	"#b#b##bCCCb##b#b#",
+	"#bbbbbbbbbbbbbbb#",
+	"###b#b#b#b#b#b###",
+	"#bbb#b#bbb#b#bbb#",
+	"#.###b#b#b#b###.#",
+	"#..bbbbb#bbbbb..#",
+	"#################"
+]}

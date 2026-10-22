@@ -1,0 +1,17 @@
+{"name_key": "bb.map.forest", "variant": 1, "source": "Bomb It 7: Forest_CONFIG1", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..bbbbb..bbbb..#",
+	"#.#b###b#b###b#.#",
+	"#b#bbbbb#bbbbb#b#",
+	"#b##b#b###b#b##b#",
+	"#bbbbbbbbbbbbbbb#",
+	"#b##b#bCCCb#b##b#",
+	"#b..bbbCCCbbb..b#",
+	"#b##b#bCCCb#b##b#",
+	"#bbbbbbbbbbbbbbb#",
+	"#b##b#b###b#b##b#",
+	"#b#bbbbb#bbbbb#b#",
+	"#.#b###b#b###b#.#",
+	"#..bbbb..bbbbb..#",
+	"#################"
+]}

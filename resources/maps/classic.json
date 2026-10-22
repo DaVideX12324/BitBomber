@@ -1,0 +1,19 @@
+{"name_key": "bb.map.classic", "variant": 0, "spawns": [[1, 1], [15, 15], [1, 15], [15, 1]], "rows": [
+	"#################",
+	"#...b.b.b.b.b...#",
+	"#.#b#b#b#b#b#b#.#",
+	"#.b.b.b.b.b.b.b.#",
+	"#b#b#b#b#b#b#b#b#",
+	"#.b.b.b.b.b.b.b.#",
+	"#b#b#b#b#b#b#b#b#",
+	"#.b.b.b.b.b.b.b.#",
+	"#b#b#b#b#b#b#b#b#",
+	"#.b.b.b.b.b.b.b.#",
+	"#b#b#b#b#b#b#b#b#",
+	"#.b.b.b.b.b.b.b.#",
+	"#b#b#b#b#b#b#b#b#",
+	"#.b.b.b.b.b.b.b.#",
+	"#.#b#b#b#b#b#b#.#",
+	"#...b.b.b.b.b...#",
+	"#################"
+]}

@@ -1,0 +1,17 @@
+{"name_key": "bb.map.cake", "variant": 2, "source": "Bomb It 7: Cake_CONFIG2", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..bbbbbbbbbbb..#",
+	"#.#b##b###b##b#.#",
+	"#b#bbbbbbbbbbb#b#",
+	"#b####b###b####b#",
+	"#bbbb#bbbbb#bbbb#",
+	"#b##bbbCCCbbb##b#",
+	"#bbbb#bCCCb#bbbb#",
+	"#b##bbbCCCbbb##b#",
+	"#bbbb#bbbbb#bbbb#",
+	"#b####b###b####b#",
+	"#b#bbbbbbbbbbb#b#",
+	"#.#b##b###b##b#.#",
+	"#..bbbbbbbbbbb..#",
+	"#################"
+]}

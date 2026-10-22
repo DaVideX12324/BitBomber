@@ -29,6 +29,9 @@ func _bomb_at(arena: Node, cell: Vector2i, power: int) -> Node2D:
 
 
 func _run() -> void:
+	var gm: Node = root.get_node("GameManager")
+	gm.selected_map = "classic"
+	gm.box_density = 1.0
 	var arena: Node2D = load(BBRuntime.path("scenes/maps/arena.tscn")).instantiate()
 	root.add_child(arena)
 	await process_frame

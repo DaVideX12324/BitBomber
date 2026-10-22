@@ -5,34 +5,39 @@ const BBRuntime = preload("bb_runtime.gd")
 ## Scena areny odpowiada TYLKO za mapę:
 ## budowanie siatki, kolizje, API dla bomb/eksplozji, spawn pointy.
 ## Gracze są spawnowani przez game.gd.
+##
+## Układ z resources/maps/<id>.json (rows: '#' blok stały, 'C' środek mapy — też stały,
+## 'b' miejsce na skrzynkę, '.' puste). Skrzynka staje na 'b' z szansą box_density —
+## jak w Bomb It 7 (tools/import_bombit_maps.py).
 
 const GRID_SIZE : int = 64
-const COLS      : int = 17
-const ROWS      : int = 17
+const MAPS_DIR  : String = "resources/maps"
+## Mapa, gdy wybrana nie istnieje.
+const FALLBACK_MAP : String = "classic"
 
 const COLOR_BG           = Color(0.15, 0.15, 0.17, 1.0)
 const COLOR_GRID_LINE    = Color(0.22, 0.22, 0.25, 1.0)
 const COLOR_SOLID        = Color(0.40, 0.42, 0.50, 1.0)
 const COLOR_SOLID_HL     = Color(0.55, 0.57, 0.68, 1.0)
+const COLOR_CENTER       = Color(0.30, 0.36, 0.46, 1.0)
 const COLOR_BREAKABLE    = Color(0.55, 0.38, 0.22, 1.0)
 const COLOR_BREAKABLE_HL = Color(0.72, 0.52, 0.32, 1.0)
+
+var cols : int = 0
+var rows : int = 0
+var map_id : String = ""
 
 var solid_cells    : Dictionary = {}
 var breakable_cells: Dictionary = {}
 var powerup_cells  : Dictionary = {}   # Vector2i → Node (power-up leżący na planszy)
 
-const SAFE_SPAWN_RADIUS : int = 2
+## Pola przy spawnie (Manhattan), na których nigdy nie stoi skrzynka.
+const SAFE_SPAWN_RADIUS : int = 1
 
-## Cztery rogi areny (stałe pozycje)
-const _CORNER_SPAWNS : Array[Vector2i] = [
-	Vector2i(1,        1),
-	Vector2i(ROWS - 2, COLS - 2),
-	Vector2i(ROWS - 2, 1),
-	Vector2i(1,        COLS - 2),
-]
-
-## Losowa permutacja na tę rundę — ustawiana w _ready()
+## Losowa permutacja spawnów mapy na tę rundę — ustawiana w _ready()
 var spawn_points : Array[Vector2i] = []
+
+var _rows_data : PackedStringArray = []
 
 ## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
 const POWERUP_CHANCE : float = 0.40
@@ -49,9 +54,60 @@ const POWERUP_POOL : Array[String] = [
 
 
 func _ready() -> void:
+	add_to_group("arena")
+	_load_layout(_pick_map_id())
 	_randomize_spawns()
 	_setup_camera()
 	_build_map()
+
+
+# ---------------------------------------------------------------------------
+# Mapy
+# ---------------------------------------------------------------------------
+
+## Id wszystkich map (nazwy plików bez .json), posortowane.
+static func list_maps() -> PackedStringArray:
+	var ids := PackedStringArray()
+	for f in DirAccess.get_files_at(BBRuntime.path(MAPS_DIR)):
+		if f.ends_with(".json"):
+			ids.append(f.get_basename())
+	ids.sort()
+	return ids
+
+
+static func load_map_data(id: String) -> Dictionary:
+	var text := FileAccess.get_file_as_string(BBRuntime.path("%s/%s.json" % [MAPS_DIR, id]))
+	var data = JSON.parse_string(text)
+	return data if data is Dictionary else {}
+
+
+func _pick_map_id() -> String:
+	var gm := get_node_or_null("/root/GameManager")
+	var wanted : String = gm.selected_map if gm and gm.get("selected_map") != null else ""
+	if wanted != "":
+		return wanted
+	var ids := list_maps()
+	return ids[randi() % ids.size()] if not ids.is_empty() else FALLBACK_MAP
+
+
+func _load_layout(id: String) -> void:
+	var data := load_map_data(id)
+	if data.is_empty():
+		push_warning("Arena: brak mapy %s — %s" % [id, FALLBACK_MAP])
+		id = FALLBACK_MAP
+		data = load_map_data(id)
+	map_id = id
+	_rows_data = PackedStringArray(data.get("rows", []))
+	rows = _rows_data.size()
+	cols = _rows_data[0].length() if rows > 0 else 0
+	spawn_points.clear()
+	for sp in data.get("spawns", []):
+		spawn_points.append(Vector2i(int(sp[0]), int(sp[1])))
+
+
+func _box_density() -> float:
+	var gm := get_node_or_null("/root/GameManager")
+	return float(gm.box_density) if gm and gm.get("box_density") != null else 0.7
 
 
 # ---------------------------------------------------------------------------
@@ -59,9 +115,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func _randomize_spawns() -> void:
-	var corners : Array[Vector2i] = _CORNER_SPAWNS.duplicate()
-	corners.shuffle()
-	spawn_points = corners
+	spawn_points.shuffle()
 
 
 # ---------------------------------------------------------------------------
@@ -69,7 +123,7 @@ func _randomize_spawns() -> void:
 # ---------------------------------------------------------------------------
 
 func _setup_camera() -> void:
-	var map_pixel_size := Vector2(COLS * GRID_SIZE, ROWS * GRID_SIZE)
+	var map_pixel_size := Vector2(cols * GRID_SIZE, rows * GRID_SIZE)
 	var map_center     := map_pixel_size * 0.5
 	var cam := Camera2D.new()
 	cam.position = map_center
@@ -104,43 +158,34 @@ func _build_map() -> void:
 	var map_node := Node2D.new()
 	map_node.name = "Map"
 	add_child(map_node); move_child(map_node, 0)
+	var density := _box_density()
 
-	for row in range(ROWS):
-		for col in range(COLS):
+	for row in range(rows):
+		for col in range(cols):
 			var cell := Vector2i(col, row)
 			var px   := Vector2(col * GRID_SIZE, row * GRID_SIZE)
-			if _is_solid(cell):
+			var ch   := _rows_data[row][col]
+			if ch == "#" or ch == "C":
 				solid_cells[cell] = true
-				_spawn_solid_block(map_node, px)
-			elif _should_be_breakable(cell):
+				_spawn_solid_block(map_node, px, COLOR_CENTER if ch == "C" else COLOR_SOLID)
+			elif ch == "b" and not _near_any_spawn(cell) and randf() < density:
 				breakable_cells[cell] = _spawn_breakable_block(map_node, px)
 			else:
 				_spawn_floor_tile(map_node, px)
 
 
-func _is_solid(cell: Vector2i) -> bool:
-	if cell.x == 0 or cell.x == COLS - 1: return true
-	if cell.y == 0 or cell.y == ROWS - 1: return true
-	return cell.x % 2 == 0 and cell.y % 2 == 0
-
-
-func _should_be_breakable(cell: Vector2i) -> bool:
-	if _is_solid(cell): return false
+func _near_any_spawn(cell: Vector2i) -> bool:
 	for sp: Vector2i in spawn_points:
-		if _near_spawn(cell, sp): return false
-	return (_is_solid(cell + Vector2i(-1,0)) and _is_solid(cell + Vector2i(1,0))) \
-		or (_is_solid(cell + Vector2i(0,-1)) and _is_solid(cell + Vector2i(0,1)))
-
-
-func _near_spawn(cell: Vector2i, spawn: Vector2i) -> bool:
-	return abs(cell.x - spawn.x) + abs(cell.y - spawn.y) <= SAFE_SPAWN_RADIUS
+		if abs(cell.x - sp.x) + abs(cell.y - sp.y) <= SAFE_SPAWN_RADIUS:
+			return true
+	return false
 
 
 # ---------------------------------------------------------------------------
 # Spawning bloków
 # ---------------------------------------------------------------------------
 
-func _spawn_solid_block(parent: Node, px: Vector2) -> void:
+func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> void:
 	var body := StaticBody2D.new()
 	body.position = px + Vector2(GRID_SIZE / 2.0, GRID_SIZE / 2.0)
 	body.collision_layer = 1; body.collision_mask = 2
@@ -148,7 +193,7 @@ func _spawn_solid_block(parent: Node, px: Vector2) -> void:
 	var shape := CollisionShape2D.new()
 	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
-	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_SOLID)
+	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), color)
 	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
 	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
 

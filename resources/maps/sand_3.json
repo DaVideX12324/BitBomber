@@ -1,0 +1,17 @@
+{"name_key": "bb.map.sand", "variant": 3, "source": "Bomb It 7: Sand_CONFIG3", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..b.bbbbbbb.b..#",
+	"#.#b.b.###.b.b#.#",
+	"#b#b.b..b..b.b#b#",
+	"#b#.##b###b##.#b#",
+	"#bb..bbb#bbb..bb#",
+	"#b#bb#bCCCb#bb#b#",
+	"###...#CCC#...###",
+	"#b#bb#bCCCb#bb#b#",
+	"#bb..bbb#bbb..bb#",
+	"#b#.##b###b##.#b#",
+	"#b#b.b..b..b.b#b#",
+	"#.#b.b.###.b.b#.#",
+	"#..b.bbbbbbb.b..#",
+	"#################"
+]}

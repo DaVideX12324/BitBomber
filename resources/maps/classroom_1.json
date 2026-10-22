@@ -1,0 +1,17 @@
+{"name_key": "bb.map.classroom", "variant": 1, "source": "Bomb It 7: Classroom_CONFIG1", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..bbbbbbbbbbb..#",
+	"#.#b#b#b#b#b#b#.#",
+	"#bbb#b#bbb#b#bbb#",
+	"#b#bbbbb#bbbbb#b#",
+	"#b##b#b###b#b##b#",
+	"#bbbb#bCCCb#bbbb#",
+	"#b##bbbCCCbbb##b#",
+	"#bbbb#bCCCb#bbbb#",
+	"#b##b#b###b#b##b#",
+	"#b#bbbbb#bbbbb#b#",
+	"#bbb#b#bbb#b#bbb#",
+	"#.#b#b#b#b#b#b#.#",
+	"#..bbbbbbbbbbb..#",
+	"#################"
+]}

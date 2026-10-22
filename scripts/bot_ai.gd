@@ -162,10 +162,10 @@ func _ready():
 	arena = _find_arena()
 	# FETCH DIMENSIONS FROM ARENA
 	if arena != null:
-		if "COLS" in arena:
-			grid_width = arena.COLS
-		if "ROWS" in arena:
-			grid_height = arena.ROWS
+		if "cols" in arena:
+			grid_width = arena.cols
+		if "rows" in arena:
+			grid_height = arena.rows
 		# Also update grid size if it exists in arena to ensure perfect sync
 		if "GRID_SIZE" in arena:
 			grid_size = arena.GRID_SIZE

@@ -1,0 +1,17 @@
+{"name_key": "bb.map.ranch", "variant": 1, "source": "Bomb It 7: Ranch_CONFIG1", "spawns": [[1, 1], [15, 1], [1, 13], [15, 13]], "rows": [
+	"#################",
+	"#..bbbbbbbbbbb..#",
+	"#.####b#b#b####.#",
+	"#b#....###....#b#",
+	"#b#.##.#b#.##.#b#",
+	"#bb..b..b..b..bb#",
+	"#b###b#CCC#b###b#",
+	"#bbbbbbCCCbbbbbb#",
+	"#b###b#CCC#b###b#",
+	"#bb..b..b..b..bb#",
+	"#b#.##.#b#.##.#b#",
+	"#b#....###....#b#",
+	"#.####b#b#b####.#",
+	"#..bbbbbbbbbbb..#",
+	"#################"
+]}
