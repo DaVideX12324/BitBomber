@@ -187,6 +187,19 @@ func is_solid(cell: Vector2i) -> bool:     return solid_cells.has(cell)
 func is_breakable(cell: Vector2i) -> bool: return breakable_cells.has(cell)
 func has_powerup(cell: Vector2i) -> bool:  return powerup_cells.has(cell)
 
+
+## Pola trafione wybuchem: środek + do `power` pól w każdą stronę.
+## Ogień staje na ścianie, a skrzynkę zajmuje i dalej nie idzie.
+func blast_cells(origin: Vector2i, power: int) -> Array[Vector2i]:
+	var cells : Array[Vector2i] = [origin]
+	for dir : Vector2i in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
+		for i in range(1, power + 1):
+			var cell : Vector2i = origin + dir * i
+			if is_solid(cell): break
+			cells.append(cell)
+			if is_breakable(cell): break
+	return cells
+
 func break_cell(cell: Vector2i) -> bool:
 	if not breakable_cells.has(cell): return false
 	var node = breakable_cells[cell]

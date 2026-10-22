@@ -21,7 +21,7 @@ var _bomb_scene: PackedScene = load(BBRuntime.path("scenes/objects/bomb.tscn"))
 
 const DEFAULT_LIVES    : int   = 1
 const DEFAULT_BOMBS    : int   = 1
-const DEFAULT_RANGE    : int   = 2
+const DEFAULT_RANGE    : int   = 1
 const DEFAULT_SPEED    : float = 1.0
 const MAX_LIVES        : int   = 5
 
@@ -372,7 +372,7 @@ func _eliminate() -> void:
 
 func apply_powerup(type: String) -> void:
 	match type:
-		"range_up":  bomb_range    = min(bomb_range + 1, 8)
+		"range_up":  bomb_range    = min(bomb_range + 1, 7)
 		"bomb_up":   max_bombs     = min(max_bombs + 1, 4)
 		"speed_up":  speed_addition = min(speed_addition + 50, 500)
 		"life_up":   lives          = min(lives + 1, MAX_LIVES)

@@ -251,7 +251,7 @@ func _update_sense():
 	_refresh_astar()
 	
 	for bomb in get_tree().get_nodes_in_group(GROUP_BOMB):
-		var brange = int(bomb.get("explosion_range")) if bomb.get("explosion_range") != null else 2
+		var brange = int(bomb.get("explosion_range")) if bomb.get("explosion_range") != null else 1
 		_mark_danger(_cell(bomb.global_position), brange)
 	
 	for exp in get_tree().get_nodes_in_group("explosion"):
@@ -261,17 +261,8 @@ func _update_sense():
 	# _dbg("Zaktualizowano danger_map. Zablokowanych kratek (niebezpieczeństwo): %d" % danger_map.size())
 		
 func _mark_danger(bpos: Vector2i, power: int):
-	danger_map[bpos] = true
-	for dir in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
-		for i in range(1, power):
-			var cp : Vector2i = bpos + dir * i
-			if _out_of_bounds(cp):
-				break
-			if arena and arena.has_method("is_solid") and arena.is_solid(cp):
-				break
-			danger_map[cp] = true
-			if arena and arena.has_method("is_breakable") and arena.is_breakable(cp):
-				break
+	for cp in _blast_cells(bpos, power):
+		danger_map[cp] = true
 
 # =====================
 # FSM
@@ -547,15 +538,8 @@ func _on_path_complete():
 # =====================
 func _plant_bomb_possible(pos: Vector2i) -> bool:
 	var sim := danger_map.duplicate()
-	var power := _bomb_range()
-	sim[pos] = true
-	for dir in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
-		for i in range(1, power + 1):
-			var cp : Vector2i = pos + dir * i
-			if _out_of_bounds(cp): break
-			if arena and arena.has_method("is_solid") and arena.is_solid(cp): break
-			sim[cp] = true
-			if arena and arena.has_method("is_breakable") and arena.is_breakable(cp): break
+	for cp in _blast_cells(pos, _bomb_range()):
+		sim[cp] = true
 
 	var queue := [pos]
 	var visited := {pos: true}
@@ -669,22 +653,14 @@ func _find_attack_pos(enemy: Vector2i, bot_pos: Vector2i) -> Vector2i:
 	return Vector2i(-1, -1)
 
 func _can_hit(from: Vector2i, target: Vector2i) -> bool:
-	var brange := _bomb_range()
-	if from.x == target.x:
-		var dy: int = int(sign(target.y - from.y))
-		if dy == 0: return true
-		for i in range(1, brange + 1):
-			var cp := from + Vector2i(0, dy * i)
-			if arena and arena.has_method("is_solid") and arena.is_solid(cp): return false
-			if cp == target: return true
-	elif from.y == target.y:
-		var dx: int = int(sign(target.x - from.x))
-		if dx == 0: return true
-		for i in range(1, brange + 1):
-			var cp := from + Vector2i(dx * i, 0)
-			if arena and arena.has_method("is_solid") and arena.is_solid(cp): return false
-			if cp == target: return true
-	return false
+	return _blast_cells(from, _bomb_range()).has(target)
+
+
+## Ten sam zasięg co prawdziwy wybuch (arena.blast_cells).
+func _blast_cells(origin: Vector2i, power: int) -> Array[Vector2i]:
+	if arena and arena.has_method("blast_cells"):
+		return arena.blast_cells(origin, power)
+	return [origin]
 
 func _path_safe(path: Array[Vector2i]) -> bool:
 	if current_state == BotState.ESCAPE: 
@@ -733,4 +709,4 @@ func _max_bombs() -> int:
 	return int(bot_node.get(BOT_MAX_BOMBS)) if bot_node.get(BOT_MAX_BOMBS) != null else 1
 
 func _bomb_range() -> int:
-	return int(bot_node.get(BOT_BOMB_RANGE)) if bot_node.get(BOT_BOMB_RANGE) != null else 2
+	return int(bot_node.get(BOT_BOMB_RANGE)) if bot_node.get(BOT_BOMB_RANGE) != null else 1

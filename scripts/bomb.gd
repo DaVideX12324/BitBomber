@@ -66,23 +66,13 @@ func _explode() -> void:
 	var arena  : Node     = _get_arena()
 	var origin : Vector2i = _pixel_to_grid(global_position)
 
-	_spawn_explosion(global_position)
-
-	var directions : Array[Vector2i] = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
-	for dir : Vector2i in directions:
-		for i : int in range(1, explosion_range):
-			var cell : Vector2i = origin + dir * i
-			var pos  : Vector2  = _grid_to_pixel(cell)
-
-			if arena and arena.has_method("is_solid") and arena.is_solid(cell):
-				break
-
-			if arena and arena.has_method("is_breakable") and arena.is_breakable(cell):
-				_spawn_explosion(pos)
-				arena.break_cell(cell)
-				break
-
-			_spawn_explosion(pos)
+	var cells : Array[Vector2i] = [origin]
+	if arena and arena.has_method("blast_cells"):
+		cells = arena.blast_cells(origin, explosion_range)
+	for cell : Vector2i in cells:
+		_spawn_explosion(_grid_to_pixel(cell))
+		if arena and arena.is_breakable(cell):
+			arena.break_cell(cell)
 
 	queue_free()
 
