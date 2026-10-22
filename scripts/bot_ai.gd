@@ -254,6 +254,10 @@ func _update_sense():
 		var brange = int(bomb.get("explosion_range")) if bomb.get("explosion_range") != null else 1
 		_mark_danger(_cell(bomb.global_position), brange)
 	
+	if arena and arena.has_method("sudden_death_danger"):
+		for c in arena.sudden_death_danger():
+			danger_map[c] = true
+
 	for exp in get_tree().get_nodes_in_group("explosion"):
 		var e_cell = _cell(exp.global_position)
 		danger_map[e_cell] = true

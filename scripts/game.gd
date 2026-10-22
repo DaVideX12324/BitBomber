@@ -25,6 +25,7 @@ var _players     : Array = []
 func _ready() -> void:
 	GameManager.game_node = self
 	GameManager.state_changed.connect(_on_state_changed)
+	RoundManager.sudden_death_started.connect(_on_sudden_death)
 	_load_menu()
 
 
@@ -189,6 +190,12 @@ func _deferred_check_round() -> void:
 			# Kończymy rundę od razu, żeby nie patrzeć jak boty ze sobą walczą.
 			RoundManager.end_round(999) # '999' to kod oznaczający wygraną botów
 			
+
+func _on_sudden_death() -> void:
+	if _current_map and _current_map.has_method("start_sudden_death"):
+		_current_map.start_sudden_death()
+	hud.show_message(BbI18n.t("bb.hud.sudden_death", "☠ Nagła śmierć!"), 3.0)
+
 
 func _on_last_chance_resolved(dead_player_id: int, respawned: bool) -> void:
 	for p in _players:

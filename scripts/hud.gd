@@ -6,7 +6,6 @@ extends CanvasLayer
 ##   hud.setup_players(player_list: Array)
 ##   hud.update_lives(pid, lives_left)
 ##   hud.update_player(pid, bombs, bomb_range, speed_mult)
-##   hud.update_round(round_num)
 ##   hud.show_message(text, duration)
 
 const PlayerScript = preload("player.gd")
@@ -153,8 +152,20 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float) -> 
 		"💣:%d\n↔️:%d\n⚡:%d\n" % [bombs, bomb_range, speed_level]
 
 
-func update_round(round_num: int) -> void:
-	_round_label.text = BbI18n.tf("bb.hud.round_title", {"round": round_num})
+## Panel rundy: numer + czas do nagłej śmierci (wcześniej zawsze „Runda 1” — nikt nie wołał update_round).
+func _process(_delta: float) -> void:
+	if not visible or not _round_panel.visible:
+		return
+	var rm := get_node_or_null("/root/RoundManager")
+	if rm == null:
+		return
+	var round_num : int = rm.current_round
+	if rm.sudden_death:
+		_round_label.text = BbI18n.tf("bb.hud.round_sudden", {"round": round_num}, "Runda {round} · ☠")
+	else:
+		var left := ceili(rm.time_left())
+		_round_label.text = BbI18n.tf("bb.hud.round_timer",
+				{"round": round_num, "time": "%d:%02d" % [left / 60, left % 60]}, "Runda {round} · {time}")
 
 
 func show_message(msg: String, duration: float = 2.0) -> void:

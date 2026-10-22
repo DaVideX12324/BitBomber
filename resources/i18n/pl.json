@@ -110,5 +110,8 @@
   "bb.map.race": "Tor wyścigowy",
   "bb.map.ranch": "Ranczo",
   "bb.map.sand": "Zamek z piasku",
-  "bb.map.toy_shop": "Sklep z zabawkami"
+  "bb.map.toy_shop": "Sklep z zabawkami",
+  "bb.hud.round_timer": "Runda {round} · {time}",
+  "bb.hud.round_sudden": "Runda {round} · ☠",
+  "bb.hud.sudden_death": "☠ Nagła śmierć!"
 }

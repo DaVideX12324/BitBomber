@@ -3,10 +3,12 @@ extends Node
 ## Zarządza rundami, wynikami graczy i triggerami quizów.
 
 signal round_started(round_number: int)
-signal round_ended(winner_id: int)   # -1 = remis / timeout
+signal round_ended(winner_id: int)   # -1 = remis (wszyscy zginęli naraz)
 signal last_chance_triggered(dead_player_id: int)
 signal last_chance_resolved(dead_player_id: int, respawned: bool)
 signal session_ended(winner_id: int)
+## Minął round_time_limit — arena zaczyna zrzucać bloki (runda trwa dalej).
+signal sudden_death_started
 
 ## Wyniki rund per gracz (player_id -> liczba wygranych rund)
 var round_wins: Dictionary = {}
@@ -18,14 +20,21 @@ var _last_chance_player_id: int = -1
 var round_time_limit: float = 180.0
 var _round_timer: float = 0.0
 var _round_active: bool = false
+var sudden_death: bool = false
 
 
 func _process(delta: float) -> void:
-	if not _round_active or round_time_limit <= 0.0:
+	if not _round_active or round_time_limit <= 0.0 or sudden_death:
 		return
 	_round_timer += delta
 	if _round_timer >= round_time_limit:
-		_timeout_round()
+		sudden_death = true
+		sudden_death_started.emit()
+
+
+## Sekundy do nagłej śmierci (0 = już trwa albo brak limitu).
+func time_left() -> float:
+	return maxf(round_time_limit - _round_timer, 0.0)
 
 
 # ---------------------------------------------------------------------------
@@ -37,6 +46,7 @@ func reset_session() -> void:
 	current_round = 0
 	_round_active = false
 	_round_timer = 0.0
+	sudden_death = false
 	_last_chance_queue.clear()  # ← dodaj
 	_last_chance_player_id = -1
 
@@ -47,6 +57,7 @@ func reset_session() -> void:
 func start_round() -> void:
 	current_round += 1
 	_round_timer = 0.0
+	sudden_death = false
 	_round_active = true
 	round_started.emit(current_round)
 
@@ -96,11 +107,6 @@ func _compute_session_winner(winner_id: int) -> int:
 			
 	return -2  # ZMIANA 4: Zwracamy -2 zamiast 0, gdy sesja trwa nadal
 	
-
-func _timeout_round() -> void:
-	_round_active = false
-	end_round(-1)
-
 
 # ---------------------------------------------------------------------------
 # Quiz — last chance

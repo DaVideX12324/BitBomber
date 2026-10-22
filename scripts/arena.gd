@@ -185,7 +185,7 @@ func _near_any_spawn(cell: Vector2i) -> bool:
 # Spawning bloków
 # ---------------------------------------------------------------------------
 
-func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> void:
+func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> Node2D:
 	var body := StaticBody2D.new()
 	body.position = px + Vector2(GRID_SIZE / 2.0, GRID_SIZE / 2.0)
 	body.collision_layer = 1; body.collision_mask = 2
@@ -196,6 +196,7 @@ func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> void:
 	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), color)
 	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
 	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
+	return body
 
 
 func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
@@ -277,3 +278,113 @@ func pixel_to_grid(px: Vector2) -> Vector2i:
 func spawn_pixel(idx: int) -> Vector2:
 	var sp : Vector2i = spawn_points[idx % spawn_points.size()]
 	return Vector2(sp.x * GRID_SIZE + GRID_SIZE / 2.0, sp.y * GRID_SIZE + GRID_SIZE / 2.0)
+
+
+# ---------------------------------------------------------------------------
+# Nagła śmierć — po czasie rundy bloki spadają spiralą od krawędzi do środka
+# ---------------------------------------------------------------------------
+
+## Co tyle sekund spada blok.
+const SUDDEN_DEATH_STEP : float = 0.2
+## Ile kolejnych pól jest oznaczonych (i omijanych przez boty).
+const SUDDEN_DEATH_WARN : int = 8
+const COLOR_SUDDEN_WARN = Color(0.9, 0.15, 0.1, 0.35)
+
+var _sd_order  : Array[Vector2i] = []
+var _sd_timer  : float = 0.0
+var _sd_warn   : Node2D = null
+
+
+func start_sudden_death() -> void:
+	_sd_order = _spiral_cells()
+	_sd_timer = 0.0
+	_sd_warn = Node2D.new()
+	_sd_warn.name = "SuddenDeathWarn"
+	_sd_warn.z_index = 1
+	_sd_warn.draw.connect(_draw_sudden_warn)
+	add_child(_sd_warn)
+
+
+## Następne pola, na które spadną bloki.
+func sudden_death_danger() -> Array[Vector2i]:
+	var out : Array[Vector2i] = []
+	for c in _sd_order:
+		if solid_cells.has(c):
+			continue
+		out.append(c)
+		if out.size() >= SUDDEN_DEATH_WARN:
+			break
+	return out
+
+
+## Najbliższe pole bez bloku i skrzynki (BFS po wszystkim w obrysie).
+func nearest_free_cell(from: Vector2i) -> Vector2i:
+	var seen := {from: true}
+	var queue : Array[Vector2i] = [from]
+	while not queue.is_empty():
+		var c : Vector2i = queue.pop_front()
+		if not solid_cells.has(c) and not breakable_cells.has(c):
+			return c
+		for d in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
+			var n : Vector2i = c + d
+			if n.x > 0 and n.y > 0 and n.x < cols - 1 and n.y < rows - 1 and not seen.has(n):
+				seen[n] = true
+				queue.append(n)
+	return from
+
+
+func _process(delta: float) -> void:
+	if _sd_order.is_empty():
+		return
+	_sd_timer += delta
+	while _sd_timer >= SUDDEN_DEATH_STEP and not _sd_order.is_empty():
+		var cell : Vector2i = _sd_order.pop_front()
+		if solid_cells.has(cell):
+			continue
+		_sd_timer -= SUDDEN_DEATH_STEP
+		_drop_block(cell)
+	if _sd_warn:
+		_sd_warn.queue_redraw()
+
+
+## Wnętrze mapy spiralą: górny wiersz w prawo, prawa kolumna w dół, dolny w lewo, lewa w górę, i do środka.
+func _spiral_cells() -> Array[Vector2i]:
+	var out : Array[Vector2i] = []
+	var x0 := 1; var y0 := 1; var x1 := cols - 2; var y1 := rows - 2
+	while x0 <= x1 and y0 <= y1:
+		for x in range(x0, x1 + 1): out.append(Vector2i(x, y0))
+		for y in range(y0 + 1, y1 + 1): out.append(Vector2i(x1, y))
+		if y1 > y0:
+			for x in range(x1 - 1, x0 - 1, -1): out.append(Vector2i(x, y1))
+		if x1 > x0:
+			for y in range(y1 - 1, y0, -1): out.append(Vector2i(x0, y))
+		x0 += 1; y0 += 1; x1 -= 1; y1 -= 1
+	return out
+
+
+func _drop_block(cell: Vector2i) -> void:
+	if breakable_cells.has(cell):
+		var box = breakable_cells[cell]
+		breakable_cells.erase(cell)
+		if is_instance_valid(box): box.queue_free()
+	if powerup_cells.has(cell) and is_instance_valid(powerup_cells[cell]):
+		powerup_cells[cell].queue_free()
+	for bomb in get_tree().get_nodes_in_group("bomb"):
+		if bomb.has_method("crush") and bomb.get_cell() == cell:
+			bomb.crush()
+	for p in get_tree().get_nodes_in_group("players"):
+		if p.is_alive and p.get_grid_pos() == cell:
+			p.crush()
+	solid_cells[cell] = true
+	var px := Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
+	var block := _spawn_solid_block(get_node("Map"), px, COLOR_SOLID)
+	block.scale = Vector2(1.5, 1.5)
+	block.modulate.a = 0.0
+	var tw := block.create_tween().set_parallel()
+	tw.tween_property(block, "scale", Vector2.ONE, 0.15).set_ease(Tween.EASE_IN)
+	tw.tween_property(block, "modulate:a", 1.0, 0.1)
+
+
+func _draw_sudden_warn() -> void:
+	for c in sudden_death_danger():
+		_sd_warn.draw_rect(Rect2(Vector2(c) * GRID_SIZE, Vector2(GRID_SIZE, GRID_SIZE)), COLOR_SUDDEN_WARN)

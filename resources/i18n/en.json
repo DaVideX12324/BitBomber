@@ -110,5 +110,8 @@
   "bb.map.race": "Race track",
   "bb.map.ranch": "Ranch",
   "bb.map.sand": "Sand castle",
-  "bb.map.toy_shop": "Toy shop"
+  "bb.map.toy_shop": "Toy shop",
+  "bb.hud.round_timer": "Round {round} · {time}",
+  "bb.hud.round_sudden": "Round {round} · ☠",
+  "bb.hud.sudden_death": "☠ Sudden death!"
 }

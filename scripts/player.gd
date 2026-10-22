@@ -339,8 +339,21 @@ func _start_hit_sequence() -> void:
 
 func _respawn() -> void:
 	is_alive = true
+	var arena := _find_arena()
+	if arena and arena.has_method("nearest_free_cell"):
+		# Spawn mógł zostać zasypany w nagłej śmierci.
+		_pixel_target = _grid_to_pixel(arena.nearest_free_cell(_pixel_to_grid(_pixel_target)))
 	global_position = _pixel_target
 	_start_iframes(2.0)
+
+
+## Nagła śmierć: spadający blok zabija od razu — bez nieśmiertelności i ostatniej szansy.
+func crush() -> void:
+	if not is_alive:
+		return
+	lives = 0
+	lives_changed.emit(player_id, lives)
+	_eliminate()
 
 
 func _start_iframes(duration: float) -> void:

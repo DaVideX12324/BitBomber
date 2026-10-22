@@ -69,6 +69,15 @@ func detonate() -> void:
 	_explode()
 
 
+## Nagła śmierć: spada na nią blok — znika bez wybuchu (licznik bomb właściciela wraca).
+func crush() -> void:
+	if _exploded:
+		return
+	_exploded = true
+	exploded.emit()
+	queue_free()
+
+
 func _explode() -> void:
 	if _exploded:
 		return
