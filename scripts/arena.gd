@@ -39,18 +39,29 @@ var spawn_points : Array[Vector2i] = []
 
 var _rows_data : PackedStringArray = []
 
-## Prawdopodobieństwo spawna power-upa po zniszczeniu skrzynki
-const POWERUP_CHANCE : float = 0.40
+## Szansa na power-up ze skrzynki wg trudności (Bomb It: propProp easy 0,6 / normal 0,4 / hard 0,4)
+const POWERUP_CHANCE : Array[float] = [0.6, 0.4, 0.4]
 
 var _powerup_scene: PackedScene = load(BBRuntime.path("scenes/objects/powerup.tscn"))
 
-## Pula typów (wagi: range_up 4×, bomb_up 4×, speed_up 3×, life_up 1×)
-const POWERUP_POOL : Array[String] = [
-	"range_up", "range_up", "range_up", "range_up",
-	"bomb_up",  "bomb_up",  "bomb_up",  "bomb_up",
-	"speed_up", "speed_up", "speed_up",
-	"life_up",
-]
+## Wagi typów (Bomb It: NumProp 0,28, PowProp 0,24, SpeedProp 0,25; życie u nas częściej niż ich 0,005,
+## bo bez niego zostaje tylko quiz ostatniej szansy)
+const POWERUP_WEIGHTS : Dictionary = {
+	"bomb_up":  28,
+	"range_up": 24,
+	"speed_up": 25,
+	"life_up":  4,
+}
+
+## Dorzucanie przedmiotów (Bomb It, timePassed): po ITEM_DROP_START s co ITEM_DROP_EVERY s
+## do ITEM_DROP_COUNT sztuk, póki na mapie jest mniej niż ITEM_MAX_ON_MAP.
+const ITEM_DROP_START : float = 45.0
+const ITEM_DROP_EVERY : float = 15.0
+const ITEM_DROP_COUNT : int = 2
+const ITEM_MAX_ON_MAP : int = 12
+
+var _round_time : float = 0.0
+var _next_drop  : float = ITEM_DROP_START
 
 
 func _ready() -> void:
@@ -251,14 +262,63 @@ func break_cell(cell: Vector2i) -> bool:
 	var node = breakable_cells[cell]
 	breakable_cells.erase(cell)
 	if is_instance_valid(node): node.queue_free()
-	if randf() < POWERUP_CHANCE:
+	if randf() < _powerup_chance():
 		_spawn_powerup(cell)
 	return true
 
 
+func _powerup_chance() -> float:
+	var gm := get_node_or_null("/root/GameManager")
+	var diff : int = gm.bot_difficulty if gm else 1
+	return POWERUP_CHANCE[clampi(diff, 0, POWERUP_CHANCE.size() - 1)]
+
+
+func _roll_powerup_type() -> String:
+	var total := 0
+	for t in POWERUP_WEIGHTS:
+		total += POWERUP_WEIGHTS[t]
+	var r := randi() % total
+	for t in POWERUP_WEIGHTS:
+		r -= POWERUP_WEIGHTS[t]
+		if r < 0:
+			return t
+	return POWERUP_WEIGHTS.keys()[0]
+
+
+## Po ITEM_DROP_START s co ITEM_DROP_EVERY s nowe przedmioty na losowych wolnych polach.
+func _tick_item_drops(delta: float) -> void:
+	_round_time += delta
+	if _round_time < _next_drop or not _sd_order.is_empty():
+		return
+	_next_drop += ITEM_DROP_EVERY
+	var free := _free_drop_cells()
+	free.shuffle()
+	var count := mini(ITEM_DROP_COUNT, ITEM_MAX_ON_MAP - powerup_cells.size())
+	for i in mini(count, free.size()):
+		_spawn_powerup(free[i])
+
+
+## Puste pola bez bomby, ognia, gracza i przedmiotu.
+func _free_drop_cells() -> Array[Vector2i]:
+	var taken := {}
+	for n in get_tree().get_nodes_in_group("bomb"):
+		taken[pixel_to_grid(n.global_position)] = true
+	for n in get_tree().get_nodes_in_group("explosion"):
+		taken[pixel_to_grid(n.global_position)] = true
+	for p in get_tree().get_nodes_in_group("players"):
+		taken[p.get_grid_pos()] = true
+	var out : Array[Vector2i] = []
+	for y in range(1, rows - 1):
+		for x in range(1, cols - 1):
+			var c := Vector2i(x, y)
+			if not solid_cells.has(c) and not breakable_cells.has(c) and not powerup_cells.has(c) and not taken.has(c):
+				out.append(c)
+	return out
+
+
 func _spawn_powerup(cell: Vector2i) -> void:
 	var pu   := _powerup_scene.instantiate()
-	var type : String = POWERUP_POOL[randi() % POWERUP_POOL.size()]
+	var type : String = _roll_powerup_type()
 	pu.powerup_type    = type
 	pu.position        = Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
 	pu.tree_exiting.connect(_on_powerup_gone.bind(cell))
@@ -334,6 +394,7 @@ func nearest_free_cell(from: Vector2i) -> Vector2i:
 
 
 func _process(delta: float) -> void:
+	_tick_item_drops(delta)
 	if _sd_order.is_empty():
 		return
 	_sd_timer += delta
