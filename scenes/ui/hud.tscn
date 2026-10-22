@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bvhud000001"]
 
-[ext_resource type="Script" uid="uid://brvkvku3jtece" path="res://scripts/hud.gd" id="1"]
+[ext_resource type="Script" uid="uid://brvkvku3jtece" path="../../scripts/hud.gd" id="1"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1716525981]
 layer = 10
