@@ -3,6 +3,7 @@
 BitBomber to gra w stylu Bombermana stworzona w **Godot 4** jako samodzielny projekt oraz osadzalny moduł edukacyjny (plug-and-play) dla platformy [Artefakt Wiedzy](https://github.com/DaVideX12324/Artefakt-Wiedzy-modular) (w hoście leży jako submoduł `modules/BitBomber`).
 
 Gracze (i boty) kładą bomby, niszczą skrzynki, zbierają power-upy i rywalizują o wygraną. Po śmierci gracza aktywuje się tryb **Last Chance** — krótki quiz, który daje szansę na respawn.
+Mechanika, liczby i układy map wzorowane są na **Bomb It 7** (grafika i dźwięki są własne, generowane skryptami).
 
 ---
 
@@ -12,7 +13,11 @@ Gracze (i boty) kładą bomby, niszczą skrzynki, zbierają power-upy i rywalizu
 - **3 poziomy trudności bota** (Easy / Medium / Hard) z odrębnym zachowaniem AI
 - System **Last Chance Quiz** — odpowiedz poprawnie, żeby wrócić do gry
 - Tryb **pojedynku quizowego** między dwoma graczami (Versus)
-- Power-upy: zwiększenie zasięgu bomby, liczby bomb, prędkości
+- Tryby gry: **Ostatni żywy** i **Zabójstwa** (Kill z Bomb It — odradzanie, pierwszy do 5 zabójstw, dogrywka)
+- **28 map**: 27 układów z Bomb It 7 (9 motywów × 3 warianty, 17×15) + klasyczna 17×17; skrzynki losowane z gęstością
+- **Nagła śmierć** po 3 minutach — bloki spadają spiralą od krawędzi
+- Reakcja łańcuchowa bomb, kopanie bomb
+- Power-upy: bomba, zasięg, szybkość, życie, kopanie, tarcza, gwiazdka (nietykalność); wagi i dorzucanie po 45 s jak w Bomb It
 - System rund — wygrywa ten, kto jako pierwszy zbierze wymaganą liczbę zwycięstw
 - Obsługa **trybu embedded** — BitBomber może działać jako moduł wewnątrz innej aplikacji Godot
 
@@ -60,6 +65,23 @@ BitBomber/
 └── shaders/                # Shader bomby
 ```
 
+Dodatkowo:
+
+```
+├── resources/maps/         # Układy map (JSON: rows '#' stały, 'C' środek, 'b' miejsce na skrzynkę, '.' puste)
+├── resources/sprites/      # Grafika (generowana): tiles/<motyw>/, players/, objects/
+├── resources/sounds/       # Efekty dźwiękowe (generowane)
+├── tools/
+│   ├── import_bombit_maps.py  # TMX z Bomb It 7 → resources/maps/*.json
+│   ├── gen_sprites.py         # Pillow → resources/sprites/ (zmiany wyglądu tutaj, nie w PNG)
+│   └── gen_sounds.py          # numpy → resources/sounds/*.wav
+├── tests/                  # Testy headless (uruchamiane z katalogu hosta, patrz niżej)
+└── docs/zadania.md         # Lista zadań i decyzji
+```
+
+Testy: `godot --headless --path <host> --fixed-fps 60 -s res://modules/BitBomber/tests/<test>.gd`
+(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_smoke`).
+
 ---
 
 ## 🔌 Tryb Embedded (Artefakt Wiedzy)
@@ -88,8 +110,9 @@ Samodzielnie ta sama gra działa jako zwykły projekt Godota (`project.godot.off
 
 ## 🚧 Roadmap
 
-- [ ] Więcej aren
-- [ ] Power-up: tarcza / freeze
+- [x] Więcej aren (28 map)
+- [x] Power-up: tarcza (oraz kopanie i gwiazdka)
+- [x] Tryb Kill, nagła śmierć, grafika i dźwięki
 - [ ] Obsługa pytań dostarczanych przez hosta (tryb embedded)
 - [ ] Wyniki i statystyki sesji
 - [ ] Konfiguracja sesji przez hosta i wynik na koniec (dawne `BitBomberModule.start_session(config)` z liczbą graczy, botów, rund i trudnością oraz sygnał `session_finished(result)` z `winner_id` i wygranymi rundami — wycofane przy przejściu na `module_root.gd`, maj 2026)
