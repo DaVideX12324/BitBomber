@@ -98,5 +98,17 @@
   "bb.options.bind_p2_move": "Gracz 2 — ruch",
   "bb.options.bind_p2_bomb": "Gracz 2 — bomba",
   "bb.options.bind_pause": "Pauza",
-  "bb.options.bind_none": "(brak)"
+  "bb.options.bind_none": "(brak)",
+  "bb.menu.map_label": "Mapa:",
+  "bb.menu.map_random": "🎲 Losowa",
+  "bb.map.classic": "Klasyczna",
+  "bb.map.cake": "Tort",
+  "bb.map.christmas": "Święta",
+  "bb.map.classroom": "Klasa",
+  "bb.map.fashion_shop": "Butik",
+  "bb.map.forest": "Las",
+  "bb.map.race": "Tor wyścigowy",
+  "bb.map.ranch": "Ranczo",
+  "bb.map.sand": "Zamek z piasku",
+  "bb.map.toy_shop": "Sklep z zabawkami"
 }

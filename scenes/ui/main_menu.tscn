@@ -214,6 +214,20 @@ max_value = 20.0
 value = 3.0
 alignment = 1
 
+[node name="HBoxMap" type="HBoxContainer" parent="Center/Panel/Margin/VBox" unique_id=900000010]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MapLabel" type="Label" parent="Center/Panel/Margin/VBox/HBoxMap" unique_id=900000011]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+text = "Mapa:"
+
+[node name="MapOpt" type="OptionButton" parent="Center/Panel/Margin/VBox/HBoxMap" unique_id=900000012]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="QuizOpt" type="OptionButton" parent="Center/Panel/Margin/VBox" unique_id=900000001]
 layout_mode = 2
 

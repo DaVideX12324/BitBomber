@@ -98,5 +98,17 @@
   "bb.options.bind_p2_move": "Player 2 — move",
   "bb.options.bind_p2_bomb": "Player 2 — bomb",
   "bb.options.bind_pause": "Pause",
-  "bb.options.bind_none": "(none)"
+  "bb.options.bind_none": "(none)",
+  "bb.menu.map_label": "Map:",
+  "bb.menu.map_random": "🎲 Random",
+  "bb.map.classic": "Classic",
+  "bb.map.cake": "Cake",
+  "bb.map.christmas": "Christmas",
+  "bb.map.classroom": "Classroom",
+  "bb.map.fashion_shop": "Fashion shop",
+  "bb.map.forest": "Forest",
+  "bb.map.race": "Race track",
+  "bb.map.ranch": "Ranch",
+  "bb.map.sand": "Sand castle",
+  "bb.map.toy_shop": "Toy shop"
 }

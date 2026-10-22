@@ -15,6 +15,8 @@ extends CanvasLayer
 @onready var _win_label     : Label = $Center/Panel/Margin/VBox/WinLabel
 @onready var _rounds_label  : Label = $Center/Panel/Margin/VBox/HBoxRounds/RoundsLabel
 @onready var _quiz_opt      : OptionButton = $Center/Panel/Margin/VBox/QuizOpt
+@onready var _map_label     : Label        = $Center/Panel/Margin/VBox/HBoxMap/MapLabel
+@onready var _map_opt       : OptionButton = $Center/Panel/Margin/VBox/HBoxMap/MapOpt
 @onready var _rounds_spin   : SpinBox      = $Center/Panel/Margin/VBox/HBoxRounds/RoundsSpin
 @onready var _start_btn     : Button       = $Center/Panel/Margin/VBox/BtnStart
 @onready var _help_btn      : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnHelp
@@ -64,6 +66,7 @@ var _help_overlay : ColorRect
 var _options_menu: CanvasLayer
 
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
+const Arena = preload("arena.gd")
 
 func _gm() -> Node:
 	return get_node_or_null("/root/GameManager")
@@ -112,6 +115,7 @@ func _ready() -> void:
 	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
 	for q in quizzes:
 		_quiz_opt.add_item(q)
+	_fill_maps()
 	_start_btn.pressed.connect(func():
 		var q_id = "" if _quiz_opt.selected <= 0 \
 				else _quiz_opt.get_item_text(_quiz_opt.selected)
@@ -162,6 +166,9 @@ func _on_scale_changed(_s: float) -> void:
 	_win_label.add_theme_font_size_override("font_size",     _px(17))
 	_rounds_label.add_theme_font_size_override("font_size",  _px(17))
 	_ver_label.add_theme_font_size_override("font_size",     _px(11))
+	_map_label.add_theme_font_size_override("font_size", _px(17))
+	_map_opt.add_theme_font_size_override("font_size", _px(17))
+	_scale_popup_font(_map_opt, _px(17))
 	# QuizOpt + dropdown
 	_quiz_opt.add_theme_font_size_override("font_size", _px(18))
 	_scale_popup_font(_quiz_opt, _px(18))
@@ -268,11 +275,31 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 		gm.bot_difficulty   = diff
 		gm.win_condition    = win_mode
 		gm.selected_quiz_id = quiz_id
+		gm.selected_map     = str(_map_opt.get_item_metadata(_map_opt.selected))
 		if win_mode == 0:
 			gm.rounds_to_win = rounds
 		else:
 			gm.max_rounds = rounds
 		gm.start_game(humans, bots)
+
+
+## „Losowa” + mapy z resources/maps, np. „Las 2” (wariant 0 = bez numeru). Zaznacza ostatnio wybraną.
+func _fill_maps() -> void:
+	_map_opt.add_item(BbI18n.t("bb.menu.map_random", "🎲 Losowa"))
+	_map_opt.set_item_metadata(0, "")
+	var gm := _gm()
+	var current : String = gm.selected_map if gm and gm.get("selected_map") != null else ""
+	for id in Arena.list_maps():
+		var data := Arena.load_map_data(id)
+		var name_key := str(data.get("name_key", ""))
+		var label := BbI18n.t(name_key, id) if name_key != "" else id
+		var variant := int(data.get("variant", 0))
+		if variant > 0:
+			label += " %d" % variant
+		_map_opt.add_item(label)
+		_map_opt.set_item_metadata(_map_opt.item_count - 1, id)
+		if id == current:
+			_map_opt.select(_map_opt.item_count - 1)
 
 
 func _on_quit_pressed() -> void:
