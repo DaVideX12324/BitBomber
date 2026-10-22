@@ -423,6 +423,7 @@ func _respawn() -> void:
 ## Tryb KILL: znika, po KILL_RESPAWN_DELAY wraca na swój spawn z pełnym życiem i chwilą nieśmiertelności.
 ## Power-upy zostają (jak w Bomb It).
 func _die_and_respawn(killer_id: int) -> void:
+	_spawn_death_fx()
 	visible  = false
 	velocity = Vector2.ZERO
 	killed.emit(player_id, killer_id)
@@ -433,6 +434,26 @@ func _die_and_respawn(killer_id: int) -> void:
 	lives_changed.emit(player_id, lives)
 	visible = true
 	_respawn()
+
+
+## Kopia postaci na mapie: spłaszcza się, obraca i znika na czerwono (gracz w tym czasie już niewidoczny).
+func _spawn_death_fx() -> void:
+	var map_root := _get_map_root()
+	if map_root == null or not _sprite.visible or _sprite.texture == null:
+		return
+	var ghost := Sprite2D.new()
+	ghost.texture = _sprite.texture
+	ghost.hframes = _sprite.hframes
+	ghost.vframes = _sprite.vframes
+	ghost.frame   = _sprite.frame
+	ghost.z_index = 2
+	map_root.add_child(ghost)
+	ghost.global_position = global_position
+	var tw := ghost.create_tween().set_parallel()
+	tw.tween_property(ghost, "scale", Vector2(1.5, 0.3), 0.4).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BACK)
+	tw.tween_property(ghost, "rotation", 0.5, 0.4)
+	tw.tween_property(ghost, "modulate", Color(1.0, 0.3, 0.3, 0.0), 0.45)
+	tw.chain().tween_callback(ghost.queue_free)
 
 
 ## Nagła śmierć: spadający blok zabija od razu — bez nieśmiertelności i ostatniej szansy.
@@ -456,6 +477,8 @@ func _start_iframes(duration: float) -> void:
 func _eliminate() -> void:
 	is_alive      = false
 	_pending_elim = false
+	if visible:
+		_spawn_death_fx()
 	visible       = false
 	died.emit(player_id)
 
