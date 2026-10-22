@@ -389,32 +389,43 @@ func _build_help_overlay() -> void:
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_font_size_override("normal_font_size", 15)
 	content.text = BbI18n.t("bb.help.body", """[b]Cel gry[/b]
-Wyeliminuj przeciwnik\u00f3w za pomoc\u0105 bomb! Ostatni \u017cywy gracz (lub ten z najwi\u0119ksz\u0105 liczb\u0105 wygranych rund) zdobywa zwyci\u0119stwo.
+Wyeliminuj przeciwników bombami! Mecz wygrywa ten, kto zdobędzie najwięcej wygranych rund.
 
-[b]Sterowanie \u2014 Gracz 1[/b]
+[b]Tryby gry[/b]
+  [b]💣 Ostatni żywy[/b]   rundę wygrywa ostatni gracz na planszy
+  [b]🎯 Zabójstwa[/b]   zabici wracają po 2 s; rundę wygrywa pierwszy z 5 zabójstwami (po czasie lider, przy remisie dogrywka — następne zabójstwo wygrywa)
+
+[b]Sterowanie — Gracz 1[/b]
   [b]WASD[/b]   ruch
-  [b]Spacja[/b]   po\u0142\u00f3\u017c bomb\u0119
+  [b]Spacja[/b]   połóż bombę
 
-[b]Sterowanie \u2014 Gracz 2[/b]
-  \u2191 \u2193 \u2190 \u2192   ruch
-  [b]Enter / Num0[/b]   po\u0142\u00f3\u017c bomb\u0119
+[b]Sterowanie — Gracz 2[/b]
+  ↑ ↓ ← →   ruch
+  [b]Enter / Num0[/b]   połóż bombę
 
 [b]Bomba[/b]
-Wybucha po 2 sekundach. \u017c\u00f3\u0142knie od kraw\u0119dzi do \u015brodka \u2014 im bardziej \u017c\u00f3\u0142ta, tym bli\u017cej wybuchu.
+Wybucha po 2 sekundach — im grubsza żółta obwódka, tym bliżej wybuchu. Ogień płonie pół sekundy i odpala inne bomby w zasięgu.
 
 [b]Power-upy[/b]
-Pojawiaj\u0105 si\u0119 po zniszczeniu kruchych \u015bcian. Pop. odpowied\u017a na quiz = bonus.
+Wypadają ze skrzynek, a po 45 s pojawiają się same na planszy.
+  💣 +1 bomba   🔥 +1 zasięg   ⚡ szybkość   ♥ życie
+  🦶 kopanie — wejdź w bombę, a pojedzie do przeszkody
+  🛡 tarcza — wytrzymuje jedno trafienie
+  ⭐ gwiazdka — 8 s nietykalności
+
+[b]Nagła śmierć[/b]
+W trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone pola to miejsca następnych.
 
 [b]Last Chance[/b]
-Po \u015bmierci gracza odpala si\u0119 quiz. Poprawna odpowied\u017a = respawn. B\u0142\u0119dna = koniec.
+W trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.
 
 [b]Tryby wygranej[/b]
-  [b]Pierwszy do X[/b]   wygrywa kto pierwszy zdoby\u0142 X wygranych rund
-  [b]Najwi\u0119cej w Y[/b]   rozgrywanych jest Y rund, wygrywa kto ma wi\u0119cej zwyci\u0119stw
+  [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund
+  [b]Najwięcej w Y[/b]   gra się Y rund, wygrywa ten z największą liczbą zwycięstw
 
-[b]Trudno\u015b\u0107 bota[/b]
-  [b]\u0141atwy[/b]   bot reaguje wolno, proste pytania
-  [b]\u015arednii[/b]   wywa\u017cony balans
+[b]Trudność bota[/b]
+  [b]Łatwy[/b]   bot reaguje wolno, proste pytania
+  [b]Średni[/b]   wyważony balans
   [b]Trudny[/b]   bot agresywny, trudniejsze pytania""")
 	scroll.add_child(content)
 	vbox.add_child(HSeparator.new())
