@@ -53,7 +53,7 @@ BitBomber/
 │   ├── bomb.gd, explosion.gd, powerup.gd
 │   ├── bot_ai.gd           # System AI bota (FSM + A* + BFS)
 │   ├── bb_runtime.gd       # Ścieżki modułu: res://modules/BitBomber/… w hoście, res://… samodzielnie
-│   ├── game.gd, game_settings.gd, room_base.gd
+│   ├── game.gd, game_settings.gd
 │   ├── player.gd           # Ruch, bomby, życia, last chance
 │   ├── hud.gd, main_menu.gd, options_menu.gd, pause_menu.gd, death_screen.gd, quiz_overlay.gd
 ├── resources/              # Quizy (JSON), fonty (kopia fontów hosta, ukryta .gdignore), ikona

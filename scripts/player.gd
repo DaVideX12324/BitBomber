@@ -34,8 +34,6 @@ var bomb_range       : int   = DEFAULT_RANGE
 var speed_mult     : float = DEFAULT_SPEED
 var _active_bombs    : int   = 0
 
-var has_remote_detonator : bool = false
-var has_bomb_pierce      : bool = false
 
 # --- ZMIENNE DLA AI ---
 var bot_input_direction := Vector2.ZERO
@@ -160,17 +158,6 @@ func teleport_to(px: Vector2) -> void:
 	bot_input_direction = Vector2.ZERO
 
 
-func reset_for_new_game() -> void:
-	lives          = DEFAULT_LIVES
-	max_bombs      = DEFAULT_BOMBS
-	bomb_range     = DEFAULT_RANGE
-	speed_mult     = DEFAULT_SPEED
-	_active_bombs  = 0
-	has_remote_detonator = false
-	has_bomb_pierce      = false
-	teleport_to(global_position)
-
-
 ## Wywoływane przez game.gd na początku każdej nowej rundy.
 ## Gracze NIE są usuwani — tylko resetujemy statsy, życia i stan.
 func reset_for_new_round() -> void:
@@ -180,8 +167,6 @@ func reset_for_new_round() -> void:
 	bomb_range     = DEFAULT_RANGE
 	speed_mult     = DEFAULT_SPEED
 	_active_bombs  = 0
-	has_remote_detonator = false
-	has_bomb_pierce      = false
 	# Czyśzczenie bomb, na których się stoi
 	_bombs_inside.clear()
 	# Reset flag stanu

@@ -10,7 +10,6 @@ var debug_enabled: bool = true # Zmień na false, aby wyciszyć całą grę
 enum GameState {
 	MENU,
 	PLAYING,
-	QUIZ_POWERUP,
 	QUIZ_LAST_CHANCE,
 	ROUND_END,
 	GAME_OVER
@@ -59,7 +58,7 @@ func is_playing() -> bool:
 
 
 func is_in_quiz() -> bool:
-	return current_state in [GameState.QUIZ_POWERUP, GameState.QUIZ_LAST_CHANCE]
+	return current_state == GameState.QUIZ_LAST_CHANCE
 
 
 func total_players() -> int:

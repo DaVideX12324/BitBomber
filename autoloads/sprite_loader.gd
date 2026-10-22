@@ -12,7 +12,6 @@ extends Node
 ##   res://assets/sprites/objects/explosion.png
 ##   res://assets/sprites/map/wall_solid.png
 ##   res://assets/sprites/map/wall_breakable.png
-##   res://assets/sprites/map/powerup_quiz.png
 
 const SPRITES_BASE = "res://assets/sprites/"
 

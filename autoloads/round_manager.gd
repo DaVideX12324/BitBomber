@@ -4,7 +4,6 @@ extends Node
 
 signal round_started(round_number: int)
 signal round_ended(winner_id: int)   # -1 = remis / timeout
-signal quiz_powerup_triggered(collector_id: int)
 signal last_chance_triggered(dead_player_id: int)
 signal last_chance_resolved(dead_player_id: int, respawned: bool)
 signal session_ended(winner_id: int)
@@ -104,17 +103,6 @@ func _timeout_round() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Quiz — power-up
-# ---------------------------------------------------------------------------
-
-func trigger_powerup_quiz(collector_id: int) -> void:
-	if GameManager.current_state != GameManager.GameState.PLAYING:
-		return
-	GameManager.change_state(GameManager.GameState.QUIZ_POWERUP)
-	quiz_powerup_triggered.emit(collector_id)
-
-
-# ---------------------------------------------------------------------------
 # Quiz — last chance
 # ---------------------------------------------------------------------------
 
@@ -146,9 +134,6 @@ func resolve_last_chance(respawned: bool) -> void:
 	else:
 		GameManager.change_state(GameManager.GameState.PLAYING)
 
-
-func resolve_powerup_quiz() -> void:
-	GameManager.change_state(GameManager.GameState.PLAYING)
 
 
 # ---------------------------------------------------------------------------

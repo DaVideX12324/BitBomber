@@ -74,11 +74,6 @@ func next_round() -> void:
 	RoundManager.start_round()
 
 
-func load_room(path: String) -> void:
-	_load_map(path)
-	_set_players_visible(true)
-
-
 func load_menu() -> void:
 	if RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.disconnect(_on_last_chance_resolved)
