@@ -11,10 +11,10 @@ extends CanvasLayer
 const PlayerScript = preload("player.gd")
 
 const PLAYER_COLORS: Array[Color] = [
-	Color(0.18, 0.45, 0.85),
-	Color(0.88, 0.25, 0.55),
-	Color(0.20, 0.65, 0.25),
-	Color(0.55, 0.82, 0.20),
+	Color("#3b82f6"),
+	Color("#ef4444"),
+	Color("#22c55e"),
+	Color("#a855f7"),
 ]
 
 # Bazy z hud.tscn

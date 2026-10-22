@@ -3,21 +3,18 @@ extends Node
 ## SpriteLoader — ładuje tekstury jeśli istnieją, w przeciwnym razie zwraca null.
 ## Sceny używają tego do przełączania między teksturą a programmer art (ColorRect).
 ##
-## Konwencja ścieżek tekstur:
-##   res://assets/sprites/<kategoria>/<nazwa>.png
-## Przykłady:
-##   res://assets/sprites/players/player_1.png
-##   res://assets/sprites/players/player_2.png
-##   res://assets/sprites/objects/bomb.png
-##   res://assets/sprites/objects/explosion.png
-##   res://assets/sprites/map/wall_solid.png
-##   res://assets/sprites/map/wall_breakable.png
+## Grafika modułu: resources/sprites/<kategoria>/<nazwa>.png (generuje tools/gen_sprites.py), np.
+##   players/player_1.png       — arkusz 3×4 klatki
+##   objects/bomb.png, objects/explosion_center.png, objects/powerup_kick.png
+##   tiles/forest/floor.png     — kafle motywu mapy
 
-const SPRITES_BASE = "res://assets/sprites/"
+const BBRuntime = preload("../scripts/bb_runtime.gd")
+
+var sprites_base : String = BBRuntime.path("resources/sprites/")
 
 ## Zwraca Texture2D jeśli plik istnieje, null jeśli nie.
 func get_texture(relative_path: String) -> Texture2D:
-	var full_path = SPRITES_BASE + relative_path
+	var full_path = sprites_base + relative_path
 	if ResourceLoader.exists(full_path):
 		return load(full_path) as Texture2D
 	return null

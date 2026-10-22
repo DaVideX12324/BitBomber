@@ -60,7 +60,11 @@ func _run() -> void:
 	var cell: Vector2i = bomb.get_cell()
 	_check(cell.x == 1 and cell.y > 6, "kopnięta bomba pojechała w dół: %s" % cell)
 	_check(not bomb.is_sliding(), "bomba stanęła")
-	_check(arena.is_solid(cell + Vector2i.DOWN) or cell.y == arena.rows - 2, "stanęła przed przeszkodą (%s)" % (cell + Vector2i.DOWN))
+	var blocker := arena.is_solid(cell + Vector2i.DOWN)
+	for p in get_nodes_in_group("players"):
+		if p.is_alive and p.get_grid_pos() == cell + Vector2i.DOWN:
+			blocker = true   # drugi gracz na spawnie (spawny są losowe)
+	_check(blocker, "stanęła przed przeszkodą (%s)" % (cell + Vector2i.DOWN))
 	bomb.queue_free()
 
 	# Bez kopania bomba stoi.

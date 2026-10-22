@@ -140,16 +140,27 @@ func _explode() -> void:
 	if arena and arena.has_method("blast_cells"):
 		cells = arena.blast_cells(origin, explosion_range)
 	for cell : Vector2i in cells:
-		_spawn_explosion(_grid_to_pixel(cell))
+		_spawn_explosion(_grid_to_pixel(cell), _segment_of(cell, origin, cells))
 		if arena and arena.is_breakable(cell):
 			arena.break_cell(cell)
 
 	queue_free()
 
 
-func _spawn_explosion(pos: Vector2) -> void:
+## [nazwa segmentu, obrót]: środek, ramię albo koniec ramienia (ostatnie pole w tym kierunku).
+func _segment_of(cell: Vector2i, origin: Vector2i, cells: Array[Vector2i]) -> Array:
+	if cell == origin:
+		return ["center", 0.0]
+	var dir := Vector2i(signi(cell.x - origin.x), signi(cell.y - origin.y))
+	var angle := Vector2(dir).angle()
+	return ["arm" if cells.has(cell + dir) else "end", angle]
+
+
+func _spawn_explosion(pos: Vector2, seg: Array = ["center", 0.0]) -> void:
 	var exp := _explosion_scene.instantiate()
 	exp.global_position = pos
+	exp.segment  = seg[0]
+	exp.rotation = seg[1]
 	exp.owner_id = int(owner_player.player_id) if is_instance_valid(owner_player) else 0
 	var target := _get_map_root()
 	if target:

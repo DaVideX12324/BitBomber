@@ -69,19 +69,30 @@ signal powerup_collected(player_id: int, powerup_type: String)
 @onready var _sprite   : Sprite2D  = $Sprite2D
 @onready var _fallback : ColorRect = $Fallback
 
+## Kolory graczy — te same w HUD i w tools/gen_sprites.py (PLAYER_COLORS)
 const FALLBACK_COLORS : Dictionary = {
-	1: Color(0.2, 0.6, 1.0),
-	2: Color(1.0, 0.4, 0.2),
-	3: Color(0.2, 0.9, 0.3),
-	4: Color(0.9, 0.2, 0.9),
+	1: Color("#3b82f6"),
+	2: Color("#ef4444"),
+	3: Color("#22c55e"),
+	4: Color("#a855f7"),
 }
+
+## Arkusz postaci: kolumny stoi / krok A / krok B, wiersze dół / lewo / prawo / góra
+const SHEET_COLS : int = 3
+const SHEET_ROWS : int = 4
+## Klatki chodu na sekundę przy szybkości 1,0
+const WALK_FPS : float = 8.0
+var _facing_row : int = 0
+var _anim_time  : float = 0.0
 
 func _ready() -> void:
 	add_to_group("players")
 	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
 
 	if has_node("/root/SpriteLoader"):
-		SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id)
+		if SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id):
+			_sprite.hframes = SHEET_COLS
+			_sprite.vframes = SHEET_ROWS
 
 	_grid_pos       = _pixel_to_grid(global_position)
 	_pixel_target   = _grid_to_pixel(_grid_pos)
@@ -133,6 +144,7 @@ func _physics_process(delta: float) -> void:
 			bot_wants_to_bomb = false
 
 	_handle_movement(delta, raw_dir)
+	_update_walk_anim(delta)
 	_grid_pos = _closest_grid_pos()
 	if _star_time > 0.0:
 		_star_time = maxf(_star_time - delta, 0.0)
@@ -247,6 +259,23 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 	else:
 		velocity = Vector2.ZERO
 		move_and_slide()
+
+
+func _update_walk_anim(delta: float) -> void:
+	if _sprite.hframes != SHEET_COLS:
+		return
+	var v := velocity
+	if v.length_squared() < 1.0:
+		_anim_time = 0.0
+		_sprite.frame = _facing_row * SHEET_COLS
+		return
+	if absf(v.x) > absf(v.y):
+		_facing_row = 1 if v.x < 0 else 2
+	else:
+		_facing_row = 3 if v.y < 0 else 0
+	_anim_time += delta * WALK_FPS * speed_mult
+	var col : int = [1, 0, 2, 0][int(_anim_time) % 4]
+	_sprite.frame = _facing_row * SHEET_COLS + col
 
 
 ## Wejście w bombę z kopnięciem — bomba sunie w kierunku ruchu.

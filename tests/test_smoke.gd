@@ -32,6 +32,14 @@ func _run() -> void:
 		gm.box_density = 0.5
 		rm.kills_changed.connect(func(p: int, k: int): print("kill p=%d -> %d t=%.1f" % [p, k, rm._round_timer]))
 	gm.start_game(1, bots)
+	await process_frame
+	var suicides := [0]
+	for p in get_nodes_in_group("players"):
+		p.killed.connect(func(v: int, k: int):
+			if v == k: suicides[0] += 1
+			print("killed v=%d by=%d t=%.1f" % [v, k, rm._round_timer]))
+		p.lives_changed.connect(func(pid: int, left: int):
+			if left <= 0: print("dead p=%d t=%.1f" % [pid, rm._round_timer]))
 
 	var frames := seconds * 60
 	var boxes_start := -1
@@ -49,5 +57,5 @@ func _run() -> void:
 	var map: Node = gm.game_node._current_map
 	if map and map.get("breakable_cells") != null:
 		print("skrzynki: %d -> %d" % [boxes_start, map.breakable_cells.size()])
-	print("SMOKE DONE")
+	print("SMOKE DONE suicides(kill)=%d" % suicides[0])
 	quit(0)

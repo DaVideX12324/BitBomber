@@ -69,6 +69,8 @@ var _next_drop  : float = ITEM_DROP_START
 
 func _ready() -> void:
 	add_to_group("arena")
+	# Grafika rysowana w wysokiej rozdzielczości — przy skalowaniu kamery gładko, nie „pikselowo”.
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_load_layout(_pick_map_id())
 	_randomize_spawns()
 	_setup_camera()
@@ -172,6 +174,7 @@ func _build_map() -> void:
 	var map_node := Node2D.new()
 	map_node.name = "Map"
 	add_child(map_node); move_child(map_node, 0)
+	_load_tiles()
 	var density := _box_density()
 
 	for row in range(rows):
@@ -179,13 +182,12 @@ func _build_map() -> void:
 			var cell := Vector2i(col, row)
 			var px   := Vector2(col * GRID_SIZE, row * GRID_SIZE)
 			var ch   := _rows_data[row][col]
+			_spawn_floor_tile(map_node, px, (col + row) % 2 == 1)
 			if ch == "#" or ch == "C":
 				solid_cells[cell] = true
-				_spawn_solid_block(map_node, px, COLOR_CENTER if ch == "C" else COLOR_SOLID)
+				_spawn_solid_block(map_node, px, _solid_kind(cell, ch))
 			elif ch == "b" and not _near_any_spawn(cell) and randf() < density:
 				breakable_cells[cell] = _spawn_breakable_block(map_node, px)
-			else:
-				_spawn_floor_tile(map_node, px)
 
 
 func _near_any_spawn(cell: Vector2i) -> bool:
@@ -195,11 +197,68 @@ func _near_any_spawn(cell: Vector2i) -> bool:
 	return false
 
 
+## Kafel bloku stałego: obrys mapy = wall, środek strefy 'C' = center (zdobienie), reszta 'C' = wall, inne = block.
+func _solid_kind(cell: Vector2i, ch: String) -> String:
+	if cell.x == 0 or cell.y == 0 or cell.x == cols - 1 or cell.y == rows - 1:
+		return "wall"
+	if ch != "C":
+		return "block"
+	var horiz := _is_c(cell + Vector2i.LEFT) and _is_c(cell + Vector2i.RIGHT)
+	var vert_both := _is_c(cell + Vector2i.UP) and _is_c(cell + Vector2i.DOWN)
+	var vert_none := not _is_c(cell + Vector2i.UP) and not _is_c(cell + Vector2i.DOWN)
+	return "center" if horiz and (vert_both or vert_none) else "wall"
+
+
+func _is_c(cell: Vector2i) -> bool:
+	return cell.y >= 0 and cell.y < rows and cell.x >= 0 and cell.x < cols and _rows_data[cell.y][cell.x] == "C"
+
+
+# ---------------------------------------------------------------------------
+# Grafika kafli (resources/sprites/tiles/<motyw>/, tools/gen_sprites.py)
+# ---------------------------------------------------------------------------
+
+const TILE_NAMES : Array[String] = ["floor", "floor_alt", "block", "wall", "center", "box"]
+
+## Motyw = id mapy bez numeru wariantu („forest_2” → „forest”)
+var theme  : String = "classic"
+var _tiles : Dictionary = {}   # nazwa kafla → Texture2D (null = kolorowe prostokąty)
+
+
+static func theme_of(id: String) -> String:
+	var i := id.rfind("_")
+	if i > 0 and id.substr(i + 1).is_valid_int():
+		return id.substr(0, i)
+	return id
+
+
+func _load_tiles() -> void:
+	theme = theme_of(map_id)
+	var loader := get_node_or_null("/root/SpriteLoader")
+	for n in TILE_NAMES:
+		var tex : Texture2D = null
+		if loader:
+			tex = loader.get_texture("tiles/%s/%s.png" % [theme, n])
+			if tex == null:
+				tex = loader.get_texture("tiles/classic/%s.png" % n)
+		_tiles[n] = tex
+
+
+func _add_tile_sprite(parent: Node, tile: String, centered: bool) -> bool:
+	var tex : Texture2D = _tiles.get(tile)
+	if tex == null:
+		return false
+	var sp := Sprite2D.new()
+	sp.texture  = tex
+	sp.centered = centered
+	parent.add_child(sp)
+	return true
+
+
 # ---------------------------------------------------------------------------
 # Spawning bloków
 # ---------------------------------------------------------------------------
 
-func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> Node2D:
+func _spawn_solid_block(parent: Node, px: Vector2, kind: String) -> Node2D:
 	var body := StaticBody2D.new()
 	body.position = px + Vector2(GRID_SIZE / 2.0, GRID_SIZE / 2.0)
 	body.collision_layer = 1; body.collision_mask = 2
@@ -207,9 +266,10 @@ func _spawn_solid_block(parent: Node, px: Vector2, color: Color) -> Node2D:
 	var shape := CollisionShape2D.new()
 	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
-	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), color)
-	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
-	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
+	if not _add_tile_sprite(body, kind, true):
+		_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_CENTER if kind == "center" else COLOR_SOLID)
+		_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
+		_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_SOLID_HL)
 	return body
 
 
@@ -221,14 +281,17 @@ func _spawn_breakable_block(parent: Node, px: Vector2) -> Node:
 	var shape := CollisionShape2D.new()
 	var rect  := RectangleShape2D.new(); rect.size = Vector2(GRID_SIZE, GRID_SIZE)
 	shape.shape = rect; body.add_child(shape)
-	_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_BREAKABLE)
-	_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
-	_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
+	if not _add_tile_sprite(body, "box", true):
+		_add_color_rect(body, Vector2(GRID_SIZE, GRID_SIZE), Vector2(-GRID_SIZE / 2.0, -GRID_SIZE / 2.0), COLOR_BREAKABLE)
+		_add_color_rect(body, Vector2(GRID_SIZE-4, 4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
+		_add_color_rect(body, Vector2(4, GRID_SIZE-4), Vector2(-GRID_SIZE / 2.0 + 2.0, -GRID_SIZE / 2.0 + 2.0), COLOR_BREAKABLE_HL)
 	return body
 
 
-func _spawn_floor_tile(parent: Node, px: Vector2) -> void:
+func _spawn_floor_tile(parent: Node, px: Vector2, alt: bool) -> void:
 	var n := Node2D.new(); n.position = px; parent.add_child(n)
+	if _add_tile_sprite(n, "floor_alt" if alt else "floor", false):
+		return
 	_add_color_rect(n, Vector2(GRID_SIZE, GRID_SIZE), Vector2.ZERO, COLOR_BG)
 	_add_color_rect(n, Vector2(1, GRID_SIZE), Vector2(GRID_SIZE-1, 0), COLOR_GRID_LINE)
 	_add_color_rect(n, Vector2(GRID_SIZE, 1), Vector2(0, GRID_SIZE-1), COLOR_GRID_LINE)
@@ -441,7 +504,7 @@ func _drop_block(cell: Vector2i) -> void:
 			p.crush()
 	solid_cells[cell] = true
 	var px := Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
-	var block := _spawn_solid_block(get_node("Map"), px, COLOR_SOLID)
+	var block := _spawn_solid_block(get_node("Map"), px, "block")
 	block.scale = Vector2(1.5, 1.5)
 	block.modulate.a = 0.0
 	var tw := block.create_tween().set_parallel()

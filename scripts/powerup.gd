@@ -40,7 +40,7 @@ func _ready() -> void:
 	_fallback.color = col
 	var icon : String = ICONS.get(powerup_type, "?")
 	_label.text = icon
-	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
+	_label.visible = not SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/powerup_%s.png" % powerup_type)
 	_bob()
 
 func _process(delta: float) -> void:

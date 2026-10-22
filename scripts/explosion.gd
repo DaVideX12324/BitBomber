@@ -18,10 +18,12 @@ var _timer: float = 0.0
 var _cell: Vector2i
 ## player_id właściciela bomby (0 = brak) — do liczenia zabójstw
 var owner_id: int = 0
+## Grafika: "center", "arm" albo "end" (ramię i koniec narysowane w prawo — bomba obraca węzeł)
+var segment: String = "center"
 
 
 func _ready() -> void:
-	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/explosion.png")
+	SpriteLoader.apply_or_fallback(_sprite, _fallback, "objects/explosion_%s.png" % segment)
 	monitoring = true
 	_cell = Vector2i(int(global_position.x / GRID_SIZE), int(global_position.y / GRID_SIZE))
 

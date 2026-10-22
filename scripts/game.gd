@@ -24,6 +24,7 @@ var _players     : Array = []
 
 func _ready() -> void:
 	GameManager.game_node = self
+	players_root.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	GameManager.state_changed.connect(_on_state_changed)
 	RoundManager.sudden_death_started.connect(_on_sudden_death)
 	_load_menu()
