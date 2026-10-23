@@ -1,66 +1,37 @@
 extends CanvasLayer
 
-## Menu główne BitBomber.
+## Menu główne BitBomber — wygląd w main_menu.tscn (motyw resources/ui/bb_theme.tres), tu tylko logika.
 
-@onready var _panel    : PanelContainer  = $Center/Panel
-@onready var _margin   : MarginContainer  = $Center/Panel/Margin
-@onready var _vbox     : VBoxContainer   = $Center/Panel/Margin/VBox
-@onready var _title    : Label           = $Center/Panel/Margin/VBox/Title
-@onready var _subtitle : Label           = $Center/Panel/Margin/VBox/Subtitle
-@onready var _controls : Label           = $Center/Panel/Margin/VBox/Controls
+const V := "Root/Center/Panel/VBox/"
+const G := V + "Grid/"
 
-@onready var _players_label : Label = $Center/Panel/Margin/VBox/PlayersLabel
-@onready var _bots_label    : Label = $Center/Panel/Margin/VBox/BotsLabel
-@onready var _diff_label    : Label = $Center/Panel/Margin/VBox/DiffLabel
-@onready var _win_label     : Label = $Center/Panel/Margin/VBox/WinLabel
-@onready var _rounds_label  : Label = $Center/Panel/Margin/VBox/HBoxRounds/RoundsLabel
-@onready var _quiz_opt      : OptionButton = $Center/Panel/Margin/VBox/QuizOpt
-@onready var _map_label     : Label        = $Center/Panel/Margin/VBox/HBoxMap/MapLabel
-@onready var _map_opt       : OptionButton = $Center/Panel/Margin/VBox/HBoxMap/MapOpt
-@onready var _rounds_spin   : SpinBox      = $Center/Panel/Margin/VBox/HBoxRounds/RoundsSpin
-@onready var _start_btn     : Button       = $Center/Panel/Margin/VBox/BtnStart
-@onready var _help_btn      : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnHelp
-@onready var _options_btn   : Button       = $Center/Panel/Margin/VBox/HBoxMeta/BtnOptions
-@onready var _quit_btn      : Button       = $Center/Panel/Margin/VBox/BtnQuit
-@onready var _ver_label     : Label        = $VerLabel
+@onready var _root     : Control         = $Root
+@onready var _rounds_label  : Label        = get_node(G + "RoundsLabel")
+@onready var _quiz_opt      : OptionButton = get_node(G + "QuizOpt")
+@onready var _map_opt       : OptionButton = get_node(G + "MapOpt")
+@onready var _rounds_spin   : SpinBox      = get_node(G + "RoundsSpin")
+@onready var _start_btn     : Button       = get_node(V + "BtnStart")
+@onready var _help_btn      : Button       = get_node(V + "HBoxMeta/BtnHelp")
+@onready var _options_btn   : Button       = get_node(V + "HBoxMeta/BtnOptions")
+@onready var _quit_btn      : Button       = get_node(V + "HBoxMeta/BtnQuit")
 @onready var _local_options_menu: CanvasLayer = $OptionsMenu
+@onready var _help_overlay  : Control       = $Root/HelpOverlay
+@onready var _help_body     : RichTextLabel = $Root/HelpOverlay/HelpPanel/VBox/Scroll/HelpBody
+@onready var _help_close    : Button        = $Root/HelpOverlay/HelpPanel/VBox/HelpClose
 
-@onready var _players_btns : Array[Button] = [
-	$Center/Panel/Margin/VBox/HBoxPlayers/Players_1,
-	$Center/Panel/Margin/VBox/HBoxPlayers/Players_2,
-	$Center/Panel/Margin/VBox/HBoxPlayers/Players_3,
-	$Center/Panel/Margin/VBox/HBoxPlayers/Players_4,
-]
+@onready var _players_btns : Array[Button] = [get_node(G + "HBoxPlayers/Players_1"), get_node(G + "HBoxPlayers/Players_2")]
 @onready var _bots_btns : Array[Button] = [
-	$Center/Panel/Margin/VBox/HBoxBots/Bots_0,
-	$Center/Panel/Margin/VBox/HBoxBots/Bots_1,
-	$Center/Panel/Margin/VBox/HBoxBots/Bots_2,
-	$Center/Panel/Margin/VBox/HBoxBots/Bots_3,
+	get_node(G + "HBoxBots/Bots_0"), get_node(G + "HBoxBots/Bots_1"),
+	get_node(G + "HBoxBots/Bots_2"), get_node(G + "HBoxBots/Bots_3"),
 ]
 @onready var _diff_btns : Array[Button] = [
-	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Easy,
-	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Medium,
-	$Center/Panel/Margin/VBox/HBoxDiff/Diff_Hard,
+	get_node(G + "HBoxDiff/Diff_Easy"), get_node(G + "HBoxDiff/Diff_Medium"), get_node(G + "HBoxDiff/Diff_Hard"),
 ]
-@onready var _mode_label : Label = $Center/Panel/Margin/VBox/HBoxMode/ModeLabel
-@onready var _mode_btns : Array[Button] = [
-	$Center/Panel/Margin/VBox/HBoxMode/Mode_Last,
-	$Center/Panel/Margin/VBox/HBoxMode/Mode_Kill,
-]
-@onready var _win_btns : Array[Button] = [
-	$Center/Panel/Margin/VBox/HBoxWin/Win_FirstTo,
-	$Center/Panel/Margin/VBox/HBoxWin/Win_MostWins,
-]
+@onready var _mode_btns : Array[Button] = [get_node(G + "HBoxMode/Mode_Last"), get_node(G + "HBoxMode/Mode_Kill")]
+@onready var _win_btns : Array[Button] = [get_node(G + "HBoxWin/Win_FirstTo"), get_node(G + "HBoxWin/Win_MostWins")]
 
-const BASE_PANEL_SIZE     := Vector2(550.0, 900.0)
-const BASE_SEP_VBOX       := 18   # separation VBoxContainer
-const BASE_SEP_HBOX       := 8    # separation HBoxContainer
-const BASE_BTN_SM         := Vector2(72.0,  36.0)
-const BASE_BTN_DIFF       := Vector2(88.0,  36.0)
-const BASE_BTN_WIN        := Vector2(140.0, 36.0)
-const BASE_BTN_START      := Vector2(0.0,   42.0)
-const BASE_BTN_QUIT       := Vector2(0.0,   36.0)
-const BASE_PANEL_PADDING  := 20
+## Rozmiary z .tscn (minimalny rozmiar, czcionka) zapamiętane przy starcie — UIScaleManager je przelicza.
+var _base_sizes : Dictionary = {}
 
 var _sel_players : int = 1
 var _sel_bots    : int = 1
@@ -68,7 +39,6 @@ var _sel_diff    : int = 0
 var _sel_win     : int = 0
 var _sel_mode    : int = 0
 
-var _help_overlay : ColorRect
 var _options_menu: CanvasLayer
 
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
@@ -141,8 +111,10 @@ func _ready() -> void:
 	_refresh_diff()
 	_refresh_win()
 	_refresh_mode()
-	_build_help_overlay()
+	_help_body.text = BbI18n.t("bb.help.body")
+	_help_close.pressed.connect(_hide_help)
 	_update_quit_button()
+	_collect_base_sizes(_root)
 	var sm := get_node_or_null("/root/UIScaleManager")
 	if sm and sm.has_signal("scale_changed"):
 		sm.scale_changed.connect(_on_scale_changed)
@@ -167,60 +139,27 @@ func _resolve_options_menu() -> CanvasLayer:
 # ---------------------------------------------------------------------------
 
 func _on_scale_changed(_s: float) -> void:
-	# Panel i VBox
-	_panel.custom_minimum_size = _sz2(BASE_PANEL_SIZE.x, BASE_PANEL_SIZE.y)
-	# Separation
-	_vbox.add_theme_constant_override("separation",        _px(BASE_SEP_VBOX))
-	# Czcionki etykiet
-	_title.add_theme_font_size_override("font_size",    _px(48))
-	_subtitle.add_theme_font_size_override("font_size", _px(20))
-	_controls.add_theme_font_size_override("font_size", _px(18))
-	_players_label.add_theme_font_size_override("font_size", _px(17))
-	_bots_label.add_theme_font_size_override("font_size",    _px(17))
-	_diff_label.add_theme_font_size_override("font_size",    _px(17))
-	_win_label.add_theme_font_size_override("font_size",     _px(17))
-	_rounds_label.add_theme_font_size_override("font_size",  _px(17))
-	_ver_label.add_theme_font_size_override("font_size",     _px(11))
-	_map_label.add_theme_font_size_override("font_size", _px(17))
-	_map_opt.add_theme_font_size_override("font_size", _px(17))
-	_scale_popup_font(_map_opt, _px(17))
-	# QuizOpt + dropdown
-	_quiz_opt.add_theme_font_size_override("font_size", _px(18))
-	_scale_popup_font(_quiz_opt, _px(18))
-	# SpinBox
-	_rounds_spin.add_theme_font_size_override("font_size", _px(17))
+	for c: Control in _base_sizes:
+		var base: Array = _base_sizes[c]
+		c.custom_minimum_size = _sz2(base[0].x, base[0].y)
+		c.add_theme_font_size_override(_font_key(c), _px(base[1]))
+	_scale_popup_font(_map_opt, _px(19))
+	_scale_popup_font(_quiz_opt, _px(19))
 	var spin_edit := _rounds_spin.get_line_edit()
 	if spin_edit:
-		spin_edit.add_theme_font_size_override("font_size", _px(17))
-	# Przyciski akcji
-	_start_btn.add_theme_font_size_override("font_size",   _px(20))
-	_help_btn.add_theme_font_size_override("font_size",    _px(20))
-	_options_btn.add_theme_font_size_override("font_size", _px(20))
-	_quit_btn.add_theme_font_size_override("font_size",    _px(20))
-	# Grupy przycisków
-	for btn in _players_btns:
-		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size", _px(19))
-	for btn in _bots_btns:
-		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_SM.x, BASE_BTN_SM.y)
-		(btn as Button).add_theme_font_size_override("font_size", _px(19))
-	for btn in _diff_btns:
-		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_DIFF.x, BASE_BTN_DIFF.y)
-		(btn as Button).add_theme_font_size_override("font_size", _px(19))
-	for btn in _win_btns:
-		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
-		(btn as Button).add_theme_font_size_override("font_size", _px(19))
-	for btn in _mode_btns:
-		(btn as Button).custom_minimum_size = _sz2(BASE_BTN_WIN.x, BASE_BTN_WIN.y)
-		(btn as Button).add_theme_font_size_override("font_size", _px(19))
-	_mode_label.add_theme_font_size_override("font_size", _px(17))
-	_start_btn.custom_minimum_size = _sz2(BASE_BTN_START.x, BASE_BTN_START.y)
-	_quit_btn.custom_minimum_size  = _sz2(BASE_BTN_QUIT.x,  BASE_BTN_QUIT.y)
-	var pad := _px(BASE_PANEL_PADDING)
-	_margin.add_theme_constant_override("margin_left", pad)
-	_margin.add_theme_constant_override("margin_top", pad)
-	_margin.add_theme_constant_override("margin_right", pad)
-	_margin.add_theme_constant_override("margin_bottom", pad)
+		spin_edit.add_theme_font_size_override("font_size", _px(19))
+
+
+func _collect_base_sizes(n: Node) -> void:
+	for c in n.get_children():
+		if c is Control and c != _rounds_spin.get_line_edit():
+			_base_sizes[c] = [c.custom_minimum_size, c.get_theme_font_size(_font_key(c))]
+		if not c is OptionButton and not c is SpinBox:
+			_collect_base_sizes(c)
+
+
+func _font_key(c: Control) -> String:
+	return "normal_font_size" if c is RichTextLabel else "font_size"
 
 
 func _scale_popup_font(opt: OptionButton, font_size: int) -> void:
@@ -265,9 +204,9 @@ func _refresh_mode() -> void:
 
 func _on_rounds_changed(_value: float) -> void:
 	if _sel_win == 0:
-		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Wygrane rundy do zwyci\u0119stwa (X):")
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Rundy do wygranej")
 	else:
-		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund w sesji (Y):")
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund")
 
 
 func _refresh_players() -> void:
@@ -292,9 +231,9 @@ func _refresh_win() -> void:
 	for i in _win_btns.size():
 		_win_btns[i].button_pressed = (i == _sel_win)
 	if _sel_win == 0:
-		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Wygrane rundy do zwyci\u0119stwa (X):")
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_to_win_x", "Rundy do wygranej")
 	else:
-		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund w sesji (Y):")
+		_rounds_label.text = BbI18n.t("bb.menu.rounds_in_session_y", "Liczba rund")
 
 
 func _start(humans: int, bots: int, diff: int, win_mode: int,
@@ -345,101 +284,14 @@ func _on_quit_pressed() -> void:
 func _update_quit_button() -> void:
 	var gm := _gm()
 	if gm and gm.has_method("is_embedded") and gm.is_embedded():
-		_quit_btn.text = BbI18n.t("bb.menu.btn_back_to_host", "✕ Powrot do menu glownego")
+		_quit_btn.text = BbI18n.t("bb.menu.btn_back_to_host", "✕ Powrót")
 	else:
-		_quit_btn.text = BbI18n.t("bb.menu.btn_quit", "✕ Wyjscie")
+		_quit_btn.text = BbI18n.t("bb.menu.btn_quit", "✕ Wyjście")
 
 
 # ---------------------------------------------------------------------------
 # Instrukcja
 # ---------------------------------------------------------------------------
-
-func _build_help_overlay() -> void:
-	_help_overlay = ColorRect.new()
-	_help_overlay.color = Color(0, 0, 0, 0.75)
-	_help_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_help_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	_help_overlay.visible = false
-	add_child(_help_overlay)
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(640, 500)
-	panel.offset_left   = -320
-	panel.offset_top    = -250
-	panel.offset_right  =  320
-	panel.offset_bottom =  250
-	_help_overlay.add_child(panel)
-	var margin := MarginContainer.new()
-	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 16)
-	panel.add_child(margin)
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	margin.add_child(vbox)
-	var title := Label.new()
-	title.text = BbI18n.t("bb.help.title", "\u2665  Jak grać w BitBomber?")
-	title.add_theme_font_size_override("font_size", 22)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
-	vbox.add_child(HSeparator.new())
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(scroll)
-	var content := RichTextLabel.new()
-	content.bbcode_enabled = true
-	content.fit_content = true
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_font_size_override("normal_font_size", 15)
-	content.text = BbI18n.t("bb.help.body", """[b]Cel gry[/b]
-Wyeliminuj przeciwników bombami! Mecz wygrywa ten, kto zdobędzie najwięcej wygranych rund.
-
-[b]Tryby gry[/b]
-  [b]💣 Ostatni żywy[/b]   rundę wygrywa ostatni gracz na planszy
-  [b]🎯 Zabójstwa[/b]   zabici wracają po 2 s; rundę wygrywa pierwszy z 5 zabójstwami (po czasie lider, przy remisie dogrywka — następne zabójstwo wygrywa)
-
-[b]Sterowanie — Gracz 1[/b]
-  [b]WASD[/b]   ruch
-  [b]Spacja[/b]   połóż bombę
-
-[b]Sterowanie — Gracz 2[/b]
-  ↑ ↓ ← →   ruch
-  [b]Enter / Num0[/b]   połóż bombę
-
-[b]Bomba[/b]
-Wybucha po 2 sekundach — im grubsza żółta obwódka, tym bliżej wybuchu. Ogień płonie pół sekundy i odpala inne bomby w zasięgu.
-
-[b]Power-upy[/b]
-Wypadają ze skrzynek, a po 45 s pojawiają się same na planszy.
-  💣 +1 bomba   🔥 +1 zasięg   ⚡ szybkość   ♥ życie
-  🦶 kopanie — wejdź w bombę, a pojedzie do przeszkody
-  🛡 tarcza — wytrzymuje jedno trafienie
-  ⭐ gwiazdka — 8 s nietykalności
-  ❓ pytanie-bonus — odpowiadasz w trakcie gry klawiszami 1–4 (Gracz 2: Num 1–4): dobrze = tarcza, gwiazdka albo +2 zasięgu, źle = 5 s spowolnienia
-
-[b]Nagła śmierć[/b]
-W trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone pola to miejsca następnych.
-
-[b]Last Chance[/b]
-W trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.
-
-[b]Quiz odrodzenia[/b]
-W trybie Zabójstw po śmierci pojawia się pytanie (odpowiedzi klawiszami ruchu: W/S/A/D, Gracz 2 strzałkami). Dobra odpowiedź = powrót od razu z tarczą, zła = odrodzenie za 3 s.
-
-[b]Tryby wygranej[/b]
-  [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund
-  [b]Najwięcej w Y[/b]   gra się Y rund, wygrywa ten z największą liczbą zwycięstw
-
-[b]Trudność bota[/b]
-  [b]Łatwy[/b]   bot reaguje wolno, proste pytania
-  [b]Średni[/b]   wyważony balans
-  [b]Trudny[/b]   bot agresywny, trudniejsze pytania""")
-	scroll.add_child(content)
-	vbox.add_child(HSeparator.new())
-	var btn_close := Button.new()
-	btn_close.text = BbI18n.t("bb.help.btn_close", "Zamknij  [ESC]")
-	btn_close.pressed.connect(_hide_help)
-	vbox.add_child(btn_close)
-
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and _help_overlay and _help_overlay.visible:
