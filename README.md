@@ -26,17 +26,23 @@ Mechanika, liczby i układy map wzorowane są na **Bomb It 7** (grafika i dźwi�
 
 ## 🧠 Architektura AI
 
-Bot korzysta z autorskiego systemu FSM (`BombItAI`) z pięcioma stanami:
+Bot (`scripts/bot_ai.gd`) to maszyna stanów jak `AIEngine` z Bomb It 7: co `answer_time` sekund sprawdza stany
+w kolejności z profilu (każdy z szansą `chance`), pierwszy pasujący wygrywa, a gdy żaden — stan domyślny (spacer).
+Profile trudności dla obu trybów są w `resources/ai/bot_profiles.json` (liczby z `GameAI` Bomb It: czas reakcji,
+zasięg widzenia, szybkość, szanse stanów, unik / bomba w biegu na każdym kroku) — zmiana balansu botów = edycja JSON.
 
 | Stan | Opis |
 |------|------|
-| `IDLE` | Bot czeka lub wykonuje losowy bezpieczny krok |
-| `ESCAPE` | Ucieczka przed eksplozją (BFS do bezpiecznej kratki) |
-| `ATTACK` | Atak na przeciwnika (A* + symulacja zasięgu bomby) |
-| `BOX` | Niszczenie skrzynek w pobliżu |
+| `ESCAPE` | Ucieczka: BFS tylko przez pola, które bot zdąży minąć przed ogniem (mapa zagrożenia z czasem do wybuchu i reakcją łańcuchową) |
+| `ATTACK` | Dojście na pozycję, z której bomba trafi przeciwnika — tylko jeśli da się potem uciec na czas |
+| `BOX` | Niszczenie najbliższej skrzynki w zasięgu widzenia |
 | `GET_ITEM` | Zbieranie power-upów |
+| `FREE` | Spacer na losowe bezpieczne pole (stan domyślny) |
+| `IDLE` | Krótki postój (przerywany, gdy pole robi się groźne) |
 
-AI używa **Godot `AStarGrid2D`** do pathfindingu oraz **BFS** do wykrywania bezpiecznych cel. Każda decyzja bota uwzględnia aktualną `danger_map` obliczaną na podstawie aktywnych bomb i eksplozji.
+Trasy: **`AStarGrid2D`** (pola w zasięgu bomb drogie). Bot omija spadające bloki nagłej śmierci i tor kopniętych bomb.
+Pomiar: `tests/bench_bots.gd` (4 boty w trybie Zabójstw, zabójstwa / samobójstwa; `BENCH_WHY=1` — stan bota przy
+samobójstwie, `BENCH_TRACE=1` — pełny log decyzji).
 
 ---
 

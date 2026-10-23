@@ -15,8 +15,10 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
 - **⚠ do sprawdzenia przez usera:** muzyka (F3) jest generowana — jeśli nie pasuje, podmienić
   (`tools/gen_music.py` albo własne pliki w `resources/music/`, te same nazwy);
-- **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
+- **do zrobienia:** C1 (bot sam kopie celowo),
   D4 (kampania).
+- **AI botów (2026-10-23):** liczby z Bomb It w `resources/ai/bot_profiles.json` (C3 ✅), osobne profile trybu Zabójstw,
+  ucieczka z czasem do wybuchu, poprawka utykania na rogach; pomiar `tests/bench_bots.gd`.
 
 ## Decyzje usera (2026-10-23)
 
@@ -73,7 +75,7 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 1. ✅ (częściowo: unik przed kopniętą bombą; bot sam nie kopie celowo) **[O] Porównać z AI Bomb It** (`gameEngine/ai/state`): oni mają 13 stanów (m.in. Defence, Evade,
    Follow, Kick, Flag), my 5. Dołożyć przynajmniej Evade (unik przed kopniętą bombą) i Kick.
 2. ✅ **[O] Rozumienie reakcji łańcuchowej** (+ bomby i ogień jako przeszkody w A*; samobójstwa 40% → ~20% zgonów) w mapie zagrożeń (po A2) — inaczej boty zaczną ginąć seriami.
-3. **[S] Profile trudności z danych** — Bomb It koduje je ciągami `010101|010201|010301`; u nas
+3. ✅ **[S] Profile trudności z danych** (`resources/ai/bot_profiles.json`) — Bomb It koduje je ciągami `010101|010201|010301`; u nas
    `StateSettings` w kodzie. Przenieść do jednego pliku konfiguracyjnego.
 
 ## D. Tryby gry (decyzja: dodajemy Kill)
