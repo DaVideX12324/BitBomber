@@ -1,6 +1,8 @@
 extends Node
 
 signal exit_requested
+## Koniec sesji (wynik jak w ModuleHostApi.finish_session) — dla uruchomienia bez hosta.
+signal session_finished(result: Dictionary)
 
 const HOST_SCENE := "res://modules/BitBomber/scenes/game.tscn"
 const STANDALONE_SCENE := "res://scenes/game.tscn"
@@ -28,10 +30,23 @@ func embedded_start(host_api, manifest: Dictionary = {}) -> void:
 	_host_api = host_api
 	_manifest = manifest.duplicate(true)
 	_mark_embedded_mode()
+	var config: Dictionary = host_api.get_session_config() if host_api and host_api.has_method("get_session_config") else {}
+	if not config.is_empty():
+		GameManager.start_from_config(config)
+
+
+## Wywoływane przez grę na koniec sesji.
+func report_session(result: Dictionary) -> void:
+	if _host_api and _host_api.has_method("finish_session"):
+		_host_api.finish_session(result)
+	session_finished.emit(result)
 
 
 func embedded_stop() -> void:
 	get_tree().paused = false
+	var game_manager := get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.host_session = false
 
 
 func _resolve_game_scene() -> String:

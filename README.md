@@ -80,7 +80,7 @@ Dodatkowo:
 ```
 
 Testy: `godot --headless --path <host> --fixed-fps 60 -s res://modules/BitBomber/tests/<test>.gd`
-(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_smoke`).
+(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_host_session`, `test_smoke`).
 
 ---
 
@@ -99,6 +99,30 @@ Samodzielnie ta sama gra działa jako zwykły projekt Godota (`project.godot.off
   `SettingsManager`, `UIScaleManager` i `WindowManager` to usługi / adaptery hosta (`autoloads/compat/`), a BitBomber
   korzysta przez nie z `QuizService`.
 
+### Sesja z hosta
+
+Host może uruchomić BitBombera z gotowymi ustawieniami (`ModuleHost.start_module(manifest, parent, config)`, opis
+w `docs/module_contract.md` hosta). Z niepustym configiem gra startuje od razu, bez menu modułu, a „Menu główne”
+po sesji wraca do hosta. Klucze (wszystkie opcjonalne):
+
+| klucz | wartość | domyślnie |
+|---|---|---|
+| `humans` | 1–2 | 1 |
+| `bots` | 0–3 (razem max 4 graczy, min 2) | 1 |
+| `mode` | `"last_standing"` / `"kill"` | `"last_standing"` |
+| `rounds_to_win` | wygrane rundy do zwycięstwa | 3 |
+| `max_rounds` | zamiast `rounds_to_win`: tyle rund, wygrywa najlepszy | — |
+| `kills_to_win` | zabójstwa wygrywające rundę (Kill) | 5 |
+| `map` | id mapy z `resources/maps` (`""` = losowa) | `""` |
+| `difficulty` | boty 0 łatwe – 2 trudne | 0 |
+| `quiz_id` | zestaw pytań | ostatni |
+| `box_density` | szansa na skrzynkę | 0,7 (Kill 0,5) |
+
+Na koniec każdej sesji (także zaczętej z menu modułu) `module_root.report_session()` oddaje hostowi wynik
+(`host_api.finish_session`): `completed`, `mode`, `rounds_played`, `winner` (`id`, `name`, `is_bot`; `null` przy remisie),
+`players` (per gracz: `round_wins`, `correct`, `wrong`), `answers` (suma odpowiedzi w quizach), `duration_s` i `summary`
+(np. „Gracz 1 wygrał · rundy: 4 · quiz 3/5”), który menu hosta pokazuje jako „Ostatnio: …”.
+
 ---
 
 ## 🛠️ Wymagania
@@ -114,8 +138,8 @@ Samodzielnie ta sama gra działa jako zwykły projekt Godota (`project.godot.off
 - [x] Power-up: tarcza (oraz kopanie i gwiazdka)
 - [x] Tryb Kill, nagła śmierć, grafika i dźwięki
 - [ ] Obsługa pytań dostarczanych przez hosta (tryb embedded)
-- [ ] Wyniki i statystyki sesji
-- [ ] Konfiguracja sesji przez hosta i wynik na koniec (dawne `BitBomberModule.start_session(config)` z liczbą graczy, botów, rund i trudnością oraz sygnał `session_finished(result)` z `winner_id` i wygranymi rundami — wycofane przy przejściu na `module_root.gd`, maj 2026)
+- [x] Wyniki i statystyki sesji do hosta
+- [x] Konfiguracja sesji przez hosta (patrz „Sesja z hosta”)
 
 ---
 

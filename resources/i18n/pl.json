@@ -115,5 +115,8 @@
   "bb.hud.kills": "🎯:{kills}/{goal}",
   "bb.hud.overtime": "⏱ Dogrywka — następne zabójstwo wygrywa!",
   "bb.hud.bot_title": "Bot {n}",
-  "bb.death.game_over_bot_won_subtitle": "Lepiej następnym razem."
+  "bb.death.game_over_bot_won_subtitle": "Lepiej następnym razem.",
+  "bb.result.summary_win": "{name} wygrał · rundy: {rounds}",
+  "bb.result.summary_draw": "Remis · rundy: {rounds}",
+  "bb.result.summary_quiz": " · quiz {correct}/{total}"
 }

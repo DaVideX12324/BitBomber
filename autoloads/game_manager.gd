@@ -54,6 +54,8 @@ var game_node: Node = null
 
 ## Tryb embedded: null = standalone, Node = host modułu
 var host_module: Node = null
+## Sesję ustawił host (session_config) — po niej wyjście do hosta zamiast menu BitBombera.
+var host_session: bool = false
 
 
 func is_embedded() -> bool:
@@ -105,7 +107,68 @@ func start_game(human_players: int = 1, bots: int = 1) -> void:
 		get_tree().change_scene_to_file(BBRuntime.path("scenes/maps/arena.tscn"))
 
 
+## Ustawienia sesji z hosta (ModuleHostApi.session_config) i od razu start gry. Klucze: README, „Sesja z hosta”.
+func start_from_config(config: Dictionary) -> void:
+	var humans := clampi(int(config.get("humans", 1)), 1, 2)
+	var bots := clampi(int(config.get("bots", 1)), 0, 4 - humans)
+	if humans + bots < 2:
+		bots = 1
+	game_mode = GameMode.KILL if str(config.get("mode", "")) == "kill" else GameMode.LAST_STANDING
+	box_density = float(config.get("box_density", 0.5 if game_mode == GameMode.KILL else 0.7))
+	kills_to_win = maxi(int(config.get("kills_to_win", kills_to_win)), 1)
+	bot_difficulty = clampi(int(config.get("difficulty", bot_difficulty)), 0, 2)
+	selected_map = str(config.get("map", ""))
+	selected_quiz_id = str(config.get("quiz_id", selected_quiz_id))
+	if config.has("max_rounds"):
+		win_condition = WinCondition.MOST_WINS_IN_Y
+		max_rounds = clampi(int(config["max_rounds"]), 1, 20)
+	else:
+		win_condition = WinCondition.FIRST_TO_X
+		rounds_to_win = clampi(int(config.get("rounds_to_win", rounds_to_win)), 1, 20)
+	host_session = true
+	start_game(humans, bots)
+
+
+## Wynik sesji dla hosta (ModuleHostApi.finish_session); winner_id -1 = remis.
+func build_session_result(winner_id: int) -> Dictionary:
+	var players: Array = []
+	var correct := 0
+	var wrong := 0
+	for pid in range(1, total_players() + 1):
+		var a: Dictionary = RoundManager.get_answers(pid)
+		correct += int(a["correct"])
+		wrong += int(a["wrong"])
+		players.append({
+			"id": pid, "name": player_name(pid), "is_bot": is_bot_id(pid),
+			"round_wins": RoundManager.get_wins(pid), "correct": a["correct"], "wrong": a["wrong"],
+		})
+	var rounds := RoundManager.current_round
+	var summary: String
+	if winner_id > 0:
+		summary = BbI18n.tf("bb.result.summary_win", {"name": player_name(winner_id), "rounds": rounds},
+				"{name} wygrał · rundy: {rounds}")
+	else:
+		summary = BbI18n.tf("bb.result.summary_draw", {"rounds": rounds}, "Remis · rundy: {rounds}")
+	if correct + wrong > 0:
+		summary += BbI18n.tf("bb.result.summary_quiz", {"correct": correct, "total": correct + wrong},
+				" · quiz {correct}/{total}")
+	return {
+		"completed": true,
+		"mode": "kill" if is_kill_mode() else "last_standing",
+		"rounds_played": rounds,
+		"winner": {"id": winner_id, "name": player_name(winner_id), "is_bot": is_bot_id(winner_id)} if winner_id > 0 else null,
+		"players": players,
+		"answers": {"correct": correct, "wrong": wrong},
+		"duration_s": snappedf(RoundManager.session_duration(), 0.1),
+		"summary": summary,
+	}
+
+
 func go_to_menu() -> void:
+	if host_session:
+		host_session = false
+		exit_game()
+		return
 	change_state(GameState.MENU)
 	if game_node:
 		game_node.load_menu()

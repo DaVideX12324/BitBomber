@@ -27,6 +27,9 @@ var sudden_death: bool = false
 var kills: Dictionary = {}
 ## Tryb KILL po czasie przy remisie: następne zabójstwo kończy rundę
 var overtime: bool = false
+## Odpowiedzi w quizach w tej sesji: player_id → {correct, wrong}
+var answers: Dictionary = {}
+var _session_start_ms: int = 0
 
 
 func _process(delta: float) -> void:
@@ -67,8 +70,15 @@ func reset_session() -> void:
 	sudden_death = false
 	overtime = false
 	kills.clear()
-	_last_chance_queue.clear()  # ← dodaj
+	answers.clear()
+	_session_start_ms = Time.get_ticks_msec()
+	_last_chance_queue.clear()
 	_last_chance_player_id = -1
+
+
+## Sekundy od początku sesji.
+func session_duration() -> float:
+	return (Time.get_ticks_msec() - _session_start_ms) / 1000.0
 
 # ---------------------------------------------------------------------------
 # Rundy
@@ -198,6 +208,18 @@ func resolve_last_chance(respawned: bool) -> void:
 
 func get_wins(player_id: int) -> int:
 	return round_wins.get(player_id, 0)
+
+
+func record_answer(player_id: int, correct: bool) -> void:
+	if player_id <= 0:
+		return
+	var a: Dictionary = answers.get(player_id, {"correct": 0, "wrong": 0})
+	a["correct" if correct else "wrong"] += 1
+	answers[player_id] = a
+
+
+func get_answers(player_id: int) -> Dictionary:
+	return answers.get(player_id, {"correct": 0, "wrong": 0})
 
 
 func get_last_chance_player() -> int:

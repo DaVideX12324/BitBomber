@@ -29,6 +29,7 @@ func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
 	RoundManager.sudden_death_started.connect(_on_sudden_death)
 	RoundManager.round_ended.connect(_on_round_ended)
+	RoundManager.session_ended.connect(_on_session_ended)
 	_load_menu()
 
 
@@ -218,6 +219,12 @@ func _on_player_killed(victim_id: int, killer_id: int) -> void:
 func _on_round_ended(winner_id: int) -> void:
 	if winner_id > 0:
 		BbSfx.play("round_win", -3.0)
+
+
+func _on_session_ended(winner_id: int) -> void:
+	var module := GameManager.host_module
+	if module and module.has_method("report_session"):
+		module.report_session(GameManager.build_session_result(winner_id))
 
 
 func _on_sudden_death() -> void:

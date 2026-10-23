@@ -115,5 +115,8 @@
   "bb.hud.kills": "🎯:{kills}/{goal}",
   "bb.hud.overtime": "⏱ Overtime — next kill wins!",
   "bb.hud.bot_title": "Bot {n}",
-  "bb.death.game_over_bot_won_subtitle": "Better luck next time."
+  "bb.death.game_over_bot_won_subtitle": "Better luck next time.",
+  "bb.result.summary_win": "{name} won · rounds: {rounds}",
+  "bb.result.summary_draw": "Draw · rounds: {rounds}",
+  "bb.result.summary_quiz": " · quiz {correct}/{total}"
 }

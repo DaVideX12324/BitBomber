@@ -585,12 +585,14 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 	if answer_index < highlight_btns.size():
 		highlight_btns[answer_index].add_theme_color_override("font_color",
 			Color(0.3, 1.0, 0.4) if is_correct else Color(1.0, 0.3, 0.3))
+	RoundManager.record_answer(player_id, is_correct)
 	if player_id == 1: _answered_p1 = true; _correct_p1 = is_correct
 	else:              _answered_p2 = true; _correct_p2 = is_correct
 	_check_versus_done()
 
 func _finish_complex(correct: bool) -> void:
 	_timer_node.stop()
+	RoundManager.record_answer(_answering_player(), correct)
 	_show_result_label(correct)
 	await get_tree().create_timer(2.0).timeout
 	_locked = false
@@ -688,8 +690,17 @@ func _resolve_versus() -> void:
 	else:              _emit_result(2)
 
 
+## Kto odpowiada w trybach jednoosobowych (pytania złożone, koniec czasu).
+func _answering_player() -> int:
+	match _mode:
+		RivalMode.DUEL_P1: return 1
+		RivalMode.DUEL_P2: return 2
+	return current_dead_player
+
+
 func _on_timer_timeout() -> void:
 	_dbg("Czas minął!")
+	RoundManager.record_answer(_answering_player(), false)
 	match _mode:
 		RivalMode.VERSUS:  _emit_result(2 if current_dead_player == 1 else 1)
 		RivalMode.DUEL_P1: _emit_result(2)

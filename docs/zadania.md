@@ -13,8 +13,7 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ## Stan po nocy 2026-10-23
 
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
-- **czeka na decyzję:** D3 (quiz w mechanice), G1–G2 (API hosta na
-  konfigurację sesji i wynik — trzeba dopisać w hoście), muzyka (F3);
+- **czeka na decyzję:** D3 (quiz w mechanice), muzyka (F3);
 - **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
   D4 (kampania), F5 (UI w .tscn).
 
@@ -114,9 +113,9 @@ kto ma ich najwięcej. W obu trybach po 45 s co 15 s pojawiają się na mapie no
 
 ## G. Integracja z Artefaktem Wiedzy
 
-1. **[O] Konfiguracja sesji z hosta + wynik** (roadmapa z README): `embedded_start(config)` z liczbą
-   graczy / botów / rund / trybem, sygnał `session_finished(result)`.
-2. **[O] Statystyki sesji** do hosta (poprawne / błędne odpowiedzi, wygrane).
+1. ✅ **[O] Konfiguracja sesji z hosta + wynik** — `ModuleHostApi.session_config` / `finish_session`,
+   historia w `SessionResults` hosta; klucze w README („Sesja z hosta”).
+2. ✅ **[O] Statystyki sesji** do hosta (odpowiedzi per gracz, wygrane rundy, czas, `summary` w menu hosta).
 3. ✅ **[S] Test headless** — start areny, wybuch, łańcuch, koniec rundy (smoke test jak w quiz_rpg).
 4. ✅ **[S] README** — zaktualizować po zmianach (roadmapa, nowe tryby).
 
