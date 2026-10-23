@@ -22,22 +22,20 @@ const PLAYER_COLORS: Array[Color] = [
 	Color("#a855f7"),
 ]
 
-# Bazy z hud.tscn
-const BASE_FACE_SIZE   := Vector2(40.0, 40.0)
-const BASE_FONT_TITLE  := 22.0
-const BASE_FONT_ROUND  := 25.0
-const BASE_FONT_HEARTS := 20.0
-const BASE_FONT_STATS  := 20.0
-const BASE_FONT_TOAST  := 26.0
-const BASE_CARDS_WIDTH := 270.0
-const BASE_CARDS_MARGIN := 16.0  # odstęp kart od lewej krawędzi
+## Pasek czasu: poniżej tylu sekund zegar robi się pomarańczowy
+const TIMER_WARN_SECONDS : float = 30.0
+const COLOR_TIMER        := Color(1, 0.84, 0.25)
+const COLOR_TIMER_WARN   := Color(1, 0.55, 0.15)
+const COLOR_TIMER_DANGER := Color(1, 0.3, 0.3)
+## Gwiazdki wygranych rund pokazujemy do tylu, dalej „★ 3/10”
+const MAX_STARS : int = 7
 
-const BASE_CARDS_HALF_H  := 413.0   # offset_top = -413, offset_bottom = 413
-const BASE_SEP_CARDS     := 6       # separation między kartami
-const BASE_SEP_VBOX      := 6       # separation wewnątrz VBox karty
-const BASE_SEP_HEADER    := 6       # separation w HBoxContainer Header
-const BASE_TOAST_HALF_W  := 240.0   # offset_left = -240, offset_right = 240
-const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
+# Bazy z hud.tscn
+const BASE_CARDS_WIDTH  := 300.0
+const BASE_CARDS_MARGIN := 16.0  # odstęp kart od lewej krawędzi
+const BASE_CARDS_HALF_H := 413.0 # offset_top = -413, offset_bottom = 413
+const BASE_TOAST_HALF_W := 240.0 # offset_left = -240, offset_right = 240
+const BASE_TOAST_HALF_H := 40.0  # offset_top  =  -40, offset_bottom =  40
 
 @onready var _cards_nodes: Array[Control] = [
 	$Root/Cards/Card1,
@@ -46,12 +44,16 @@ const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
 	$Root/Cards/Card4,
 ]
 @onready var _cards_box   : VBoxContainer  = $Root/Cards
-@onready var _round_label : Label          = $Root/Cards/RoundPanel/RoundLabel
-@onready var _toast       : Label          = $Root/ToastLabel
 @onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
+@onready var _round_label : Label          = $Root/Cards/RoundPanel/VBox/RoundLabel
+@onready var _timer_label : Label          = $Root/Cards/RoundPanel/VBox/TimerLabel
+@onready var _goal_label  : Label          = $Root/Cards/RoundPanel/VBox/GoalLabel
+@onready var _toast       : Label          = $Root/ToastLabel
 ## Panele pytań w trakcie gry (tylko ludzie: gracz 1 i 2)
 @onready var _quiz_panels : Array[Control] = [$Root/QuizPanels/QuizPanelP1, $Root/QuizPanels/QuizPanelP2]
 
+## Rozmiary z .tscn (minimalny rozmiar, czcionka) zapamiętane przy starcie — UIScaleManager je przelicza.
+var _base_sizes : Dictionary = {}
 
 var _lives : Dictionary = {}   # pid → życia (do odświeżania karty)
 var _overtime_shown : bool = false
@@ -65,11 +67,13 @@ func _ready() -> void:
 	if rm:
 		rm.kills_changed.connect(_on_kills_changed)
 		rm.round_started.connect(_on_round_started)
+		rm.round_ended.connect(func(_w: int) -> void: _refresh_cards())
 	for card: Control in _cards_nodes:
 		card.visible = false
 	_round_panel.visible = false
 	visible = false
-	$"Root/Cards".alignment = BoxContainer.ALIGNMENT_CENTER
+	_collect_base_sizes(_cards_box)
+	_base_sizes[_toast] = [_toast.custom_minimum_size, _toast.get_theme_font_size("font_size")]
 	var sm := get_node_or_null("/root/UIScaleManager")
 	if sm and sm.has_signal("scale_changed"):
 		sm.scale_changed.connect(_on_scale_changed)
@@ -96,41 +100,32 @@ func _sz2(w: float, h: float) -> Vector2:
 
 
 func _on_scale_changed(_s: float) -> void:
-	# Cards VBoxContainer — pionowe wycentrowanie i odstęp między kartami
 	var ch := _sz(BASE_CARDS_HALF_H)
 	_cards_box.offset_top    = -ch
 	_cards_box.offset_bottom =  ch
-	_cards_box.add_theme_constant_override("separation", _px(BASE_SEP_CARDS))
-	_cards_box.offset_left  = _sz(BASE_CARDS_MARGIN)
-	_cards_box.offset_right = _cards_box.offset_left + _sz(BASE_CARDS_WIDTH)
-	
-	# RoundLabel
-	_round_label.add_theme_font_size_override("font_size", _px(BASE_FONT_ROUND))
-
-	# ToastLabel
+	_cards_box.offset_left   = _sz(BASE_CARDS_MARGIN)
+	_cards_box.offset_right  = _cards_box.offset_left + _sz(BASE_CARDS_WIDTH)
 	var tw := _sz(BASE_TOAST_HALF_W)
 	var th := _sz(BASE_TOAST_HALF_H)
 	_toast.offset_left   = -tw
 	_toast.offset_top    = -th
 	_toast.offset_right  =  tw
 	_toast.offset_bottom =  th
-	_toast.add_theme_font_size_override("font_size", _px(BASE_FONT_TOAST))
+	for c: Control in _base_sizes:
+		var base: Array = _base_sizes[c]
+		c.custom_minimum_size = _sz2(base[0].x, base[0].y)
+		c.add_theme_font_size_override(_font_key(c), _px(base[1]))
 
-	# Karty gracza
-	var fs_btn := _px(BASE_FONT_TITLE)
-	for card: Control in _cards_nodes:
-		var vbox := card.get_node("VBox") as VBoxContainer
-		vbox.add_theme_constant_override("separation", _px(BASE_SEP_VBOX))
-		var header := vbox.get_node("Header") as HBoxContainer
-		header.add_theme_constant_override("separation", _px(BASE_SEP_HEADER))
-		(vbox.get_node("Header/Title") as Label).add_theme_font_size_override(
-				"font_size", fs_btn)
-		(vbox.get_node("HeartsLabel") as Label).add_theme_font_size_override(
-				"font_size", _px(BASE_FONT_HEARTS))
-		(vbox.get_node("StatsLabel") as RichTextLabel).add_theme_font_size_override(
-				"normal_font_size", _px(BASE_FONT_STATS))
-		(vbox.get_node("Header/Face") as TextureRect).custom_minimum_size = \
-				_sz2(BASE_FACE_SIZE.x, BASE_FACE_SIZE.y)
+
+func _collect_base_sizes(n: Node) -> void:
+	for c in n.get_children():
+		if c is Control:
+			_base_sizes[c] = [c.custom_minimum_size, c.get_theme_font_size(_font_key(c))]
+		_collect_base_sizes(c)
+
+
+func _font_key(c: Control) -> String:
+	return "normal_font_size" if c is RichTextLabel else "font_size"
 
 
 # ---------------------------------------------------------------------------
@@ -139,19 +134,30 @@ func _on_scale_changed(_s: float) -> void:
 
 func setup_players(player_list: Array) -> void:
 	_round_panel.visible = true
+	_lives.clear()
 	for card: Control in _cards_nodes:
 		card.visible = false
 	for entry: Dictionary in player_list:
 		var pid: int = int(entry["id"])
-		var idx: int = pid - 1
-		if idx < 0 or idx >= _cards_nodes.size():
+		var card: Control = _get_card(pid)
+		if card == null:
 			continue
-		var card: Control = _cards_nodes[idx]
 		card.visible = true
 		var color: Color = player_color(pid)
-		(card.get_node("VBox/Header/Face") as TextureRect).texture = _face(pid)
-		(card.get_node("VBox/Header/Title") as Label).add_theme_color_override("font_color", color.lightened(0.35))
-		(card.get_node("VBox/Header/Title") as Label).text = GameManager.player_name(pid)
+		(card.get_node("HBox/Stripe") as ColorRect).color = color
+		var face_bg := StyleBoxFlat.new()
+		face_bg.bg_color = color.darkened(0.45)
+		face_bg.border_color = color.lightened(0.2)
+		face_bg.set_border_width_all(3)
+		face_bg.set_corner_radius_all(40)
+		(card.get_node("HBox/FaceBg") as PanelContainer).add_theme_stylebox_override("panel", face_bg)
+		(card.get_node("HBox/FaceBg/Face") as TextureRect).texture = _face(pid)
+		var title := card.get_node("HBox/Info/Header/Title") as Label
+		title.add_theme_color_override("font_color", color.lightened(0.4))
+		title.text = GameManager.player_name(pid)
+		_lives[pid] = PlayerScript.DEFAULT_LIVES
+	_goal_label.text = _goal_text()
+	_refresh_cards()
 
 
 ## Panel pytania gracza (null dla botów).
@@ -168,18 +174,54 @@ func update_lives(pid: int, lives_left: int) -> void:
 	_render_hearts(pid)
 
 
-## Życia, a w trybie KILL też zabójstwa „🎯:2/5”.
-func _render_hearts(pid: int) -> void:
+## Serca (💀 po śmierci, w KILL odliczanie do odrodzenia) i zabójstwa „🎯 2/5”; wyszarzenie martwego.
+func _render_hearts(pid: int, respawn_left: float = 0.0) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
 	var lives: int = _lives.get(pid, 0)
 	var text := "❤️".repeat(lives) if lives > 0 else "💀"
-	var gm := get_node_or_null("/root/GameManager")
-	var rm := get_node_or_null("/root/RoundManager")
-	if gm and rm and gm.is_kill_mode():
-		text += "   " + BbI18n.tf("bb.hud.kills", {"kills": rm.get_kills(pid), "goal": gm.kills_to_win}, "🎯 {kills}/{goal}")
-	(card.get_node("VBox/HeartsLabel") as Label).text = text
+	if lives <= 0 and respawn_left > 0.0:
+		text = BbI18n.tf("bb.hud.respawn_in", {"s": ceili(respawn_left)}, "💀 ↺ {s} s")
+	if GameManager.is_kill_mode():
+		text += "   " + BbI18n.tf("bb.hud.kills", {"kills": RoundManager.get_kills(pid), "goal": GameManager.kills_to_win}, "🎯 {kills}/{goal}")
+	(card.get_node("HBox/Info/HeartsLabel") as Label).text = text
+	card.modulate = Color(1, 1, 1, 0.55) if lives <= 0 else Color.WHITE
+
+
+## Gwiazdki wygranych rund i korona lidera sesji na wszystkich kartach.
+func _refresh_cards() -> void:
+	var best := 0
+	var leaders := 0
+	for pid in _lives:
+		var w := RoundManager.get_wins(pid)
+		if w > best:
+			best = w
+			leaders = 1
+		elif w == best and w > 0:
+			leaders += 1
+	for pid in _lives:
+		var card := _get_card(pid)
+		var wins := RoundManager.get_wins(pid)
+		(card.get_node("HBox/Info/WinsLabel") as Label).text = _stars(wins)
+		(card.get_node("HBox/Info/Header/Crown") as Label).visible = leaders == 1 and wins == best and best > 0
+		_render_hearts(pid)
+
+
+func _stars(wins: int) -> String:
+	if GameManager.win_condition == GameManager.WinCondition.FIRST_TO_X and GameManager.rounds_to_win <= MAX_STARS:
+		return "★".repeat(wins) + "☆".repeat(maxi(GameManager.rounds_to_win - wins, 0))
+	if GameManager.win_condition == GameManager.WinCondition.FIRST_TO_X:
+		return "★ %d/%d" % [wins, GameManager.rounds_to_win]
+	return "★ %d" % wins
+
+
+## Opis celu meczu pod zegarem, np. „💣 Ostatni żywy · do 3 wygranych”.
+func _goal_text() -> String:
+	var first := GameManager.win_condition == GameManager.WinCondition.FIRST_TO_X
+	var n: int = GameManager.rounds_to_win if first else GameManager.max_rounds
+	var key := "bb.hud.goal_%s_%s" % ["kill" if GameManager.is_kill_mode() else "last", "first" if first else "most"]
+	return BbI18n.tf(key, {"n": n, "k": GameManager.kills_to_win}, key)
 
 
 func _on_kills_changed(_pid: int, _kills: int) -> void:
@@ -189,8 +231,7 @@ func _on_kills_changed(_pid: int, _kills: int) -> void:
 
 func _on_round_started(_n: int) -> void:
 	_overtime_shown = false
-	for pid in _lives:
-		_render_hearts(pid)
+	_refresh_cards()
 
 
 func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float,
@@ -199,10 +240,12 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float,
 	if not card:
 		return
 	var speed_level := roundi((speed_mult - 1.0) / PlayerScript.SPEED_STEP) + 1
-	var line := "%s %d   %s %d   %s %d" % [_icon("bomb_up"), bombs, _icon("range_up"), bomb_range, _icon("speed_up"), speed_level]
-	var extras := (_icon("kick") if kick else "") + (" " + _icon("shield") if shield else "")
-	(card.get_node("VBox/StatsLabel") as RichTextLabel).text = \
-		"[center]%s%s[/center]" % [line, ("\n" + extras) if extras != "" else ""]
+	var line := "%s[b]%d[/b] %s[b]%d[/b] %s[b]%d[/b]" % [_icon("bomb_up"), bombs, _icon("range_up"), bomb_range, _icon("speed_up"), speed_level]
+	if kick:
+		line += "  " + _icon("kick")
+	if shield:
+		line += " " + _icon("shield")
+	(card.get_node("HBox/Info/StatsLabel") as RichTextLabel).text = line
 
 
 ## Twarz gracza: pierwsza klatka arkusza postaci (stoi, przodem); bez pliku — null.
@@ -220,30 +263,40 @@ func _face(pid: int) -> Texture2D:
 func _icon(kind: String) -> String:
 	var path := BBRuntime.path("resources/sprites/objects/powerup_%s.png" % kind)
 	if ResourceLoader.exists(path):
-		var px := _px(BASE_FONT_STATS + 6)
+		var px := _px(21)
 		return "[img=%dx%d]%s[/img]" % [px, px, path]
 	return ICON_FALLBACK.get(kind, "?")
 
 
-## Panel rundy: numer + czas do nagłej śmierci (wcześniej zawsze „Runda 1” — nikt nie wołał update_round).
+## Panel rundy: numer, zegar do nagłej śmierci (pomarańczowy pod koniec, czerwony i pulsujący w nagłej śmierci)
+## i odliczanie odrodzenia na kartach w trybie KILL.
 func _process(_delta: float) -> void:
 	if not visible or not _round_panel.visible:
 		return
-	var rm := get_node_or_null("/root/RoundManager")
-	if rm == null:
-		return
-	var round_num : int = rm.current_round
-	if rm.overtime:
-		_round_label.text = BbI18n.tf("bb.hud.round_overtime", {"round": round_num}, "Runda {round} · dogrywka")
+	_round_label.text = BbI18n.tf("bb.hud.round", {"round": RoundManager.current_round}, "Runda {round}")
+	var color := COLOR_TIMER
+	if RoundManager.overtime:
+		_timer_label.text = BbI18n.t("bb.hud.overtime_short", "⏱ Dogrywka")
+		color = COLOR_TIMER_WARN
 		if not _overtime_shown:
 			_overtime_shown = true
 			show_message(BbI18n.t("bb.hud.overtime", "⏱ Dogrywka — następne zabójstwo wygrywa!"), 3.0)
-	elif rm.sudden_death:
-		_round_label.text = BbI18n.tf("bb.hud.round_sudden", {"round": round_num}, "Runda {round} · ☠")
+	elif RoundManager.sudden_death:
+		_timer_label.text = BbI18n.t("bb.hud.sudden_short", "☠ Nagła śmierć")
+		color = COLOR_TIMER_DANGER
+		_timer_label.modulate.a = 0.65 + 0.35 * sin(Time.get_ticks_msec() / 150.0)
 	else:
-		var left := ceili(rm.time_left())
-		_round_label.text = BbI18n.tf("bb.hud.round_timer",
-				{"round": round_num, "time": "%d:%02d" % [left / 60, left % 60]}, "Runda {round} · {time}")
+		var left := ceili(RoundManager.time_left())
+		_timer_label.text = "%d:%02d" % [left / 60, left % 60]
+		if left <= TIMER_WARN_SECONDS:
+			color = COLOR_TIMER_WARN
+		_timer_label.modulate.a = 1.0
+	_timer_label.add_theme_color_override("font_color", color)
+	_timer_label.add_theme_font_size_override("font_size", _px(26 if RoundManager.sudden_death or RoundManager.overtime else 40))
+	if GameManager.is_kill_mode():
+		for p in get_tree().get_nodes_in_group("players"):
+			if p.is_respawning():
+				_render_hearts(p.player_id, p.respawn_time_left())
 
 
 func show_message(msg: String, duration: float = 2.0) -> void:

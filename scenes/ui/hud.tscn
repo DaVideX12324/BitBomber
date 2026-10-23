@@ -26,7 +26,7 @@ anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 16.0
 offset_top = -413.0
-offset_right = 286.0
+offset_right = 316.0
 offset_bottom = 413.0
 grow_vertical = 2
 theme_override_constants/separation = 8
@@ -36,177 +36,288 @@ alignment = 1
 layout_mode = 2
 theme_type_variation = &"CardPanel"
 
-[node name="RoundLabel" type="Label" parent="Root/Cards/RoundPanel"]
+[node name="VBox" type="VBoxContainer" parent="Root/Cards/RoundPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="RoundLabel" type="Label" parent="Root/Cards/RoundPanel/VBox"]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
-theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 18
 text = "Runda 1"
 horizontal_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="Root/Cards/RoundPanel/VBox"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
+text = "2:57"
+horizontal_alignment = 1
+
+[node name="GoalLabel" type="Label" parent="Root/Cards/RoundPanel/VBox"]
+modulate = Color(1, 1, 1, 0.8)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "💣 Ostatni żywy · do 3 wygranych"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="Card1" type="PanelContainer" parent="Root/Cards"]
 layout_mode = 2
 theme_type_variation = &"CardPanel"
 
-[node name="VBox" type="VBoxContainer" parent="Root/Cards/Card1"]
+[node name="HBox" type="HBoxContainer" parent="Root/Cards/Card1"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Root/Cards/Card1/VBox"]
+[node name="Stripe" type="ColorRect" parent="Root/Cards/Card1/HBox"]
+custom_minimum_size = Vector2(6, 0)
 layout_mode = 2
-theme_override_constants/separation = 8
+color = Color(0.231, 0.51, 0.965, 1)
 
-[node name="Face" type="TextureRect" parent="Root/Cards/Card1/VBox/Header"]
-custom_minimum_size = Vector2(40, 40)
+[node name="FaceBg" type="PanelContainer" parent="Root/Cards/Card1/HBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Face" type="TextureRect" parent="Root/Cards/Card1/HBox/FaceBg"]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="Root/Cards/Card1/VBox/Header"]
+[node name="Info" type="VBoxContainer" parent="Root/Cards/Card1/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="Header" type="HBoxContainer" parent="Root/Cards/Card1/HBox/Info"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Root/Cards/Card1/HBox/Info/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderLabel"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Gracz 1"
-vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="HeartsLabel" type="Label" parent="Root/Cards/Card1/VBox"]
+[node name="Crown" type="Label" parent="Root/Cards/Card1/HBox/Info/Header"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "❤️   🎯 0/5"
-horizontal_alignment = 1
+text = "👑"
 
-[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card1/VBox"]
+[node name="WinsLabel" type="Label" parent="Root/Cards/Card1/HBox/Info"]
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 17
+text = "★★☆"
+
+[node name="HeartsLabel" type="Label" parent="Root/Cards/Card1/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "❤️   🎯 0/5"
+
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card1/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "[center]1  1  1[/center]"
+text = "1  1  1"
 fit_content = true
 scroll_active = false
-autowrap_mode = 0
 
 [node name="Card2" type="PanelContainer" parent="Root/Cards"]
 layout_mode = 2
 theme_type_variation = &"CardPanel"
 
-[node name="VBox" type="VBoxContainer" parent="Root/Cards/Card2"]
+[node name="HBox" type="HBoxContainer" parent="Root/Cards/Card2"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Root/Cards/Card2/VBox"]
+[node name="Stripe" type="ColorRect" parent="Root/Cards/Card2/HBox"]
+custom_minimum_size = Vector2(6, 0)
 layout_mode = 2
-theme_override_constants/separation = 8
+color = Color(0.231, 0.51, 0.965, 1)
 
-[node name="Face" type="TextureRect" parent="Root/Cards/Card2/VBox/Header"]
-custom_minimum_size = Vector2(40, 40)
+[node name="FaceBg" type="PanelContainer" parent="Root/Cards/Card2/HBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Face" type="TextureRect" parent="Root/Cards/Card2/HBox/FaceBg"]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="Root/Cards/Card2/VBox/Header"]
+[node name="Info" type="VBoxContainer" parent="Root/Cards/Card2/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="Header" type="HBoxContainer" parent="Root/Cards/Card2/HBox/Info"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Root/Cards/Card2/HBox/Info/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderLabel"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Gracz 2"
-vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="HeartsLabel" type="Label" parent="Root/Cards/Card2/VBox"]
+[node name="Crown" type="Label" parent="Root/Cards/Card2/HBox/Info/Header"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "❤️   🎯 0/5"
-horizontal_alignment = 1
+text = "👑"
 
-[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card2/VBox"]
+[node name="WinsLabel" type="Label" parent="Root/Cards/Card2/HBox/Info"]
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 17
+text = "★★☆"
+
+[node name="HeartsLabel" type="Label" parent="Root/Cards/Card2/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "❤️   🎯 0/5"
+
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card2/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "[center]1  1  1[/center]"
+text = "1  1  1"
 fit_content = true
 scroll_active = false
-autowrap_mode = 0
 
 [node name="Card3" type="PanelContainer" parent="Root/Cards"]
 layout_mode = 2
 theme_type_variation = &"CardPanel"
 
-[node name="VBox" type="VBoxContainer" parent="Root/Cards/Card3"]
+[node name="HBox" type="HBoxContainer" parent="Root/Cards/Card3"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Root/Cards/Card3/VBox"]
+[node name="Stripe" type="ColorRect" parent="Root/Cards/Card3/HBox"]
+custom_minimum_size = Vector2(6, 0)
 layout_mode = 2
-theme_override_constants/separation = 8
+color = Color(0.231, 0.51, 0.965, 1)
 
-[node name="Face" type="TextureRect" parent="Root/Cards/Card3/VBox/Header"]
-custom_minimum_size = Vector2(40, 40)
+[node name="FaceBg" type="PanelContainer" parent="Root/Cards/Card3/HBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Face" type="TextureRect" parent="Root/Cards/Card3/HBox/FaceBg"]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="Root/Cards/Card3/VBox/Header"]
+[node name="Info" type="VBoxContainer" parent="Root/Cards/Card3/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="Header" type="HBoxContainer" parent="Root/Cards/Card3/HBox/Info"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Root/Cards/Card3/HBox/Info/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderLabel"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Gracz 3"
-vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="HeartsLabel" type="Label" parent="Root/Cards/Card3/VBox"]
+[node name="Crown" type="Label" parent="Root/Cards/Card3/HBox/Info/Header"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "❤️   🎯 0/5"
-horizontal_alignment = 1
+text = "👑"
 
-[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card3/VBox"]
+[node name="WinsLabel" type="Label" parent="Root/Cards/Card3/HBox/Info"]
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 17
+text = "★★☆"
+
+[node name="HeartsLabel" type="Label" parent="Root/Cards/Card3/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "❤️   🎯 0/5"
+
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card3/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "[center]1  1  1[/center]"
+text = "1  1  1"
 fit_content = true
 scroll_active = false
-autowrap_mode = 0
 
 [node name="Card4" type="PanelContainer" parent="Root/Cards"]
 layout_mode = 2
 theme_type_variation = &"CardPanel"
 
-[node name="VBox" type="VBoxContainer" parent="Root/Cards/Card4"]
+[node name="HBox" type="HBoxContainer" parent="Root/Cards/Card4"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="Root/Cards/Card4/VBox"]
+[node name="Stripe" type="ColorRect" parent="Root/Cards/Card4/HBox"]
+custom_minimum_size = Vector2(6, 0)
 layout_mode = 2
-theme_override_constants/separation = 8
+color = Color(0.231, 0.51, 0.965, 1)
 
-[node name="Face" type="TextureRect" parent="Root/Cards/Card4/VBox/Header"]
-custom_minimum_size = Vector2(40, 40)
+[node name="FaceBg" type="PanelContainer" parent="Root/Cards/Card4/HBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Face" type="TextureRect" parent="Root/Cards/Card4/HBox/FaceBg"]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="Root/Cards/Card4/VBox/Header"]
+[node name="Info" type="VBoxContainer" parent="Root/Cards/Card4/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="Header" type="HBoxContainer" parent="Root/Cards/Card4/HBox/Info"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Root/Cards/Card4/HBox/Info/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderLabel"
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 21
 text = "Gracz 4"
-vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="HeartsLabel" type="Label" parent="Root/Cards/Card4/VBox"]
+[node name="Crown" type="Label" parent="Root/Cards/Card4/HBox/Info/Header"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "❤️   🎯 0/5"
-horizontal_alignment = 1
+text = "👑"
 
-[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card4/VBox"]
+[node name="WinsLabel" type="Label" parent="Root/Cards/Card4/HBox/Info"]
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
+theme_override_colors/font_color = Color(1, 0.84, 0.25, 1)
+theme_override_font_sizes/font_size = 17
+text = "★★☆"
+
+[node name="HeartsLabel" type="Label" parent="Root/Cards/Card4/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "❤️   🎯 0/5"
+
+[node name="StatsLabel" type="RichTextLabel" parent="Root/Cards/Card4/HBox/Info"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "[center]1  1  1[/center]"
+text = "1  1  1"
 fit_content = true
 scroll_active = false
-autowrap_mode = 0
 
 [node name="QuizPanels" type="VBoxContainer" parent="Root"]
 layout_mode = 1

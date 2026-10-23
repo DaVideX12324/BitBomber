@@ -463,6 +463,10 @@ func is_respawning() -> bool:
 	return not is_alive and _respawn_left > 0.0
 
 
+func respawn_time_left() -> float:
+	return _respawn_left
+
+
 func _tick_respawn(delta: float) -> void:
 	_respawn_left -= delta
 	if _respawn_left > 0.0:
