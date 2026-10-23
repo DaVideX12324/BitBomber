@@ -13,6 +13,7 @@ extends Node
 
 const BBRuntime = preload("bb_runtime.gd")
 const BbSfx = preload("bb_sfx.gd")
+const BbMusic = preload("bb_music.gd")
 
 var _player_scene: PackedScene = load(BBRuntime.path("scenes/players/player.tscn"))
 
@@ -73,6 +74,7 @@ func load_arena() -> void:
 	_connect_players_to_hud()
 	RoundManager.start_round()
 	BbSfx.play("round_start", -4.0)
+	BbMusic.play("battle")
 	if not RoundManager.last_chance_resolved.is_connected(_on_last_chance_resolved):
 		RoundManager.last_chance_resolved.connect(_on_last_chance_resolved)
 

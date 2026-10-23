@@ -13,7 +13,9 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ## Stan po nocy 2026-10-23
 
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
-- **czeka na decyzję:** D3 (quiz w mechanice), muzyka (F3);
+- **czeka na decyzję:** D3 (quiz w mechanice);
+- **⚠ do sprawdzenia przez usera:** muzyka (F3) jest generowana — jeśli nie pasuje, podmienić
+  (`tools/gen_music.py` albo własne pliki w `resources/music/`, te same nazwy);
 - **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
   D4 (kampania), F5 (UI w .tscn).
 
@@ -105,7 +107,7 @@ kto ma ich najwięcej. W obu trybach po 45 s co 15 s pojawiają się na mapie no
 1. ✅ **[O] Grafika** (`tools/gen_sprites.py`) — dziś wszystko to ColorRecty. Decyzja: później albo generowana, ale ładna. Potrzebne: postać (4 kierunki × chód + śmierć), bomba, ogień (środek / ramię / koniec),
    ściana, skrzynka, podłoga, przedmioty.
 2. ✅ **[S] Animacja ognia segmentami** (środek, ramię, końcówka) zamiast kwadratów.
-3. ✅ **[S] Dźwięki** (`tools/gen_sounds.py`; muzyki brak) i muzyka — zero audio teraz. Wybuch, kładzenie bomby, podniesienie przedmiotu,
+3. ✅ **[S] Dźwięki** (`tools/gen_sounds.py`) i muzyka (`tools/gen_music.py`: `menu`, `battle`; ⚠ user ma ocenić) — zero audio teraz. Wybuch, kładzenie bomby, podniesienie przedmiotu,
    śmierć, start rundy, muzyka.
 4. ✅ **[S] HUD** (licznik czasu, ikony power-upów w kartach) — licznik czasu rundy (jest w `RoundManager`, nie ma na ekranie), ikony zamiast liczb.
 5. **[O] Sceny UI jako .tscn (WYSIWYG)** — `quiz_overlay`, `death_screen`, `main_menu`, `hud` budują UI

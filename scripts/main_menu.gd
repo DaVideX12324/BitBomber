@@ -73,6 +73,7 @@ var _options_menu: CanvasLayer
 
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 const Arena = preload("arena.gd")
+const BbMusic = preload("bb_music.gd")
 
 func _gm() -> Node:
 	return get_node_or_null("/root/GameManager")
@@ -99,6 +100,7 @@ func _sz2(w: float, h: float) -> Vector2:
 
 
 func _ready() -> void:
+	BbMusic.play("menu")
 	_options_menu = _resolve_options_menu()
 	for i in _players_btns.size():
 		var idx := i

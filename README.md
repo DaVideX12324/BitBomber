@@ -71,16 +71,18 @@ Dodatkowo:
 ├── resources/maps/         # Układy map (JSON: rows '#' stały, 'C' środek, 'b' miejsce na skrzynkę, '.' puste)
 ├── resources/sprites/      # Grafika (generowana): tiles/<motyw>/, players/, objects/
 ├── resources/sounds/       # Efekty dźwiękowe (generowane)
+├── resources/music/        # Muzyka menu i walki (generowana, pętla w pliku WAV)
 ├── tools/
 │   ├── import_bombit_maps.py  # TMX z Bomb It 7 → resources/maps/*.json
 │   ├── gen_sprites.py         # Pillow → resources/sprites/ (zmiany wyglądu tutaj, nie w PNG)
-│   └── gen_sounds.py          # numpy → resources/sounds/*.wav
+│   ├── gen_sounds.py          # numpy → resources/sounds/*.wav
+│   └── gen_music.py           # numpy → resources/music/*.wav (chiptune, nuty w listach na końcu)
 ├── tests/                  # Testy headless (uruchamiane z katalogu hosta, patrz niżej)
 └── docs/zadania.md         # Lista zadań i decyzji
 ```
 
 Testy: `godot --headless --path <host> --fixed-fps 60 -s res://modules/BitBomber/tests/<test>.gd`
-(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_host_session`, `test_smoke`).
+(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_host_session`, `test_music`, `test_smoke`).
 
 ---
 
@@ -136,7 +138,7 @@ Na koniec każdej sesji (także zaczętej z menu modułu) `module_root.report_se
 
 - [x] Więcej aren (28 map)
 - [x] Power-up: tarcza (oraz kopanie i gwiazdka)
-- [x] Tryb Kill, nagła śmierć, grafika i dźwięki
+- [x] Tryb Kill, nagła śmierć, grafika, dźwięki i muzyka
 - [ ] Obsługa pytań dostarczanych przez hosta (tryb embedded)
 - [x] Wyniki i statystyki sesji do hosta
 - [x] Konfiguracja sesji przez hosta (patrz „Sesja z hosta”)
