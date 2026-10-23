@@ -39,7 +39,7 @@ func _answer(fq: Node, pid: int, good: bool) -> void:
 	if not good:
 		idx = 1 if idx == 0 else 0
 	var ev := InputEventAction.new()
-	ev.action = "quiz_p%d_%s" % [pid, ["a", "b", "c", "d"][idx]]
+	ev.action = fq.answer_actions(pid, fq._active[pid]["kind"])[idx]
 	ev.pressed = true
 	root.push_input(ev)
 

@@ -41,14 +41,15 @@ func _on_scale_changed(_s: float) -> void:
 		a.add_theme_font_size_override("font_size", int(sm.call("px", BASE_FONTS["Answer"])))
 
 
-func show_question(title: String, text: String, answers: Array, correct_index: int, border: Color) -> void:
+## keys: nazwy klawiszy kolejnych odpowiedzi („W”, „↑”, „1”…).
+func show_question(title: String, text: String, answers: Array, keys: Array, correct_index: int, border: Color) -> void:
 	_title.text = title
 	_question.text = text
 	_correct_index = correct_index
 	for i in _answers.size():
 		_answers[i].visible = i < answers.size()
 		if i < answers.size():
-			_answers[i].text = "%d) %s" % [i + 1, str(answers[i])]
+			_answers[i].text = "[%s]  %s" % [keys[i] if i < keys.size() else str(i + 1), str(answers[i])]
 			_answers[i].add_theme_color_override("font_color", ANSWER_COLOR)
 	_result.visible = false
 	_time_bar.visible = true

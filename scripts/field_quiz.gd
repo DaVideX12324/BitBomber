@@ -5,8 +5,9 @@ extends Node
 ##    brak odpowiedzi = nic;
 ##  - odrodzenie przez quiz (tryb KILL, ludzie): dobra = powrót od razu z tarczą, zła = 3 s czekania,
 ##    brak odpowiedzi = powrót po czasie pytania bez tarczy.
-## Ludzie odpowiadają klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4) w panelu HUD,
-## boty „odpowiadają” po chwili z szansą zależną od trudności.
+## Ludzie odpowiadają w panelu HUD: pytanie-bonus klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4, bo
+## gracz biega), odrodzenie klawiszami ruchu jak ostatnia szansa (W/S/A/D, strzałki — martwy się nie rusza).
+## Boty „odpowiadają” po chwili z szansą zależną od trudności.
 
 const BbQuestions = preload("bb_questions.gd")
 const BbSfx = preload("bb_sfx.gd")
@@ -22,7 +23,10 @@ const WRONG_RESPAWN_DELAY : float = 3.0
 ## Boty: szansa na dobrą odpowiedź (łatwe / średnie / trudne) i czas „namysłu”
 const BOT_ACCURACY : Array[float] = [0.5, 0.65, 0.8]
 const BOT_THINK    := Vector2(2.0, 5.0)
-const ANSWER_KEYS  := ["a", "b", "c", "d"]
+## Akcje odpowiedzi 1–4: pytanie-bonus / odrodzenie (kolejność jak w quiz_overlay: W, S, A, D)
+const BONUS_ACTIONS   := ["quiz_p%d_a", "quiz_p%d_b", "quiz_p%d_c", "quiz_p%d_d"]
+const RESPAWN_ACTIONS := ["p%d_up", "p%d_down", "p%d_left", "p%d_right"]
+const KEY_NAMES := {"Up": "↑", "Down": "↓", "Left": "←", "Right": "→"}
 
 var hud : CanvasLayer = null
 
@@ -87,12 +91,12 @@ func ask(p: Node, kind: Kind) -> bool:
 	_closing.erase(pid)
 	var panel := _panel(pid)
 	if panel:
-		var answers := BbQuestions.answers_of(q)
-		var keys := BbI18n.tf("bb.fq.keys_p%d" % pid, {"n": answers.size()}, ("1–{n}" if pid == 1 else "Num 1–{n}"))
 		var title := BbI18n.tf("bb.fq.title_bonus" if kind == Kind.BONUS else "bb.fq.title_respawn",
-				{"name": GameManager.player_name(pid), "keys": keys},
-				"❓ Pytanie-bonus · {name} ({keys})" if kind == Kind.BONUS else "💀 Odrodzenie · {name} ({keys})")
-		panel.show_question(title, BbQuestions.text_of(q), answers, BbQuestions.correct_index(q), hud.player_color(pid))
+				{"name": GameManager.player_name(pid)},
+				"❓ Pytanie-bonus · {name}" if kind == Kind.BONUS else "💀 Odrodzenie · {name}")
+		var keys: Array = answer_actions(pid, kind).map(_key_label)
+		panel.show_question(title, BbQuestions.text_of(q), BbQuestions.answers_of(q), keys,
+				BbQuestions.correct_index(q), hud.player_color(pid))
 	return true
 
 
@@ -120,13 +124,27 @@ func _unhandled_input(event: InputEvent) -> void:
 		var e: Dictionary = _active[pid]
 		if e["player"].is_bot:
 			continue
-		var count := BbQuestions.answers_of(e["q"]).size()
-		for i in mini(count, ANSWER_KEYS.size()):
-			var action := "quiz_p%d_%s" % [pid, ANSWER_KEYS[i]]
+		var actions := answer_actions(pid, e["kind"])
+		for i in mini(BbQuestions.answers_of(e["q"]).size(), actions.size()):
+			var action: String = actions[i]
 			if InputMap.has_action(action) and event.is_action_pressed(action):
 				get_viewport().set_input_as_handled()
 				_resolve(pid, BbQuestions.is_correct(e["q"], i), i)
 				return
+
+
+func answer_actions(pid: int, kind: Kind) -> Array:
+	return (BONUS_ACTIONS if kind == Kind.BONUS else RESPAWN_ACTIONS).map(func(a: String) -> String: return a % pid)
+
+
+## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „W”, „↑”, „1”, „Num 1”.
+func _key_label(action: String) -> String:
+	for ev in InputMap.action_get_events(action) if InputMap.has_action(action) else []:
+		if ev is InputEventKey:
+			var code: Key = ev.keycode if ev.keycode != KEY_NONE else DisplayServer.keyboard_get_keycode_from_physical(ev.physical_keycode)
+			var name := OS.get_keycode_string(code)
+			return KEY_NAMES.get(name, name.replace("Kp ", "Num "))
+	return "?"
 
 
 func _resolve(pid: int, correct: bool, chosen: int) -> void:

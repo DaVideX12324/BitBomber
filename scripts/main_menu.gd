@@ -423,7 +423,7 @@ W trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone
 W trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.
 
 [b]Quiz odrodzenia[/b]
-W trybie Zabójstw po śmierci pojawia się pytanie. Dobra odpowiedź = powrót od razu z tarczą, zła = odrodzenie za 3 s.
+W trybie Zabójstw po śmierci pojawia się pytanie (odpowiedzi klawiszami ruchu: W/S/A/D, Gracz 2 strzałkami). Dobra odpowiedź = powrót od razu z tarczą, zła = odrodzenie za 3 s.
 
 [b]Tryby wygranej[/b]
   [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund
