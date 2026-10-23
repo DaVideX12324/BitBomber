@@ -98,8 +98,8 @@ func _on_scale_changed(_s: float) -> void:
 	_score_table.add_theme_constant_override("separation", _px(BASE_SEP_SCORE))
 	# Czcionki
 	_icon.add_theme_font_size_override("font_size",     _px(52))
-	_title.add_theme_font_size_override("font_size",    _px(32))
-	_subtitle.add_theme_font_size_override("font_size", _px(16))
+	_title.add_theme_font_size_override("font_size",    _px(36))
+	_subtitle.add_theme_font_size_override("font_size", _px(18))
 	var fs_row := _px(20)
 	for row in _score_rows:
 		(row as Label).add_theme_font_size_override("font_size", fs_row)

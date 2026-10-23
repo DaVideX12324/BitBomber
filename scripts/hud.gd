@@ -23,13 +23,14 @@ const PLAYER_COLORS: Array[Color] = [
 ]
 
 # Bazy z hud.tscn
-const BASE_DOT_SIZE    := Vector2(14.0, 14.0)
+const BASE_FACE_SIZE   := Vector2(40.0, 40.0)
 const BASE_FONT_TITLE  := 22.0
 const BASE_FONT_ROUND  := 25.0
 const BASE_FONT_HEARTS := 20.0
 const BASE_FONT_STATS  := 20.0
 const BASE_FONT_TOAST  := 26.0
-const BASE_CARDS_WIDTH := 270.0 
+const BASE_CARDS_WIDTH := 270.0
+const BASE_CARDS_MARGIN := 16.0  # odstęp kart od lewej krawędzi
 
 const BASE_CARDS_HALF_H  := 413.0   # offset_top = -413, offset_bottom = 413
 const BASE_SEP_CARDS     := 6       # separation między kartami
@@ -100,7 +101,8 @@ func _on_scale_changed(_s: float) -> void:
 	_cards_box.offset_top    = -ch
 	_cards_box.offset_bottom =  ch
 	_cards_box.add_theme_constant_override("separation", _px(BASE_SEP_CARDS))
-	_cards_box.offset_right = _sz(BASE_CARDS_WIDTH)
+	_cards_box.offset_left  = _sz(BASE_CARDS_MARGIN)
+	_cards_box.offset_right = _cards_box.offset_left + _sz(BASE_CARDS_WIDTH)
 	
 	# RoundLabel
 	_round_label.add_theme_font_size_override("font_size", _px(BASE_FONT_ROUND))
@@ -127,8 +129,8 @@ func _on_scale_changed(_s: float) -> void:
 				"font_size", _px(BASE_FONT_HEARTS))
 		(vbox.get_node("StatsLabel") as RichTextLabel).add_theme_font_size_override(
 				"normal_font_size", _px(BASE_FONT_STATS))
-		(vbox.get_node("Header/Dot") as ColorRect).custom_minimum_size = \
-				_sz2(BASE_DOT_SIZE.x, BASE_DOT_SIZE.y)
+		(vbox.get_node("Header/Face") as TextureRect).custom_minimum_size = \
+				_sz2(BASE_FACE_SIZE.x, BASE_FACE_SIZE.y)
 
 
 # ---------------------------------------------------------------------------
@@ -146,8 +148,9 @@ func setup_players(player_list: Array) -> void:
 			continue
 		var card: Control = _cards_nodes[idx]
 		card.visible = true
-		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
-		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
+		var color: Color = player_color(pid)
+		(card.get_node("VBox/Header/Face") as TextureRect).texture = _face(pid)
+		(card.get_node("VBox/Header/Title") as Label).add_theme_color_override("font_color", color.lightened(0.35))
 		(card.get_node("VBox/Header/Title") as Label).text = GameManager.player_name(pid)
 
 
@@ -170,11 +173,12 @@ func _render_hearts(pid: int) -> void:
 	var card: Control = _get_card(pid)
 	if not card:
 		return
-	var text := "❤️:%d" % _lives.get(pid, 0)
+	var lives: int = _lives.get(pid, 0)
+	var text := "❤️".repeat(lives) if lives > 0 else "💀"
 	var gm := get_node_or_null("/root/GameManager")
 	var rm := get_node_or_null("/root/RoundManager")
 	if gm and rm and gm.is_kill_mode():
-		text += "  " + BbI18n.tf("bb.hud.kills", {"kills": rm.get_kills(pid), "goal": gm.kills_to_win}, "🎯:{kills}/{goal}")
+		text += "   " + BbI18n.tf("bb.hud.kills", {"kills": rm.get_kills(pid), "goal": gm.kills_to_win}, "🎯 {kills}/{goal}")
 	(card.get_node("VBox/HeartsLabel") as Label).text = text
 
 
@@ -199,6 +203,17 @@ func update_player(pid: int, bombs: int, bomb_range: int, speed_mult: float,
 	var extras := (_icon("kick") if kick else "") + (" " + _icon("shield") if shield else "")
 	(card.get_node("VBox/StatsLabel") as RichTextLabel).text = \
 		"[center]%s%s[/center]" % [line, ("\n" + extras) if extras != "" else ""]
+
+
+## Twarz gracza: pierwsza klatka arkusza postaci (stoi, przodem); bez pliku — null.
+func _face(pid: int) -> Texture2D:
+	var path := BBRuntime.path("resources/sprites/players/player_%d.png" % pid)
+	if not ResourceLoader.exists(path):
+		return null
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(path)
+	atlas.region = Rect2(Vector2.ZERO, atlas.atlas.get_size() / Vector2(PlayerScript.SHEET_COLS, PlayerScript.SHEET_ROWS))
+	return atlas
 
 
 ## Ikona power-upu w BBCode (ta sama grafika co na planszy); bez pliku — emoji.

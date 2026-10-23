@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://belt4sxp0pq2l"]
 
 [ext_resource type="Script" uid="uid://dbd58lwrqgtl1" path="../../scripts/quiz_overlay.gd" id="1"]
+[ext_resource type="Theme" uid="uid://bbtheme1arcad" path="../../resources/ui/bb_theme.tres" id="bb_theme"]
 
 [node name="QuizOverlay" type="CanvasLayer" unique_id=377216357]
 layer = 20
@@ -12,7 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.72)
+color = Color(0.01, 0.02, 0.06, 0.7)
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1550094128]
 texture_filter = 2
@@ -22,11 +23,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -340.0
-offset_top = -300.0
+offset_top = -120.0
 offset_right = 340.0
-offset_bottom = 300.0
+offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("bb_theme")
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1798106957]
 layout_mode = 2
@@ -34,8 +36,9 @@ theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=2143113829]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_font_sizes/font_size = 24
+theme_type_variation = &"TitleLabel"
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 28
 text = "⚡ Ostatnia szansa!"
 horizontal_alignment = 1
 

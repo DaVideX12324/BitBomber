@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cphh0uqwl7a7" path="../../scripts/death_screen.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://belt4sxp0pq2l" path="quiz_overlay.tscn" id="2_njuei"]
+[ext_resource type="Theme" uid="uid://bbtheme1arcad" path="../../resources/ui/bb_theme.tres" id="bb_theme"]
 
 [node name="DeathScreen" type="CanvasLayer" unique_id=1653189185]
 layer = 20
@@ -14,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.72)
+color = Color(0.01, 0.02, 0.06, 0.7)
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=954427437]
 texture_filter = 2
@@ -27,6 +28,9 @@ offset_left = -300.0
 offset_top = -240.0
 offset_right = 300.0
 offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("bb_theme")
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=651043070]
 layout_mode = 2
@@ -41,13 +45,15 @@ horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=689558472]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_type_variation = &"TitleLabel"
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Panel/VBox" unique_id=1955962289]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 0.75, 0.75, 1)
-theme_override_font_sizes/font_size = 16
+theme_type_variation = &"HeaderLabel"
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 3
 
@@ -85,7 +91,8 @@ layout_mode = 2
 [node name="BtnContinue" type="Button" parent="Panel/VBox" unique_id=1753386908]
 custom_minimum_size = Vector2(160, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 21
+theme_type_variation = &"PrimaryButton"
+theme_override_font_sizes/font_size = 22
 text = "Dalej"
 
 [node name="BtnMenu" type="Button" parent="Panel/VBox" unique_id=1442448011]

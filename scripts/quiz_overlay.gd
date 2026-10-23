@@ -23,7 +23,7 @@ const TYPE_MULTIPLIER : Dictionary = {
 }
 
 # Bazowe rozmiary czcionek z .tscn
-const BASE_FS_TITLE      := 24
+const BASE_FS_TITLE    := 28
 const BASE_FS_QUESTION   := 21
 const BASE_FS_TIMER      := 20
 const BASE_FS_HINT       := 15
@@ -34,7 +34,7 @@ const BASE_FS_CONFIRM_MATCH := 18
 
 # Bazowe rozmiary panelu i separatorow z .tscn
 const BASE_PANEL_HALF_W := 340.0
-const BASE_PANEL_HALF_H := 300.0
+const BASE_PANEL_HALF_H := 120.0
 const BASE_SEP_VBOX     := 10
 const BASE_SEP_SUBBOX   := 6
 
