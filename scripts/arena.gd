@@ -2,6 +2,7 @@ extends Node2D
 
 const BBRuntime = preload("bb_runtime.gd")
 const BbSfx = preload("bb_sfx.gd")
+const BbQuestions = preload("bb_questions.gd")
 
 ## Scena areny odpowiada TYLKO za mapę:
 ## budowanie siatki, kolizje, API dla bomb/eksplozji, spawn pointy.
@@ -55,6 +56,7 @@ const POWERUP_WEIGHTS : Dictionary = {
 	"kick":     10,
 	"shield":   4,
 	"star":     2,
+	"quiz":     8,   # pytanie-bonus (nie z Bomb It) — tylko gdy są pytania i quizy włączone
 }
 
 ## Dorzucanie przedmiotów (Bomb It, timePassed): po ITEM_DROP_START s co ITEM_DROP_EVERY s
@@ -65,11 +67,14 @@ const ITEM_DROP_COUNT : int = 2
 const ITEM_MAX_ON_MAP : int = 12
 
 var _round_time : float = 0.0
+## Czy losować power-up „quiz” (ustalane raz na rundę)
+var _quiz_items : bool = false
 var _next_drop  : float = ITEM_DROP_START
 
 
 func _ready() -> void:
 	add_to_group("arena")
+	_quiz_items = BbQuestions.choice_quiz_available()
 	# Grafika rysowana w wysokiej rozdzielczości — przy skalowaniu kamery gładko, nie „pikselowo”.
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_load_layout(_pick_map_id())
@@ -343,13 +348,17 @@ func _powerup_chance() -> float:
 func _roll_powerup_type() -> String:
 	var total := 0
 	for t in POWERUP_WEIGHTS:
-		total += POWERUP_WEIGHTS[t]
+		total += _weight(t)
 	var r := randi() % total
 	for t in POWERUP_WEIGHTS:
-		r -= POWERUP_WEIGHTS[t]
+		r -= _weight(t)
 		if r < 0:
 			return t
 	return POWERUP_WEIGHTS.keys()[0]
+
+
+func _weight(type: String) -> int:
+	return 0 if type == "quiz" and not _quiz_items else POWERUP_WEIGHTS[type]
 
 
 ## Po ITEM_DROP_START s co ITEM_DROP_EVERY s nowe przedmioty na losowych wolnych polach.

@@ -43,6 +43,12 @@ var has_shield : bool  = false
 var _star_time : float = 0.0
 ## Nieśmiertelność z gwiazdki trwa tyle sekund
 const STAR_DURATION : float = 8.0
+## Kara za złą odpowiedź na pytanie-bonus: chód wolniejszy o tyle
+const SLOW_FACTOR : float = 0.6
+var _slow_time : float = 0.0
+## Tryb KILL: sekundy do odrodzenia (0 = żyje albo nie czeka) i czy wrócić z tarczą (quiz odrodzenia)
+var _respawn_left   : float = 0.0
+var _respawn_shield : bool  = false
 
 
 # --- ZMIENNE DLA AI ---
@@ -126,6 +132,9 @@ func _find_arena() -> Node:
 
 
 func _physics_process(delta: float) -> void:
+	if _respawn_left > 0.0:
+		_tick_respawn(delta)
+		return
 	if not is_alive or _frozen:
 		return
 	if GameManager.is_in_quiz():
@@ -150,6 +159,9 @@ func _physics_process(delta: float) -> void:
 	if _star_time > 0.0:
 		_star_time = maxf(_star_time - delta, 0.0)
 		modulate = Color.from_hsv(fmod(_star_time * 1.5, 1.0), 0.5, 1.0) if _star_time > 0.0 else Color.WHITE
+	if _slow_time > 0.0:
+		_slow_time = maxf(_slow_time - delta, 0.0)
+		_sprite.modulate = Color(0.55, 0.7, 1.0) if _slow_time > 0.0 else Color.WHITE
 	_check_bomb_exits()
 
 
@@ -181,6 +193,7 @@ func teleport_to(px: Vector2) -> void:
 	modulate.a      = 1.0
 	is_alive        = true
 	_pending_elim   = false
+	_respawn_left   = 0.0
 	visible         = true
 	bot_input_direction = Vector2.ZERO
 
@@ -197,6 +210,9 @@ func reset_for_new_round() -> void:
 	has_kick       = false
 	has_shield     = false
 	_star_time     = 0.0
+	_slow_time     = 0.0
+	_respawn_left  = 0.0
+	_sprite.modulate = Color.WHITE
 	# Czyśzczenie bomb, na których się stoi
 	_bombs_inside.clear()
 	# Reset flag stanu
@@ -244,7 +260,7 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 				direction.x = 0
 
 		direction = direction.normalized()
-		velocity = direction * MOVE_SPEED * speed_mult
+		velocity = direction * MOVE_SPEED * speed_mult * (SLOW_FACTOR if _slow_time > 0.0 else 1.0)
 		move_and_slide()
 		if has_kick:
 			_try_kick(direction)
@@ -425,19 +441,47 @@ func _respawn() -> void:
 
 
 ## Tryb KILL: znika, po KILL_RESPAWN_DELAY wraca na swój spawn z pełnym życiem i chwilą nieśmiertelności.
-## Power-upy zostają (jak w Bomb It).
+## Power-upy zostają (jak w Bomb It). Quiz odrodzenia (field_quiz.gd) zmienia czas przez set_respawn_in.
 func _die_and_respawn(killer_id: int) -> void:
 	_spawn_death_fx()
 	visible  = false
 	velocity = Vector2.ZERO
+	_respawn_left   = KILL_RESPAWN_DELAY
+	_respawn_shield = false
 	killed.emit(player_id, killer_id)
-	await get_tree().create_timer(KILL_RESPAWN_DELAY, false).timeout
-	if not is_inside_tree() or is_alive or not RoundManager._round_active:
+
+
+## Tryb KILL, w trakcie czekania: odrodzenie za `seconds` (shield = wraca z tarczą).
+func set_respawn_in(seconds: float, shield: bool = false) -> void:
+	if is_alive or _respawn_left <= 0.0:
+		return
+	_respawn_left   = maxf(seconds, 0.01)
+	_respawn_shield = shield
+
+
+func is_respawning() -> bool:
+	return not is_alive and _respawn_left > 0.0
+
+
+func _tick_respawn(delta: float) -> void:
+	_respawn_left -= delta
+	if _respawn_left > 0.0:
+		return
+	_respawn_left = 0.0
+	if is_alive or not RoundManager._round_active:
 		return
 	lives = DEFAULT_LIVES
 	lives_changed.emit(player_id, lives)
 	visible = true
 	_respawn()
+	if _respawn_shield:
+		has_shield = true
+		powerup_collected.emit(player_id, "shield")
+
+
+## Kara za złą odpowiedź na pytanie-bonus.
+func apply_slow(duration: float) -> void:
+	_slow_time = maxf(_slow_time, duration)
 
 
 ## Kopia postaci na mapie: spłaszcza się, obraca i znika na czerwono (gracz w tym czasie już niewidoczny).
@@ -496,6 +540,7 @@ func apply_powerup(type: String) -> void:
 		"kick":      has_kick       = true
 		"shield":    has_shield     = true
 		"star":      _star_time     = STAR_DURATION
+		"quiz":      pass   # pytanie-bonus — obsługuje field_quiz.gd (sygnał powerup_collected)
 	BbSfx.play("pickup", -6.0, 0.03)
 	if type == "life_up":
 		lives_changed.emit(player_id, lives)

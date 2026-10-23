@@ -7,6 +7,7 @@ extends CanvasLayer
 ##   hud.update_lives(pid, lives_left)
 ##   hud.update_player(pid, bombs, bomb_range, speed_mult, kick, shield)
 ##   hud.show_message(text, duration)
+##   hud.get_quiz_panel(pid)  — panel pytania w trakcie gry (field_quiz.gd)
 
 const PlayerScript = preload("player.gd")
 const BBRuntime = preload("bb_runtime.gd")
@@ -47,6 +48,8 @@ const BASE_TOAST_HALF_H  := 40.0    # offset_top  =  -40, offset_bottom =  40
 @onready var _round_label : Label          = $Root/Cards/RoundPanel/RoundLabel
 @onready var _toast       : Label          = $Root/ToastLabel
 @onready var _round_panel : PanelContainer = $Root/Cards/RoundPanel
+## Panele pytań w trakcie gry (tylko ludzie: gracz 1 i 2)
+@onready var _quiz_panels : Array[Control] = [$Root/QuizPanels/QuizPanelP1, $Root/QuizPanels/QuizPanelP2]
 
 
 var _lives : Dictionary = {}   # pid → życia (do odświeżania karty)
@@ -146,6 +149,15 @@ func setup_players(player_list: Array) -> void:
 		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
 		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
 		(card.get_node("VBox/Header/Title") as Label).text = GameManager.player_name(pid)
+
+
+## Panel pytania gracza (null dla botów).
+func get_quiz_panel(pid: int) -> Control:
+	return _quiz_panels[pid - 1] if pid >= 1 and pid <= _quiz_panels.size() else null
+
+
+func player_color(pid: int) -> Color:
+	return PLAYER_COLORS[clampi(pid - 1, 0, PLAYER_COLORS.size() - 1)]
 
 
 func update_lives(pid: int, lives_left: int) -> void:

@@ -59,7 +59,7 @@
   "bb.menu.btn_back_to_host": "✕ Powrot do menu glownego",
   "bb.help.title": "♥  Jak grać w BitBomber?",
   "bb.help.btn_close": "Zamknij  [ESC]",
-  "bb.help.body": "[b]Cel gry[/b]\nWyeliminuj przeciwników bombami! Mecz wygrywa ten, kto zdobędzie najwięcej wygranych rund.\n\n[b]Tryby gry[/b]\n  [b]💣 Ostatni żywy[/b]   rundę wygrywa ostatni gracz na planszy\n  [b]🎯 Zabójstwa[/b]   zabici wracają po 2 s; rundę wygrywa pierwszy z 5 zabójstwami (po czasie lider, przy remisie dogrywka — następne zabójstwo wygrywa)\n\n[b]Sterowanie — Gracz 1[/b]\n  [b]WASD[/b]   ruch\n  [b]Spacja[/b]   połóż bombę\n\n[b]Sterowanie — Gracz 2[/b]\n  ↑ ↓ ← →   ruch\n  [b]Enter / Num0[/b]   połóż bombę\n\n[b]Bomba[/b]\nWybucha po 2 sekundach — im grubsza żółta obwódka, tym bliżej wybuchu. Ogień płonie pół sekundy i odpala inne bomby w zasięgu.\n\n[b]Power-upy[/b]\nWypadają ze skrzynek, a po 45 s pojawiają się same na planszy.\n  💣 +1 bomba   🔥 +1 zasięg   ⚡ szybkość   ♥ życie\n  🦶 kopanie — wejdź w bombę, a pojedzie do przeszkody\n  🛡 tarcza — wytrzymuje jedno trafienie\n  ⭐ gwiazdka — 8 s nietykalności\n\n[b]Nagła śmierć[/b]\nW trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone pola to miejsca następnych.\n\n[b]Last Chance[/b]\nW trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.\n\n[b]Tryby wygranej[/b]\n  [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund\n  [b]Najwięcej w Y[/b]   gra się Y rund, wygrywa ten z największą liczbą zwycięstw\n\n[b]Trudność bota[/b]\n  [b]Łatwy[/b]   bot reaguje wolno, proste pytania\n  [b]Średni[/b]   wyważony balans\n  [b]Trudny[/b]   bot agresywny, trudniejsze pytania",
+  "bb.help.body": "[b]Cel gry[/b]\nWyeliminuj przeciwników bombami! Mecz wygrywa ten, kto zdobędzie najwięcej wygranych rund.\n\n[b]Tryby gry[/b]\n  [b]💣 Ostatni żywy[/b]   rundę wygrywa ostatni gracz na planszy\n  [b]🎯 Zabójstwa[/b]   zabici wracają po 2 s; rundę wygrywa pierwszy z 5 zabójstwami (po czasie lider, przy remisie dogrywka — następne zabójstwo wygrywa)\n\n[b]Sterowanie — Gracz 1[/b]\n  [b]WASD[/b]   ruch\n  [b]Spacja[/b]   połóż bombę\n\n[b]Sterowanie — Gracz 2[/b]\n  ↑ ↓ ← →   ruch\n  [b]Enter / Num0[/b]   połóż bombę\n\n[b]Bomba[/b]\nWybucha po 2 sekundach — im grubsza żółta obwódka, tym bliżej wybuchu. Ogień płonie pół sekundy i odpala inne bomby w zasięgu.\n\n[b]Power-upy[/b]\nWypadają ze skrzynek, a po 45 s pojawiają się same na planszy.\n  💣 +1 bomba   🔥 +1 zasięg   ⚡ szybkość   ♥ życie\n  🦶 kopanie — wejdź w bombę, a pojedzie do przeszkody\n  🛡 tarcza — wytrzymuje jedno trafienie\n  ⭐ gwiazdka — 8 s nietykalności\n  ❓ pytanie-bonus — odpowiadasz w trakcie gry klawiszami 1–4 (Gracz 2: Num 1–4): dobrze = tarcza, gwiazdka albo +2 zasięgu, źle = 5 s spowolnienia\n\n[b]Nagła śmierć[/b]\nW trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone pola to miejsca następnych.\n\n[b]Last Chance[/b]\nW trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.\n\n[b]Quiz odrodzenia[/b]\nW trybie Zabójstw po śmierci pojawia się pytanie. Dobra odpowiedź = powrót od razu z tarczą, zła = odrodzenie za 3 s.\n\n[b]Tryby wygranej[/b]\n  [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund\n  [b]Najwięcej w Y[/b]   gra się Y rund, wygrywa ten z największą liczbą zwycięstw\n\n[b]Trudność bota[/b]\n  [b]Łatwy[/b]   bot reaguje wolno, proste pytania\n  [b]Średni[/b]   wyważony balans\n  [b]Trudny[/b]   bot agresywny, trudniejsze pytania",
   "bb.options.revert_countdown": "Przywrócenie za: {time}s",
   "bb.options.primary_monitor_suffix": "  [główny]",
   "bb.options.native_resolution_suffix": "  (natywna)",
@@ -118,5 +118,17 @@
   "bb.death.game_over_bot_won_subtitle": "Lepiej następnym razem.",
   "bb.result.summary_win": "{name} wygrał · rundy: {rounds}",
   "bb.result.summary_draw": "Remis · rundy: {rounds}",
-  "bb.result.summary_quiz": " · quiz {correct}/{total}"
+  "bb.result.summary_quiz": " · quiz {correct}/{total}",
+  "bb.fq.title_bonus": "❓ Pytanie-bonus · {name} ({keys})",
+  "bb.fq.title_respawn": "💀 Odrodzenie · {name} ({keys})",
+  "bb.fq.keys_p1": "1–{n}",
+  "bb.fq.keys_p2": "Num 1–{n}",
+  "bb.fq.reward_shield": "✅ Tarcza!",
+  "bb.fq.reward_star": "✅ Gwiazdka!",
+  "bb.fq.reward_range": "✅ Zasięg +2!",
+  "bb.fq.slow": "❌ Spowolnienie na 5 s",
+  "bb.fq.respawn_now": "✅ Wracasz z tarczą!",
+  "bb.fq.respawn_late": "❌ Odrodzenie za 3 s",
+  "bb.fq.timeout_bonus": "⏱ Czas minął — bez bonusu",
+  "bb.fq.timeout_respawn": "⏱ Czas minął — wracasz bez tarczy"
 }

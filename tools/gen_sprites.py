@@ -589,6 +589,7 @@ POWERUPS = {
     "kick":     "#3b82f6",
     "shield":   "#7dd3fc",
     "star":     "#fde047",
+    "quiz":     "#8b5cf6",
 }
 
 
@@ -639,6 +640,14 @@ def glyph(d, kind, cx, cy, s):
             rr = s * (0.85 if k % 2 == 0 else 0.38)
             pts.append((cx + math.cos(a) * rr, cy + math.sin(a) * rr))
         d.polygon(pts, fill=W, outline=(200, 140, 0, 255), width=5)
+    elif kind == "quiz":
+        # Znak zapytania: łuk + nóżka + kropka, z ciemnym obrysem
+        r = s * 0.4
+        top = cy - s * 0.45
+        for col, w, dot in ((O, 26, s * 0.17), (W, 16, s * 0.12)):
+            d.arc((cx - r, top - r, cx + r, top + r), 195, 90, fill=col, width=w)
+            d.line([(cx, top + r - w / 2), (cx, cy + s * 0.25)], fill=col, width=w)
+            d.ellipse((cx - dot, cy + s * 0.6 - dot, cx + dot, cy + s * 0.6 + dot), fill=col)
 
 
 def gen_powerups():

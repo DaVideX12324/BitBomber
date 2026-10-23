@@ -414,12 +414,16 @@ Wypadają ze skrzynek, a po 45 s pojawiają się same na planszy.
   🦶 kopanie — wejdź w bombę, a pojedzie do przeszkody
   🛡 tarcza — wytrzymuje jedno trafienie
   ⭐ gwiazdka — 8 s nietykalności
+  ❓ pytanie-bonus — odpowiadasz w trakcie gry klawiszami 1–4 (Gracz 2: Num 1–4): dobrze = tarcza, gwiazdka albo +2 zasięgu, źle = 5 s spowolnienia
 
 [b]Nagła śmierć[/b]
 W trybie Ostatni żywy po 3 minutach z brzegów planszy spadają bloki. Czerwone pola to miejsca następnych.
 
 [b]Last Chance[/b]
 W trybie Ostatni żywy po śmierci gracza odpala się quiz. Poprawna odpowiedź = powrót do gry, błędna = koniec rundy dla gracza.
+
+[b]Quiz odrodzenia[/b]
+W trybie Zabójstw po śmierci pojawia się pytanie. Dobra odpowiedź = powrót od razu z tarczą, zła = odrodzenie za 3 s.
 
 [b]Tryby wygranej[/b]
   [b]Pierwszy do X[/b]   wygrywa, kto pierwszy zdobędzie X wygranych rund

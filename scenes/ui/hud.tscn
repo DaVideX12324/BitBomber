@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bvhud000001"]
 
 [ext_resource type="Script" uid="uid://brvkvku3jtece" path="../../scripts/hud.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://c7fq2kbonusq1" path="field_quiz_panel.tscn" id="2"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1716525981]
 layer = 10
@@ -195,6 +196,29 @@ text = "[center]1  1  1[/center]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
+
+[node name="QuizPanels" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -396.0
+offset_top = -300.0
+offset_right = -16.0
+offset_bottom = 300.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="QuizPanelP1" parent="Root/QuizPanels" instance=ExtResource("2")]
+layout_mode = 2
+
+[node name="QuizPanelP2" parent="Root/QuizPanels" instance=ExtResource("2")]
+layout_mode = 2
 
 [node name="ToastLabel" type="Label" parent="Root" unique_id=1020413542]
 modulate = Color(1, 1, 1, 0)

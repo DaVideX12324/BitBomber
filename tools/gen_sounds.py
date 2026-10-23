@@ -140,6 +140,14 @@ def gen():
     x = cat(*[note(f, dur, "tri", 1.2) for f, dur in ((523, 0.11), (659, 0.11), (784, 0.11), (1047, 0.4))])
     save("round_win", x, 0.65)
 
+    # Quiz w trakcie gry: dobra odpowiedź — jasne „ding-ding” w górę
+    x = cat(note(1319, 0.08, "sine", 1.5), note(1976, 0.22, "sine", 2.0))
+    save("quiz_right", mix(x, cat(np.zeros(int(SR * 0.08)), note(2637, 0.22, "sine", 3.0) * 0.3)), 0.6)
+
+    # Zła odpowiedź — niski, krótki brzęczyk w dół
+    x = sweep(220, 150, 0.32, "square") * env(int(SR * 0.32), 0.005, 1.2)
+    save("quiz_wrong", lowpass(x, 1800), 0.55)
+
 
 if __name__ == "__main__":
     gen()

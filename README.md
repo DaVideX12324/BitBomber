@@ -12,12 +12,13 @@ Mechanika, liczby i układy map wzorowane są na **Bomb It 7** (grafika i dźwi�
 - Tryb **1 gracz vs bot** oraz **2 graczy lokalnie**
 - **3 poziomy trudności bota** (Easy / Medium / Hard) z odrębnym zachowaniem AI
 - System **Last Chance Quiz** — odpowiedz poprawnie, żeby wrócić do gry
+- **Quiz w trakcie gry** bez pauzy: power-up ❓ (pytanie-bonus) i quiz odrodzenia w trybie Zabójstw
 - Tryb **pojedynku quizowego** między dwoma graczami (Versus)
 - Tryby gry: **Ostatni żywy** i **Zabójstwa** (Kill z Bomb It — odradzanie, pierwszy do 5 zabójstw, dogrywka)
 - **28 map**: 27 układów z Bomb It 7 (9 motywów × 3 warianty, 17×15) + klasyczna 17×17; skrzynki losowane z gęstością
 - **Nagła śmierć** po 3 minutach — bloki spadają spiralą od krawędzi
 - Reakcja łańcuchowa bomb, kopanie bomb
-- Power-upy: bomba, zasięg, szybkość, życie, kopanie, tarcza, gwiazdka (nietykalność); wagi i dorzucanie po 45 s jak w Bomb It
+- Power-upy: bomba, zasięg, szybkość, życie, kopanie, tarcza, gwiazdka (nietykalność), ❓ pytanie-bonus; wagi i dorzucanie po 45 s jak w Bomb It
 - System rund — wygrywa ten, kto jako pierwszy zbierze wymaganą liczbę zwycięstw
 - Obsługa **trybu embedded** — BitBomber może działać jako moduł wewnątrz innej aplikacji Godot
 
@@ -82,7 +83,7 @@ Dodatkowo:
 ```
 
 Testy: `godot --headless --path <host> --fixed-fps 60 -s res://modules/BitBomber/tests/<test>.gd`
-(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_host_session`, `test_music`, `test_smoke`).
+(`test_blast`, `test_maps`, `test_items`, `test_kick_shield`, `test_kill_mode`, `test_sudden_death`, `test_scores`, `test_field_quiz`, `test_host_session`, `test_music`, `test_smoke`).
 
 ---
 

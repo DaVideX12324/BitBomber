@@ -19,6 +19,7 @@ var _player_scene: PackedScene = load(BBRuntime.path("scenes/players/player.tscn
 
 @onready var hud         : CanvasLayer = $HUD
 @onready var players_root: Node2D      = $Players
+@onready var field_quiz  : Node        = $FieldQuiz
 
 var _current_map : Node  = null
 var _players     : Array = []
@@ -26,6 +27,7 @@ var _players     : Array = []
 
 func _ready() -> void:
 	GameManager.game_node = self
+	field_quiz.hud = hud
 	players_root.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	GameManager.state_changed.connect(_on_state_changed)
 	RoundManager.sudden_death_started.connect(_on_sudden_death)
@@ -110,6 +112,7 @@ func _spawn_players() -> void:
 		_players.append(p)
 		p.died.connect(_on_player_died)
 		p.killed.connect(_on_player_killed)
+		field_quiz.connect_player(p)
 
 	for i in range(GameManager.num_bots):
 		var bot := _player_scene.instantiate() as CharacterBody2D
@@ -120,6 +123,7 @@ func _spawn_players() -> void:
 		_players.append(bot)
 		bot.died.connect(_on_player_died)
 		bot.killed.connect(_on_player_killed)
+		field_quiz.connect_player(bot)
 
 
 ## Resetuje wszystkich graczy na początek rundy (pełne życia, domyślne statsy)

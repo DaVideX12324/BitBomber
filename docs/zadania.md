@@ -13,7 +13,6 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ## Stan po nocy 2026-10-23
 
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
-- **czeka na decyzję:** D3 (quiz w mechanice);
 - **⚠ do sprawdzenia przez usera:** muzyka (F3) jest generowana — jeśli nie pasuje, podmienić
   (`tools/gen_music.py` albo własne pliki w `resources/music/`, te same nazwy);
 - **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
@@ -90,8 +89,10 @@ kto ma ich najwięcej. W obu trybach po 45 s co 15 s pojawiają się na mapie no
 1. ✅ **[O] Szkielet trybów** (`GameManager.game_mode`, na razie enum, nie zasób) — `GameMode` jako zasób/klasa z warunkiem wygranej, odradzaniem, licznikiem.
    Obecny „ostatni żywy + rundy” staje się jednym z trybów.
 2. ✅ **[O] Kill** (5 zabójstw, dogrywka przy remisie) — najprostszy do dodania po szkielecie (odradzanie, licznik zabójstw).
-3. **[O] Quiz w mechanice** — skrzynka-pytajnik (dobra odpowiedź = rzadki przedmiot) albo Collect,
-   gdzie monety to odpowiedzi. To spina grę z edukacją bardziej niż sam Last Chance. **[?]**
+3. ✅ **[O] Quiz w mechanice** — decyzja usera: oba warianty (`scripts/field_quiz.gd`, panel `field_quiz_panel.tscn`):
+   power-up ❓ = pytanie-bonus bez pauzy (dobrze: tarcza / gwiazdka / +2 zasięgu, źle: 5 s spowolnienia,
+   brak odpowiedzi: nic; boty odpowiadają losowo wg trudności) i quiz odrodzenia w trybie Zabójstw
+   (dobrze: powrót od razu z tarczą, źle: +3 s, brak odpowiedzi: powrót po 8 s).
 4. **[O] Arcade / kampania** — sekwencja map z rosnącą trudnością (to, czym był `room_base`).
 
 ## E. Przedmioty specjalne — na razie NIE (decyzja)

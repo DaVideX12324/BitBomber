@@ -62,8 +62,11 @@ func _run() -> void:
 	_check(_killed == [[2, 1]], "P2 zabity przez P1: %s" % [_killed])
 	_check(rm.get_kills(1) == 1, "P1 ma 1 zabójstwo")
 	_check(not p2.is_alive, "P2 czeka na odrodzenie")
-	await _frames(int(p2.KILL_RESPAWN_DELAY * 60) + 10)
-	_check(p2.is_alive and p2.visible, "P2 odrodzony")
+	# Człowiek dostaje pytanie odrodzenia (field_quiz.gd); bez odpowiedzi wraca po czasie pytania.
+	var fq: Node = gm.game_node.get_node("FieldQuiz")
+	var wait: float = fq.RESPAWN_TIME + 0.2 if fq.is_asking(2) else p2.KILL_RESPAWN_DELAY
+	await _frames(int(wait * 60) + 10)
+	_check(p2.is_alive and p2.visible, "P2 odrodzony (po %.1f s)" % wait)
 	_check(_winner == -100, "runda trwa po 1 zabójstwie")
 
 	await _frames(130)   # nieśmiertelność po odrodzeniu (2 s)

@@ -10,6 +10,7 @@ extends CanvasLayer
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
 const HudScript = preload("hud.gd")
+const BbQuestions = preload("bb_questions.gd")
 
 @onready var _overlay     : ColorRect      = $Overlay
 @onready var _panel       : PanelContainer = $Panel
@@ -144,96 +145,12 @@ func _get_time_limit() -> float:
 		_: return 15.0
 
 
-func _get_diff_range() -> Vector2i:
-	var gm := _gm()
-	var diff: int = gm.bot_difficulty if gm else 0
-	match diff:
-		0: return Vector2i(1, 3)
-		2: return Vector2i(3, 5)
-		_: return Vector2i(2, 4)
-
-
-func _is_quizless_mode_enabled() -> bool:
-	var host_settings: Node = get_node_or_null("/root/SettingsService")
-	if host_settings and host_settings.has_method("is_quizless_mode_enabled"):
-		return bool(host_settings.call("is_quizless_mode_enabled"))
-
-	for key_name: String in ["quizless_mode", "disable_quizzes", "skip_quizzes"]:
-		var value: Variant = null
-		if host_settings:
-			if host_settings.has_method("get_global"):
-				value = host_settings.call("get_global", key_name, null)
-			elif host_settings.has_method("get_module"):
-				value = host_settings.call("get_module", "bitbomber", key_name, null)
-			if value != null:
-				return bool(value)
-
-		var local_settings: Node = get_node_or_null("/root/SettingsManager")
-		if local_settings:
-			if local_settings.has_method("get_global"):
-				value = local_settings.call("get_global", key_name, null)
-			else:
-				value = local_settings.get(key_name)
-			if value != null:
-				return bool(value)
-
-	return false
-
-
 func _auto_pass_last_chance() -> void:
 	_duel_active = false
 	_do_resume()
 	var rm := _rm()
 	if rm:
 		rm.resolve_last_chance(true)
-
-
-func _get_weighted_question(allowed_types: Array = []) -> Dictionary:
-	var range_v : Vector2i = _get_diff_range()
-	var weights : Array[int]
-	var gm := _gm()
-	var qm := _qm()
-	var diff: int = gm.bot_difficulty if gm else 0
-	match diff:
-		0: weights = [2, 3, 1]
-		2: weights = [2, 3, 1]
-		_: weights = [2, 3, 1]
-	var all_ids : Array = []
-	var sel_id: String = gm.selected_quiz_id if gm else ""
-	if sel_id == "" or sel_id == "Wszystkie":
-		all_ids = qm.get_quiz_ids() if qm else []
-	else:
-		all_ids = [sel_id]
-	if all_ids.is_empty(): return {}
-	var valid_questions : Array = []
-	var diffs_available : Array[int] = []
-	for quiz_id in all_ids:
-		var q_list: Array = qm.get_questions(quiz_id, range_v, 999, allowed_types) if qm else []
-		for q in q_list:
-			if not allowed_types.is_empty():
-				var t = q.get("type", "multiple_choice")
-				if not t in allowed_types: continue
-			valid_questions.append(q)
-			var d : int = q.get("difficulty", 1)
-			if not d in diffs_available: diffs_available.append(d)
-	if valid_questions.is_empty(): return {}
-	diffs_available.sort()
-	var max_available_diff = diffs_available.back()
-	if max_available_diff < range_v.x:
-		range_v.y = max_available_diff
-		range_v.x = maxi(1, max_available_diff - (weights.size() - 1))
-	var pool : Array = []
-	for q in valid_questions:
-		var d : int = q.get("difficulty", 1)
-		if d >= range_v.x and d <= range_v.y:
-			var w_idx := d - range_v.x
-			var w : int = weights[w_idx] if w_idx < weights.size() else 1
-			for _i in range(w): pool.append(q)
-	if pool.is_empty():
-		valid_questions.shuffle()
-		return valid_questions[0]
-	pool.shuffle()
-	return pool[0]
 
 
 func _is_simple_type(q: Dictionary) -> bool:
@@ -244,11 +161,11 @@ func _is_simple_type(q: Dictionary) -> bool:
 func _start_quiz_flow(dead_player_id: int) -> void:
 	_duel_active   = false
 	_duel_p1_score = 0
-	if _is_quizless_mode_enabled():
+	if BbQuestions.quizless_mode():
 		_auto_pass_last_chance()
 		return
 	_do_pause()
-	var q := _get_weighted_question([])
+	var q := BbQuestions.pick([])
 	if q.is_empty():
 		_auto_pass_last_chance()
 		return
@@ -270,7 +187,7 @@ func _start_quiz_flow(dead_player_id: int) -> void:
 
 
 func _ask_question_p1() -> void:
-	var q := _get_weighted_question(_duel_allowed_types)
+	var q := BbQuestions.pick(_duel_allowed_types)
 	if q.is_empty(): _on_quiz_result(1); return
 	var qm := _qm()
 	if qm:
@@ -279,7 +196,7 @@ func _ask_question_p1() -> void:
 
 
 func _ask_question_p2() -> void:
-	var q := _get_weighted_question(_duel_allowed_types)
+	var q := BbQuestions.pick(_duel_allowed_types)
 	if q.is_empty(): _on_quiz_result(1); return
 	var qm := _qm()
 	if qm:
