@@ -35,6 +35,8 @@ var lives            : int   = DEFAULT_LIVES
 var max_bombs        : int   = DEFAULT_BOMBS
 var bomb_range       : int   = DEFAULT_RANGE
 var speed_mult     : float = DEFAULT_SPEED
+## Stały mnożnik szybkości postaci (boty: move_speed z profilu AI, np. łatwy 0,92); power-upy mnożą speed_mult
+var move_speed_scale : float = 1.0
 var _active_bombs    : int   = 0
 
 ## Power-upy specjalne (Bomb It: BombShoesProp, ShieldProp, InvincibilityProp)
@@ -260,7 +262,7 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 				direction.x = 0
 
 		direction = direction.normalized()
-		velocity = direction * MOVE_SPEED * speed_mult * (SLOW_FACTOR if _slow_time > 0.0 else 1.0)
+		velocity = direction * MOVE_SPEED * speed_mult * move_speed_scale * (SLOW_FACTOR if _slow_time > 0.0 else 1.0)
 		move_and_slide()
 		if has_kick:
 			_try_kick(direction)

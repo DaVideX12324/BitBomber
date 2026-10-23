@@ -1,0 +1,87 @@
+{
+  "_opis": "Profile botów wg GameAI z Bomb It 7 (XmlManager): tryb -> [łatwy, średni, trudny]. answer_time = co ile sekund bot myśli (aiAnswerTime), find_range = ile pól widzi (findRange), move_speed = mnożnik szybkości względem gracza (moveSpeed / 1,3), bomb_range = zasięg na start (bombPow). states = kolejność sprawdzania (pierwszy pasujący wygrywa; ten sam stan może być kilka razy): chance = szansa przy jednym sprawdzeniu (precentage), dodge / attack = szansa na unik / bombę w biegu na każdym kroku (advanceDodge / advanceAttack). default = stan, gdy żaden nie pasuje.",
+  "last_standing": [
+    {
+      "_bombit": "010101 街机,简单",
+      "answer_time": 0.04, "find_range": 4, "move_speed": 0.92, "bomb_range": 1,
+      "states": [
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "escape", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "attack", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "get_item", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "box", "chance": 0.4, "dodge": 0.4, "attack": 0.2},
+        {"state": "free", "chance": 0.4, "dodge": 0.4, "attack": 0.2}
+      ],
+      "default": {"state": "free", "dodge": 0.4, "attack": 0.2}
+    },
+    {
+      "_bombit": "010201 街机,普通",
+      "answer_time": 0.04, "find_range": 5, "move_speed": 1.0, "bomb_range": 1,
+      "states": [
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "attack", "chance": 0.3, "dodge": 0.4, "attack": 0.3},
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "escape", "chance": 0.5, "dodge": 0.4, "attack": 0.3},
+        {"state": "get_item", "chance": 0.3, "dodge": 0.4, "attack": 0.3},
+        {"state": "box", "chance": 0.6, "dodge": 0.4, "attack": 0.3},
+        {"state": "free", "chance": 0.4, "dodge": 0.4, "attack": 0.3}
+      ],
+      "default": {"state": "free", "dodge": 0.4, "attack": 0.3}
+    },
+    {
+      "_bombit": "010301 街机,困难",
+      "answer_time": 0.04, "find_range": 6, "move_speed": 1.0, "bomb_range": 1,
+      "states": [
+        {"state": "attack", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "get_item", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "box", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "free", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "idle", "chance": 0.6, "dodge": 0.6, "attack": 0.4}
+      ],
+      "default": {"state": "free", "dodge": 0.6, "attack": 0.4}
+    }
+  ],
+  "kill": [
+    {
+      "_bombit": "020101 杀人,简单",
+      "answer_time": 0.05, "find_range": 4, "move_speed": 0.92, "bomb_range": 1,
+      "states": [
+        {"state": "attack", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "escape", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "get_item", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "box", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "free", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "idle", "chance": 0.4, "dodge": 0.4, "attack": 0.2}
+      ],
+      "default": {"state": "free", "dodge": 0.4, "attack": 0.2}
+    },
+    {
+      "_bombit": "020201 杀人,普通",
+      "answer_time": 0.045, "find_range": 5, "move_speed": 1.0, "bomb_range": 1,
+      "states": [
+        {"state": "attack", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "escape", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "get_item", "chance": 0.3, "dodge": 0.4, "attack": 0.2},
+        {"state": "box", "chance": 0.5, "dodge": 0.4, "attack": 0.2},
+        {"state": "free", "chance": 0.4, "dodge": 0.4, "attack": 0.2},
+        {"state": "idle", "chance": 0.6, "dodge": 0.4, "attack": 0.2}
+      ],
+      "default": {"state": "free", "dodge": 0.4, "attack": 0.2}
+    },
+    {
+      "_bombit": "020301 杀人,困难",
+      "answer_time": 0.04, "find_range": 5, "move_speed": 1.0, "bomb_range": 2,
+      "states": [
+        {"state": "attack", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "escape", "chance": 0.6, "dodge": 0.6, "attack": 0.4},
+        {"state": "get_item", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "box", "chance": 0.5, "dodge": 0.6, "attack": 0.4},
+        {"state": "free", "chance": 0.4, "dodge": 0.6, "attack": 0.4},
+        {"state": "idle", "chance": 0.6, "dodge": 0.6, "attack": 0.4}
+      ],
+      "default": {"state": "free", "dodge": 0.6, "attack": 0.4}
+    }
+  ]
+}
