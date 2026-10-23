@@ -1,0 +1,272 @@
+[gd_resource type="Theme" format=3 uid="uid://bbtheme1arcad"]
+
+[ext_resource type="Texture2D" path="../sprites/ui/panel.png" id="1_panel"]
+[ext_resource type="Texture2D" path="../sprites/ui/card.png" id="2_card"]
+[ext_resource type="Texture2D" path="../sprites/ui/button.png" id="3_btn"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_hover.png" id="4_btn_hover"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_pressed.png" id="5_btn_pressed"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_disabled.png" id="6_btn_disabled"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_primary.png" id="7_btn_primary"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_primary_hover.png" id="8_btn_primary_hover"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_danger.png" id="9_btn_danger"]
+[ext_resource type="Texture2D" path="../sprites/ui/button_danger_hover.png" id="10_btn_danger_hover"]
+[ext_resource type="Texture2D" path="../sprites/ui/field.png" id="11_field"]
+[ext_resource type="Texture2D" path="../sprites/ui/bar_fill.png" id="12_bar_fill"]
+[ext_resource type="FontFile" path="../fonts/Inter-VariableFont_opsz,wght.ttf" id="13_inter"]
+
+[sub_resource type="FontVariation" id="FontVariation_bold"]
+base_font = ExtResource("13_inter")
+variation_opentype = {2003265652: 800}
+
+[sub_resource type="StyleBoxTexture" id="SBT_panel"]
+content_margin_left = 24.0
+content_margin_top = 18.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+texture = ExtResource("1_panel")
+texture_margin_left = 28.0
+texture_margin_top = 28.0
+texture_margin_right = 28.0
+texture_margin_bottom = 28.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_card"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+texture = ExtResource("2_card")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("3_btn")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_hover"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("4_btn_hover")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_pressed"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("5_btn_pressed")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_disabled"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("6_btn_disabled")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_primary"]
+content_margin_left = 18.0
+content_margin_top = 9.0
+content_margin_right = 18.0
+content_margin_bottom = 13.0
+texture = ExtResource("7_btn_primary")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_primary_hover"]
+content_margin_left = 18.0
+content_margin_top = 9.0
+content_margin_right = 18.0
+content_margin_bottom = 13.0
+texture = ExtResource("8_btn_primary_hover")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_danger"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("9_btn_danger")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_btn_danger_hover"]
+content_margin_left = 14.0
+content_margin_top = 7.0
+content_margin_right = 14.0
+content_margin_bottom = 11.0
+texture = ExtResource("10_btn_danger_hover")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_field"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+texture = ExtResource("11_field")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxTexture" id="SBT_bar_fill"]
+texture = ExtResource("12_bar_fill")
+texture_margin_left = 10.0
+texture_margin_top = 8.0
+texture_margin_right = 10.0
+texture_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="SBF_focus"]
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.84, 0.3, 0.9)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxLine" id="SBL_separator"]
+color = Color(0.45, 0.52, 0.95, 0.45)
+thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="SBF_scroll"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.03, 0.04, 0.1, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="SBF_grabber"]
+bg_color = Color(0.98, 0.75, 0.2, 0.85)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="SBF_popup_hover"]
+bg_color = Color(0.29, 0.35, 0.66, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[resource]
+default_font_size = 18
+Button/colors/font_color = Color(0.95, 0.96, 1, 1)
+Button/colors/font_disabled_color = Color(0.62, 0.64, 0.72, 0.7)
+Button/colors/font_focus_color = Color(0.95, 0.96, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(0.24, 0.13, 0, 1)
+Button/colors/font_pressed_color = Color(0.24, 0.13, 0, 1)
+Button/colors/icon_pressed_color = Color(0.24, 0.13, 0, 1)
+Button/font_sizes/font_size = 19
+Button/styles/disabled = SubResource("SBT_btn_disabled")
+Button/styles/focus = SubResource("SBF_focus")
+Button/styles/hover = SubResource("SBT_btn_hover")
+Button/styles/hover_pressed = SubResource("SBT_btn_pressed")
+Button/styles/normal = SubResource("SBT_btn")
+Button/styles/pressed = SubResource("SBT_btn_pressed")
+CardPanel/base_type = &"PanelContainer"
+CardPanel/styles/panel = SubResource("SBT_card")
+DangerButton/base_type = &"Button"
+DangerButton/colors/font_color = Color(1, 1, 1, 1)
+DangerButton/colors/font_focus_color = Color(1, 1, 1, 1)
+DangerButton/colors/font_hover_color = Color(1, 1, 1, 1)
+DangerButton/colors/font_outline_color = Color(0.3, 0.04, 0.04, 1)
+DangerButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+DangerButton/constants/outline_size = 4
+DangerButton/fonts/font = SubResource("FontVariation_bold")
+DangerButton/styles/hover = SubResource("SBT_btn_danger_hover")
+DangerButton/styles/normal = SubResource("SBT_btn_danger")
+DangerButton/styles/pressed = SubResource("SBT_btn_danger_hover")
+HeaderLabel/base_type = &"Label"
+HeaderLabel/colors/font_color = Color(0.66, 0.73, 1, 1)
+HeaderLabel/fonts/font = SubResource("FontVariation_bold")
+HSeparator/constants/separation = 10
+HSeparator/styles/separator = SubResource("SBL_separator")
+Label/colors/font_color = Color(0.92, 0.94, 1, 1)
+Label/colors/font_outline_color = Color(0.03, 0.04, 0.1, 1)
+LineEdit/colors/font_color = Color(0.95, 0.96, 1, 1)
+LineEdit/styles/focus = SubResource("SBF_focus")
+LineEdit/styles/normal = SubResource("SBT_field")
+LineEdit/styles/read_only = SubResource("SBT_field")
+OptionButton/font_sizes/font_size = 19
+OptionButton/colors/font_color = Color(0.95, 0.96, 1, 1)
+OptionButton/colors/font_hover_color = Color(1, 1, 1, 1)
+OptionButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+OptionButton/styles/focus = SubResource("SBF_focus")
+OptionButton/styles/hover = SubResource("SBT_btn_hover")
+OptionButton/styles/normal = SubResource("SBT_btn")
+OptionButton/styles/pressed = SubResource("SBT_btn_hover")
+Panel/styles/panel = SubResource("SBT_panel")
+PanelContainer/styles/panel = SubResource("SBT_panel")
+PopupMenu/colors/font_color = Color(0.92, 0.94, 1, 1)
+PopupMenu/colors/font_hover_color = Color(1, 1, 1, 1)
+PopupMenu/styles/hover = SubResource("SBF_popup_hover")
+PopupMenu/styles/panel = SubResource("SBT_panel")
+PrimaryButton/base_type = &"Button"
+PrimaryButton/colors/font_color = Color(1, 1, 1, 1)
+PrimaryButton/colors/font_focus_color = Color(1, 1, 1, 1)
+PrimaryButton/colors/font_hover_color = Color(1, 1, 1, 1)
+PrimaryButton/colors/font_outline_color = Color(0.04, 0.25, 0.1, 1)
+PrimaryButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+PrimaryButton/constants/outline_size = 5
+PrimaryButton/fonts/font = SubResource("FontVariation_bold")
+PrimaryButton/styles/hover = SubResource("SBT_btn_primary_hover")
+PrimaryButton/styles/normal = SubResource("SBT_btn_primary")
+PrimaryButton/styles/pressed = SubResource("SBT_btn_primary_hover")
+ProgressBar/styles/background = SubResource("SBT_field")
+ProgressBar/styles/fill = SubResource("SBT_bar_fill")
+RichTextLabel/colors/default_color = Color(0.92, 0.94, 1, 1)
+RichTextLabel/fonts/bold_font = SubResource("FontVariation_bold")
+TitleLabel/base_type = &"Label"
+TitleLabel/colors/font_color = Color(1, 0.84, 0.25, 1)
+TitleLabel/colors/font_outline_color = Color(0.07, 0.05, 0.16, 1)
+TitleLabel/colors/font_shadow_color = Color(0, 0, 0, 0.45)
+TitleLabel/constants/outline_size = 14
+TitleLabel/constants/shadow_offset_x = 0
+TitleLabel/constants/shadow_offset_y = 6
+TitleLabel/fonts/font = SubResource("FontVariation_bold")
+VScrollBar/styles/grabber = SubResource("SBF_grabber")
+VScrollBar/styles/grabber_highlight = SubResource("SBF_grabber")
+VScrollBar/styles/grabber_pressed = SubResource("SBF_grabber")
+VScrollBar/styles/scroll = SubResource("SBF_scroll")

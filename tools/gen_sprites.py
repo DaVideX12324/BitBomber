@@ -9,6 +9,7 @@ Wyjście (64×64 na pole, jak GRID_SIZE):
   players/player_<1-4>.png        — arkusz 3 kolumny (stoi, krok A, krok B) × 4 wiersze (dół, lewo, prawo, góra)
   objects/bomb.png, objects/explosion_{center,arm,end}.png (ramię poziomo, koniec w prawo)
   objects/powerup_<typ>.png
+  ui/*.png                         — 9-patch panele, przyciski, pola i pasek (motyw resources/ui/bb_theme.tres)
 """
 import math
 import os
@@ -666,10 +667,59 @@ def gen_powerups():
         down(img).save(_p("objects/powerup_%s.png" % kind))
 
 
+# ---------------------------------------------------------------------------
+# UI (tekstury 9-patch dla motywu resources/ui/bb_theme.tres)
+# ---------------------------------------------------------------------------
+
+## Kolory UI: granatowe panele, złote zaznaczenie, zielony „Zagraj”, czerwone wyjście
+UI_PANEL   = ("#28305e", "#151a36", "#0b0e20")      # góra, dół, obrys
+UI_BUTTONS = {
+    "button":         ("#3a4687", "#283166", "#0e1230"),
+    "button_hover":   ("#4b59a8", "#33407f", "#0e1230"),
+    "button_pressed": ("#fcd34d", "#f59e0b", "#5a3300"),
+    "button_primary": ("#4ade80", "#16a34a", "#0b3d1d"),
+    "button_primary_hover": ("#86efac", "#22c55e", "#0b3d1d"),
+    "button_danger":  ("#f87171", "#dc2626", "#4a0d0d"),
+    "button_danger_hover": ("#fca5a5", "#ef4444", "#4a0d0d"),
+    "button_disabled": ("#3a3f55", "#2c3044", "#14161f"),
+}
+
+
+def ui_box(w, h, r, top, bottom, edge, lip=0, gloss=0.42):
+    """Zaokrąglony prostokąt w stylu klocków z planszy: gradient, ciemny obrys, jasna linia w środku,
+    połysk u góry (gloss = do jakiej części wysokości, 0 = bez) i opcjonalna „warga” (ciemniejszy spód
+    jak bok bloku). Wymiary w px końcowych. Przy 9-patch połysk musi się mieścić w górnym marginesie."""
+    W, H, R, L = w * SS, h * SS, r * SS, lip * SS
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    top, bottom, edge = hexc(top), hexc(bottom), hexc(edge)
+    if L:
+        paste_masked(img, Image.new("RGBA", (W, H), shade(bottom, 0.55)), mask_rr((W, H), (0, 0, W - 1, H - 1), R))
+    body = (0, 0, W - 1, H - 1 - L)
+    paste_masked(img, vgrad((W, H), top, bottom), mask_rr((W, H), body, R))
+    d = Draw(img)
+    if gloss:
+        d.rounded_rectangle((3 * SS, 3 * SS, W - 3 * SS, (H - L) * gloss), R * 0.8, fill=(255, 255, 255, 34))
+    d.rounded_rectangle((2 * SS, 2 * SS, W - 1 - 2 * SS, H - 1 - L - 2 * SS), R - 2 * SS, outline=(255, 255, 255, 46), width=SS)
+    d.rounded_rectangle((0, 0, W - 1, H - 1), R, outline=edge, width=int(2.5 * SS))
+    return down(img)
+
+
+def gen_ui():
+    t, b, e = UI_PANEL
+    ui_box(96, 96, 22, t, b, e, gloss=0.2).save(_p("ui/panel.png"))     # margines 9-patch 28 px
+    ui_box(64, 64, 14, t, b, e, gloss=0).save(_p("ui/card.png"))
+    for name, (top, bottom, edge) in UI_BUTTONS.items():
+        ui_box(64, 64, 16, top, bottom, edge, lip=5).save(_p("ui/%s.png" % name))
+    # Pole tekstowe / tło paska: wklęsłe, bez wargi i połysku
+    ui_box(48, 48, 12, "#0a0d1c", "#141936", "#05070f", gloss=0).save(_p("ui/field.png"))
+    ui_box(32, 20, 9, "#fde68a", "#f59e0b", "#7a4a00").save(_p("ui/bar_fill.png"))
+
+
 if __name__ == "__main__":
     gen_tiles()
     gen_players()
     gen_bomb()
     gen_explosion()
     gen_powerups()
+    gen_ui()
     print("OK ->", os.path.abspath(OUT))
