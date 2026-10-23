@@ -46,6 +46,15 @@ func time_left() -> float:
 	return maxf(round_time_limit - _round_timer, 0.0)
 
 
+## Nagła śmierć od razu (np. na planszy zostały same boty — żeby nie czekać do końca czasu).
+func start_sudden_death_now() -> void:
+	if not _round_active or sudden_death or GameManager.is_kill_mode():
+		return
+	_round_timer = round_time_limit
+	sudden_death = true
+	sudden_death_started.emit()
+
+
 # ---------------------------------------------------------------------------
 # Sesja
 # ---------------------------------------------------------------------------
@@ -80,17 +89,12 @@ func end_round(winner_id: int) -> void:
 		return
 	_round_active = false
 
-	# Normalizuj: każdy gracz > num_human_players to bot → zapisuj pod 999
-	var record_id := winner_id
-	if winner_id > GameManager.num_human_players:
-		record_id = 999
+	if winner_id >= 0:
+		round_wins[winner_id] = round_wins.get(winner_id, 0) + 1
 
-	if record_id >= 0:
-		round_wins[record_id] = round_wins.get(record_id, 0) + 1
-
-	var session_winner := _compute_session_winner(record_id)
+	var session_winner := _compute_session_winner(winner_id)
 	GameManager.change_state(GameManager.GameState.ROUND_END)
-	round_ended.emit(record_id)  # ← emituj znormalizowane ID
+	round_ended.emit(winner_id)
 
 	if session_winner != -2:
 		GameManager.change_state(GameManager.GameState.GAME_OVER)

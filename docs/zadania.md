@@ -13,7 +13,7 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 ## Stan po nocy 2026-10-23
 
 ✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
-- **czeka na decyzję:** A9 (boty jako jeden „gracz 999”), D3 (quiz w mechanice), G1–G2 (API hosta na
+- **czeka na decyzję:** D3 (quiz w mechanice), G1–G2 (API hosta na
   konfigurację sesji i wynik — trzeba dopisać w hoście), muzyka (F3);
 - **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
   D4 (kampania), F5 (UI w .tscn).
@@ -48,8 +48,8 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
    `trigger_powerup_quiz` (nigdzie nie wywoływane), `reset_for_new_game()` w `player.gd`. Usunąć albo
    podpiąć (patrz D3).
 8. ✅ **[S] `arena.gd`** (spawny z pliku mapy) — `_CORNER_SPAWNS` miesza `ROWS`/`COLS` (działa tylko dla kwadratowej mapy).
-9. **[O] Kod 999 = „wygrały boty”** — boty liczone razem, nie da się mieć 2+ botów jako osobnych
-   rywali w tabeli wyników. Do przemyślenia przy trybach z D.
+9. ✅ **[O] Kod 999 = „wygrały boty”** — decyzja usera: każdy bot osobno. Wygrane zapisywane pod ID bota,
+   tabela „Gracz N / Bot K”; gdy zostaną same boty, od razu nagła śmierć (zamiast końca rundy).
 10. ✅ **[S] Stary klon `F:/Programy/GitHub/BitBomber`** jest 1 commit za originem — zsynchronizować albo
     usunąć, żeby nie pracować na dwóch kopiach.
 

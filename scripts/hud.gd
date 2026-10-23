@@ -145,7 +145,7 @@ func setup_players(player_list: Array) -> void:
 		card.visible = true
 		var color: Color = PLAYER_COLORS[clamp(idx, 0, PLAYER_COLORS.size() - 1)]
 		(card.get_node("VBox/Header/Dot") as ColorRect).color = color
-		(card.get_node("VBox/Header/Title") as Label).text = BbI18n.tf("bb.hud.player_title", {"player": pid})
+		(card.get_node("VBox/Header/Title") as Label).text = GameManager.player_name(pid)
 
 
 func update_lives(pid: int, lives_left: int) -> void:

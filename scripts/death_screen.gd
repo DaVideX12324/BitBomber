@@ -9,6 +9,8 @@ extends CanvasLayer
 
 enum Mode { LAST_CHANCE, ROUND_END, GAME_OVER }
 
+const HudScript = preload("hud.gd")
+
 @onready var _overlay     : ColorRect      = $Overlay
 @onready var _panel       : PanelContainer = $Panel
 @onready var _vbox        : VBoxContainer  = $Panel/VBox
@@ -119,7 +121,7 @@ func _on_last_chance(dead_player_id: int) -> void:
 
 
 func _on_round_ended(winner_id: int) -> void:
-	if winner_id >= 1 or winner_id == 999:
+	if winner_id >= 1:
 		show_round_end(winner_id)
 	else:
 		show_round_end_draw()
@@ -309,10 +311,7 @@ func show_round_end(winner_id: int) -> void:
 	_mode = Mode.ROUND_END
 	_icon.text = "🏁"
 	var cur_round: int = _rm().current_round if _rm() else 1
-	if winner_id == 999:
-		_title.text = BbI18n.tf("bb.death.bots_won_round", {"round": cur_round})
-	else:
-		_title.text = BbI18n.tf("bb.death.player_won_round", {"player": winner_id, "round": cur_round})
+	_title.text = BbI18n.tf("bb.death.player_won_round", {"name": _name(winner_id), "round": cur_round})
 	_subtitle.text = ""
 	_fill_score_table()
 	_btn_cont.text = _next_round_label()
@@ -341,15 +340,12 @@ func show_game_over(winner_id: int) -> void:
 	if winner_id == -1:
 		_icon.text = "🤝"
 		_title.text = BbI18n.t("bb.death.game_over_draw_title", "Remis!")
-		_subtitle.text = BbI18n.t("bb.death.game_over_draw_subtitle", "Obaj gracze zginęli jednocześnie.")
-	elif winner_id == 999:
-		_icon.text = "🤖"
-		_title.text = BbI18n.t("bb.death.game_over_bots_won_title", "Wygrały boty!")
-		_subtitle.text = BbI18n.t("bb.death.game_over_bots_won_subtitle", "Lepiej następnym razem.")
+		_subtitle.text = BbI18n.t("bb.death.game_over_draw_subtitle", "Tyle samo wygranych rund.")
 	else:
-		_icon.text = "🏆"
-		_title.text = BbI18n.tf("bb.death.game_over_player_won_title", {"player": winner_id})
-		_subtitle.text = ""
+		var bot_won := _is_bot(winner_id)
+		_icon.text = "🤖" if bot_won else "🏆"
+		_title.text = BbI18n.tf("bb.death.game_over_player_won_title", {"name": _name(winner_id)})
+		_subtitle.text = BbI18n.t("bb.death.game_over_bot_won_subtitle", "Lepiej następnym razem.") if bot_won else ""
 	_fill_score_table()
 	_btn_cont.visible = false
 	_btn_menu.visible = true
@@ -362,23 +358,30 @@ func _fill_score_table() -> void:
 	var lines : Array[String] = []
 	var gm := _gm()
 	var rm := _rm()
-	var n_humans: int = gm.num_human_players if gm else 1
-	var n_bots: int = gm.num_bots if gm else 0
-	for pid in range(1, n_humans + 1):
+	var total: int = gm.total_players() if gm else 2
+	for pid in range(1, total + 1):
 		var p_wins: int = rm.get_wins(pid) if rm else 0
-		lines.append(BbI18n.plural("bb.death.player_score_row", p_wins, {"player": pid, "n": p_wins}))
-	if n_bots > 0:
-		var bot_wins: int = rm.get_wins(999) if rm else 0
-		for b in range(n_bots):
-			if rm:
-				bot_wins += rm.get_wins(n_humans + b + 1)
-		lines.append(BbI18n.plural("bb.death.bots_score_row", bot_wins, {"n": bot_wins}))
+		lines.append(BbI18n.plural("bb.death.player_score_row", p_wins,
+				{"icon": "🤖" if _is_bot(pid) else "👤", "name": _name(pid), "n": p_wins}))
 	for i in _score_rows.size():
 		if i < lines.size():
 			_score_rows[i].text    = lines[i]
 			_score_rows[i].visible = true
+			# Kolor jak kropka gracza w HUD.
+			_score_rows[i].add_theme_color_override("font_color",
+					HudScript.PLAYER_COLORS[i % HudScript.PLAYER_COLORS.size()].lightened(0.25))
 		else:
 			_score_rows[i].visible = false
+
+
+func _name(pid: int) -> String:
+	var gm := _gm()
+	return gm.player_name(pid) if gm else str(pid)
+
+
+func _is_bot(pid: int) -> bool:
+	var gm := _gm()
+	return gm != null and gm.is_bot_id(pid)
 
 
 # ---------------------------------------------------------------------------

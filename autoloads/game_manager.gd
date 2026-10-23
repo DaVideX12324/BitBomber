@@ -82,6 +82,18 @@ func total_players() -> int:
 	return num_human_players + num_bots
 
 
+## Gracze 1..num_human_players to ludzie, kolejne ID to boty.
+func is_bot_id(player_id: int) -> bool:
+	return player_id > num_human_players
+
+
+## „Gracz 2” albo „Bot 1” (boty numerowane od 1, niezależnie od liczby ludzi).
+func player_name(player_id: int) -> String:
+	if is_bot_id(player_id):
+		return BbI18n.tf("bb.hud.bot_title", {"n": player_id - num_human_players}, "Bot {n}")
+	return BbI18n.tf("bb.hud.player_title", {"player": player_id}, "Gracz {player}")
+
+
 func start_game(human_players: int = 1, bots: int = 1) -> void:
 	num_human_players = human_players
 	num_bots = bots

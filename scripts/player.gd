@@ -389,6 +389,10 @@ func _deferred_last_chance() -> void:
 		RoundManager.trigger_last_chance(player_id)
 
 
+func is_awaiting_last_chance() -> bool:
+	return _pending_elim
+
+
 func resolve_last_chance(respawned: bool) -> void:
 	_pending_elim = false
 	if respawned:
