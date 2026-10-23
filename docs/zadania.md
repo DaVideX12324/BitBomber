@@ -10,15 +10,29 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 > Grafiki i dźwięki Bomb It 7 są cudze (Spil / zlong) — bierzemy z nich mechanikę, liczby i układ map,
 > a nie pliki do wydanej gry.
 
-## Stan po nocy 2026-10-23
+## Stan na koniec sesji 2026-10-23 (handoff)
 
-✅ = zrobione (commity w historii modułu, testy w `tests/`). Zostało:
-- **⚠ do sprawdzenia przez usera:** muzyka (F3) jest generowana — jeśli nie pasuje, podmienić
-  (`tools/gen_music.py` albo własne pliki w `resources/music/`, te same nazwy);
-- **do zrobienia:** C1 (bot sam kopie celowo),
-  D4 (kampania).
-- **AI botów (2026-10-23):** liczby z Bomb It w `resources/ai/bot_profiles.json` (C3 ✅), osobne profile trybu Zabójstw,
-  ucieczka z czasem do wybuchu, poprawka utykania na rogach; pomiar `tests/bench_bots.gd`.
+✅ = zrobione (commity w historii modułu, testy w `tests/`). Zrobione w sesji 2026-10-22/23:
+- **Rdzeń / błędy:** zasięg wybuchu, reakcja łańcuchowa, ogień 0,5 s, prędkość jako mnożnik, wisząca runda,
+  ogień z poprzedniej mapy, HUD „Runda 1”, martwy kod.
+- **Tryby:** Ostatni żywy + **Zabójstwa** (odradzanie, dogrywka), **nagła śmierć** po 180 s; same boty → nagła śmierć od razu.
+- **Mapy:** 27 układów z Bomb It 7 + klasyczna (`resources/maps/*.json`, `tools/import_bombit_maps.py`), wybór w menu.
+- **Przedmioty:** wagi i dorzucanie jak w Bomb It, kopanie, tarcza, gwiazdka, ❓ pytanie-bonus.
+- **Quiz w grze (D3):** ❓ pytanie-bonus bez pauzy (1–4 / Num 1–4) + quiz odrodzenia w Zabójstwach
+  (klawisze ruchu, jak ostatnia szansa) — `scripts/field_quiz.gd`, `bb_questions.gd`.
+- **Wyniki (A9):** każdy bot osobno w tabeli („Gracz N / Bot K”).
+- **Host (G1–G2):** `ModuleHostApi.session_config` / `finish_session`, historia `SessionResults`, „Ostatnio: …” w menu hosta.
+- **Grafika / audio:** wszystko generowane — `tools/gen_sprites.py` (kafle 10 motywów, postacie, ogień, power-upy, UI),
+  `tools/gen_sounds.py` (12 SFX), `tools/gen_music.py` (menu, walka; user odsłuchał — OK, sprawdzić przy dłuższym graniu).
+- **UI (F5):** styl arcade, motyw `resources/ui/bb_theme.tres`, wszystkie ekrany w .tscn, nowy lewy panel HUD
+  (zegar, cel meczu, gwiazdki wygranych, 👑, odliczanie odrodzenia).
+- **AI (C3):** profile z Bomb It w `resources/ai/bot_profiles.json`, ucieczka z czasem do wybuchu, wyrównanie do
+  środka pola (koniec utykania na rogach); pomiar `tests/bench_bots.gd` (3 mapy × 600 s — pojedyncza próbka to szum).
+
+Zostało / do sprawdzenia:
+- **Pierwsze dłuższe granie usera** (nic nie było grane ręcznie, tylko testy i zrzuty): trudność botów, czytelność
+  pytań w biegu, czy muzyka się nie przejada, rozwijane listy w menu.
+- **Opcjonalne:** C1 (bot celowo kopie bomby), D4 (kampania).
 
 ## Decyzje usera (2026-10-23)
 
