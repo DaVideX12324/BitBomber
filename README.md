@@ -73,6 +73,7 @@ Dodatkowo:
 ├── resources/sprites/      # Grafika (generowana): tiles/<motyw>/, players/, objects/
 ├── resources/sounds/       # Efekty dźwiękowe (generowane)
 ├── resources/music/        # Muzyka menu i walki (generowana, pętla w pliku WAV)
+├── resources/ui/bb_theme.tres  # Wspólny motyw UI (tekstury ui/*.png z gen_sprites.py, wariacje TitleLabel, PrimaryButton…)
 ├── tools/
 │   ├── import_bombit_maps.py  # TMX z Bomb It 7 → resources/maps/*.json
 │   ├── gen_sprites.py         # Pillow → resources/sprites/ (zmiany wyglądu tutaj, nie w PNG)

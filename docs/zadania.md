@@ -16,7 +16,7 @@ Oznaczenia: **[S]** proste, do delegowania (Sonnet / Antigravity) · **[O]** pro
 - **⚠ do sprawdzenia przez usera:** muzyka (F3) jest generowana — jeśli nie pasuje, podmienić
   (`tools/gen_music.py` albo własne pliki w `resources/music/`, te same nazwy);
 - **do zrobienia:** C1 (bot sam kopie celowo), C3 (profile trudności z pliku),
-  D4 (kampania), F5 (UI w .tscn).
+  D4 (kampania).
 
 ## Decyzje usera (2026-10-23)
 
@@ -111,8 +111,9 @@ kto ma ich najwięcej. W obu trybach po 45 s co 15 s pojawiają się na mapie no
 3. ✅ **[S] Dźwięki** (`tools/gen_sounds.py`) i muzyka (`tools/gen_music.py`: `menu`, `battle`; ⚠ user ma ocenić) — zero audio teraz. Wybuch, kładzenie bomby, podniesienie przedmiotu,
    śmierć, start rundy, muzyka.
 4. ✅ **[S] HUD** (licznik czasu, ikony power-upów w kartach) — licznik czasu rundy (jest w `RoundManager`, nie ma na ekranie), ikony zamiast liczb.
-5. **[O] Sceny UI jako .tscn (WYSIWYG)** — `quiz_overlay`, `death_screen`, `main_menu`, `hud` budują UI
-   w kodzie (~1700 linii). Przenieść do scen edytowalnych w edytorze.
+5. ✅ **[O] Sceny UI jako .tscn (WYSIWYG) + wygląd** — 2026-10-23: wszystkie ekrany w .tscn (instrukcja przeniesiona
+   z kodu), styl arcade z `gen_sprites.py` (`ui/*.png`) i wspólny motyw `resources/ui/bb_theme.tres`. W kodzie zostały
+   tylko dynamiczne elementy quizu ostatniej szansy (luki / dopasowania — liczba zależy od pytania).
 
 ## G. Integracja z Artefaktem Wiedzy
 
