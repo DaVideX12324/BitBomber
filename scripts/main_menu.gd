@@ -6,6 +6,7 @@ const V := "Root/Center/Panel/VBox/"
 const G := V + "Grid/"
 
 @onready var _root     : Control         = $Root
+@onready var _ver_label : Label          = $Root/VerLabel
 @onready var _rounds_label  : Label        = get_node(G + "RoundsLabel")
 @onready var _quiz_opt      : OptionButton = get_node(G + "QuizOpt")
 @onready var _map_opt       : OptionButton = get_node(G + "MapOpt")
@@ -44,6 +45,19 @@ var _options_menu: CanvasLayer
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 const Arena = preload("arena.gd")
 const BbMusic = preload("bb_music.gd")
+const BBRuntime = preload("bb_runtime.gd")
+
+## Wersja z module_manifest.json do wyświetlenia: "0.9.0-beta" -> "0.9.0 Beta" (zasady wersjonowania: docs hosta).
+func _version_label() -> String:
+	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(BBRuntime.path("module_manifest.json")))
+	var version := str(manifest.get("version", "")) if manifest is Dictionary else ""
+	var parts := version.split("-", true, 1)
+	if parts.size() < 2:
+		return version
+	var stage := parts[1]
+	stage = "RC" + stage.substr(2) if stage.begins_with("rc") else stage.left(1).to_upper() + stage.substr(1)
+	return "%s %s" % [parts[0], stage]
+
 
 func _gm() -> Node:
 	return get_node_or_null("/root/GameManager")
@@ -71,6 +85,7 @@ func _sz2(w: float, h: float) -> Vector2:
 
 func _ready() -> void:
 	BbMusic.play("menu")
+	_ver_label.text = "BitBomber " + _version_label()
 	_options_menu = _resolve_options_menu()
 	for i in _players_btns.size():
 		var idx := i
