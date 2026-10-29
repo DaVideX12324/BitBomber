@@ -79,6 +79,7 @@ signal powerup_collected(player_id: int, powerup_type: String)
 
 ## Arkusz postaci: kolumny stoi / krok A / krok B, wiersze dół / lewo / prawo / góra
 const SHEET_COLS : int = 3
+const SHEET_ROWS : int = 4
 ## Klatki chodu na sekundę przy szybkości 1,0
 const WALK_FPS : float = 8.0
 var _facing_row : int = 0
