@@ -76,19 +76,9 @@ signal bomb_placed(grid_pos: Vector2i, player_ref: Node)
 signal powerup_collected(player_id: int, powerup_type: String)
 
 @onready var _sprite   : Sprite2D  = $Sprite2D
-@onready var _fallback : ColorRect = $Fallback
-
-## Kolory graczy — te same w HUD i w tools/gen_sprites.py (PLAYER_COLORS)
-const FALLBACK_COLORS : Dictionary = {
-	1: Color("#3b82f6"),
-	2: Color("#ef4444"),
-	3: Color("#22c55e"),
-	4: Color("#a855f7"),
-}
 
 ## Arkusz postaci: kolumny stoi / krok A / krok B, wiersze dół / lewo / prawo / góra
 const SHEET_COLS : int = 3
-const SHEET_ROWS : int = 4
 ## Klatki chodu na sekundę przy szybkości 1,0
 const WALK_FPS : float = 8.0
 var _facing_row : int = 0
@@ -96,12 +86,9 @@ var _anim_time  : float = 0.0
 
 func _ready() -> void:
 	add_to_group("players")
-	_fallback.color = FALLBACK_COLORS.get(player_id, Color.WHITE)
-
-	if has_node("/root/SpriteLoader"):
-		if SpriteLoader.apply_or_fallback(_sprite, _fallback, "players/player_%d.png" % player_id):
-			_sprite.hframes = SHEET_COLS
-			_sprite.vframes = SHEET_ROWS
+	# scena ma arkusz gracza 1 (podgląd w edytorze); pozostali gracze — swój arkusz
+	if player_id != 1:
+		_sprite.texture = load(BBRuntime.path("resources/sprites/players/player_%d.png" % player_id))
 
 	_grid_pos       = _pixel_to_grid(global_position)
 	_pixel_target   = _grid_to_pixel(_grid_pos)
