@@ -1,0 +1,12 @@
+{
+  "title": "BitBomber",
+  "sections": [
+    {"title": "Zespół", "entries": [
+      {"name": "SKN TeamBit"}
+    ]},
+    {"title": "Grafika i dźwięk", "entries": [
+      {"name": "Kafle, postacie, bomby, power-upy", "note": "generowane skryptami (tools/gen_sprites.py)"},
+      {"name": "Muzyka i efekty", "note": "generowane skryptami (tools/gen_music.py, gen_sounds.py)"}
+    ]}
+  ]
+}

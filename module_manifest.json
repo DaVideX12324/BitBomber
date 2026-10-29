@@ -4,6 +4,7 @@
   "description": "Edukacyjna gra w stylu Bombermana z quizami i lokalnym multiplayerem.",
   "version": "0.9.0-beta",
   "entry_scene": "module_root.tscn",
+  "credits": "credits.json",
   "quiz_path": "resources/quizzes",
   "action_labels": {
     "p1_up": "Góra",

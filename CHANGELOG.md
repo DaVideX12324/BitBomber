@@ -5,6 +5,9 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`
 
 ## [Unreleased]
 
+### Dodano
+- `credits.json` z autorami assetów (pole `credits` w manifeście, ekran „Autorzy” w hoście).
+
 ## [0.9.0-beta] — 2026-10-24
 
 Pierwsza wersjonowana Beta — punkt odniesienia. Zakres gry meczowej jest kompletny; dalej testy i balans.
