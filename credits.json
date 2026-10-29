@@ -1,8 +1,8 @@
 {
   "title": "BitBomber",
   "sections": [
-    {"title": "Zespół", "entries": [
-      {"name": "SKN TeamBit"}
+    {"title": "Autor", "entries": [
+      {"name": "Dawid (DaVideX12324)", "note": "gra zrobiona dla SKN TeamBit na wydarzenia koła"}
     ]},
     {"title": "Grafika i dźwięk", "entries": [
       {"name": "Kafle, postacie, bomby, power-upy", "note": "generowane skryptami (tools/gen_sprites.py)"},
