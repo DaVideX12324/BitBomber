@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" path="../sprites/ui/button_danger_hover.png" id="10_btn_danger_hover"]
 [ext_resource type="Texture2D" path="../sprites/ui/field.png" id="11_field"]
 [ext_resource type="Texture2D" path="../sprites/ui/bar_fill.png" id="12_bar_fill"]
-[ext_resource type="FontFile" path="../fonts/Inter-VariableFont_opsz,wght.ttf" id="13_inter"]
+[ext_resource type="FontFile" uid="uid://cifsnravkbggb" path="res://resources/fonts/Inter-VariableFont_opsz,wght.ttf" id="13_inter"]
 
 [sub_resource type="FontVariation" id="FontVariation_bold"]
 base_font = ExtResource("13_inter")
