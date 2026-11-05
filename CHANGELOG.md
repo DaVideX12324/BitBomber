@@ -7,6 +7,10 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`
 
 ### Dodano
 - `credits.json` z autorami assetów (pole `credits` w manifeście, ekran „Autorzy” w hoście).
+- Zamknięte power-upy: część power-upów ma znaczek ❓ — po zebraniu pytanie, power-up tylko za dobrą odpowiedź.
+
+### Naprawiono
+- Motyw UI nie ładował się na świeżym klonie (font z folderu z `.gdignore`).
 
 ## [0.9.0-beta] — 2026-10-24
 
