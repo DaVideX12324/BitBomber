@@ -10,6 +10,7 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`
 - Zamknięte power-upy: część power-upów ma znaczek ❓ — po zebraniu pytanie, power-up tylko za dobrą odpowiedź.
 
 ### Zmieniono
+- Nazwa power-upu nad graczem po zebraniu; w Instrukcji opis zamkniętych power-upów.
 - Ruch: mniejsze ciało gracza (52 zamiast 62 px) i wyrównywanie do korytarza z pełną prędkością — mniej „przyciągania” do kratek.
 
 ### Naprawiono

@@ -27,6 +27,11 @@ const BOT_THINK    := Vector2(2.0, 5.0)
 ## Akcje odpowiedzi 1–4: pytanie-bonus / odrodzenie (kolejność jak w quiz_overlay: W, S, A, D)
 const BONUS_ACTIONS   := ["quiz_p%d_a", "quiz_p%d_b", "quiz_p%d_c", "quiz_p%d_d"]
 const RESPAWN_ACTIONS := ["p%d_up", "p%d_down", "p%d_left", "p%d_right"]
+## Nazwa power-upu nad graczem po zebraniu (zasady widać w grze, nie tylko w Instrukcji): typ -> [zapas PL]
+const PICKUP_NAMES := {
+	"bomb_up": ["+1 bomba"], "range_up": ["+1 zasięg"], "speed_up": ["Szybkość +"], "life_up": ["+1 życie"],
+	"kick": ["Kopanie bomb!"], "shield": ["Tarcza"], "star": ["Gwiazdka: nietykalność"],
+}
 const KEY_NAMES := {"Up": "↑", "Down": "↓", "Left": "←", "Right": "→"}
 
 var hud : CanvasLayer = null
@@ -67,6 +72,9 @@ func cancel(pid: int) -> void:
 
 
 func _on_powerup(_pid: int, type: String, p: Node) -> void:
+	if not p.is_bot and PICKUP_NAMES.has(type):
+		var n: Array = PICKUP_NAMES[type]
+		_float_text(p, BbI18n.t("bb.pu." + type, n[0]), 22)
 	if type == "quiz" and not _active.has(p.player_id):
 		ask(p, Kind.BONUS)
 
@@ -224,14 +232,16 @@ func _reward(p: Node) -> String:
 
 
 ## ✅ / ❌ nad postacią — widać też wynik botów.
-func _float_text(p: Node2D, text: String) -> void:
+func _float_text(p: Node2D, text: String, size: int = 34) -> void:
 	var parent := p.get_parent()
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 34)
+	label.add_theme_font_size_override("font_size", size)
+	label.add_theme_constant_override("outline_size", 6)
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	label.z_index = 10
 	parent.add_child(label)
-	label.global_position = p.global_position + Vector2(-18, -80)
+	label.global_position = p.global_position + Vector2(-label.get_minimum_size().x * 0.5, -80)
 	var tw := label.create_tween().set_parallel()
 	tw.tween_property(label, "position:y", label.position.y - 40.0, 1.1)
 	tw.tween_property(label, "modulate:a", 0.0, 1.1).set_delay(0.4)
