@@ -3,6 +3,7 @@ extends Node
 ## Quiz w trakcie gry, bez pauzy:
 ##  - pytanie-bonus: power-up „quiz” (❓) — dobra odpowiedź = tarcza / gwiazdka / zasięg +2, zła = spowolnienie,
 ##    brak odpowiedzi = nic;
+##  - zamknięty power-up (znaczek ❓): dobra odpowiedź = ten power-up, zła / brak = przepada;
 ##  - odrodzenie przez quiz (tryb KILL, ludzie): dobra = powrót od razu z tarczą, zła = 3 s czekania,
 ##    brak odpowiedzi = powrót po czasie pytania bez tarczy.
 ## Ludzie odpowiadają w panelu HUD: pytanie-bonus klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4, bo
@@ -12,7 +13,7 @@ extends Node
 const BbQuestions = preload("bb_questions.gd")
 const BbSfx = preload("bb_sfx.gd")
 
-enum Kind { BONUS, RESPAWN }
+enum Kind { BONUS, RESPAWN, UNLOCK }
 
 const BONUS_TIME   : float = 12.0
 const RESPAWN_TIME : float = 8.0
@@ -43,6 +44,7 @@ func _ready() -> void:
 
 func connect_player(p: Node) -> void:
 	p.powerup_collected.connect(_on_powerup.bind(p))
+	p.locked_powerup_taken.connect(_on_locked_powerup.bind(p))
 	p.killed.connect(_on_killed.bind(p))
 	p.died.connect(func(pid: int) -> void: cancel(pid))
 
@@ -69,6 +71,12 @@ func _on_powerup(_pid: int, type: String, p: Node) -> void:
 		ask(p, Kind.BONUS)
 
 
+func _on_locked_powerup(_pid: int, type: String, p: Node) -> void:
+	# Już odpowiada na inne pytanie (albo brak pytań) — power-up bez pytania.
+	if _active.has(p.player_id) or not ask(p, Kind.UNLOCK, type):
+		p.apply_powerup(type)
+
+
 func _on_killed(_victim: int, _killer: int, p: Node) -> void:
 	cancel(p.player_id)   # przepada niedokończone pytanie-bonus
 	if p.is_bot or BbQuestions.quizless_mode():
@@ -77,13 +85,13 @@ func _on_killed(_victim: int, _killer: int, p: Node) -> void:
 		p.set_respawn_in(RESPAWN_TIME + 0.2)   # bez odpowiedzi wraca po czasie pytania
 
 
-func ask(p: Node, kind: Kind) -> bool:
+func ask(p: Node, kind: Kind, item: String = "") -> bool:
 	var q := BbQuestions.pick(BbQuestions.CHOICE_TYPES)
 	if q.is_empty():
 		return false
 	var pid: int = p.player_id
-	var total := BONUS_TIME if kind == Kind.BONUS else RESPAWN_TIME
-	var e := {"kind": kind, "q": q, "left": total, "total": total, "player": p}
+	var total := RESPAWN_TIME if kind == Kind.RESPAWN else BONUS_TIME
+	var e := {"kind": kind, "q": q, "left": total, "total": total, "player": p, "item": item}
 	if p.is_bot:
 		e["bot_at"] = total - randf_range(BOT_THINK.x, BOT_THINK.y)
 		e["bot_correct"] = randf() < BOT_ACCURACY[clampi(GameManager.bot_difficulty, 0, BOT_ACCURACY.size() - 1)]
@@ -91,9 +99,14 @@ func ask(p: Node, kind: Kind) -> bool:
 	_closing.erase(pid)
 	var panel := _panel(pid)
 	if panel:
-		var title := BbI18n.tf("bb.fq.title_bonus" if kind == Kind.BONUS else "bb.fq.title_respawn",
-				{"name": GameManager.player_name(pid)},
-				"❓ Pytanie-bonus · {name}" if kind == Kind.BONUS else "💀 Odrodzenie · {name}")
+		var title: String
+		match kind:
+			Kind.BONUS:
+				title = BbI18n.tf("bb.fq.title_bonus", {"name": GameManager.player_name(pid)}, "❓ Pytanie-bonus · {name}")
+			Kind.UNLOCK:
+				title = BbI18n.tf("bb.fq.title_unlock", {"name": GameManager.player_name(pid)}, "🔒 Odpowiedz, by zdobyć · {name}")
+			_:
+				title = BbI18n.tf("bb.fq.title_respawn", {"name": GameManager.player_name(pid)}, "💀 Odrodzenie · {name}")
 		var keys: Array = answer_actions(pid, kind).map(_key_label)
 		panel.show_question(title, BbQuestions.text_of(q), BbQuestions.answers_of(q), keys,
 				BbQuestions.correct_index(q), hud.player_color(pid))
@@ -134,7 +147,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func answer_actions(pid: int, kind: Kind) -> Array:
-	return (BONUS_ACTIONS if kind == Kind.BONUS else RESPAWN_ACTIONS).map(func(a: String) -> String: return a % pid)
+	return (RESPAWN_ACTIONS if kind == Kind.RESPAWN else BONUS_ACTIONS).map(func(a: String) -> String: return a % pid)
 
 
 ## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „W”, „↑”, „1”, „Num 1”.
@@ -158,7 +171,15 @@ func _resolve(pid: int, correct: bool, chosen: int) -> void:
 		RoundManager.record_answer(pid, correct)
 	var text: String
 	var timeout: bool = chosen < 0 and not p.is_bot
-	if timeout and e["kind"] == Kind.BONUS:
+	if e["kind"] == Kind.UNLOCK:
+		if correct:
+			p.apply_powerup(e["item"])
+			text = BbI18n.t("bb.fq.unlocked", "✅ Power-up zdobyty!")
+		elif timeout:
+			text = BbI18n.t("bb.fq.timeout_unlock", "⏱ Czas minął — power-up przepada")
+		else:
+			text = BbI18n.t("bb.fq.unlock_lost", "❌ Power-up przepada")
+	elif timeout and e["kind"] == Kind.BONUS:
 		text = BbI18n.t("bb.fq.timeout_bonus", "⏱ Czas minął — bez bonusu")
 	elif timeout:
 		p.set_respawn_in(0.1)   # czas pytania już minął — bez dodatkowej kary

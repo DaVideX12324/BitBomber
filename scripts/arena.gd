@@ -61,6 +61,9 @@ const POWERUP_WEIGHTS : Dictionary = {
 
 ## Dorzucanie przedmiotów (Bomb It, timePassed): po ITEM_DROP_START s co ITEM_DROP_EVERY s
 ## do ITEM_DROP_COUNT sztuk, póki na mapie jest mniej niż ITEM_MAX_ON_MAP.
+## Szansa, że power-up (poza „quiz”) jest zamknięty pytaniem — gdy quizy włączone i są pytania z wyborem
+const LOCK_CHANCE : float = 0.35
+
 const ITEM_DROP_START : float = 45.0
 const ITEM_DROP_EVERY : float = 15.0
 const ITEM_DROP_COUNT : int = 2
@@ -396,6 +399,7 @@ func _spawn_powerup(cell: Vector2i) -> void:
 	var pu   := _powerup_scene.instantiate()
 	var type : String = _roll_powerup_type()
 	pu.powerup_type    = type
+	pu.locked          = _quiz_items and type != "quiz" and randf() < LOCK_CHANCE
 	pu.position        = Vector2(cell.x * GRID_SIZE, cell.y * GRID_SIZE)
 	pu.tree_exiting.connect(_on_powerup_gone.bind(cell))
 	add_child(pu)

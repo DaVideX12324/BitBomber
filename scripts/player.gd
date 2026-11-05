@@ -74,6 +74,8 @@ signal killed(player_id: int, killer_id: int)
 signal lives_changed(player_id: int, lives_left: int)
 signal bomb_placed(grid_pos: Vector2i, player_ref: Node)
 signal powerup_collected(player_id: int, powerup_type: String)
+## Zebrany zamknięty power-up — field_quiz.gd zadaje pytanie i daje go za dobrą odpowiedź.
+signal locked_powerup_taken(player_id: int, powerup_type: String)
 
 @onready var _sprite   : Sprite2D  = $Sprite2D
 
@@ -523,6 +525,11 @@ func _eliminate() -> void:
 		_spawn_death_fx()
 	visible       = false
 	died.emit(player_id)
+
+
+func take_locked_powerup(type: String) -> void:
+	BbSfx.play("pickup", -6.0, 0.03)
+	locked_powerup_taken.emit(player_id, type)
 
 
 func apply_powerup(type: String) -> void:

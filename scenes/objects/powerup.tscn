@@ -35,4 +35,19 @@ text = "?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Lock" type="Label" parent="." unique_id=1793833104]
+visible = false
+auto_translate_mode = 2
+offset_left = 36.0
+offset_top = -4.0
+offset_right = 68.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.12, 0.55, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "❓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
