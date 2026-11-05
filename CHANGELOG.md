@@ -9,6 +9,9 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`
 - `credits.json` z autorami assetów (pole `credits` w manifeście, ekran „Autorzy” w hoście).
 - Zamknięte power-upy: część power-upów ma znaczek ❓ — po zebraniu pytanie, power-up tylko za dobrą odpowiedź.
 
+### Zmieniono
+- Ruch: mniejsze ciało gracza (52 zamiast 62 px) i wyrównywanie do korytarza z pełną prędkością — mniej „przyciągania” do kratek.
+
 ### Naprawiono
 - Motyw UI nie ładował się na świeżym klonie (font z folderu z `.gdignore`).
 

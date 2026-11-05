@@ -16,7 +16,6 @@ var bot_difficulty : int = 1
 
 const GRID_SIZE  : int   = 64
 const MOVE_SPEED : float = 250
-const CORNER_SLIDE_SPEED : float = 150.0
 
 var _bomb_scene: PackedScene = load(BBRuntime.path("scenes/objects/bomb.tscn"))
 
@@ -227,6 +226,10 @@ func reset_for_new_round() -> void:
 	# (mapa musi już istnieć, żeby spawn_pixel() zwrócił prawidłową pozycję)
 
 
+## Prędkość ruchu z bieżącej klatki (velocity po zderzeniu ze ścianą jest wyzerowana).
+var _move_speed : float = 0.0
+
+
 func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 	var direction = raw_dir
 
@@ -252,7 +255,8 @@ func _handle_movement(delta: float, raw_dir: Vector2) -> void:
 				direction.x = 0
 
 		direction = direction.normalized()
-		velocity = direction * MOVE_SPEED * speed_mult * move_speed_scale * (SLOW_FACTOR if _slow_time > 0.0 else 1.0)
+		_move_speed = MOVE_SPEED * speed_mult * move_speed_scale * (SLOW_FACTOR if _slow_time > 0.0 else 1.0)
+		velocity = direction * _move_speed
 		move_and_slide()
 		if has_kick:
 			_try_kick(direction)
@@ -312,7 +316,8 @@ func _apply_corner_assist(axis: String, direction: Vector2, delta: float) -> voi
 			test_trans.origin.x -= center_dist
 
 		if not test_move(test_trans, direction * 4.0):
-			var slide_amount = sign(center_dist) * CORNER_SLIDE_SPEED * delta
+			# Wyrównanie z pełną prędkością ruchu — wolniejsze odczuwało się jak „przyciąganie” do kratki.
+			var slide_amount = sign(center_dist) * _move_speed * delta
 			if abs(slide_amount) > abs(center_dist):
 				slide_amount = center_dist
 			if axis == "y":
