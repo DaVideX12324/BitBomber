@@ -5,6 +5,8 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`
 
 ## [Unreleased]
 
+## [0.9.1-beta] — 2026-11-05
+
 ### Dodano
 - `credits.json` z autorami assetów (pole `credits` w manifeście, ekran „Autorzy” w hoście).
 - Zamknięte power-upy: część power-upów ma znaczek ❓ — po zebraniu pytanie, power-up tylko za dobrą odpowiedź.
