@@ -102,6 +102,10 @@ func _ensure_input_actions() -> void:
 	_ensure_key_action("quiz_p2_b", KEY_KP_2)
 	_ensure_key_action("quiz_p2_c", KEY_KP_3)
 	_ensure_key_action("quiz_p2_d", KEY_KP_4)
+	_ensure_key_action("quiz_p2_a", KEY_7)
+	_ensure_key_action("quiz_p2_b", KEY_8)
+	_ensure_key_action("quiz_p2_c", KEY_9)
+	_ensure_key_action("quiz_p2_d", KEY_0)
 	_ensure_key_action("pause", KEY_ESCAPE)
 
 

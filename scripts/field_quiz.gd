@@ -6,7 +6,7 @@ extends Node
 ##  - zamknięty power-up (znaczek ❓): dobra odpowiedź = ten power-up, zła / brak = przepada;
 ##  - odrodzenie przez quiz (tryb KILL, ludzie): dobra = powrót od razu z tarczą, zła = 3 s czekania,
 ##    brak odpowiedzi = powrót po czasie pytania bez tarczy.
-## Ludzie odpowiadają w panelu HUD klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4) — nigdy klawiszami
+## Ludzie odpowiadają w panelu HUD klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4 lub 7–0) — nigdy klawiszami
 ## ruchu: gracz biega, a po śmierci trzyma je z rozpędu i odpowiadałby przypadkiem.
 ## Boty „odpowiadają” po chwili z szansą zależną od trudności.
 
@@ -161,13 +161,17 @@ static func answer_actions(pid: int) -> Array:
 
 
 ## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „1”, „Num 1”, „↑”.
+## Wszystkie klawisze akcji, np. „Num 1/7” (gracz 2 bez klawiatury numerycznej ma też górny rząd).
 static func key_label(action: String) -> String:
+	var names: PackedStringArray = []
 	for ev in InputMap.action_get_events(action) if InputMap.has_action(action) else []:
 		if ev is InputEventKey:
 			var code: Key = ev.keycode if ev.keycode != KEY_NONE else DisplayServer.keyboard_get_keycode_from_physical(ev.physical_keycode)
 			var name := OS.get_keycode_string(code)
-			return KEY_NAMES.get(name, name.replace("Kp ", "Num "))
-	return "?"
+			name = KEY_NAMES.get(name, name.replace("Kp ", "Num "))
+			if not names.has(name):
+				names.append(name)
+	return "/".join(names) if not names.is_empty() else "?"
 
 
 func _resolve(pid: int, correct: bool, chosen: int) -> void:

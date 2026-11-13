@@ -8,7 +8,7 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 ### Zmieniono
 - Zasięg bomby rośnie najwyżej do 5 pól (było 7) — pod koniec rundy wybuchy nie zajmują całej planszy; po dojściu do limitu nad graczem „Zasięg maks.”.
 - Wybór zestawu pytań w menu pokazuje nazwę zestawu zamiast nazwy pliku.
-- Odpowiedzi na pytania po śmierci (Last Chance, quiz odrodzenia) tylko klawiszami 1–4 (Gracz 2: Num 1–4) — klawisze ruchu już nie odpowiadają przypadkiem.
+- Odpowiedzi na pytania po śmierci (Last Chance, quiz odrodzenia) tylko klawiszami 1–4 (Gracz 2: Num 1–4 lub 7–0) — klawisze ruchu już nie odpowiadają przypadkiem.
 
 ## [0.9.1-beta] — 2026-11-05
 

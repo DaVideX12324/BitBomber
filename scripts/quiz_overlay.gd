@@ -441,7 +441,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 
 
-## Odpowiedzi tylko akcjami quiz_pN_a..d (1–4 / Num 1–4) — klawisze ruchu, trzymane z rozpędu po śmierci,
+## Odpowiedzi tylko akcjami quiz_pN_a..d (1–4 / Num 1–4 lub 7–0) — klawisze ruchu, trzymane z rozpędu po śmierci,
 ## nie odpowiadają.
 func _handle_key_choice(event: InputEvent) -> void:
 	if not event.is_pressed() or event.is_echo():
