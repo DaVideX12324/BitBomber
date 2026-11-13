@@ -105,8 +105,7 @@ BitBomber/
 │   ├── gen_sprites.py         # Pillow → resources/sprites/ (kafle, postacie, ogień, power-upy, UI) — zmiany wyglądu tutaj
 │   ├── gen_sounds.py          # numpy → resources/sounds/*.wav
 │   └── gen_music.py           # numpy → resources/music/*.wav (chiptune, nuty w listach na końcu)
-├── tests/                  # Testy headless (uruchamiane z katalogu hosta, patrz niżej)
-└── docs/zadania.md         # Lista zadań, decyzje i stan prac
+└── tests/                  # Testy headless (uruchamiane z katalogu hosta, patrz niżej)
 ```
 
 Generatory: `python tools/gen_sprites.py`, `python tools/gen_sounds.py`, `python tools/gen_music.py` (numpy, Pillow,

@@ -1,7 +1,7 @@
 # Changelog — BitBomber
 
 Istotne zmiany widoczne dla gracza i zmiany kompatybilności. Zasady numerów i etapów: `docs/wersjonowanie.md`
-w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / `docs/zadania.md`, nie tutaj.
+w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (notatki prywatne), nie tutaj.
 
 ## [Unreleased]
 
