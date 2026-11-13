@@ -73,7 +73,10 @@ func cancel(pid: int) -> void:
 func _on_powerup(_pid: int, type: String, p: Node) -> void:
 	if not p.is_bot and PICKUP_NAMES.has(type):
 		var n: Array = PICKUP_NAMES[type]
-		_float_text(p, BbI18n.t("bb.pu." + type, n[0]), 22)
+		if type == "range_up" and p.bomb_range >= p.MAX_RANGE:
+			_float_text(p, BbI18n.t("bb.pu.range_max", "Zasięg maks."), 22)
+		else:
+			_float_text(p, BbI18n.t("bb.pu." + type, n[0]), 22)
 	if type == "quiz" and not _active.has(p.player_id):
 		ask(p, Kind.BONUS)
 

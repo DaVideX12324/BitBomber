@@ -22,6 +22,9 @@ var _bomb_scene: PackedScene = load(BBRuntime.path("scenes/objects/bomb.tscn"))
 const DEFAULT_LIVES    : int   = 1
 const DEFAULT_BOMBS    : int   = 1
 const DEFAULT_RANGE    : int   = 1
+## Limit zasięgu bomby: plansze mają 15 × 13 wolnych pól, więc przy 5 wybuch ze środka nie sięga jeszcze
+## obu ścian naraz (11 pól) — pod koniec rundy zostaje gdzie uciec.
+const MAX_RANGE        : int   = 5
 const DEFAULT_SPEED    : float = 1.0
 ## Mnożnik MOVE_SPEED: +SPEED_STEP za power-up, do MAX_SPEED (jak Bomb It: 1,3–2,1 px/kl.).
 const SPEED_STEP       : float = 0.15
@@ -539,7 +542,7 @@ func take_locked_powerup(type: String) -> void:
 
 func apply_powerup(type: String) -> void:
 	match type:
-		"range_up":  bomb_range    = min(bomb_range + 1, 7)
+		"range_up":  bomb_range    = min(bomb_range + 1, MAX_RANGE)
 		"bomb_up":   max_bombs     = min(max_bombs + 1, 4)
 		"speed_up":  speed_mult     = minf(speed_mult + SPEED_STEP, MAX_SPEED)
 		"life_up":   lives          = min(lives + 1, MAX_LIVES)
