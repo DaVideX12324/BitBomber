@@ -24,6 +24,7 @@ signal question_answered(correct: bool, question_data: Dictionary)
 signal quiz_completed(quiz_id: String, score: int, total: int)
 
 var _quizzes: Dictionary = {}            # quiz_id -> Array[Dictionary]
+var _quiz_names: Dictionary = {}         # quiz_id -> nazwa zestawu (pole "name" pliku)
 var _answered_questions: Dictionary = {} # question_id -> { "correct": int, "wrong": int }
 var _current_quiz_id: String = ""
 var _current_questions: Array = []
@@ -77,6 +78,9 @@ func _load_quiz_file(path: String, quiz_id: String) -> void:
 	var data = json.data
 	if data is Dictionary and data.has("questions"):
 		_quizzes[quiz_id] = data["questions"]
+		var quiz_name := str(data.get("name", "")).strip_edges()
+		if quiz_name != "":
+			_quiz_names[quiz_id] = quiz_name
 	elif data is Array:
 		_quizzes[quiz_id] = data
 
@@ -237,6 +241,17 @@ func get_quiz_ids() -> Array:
 		return host_quiz_service.get_quiz_ids()
 
 	return _quizzes.keys()
+
+
+## Nazwa zestawu do pokazania graczowi; bez pola "name" w pliku — id zestawu.
+func get_quiz_title(quiz_id: String) -> String:
+	var host_quiz_service := _get_host_quiz_service()
+	if host_quiz_service:
+		if host_quiz_service.has_method("get_quiz_title"):
+			return str(host_quiz_service.get_quiz_title("bitbomber", quiz_id))
+		return quiz_id
+
+	return str(_quiz_names.get(quiz_id, quiz_id))
 
 
 func start_custom_questions(questions: Array, quiz_id: String = "custom") -> Dictionary:

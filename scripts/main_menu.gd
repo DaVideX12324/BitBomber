@@ -112,12 +112,14 @@ func _ready() -> void:
 	var qm := _qm()
 	var quizzes: Array = qm.get_quiz_ids() if qm else []
 	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
+	# Na liście nazwa zestawu, id (nazwa pliku) w metadanych pozycji.
 	for q in quizzes:
-		_quiz_opt.add_item(q)
+		_quiz_opt.add_item(str(qm.get_quiz_title(q)) if qm.has_method("get_quiz_title") else str(q))
+		_quiz_opt.set_item_metadata(_quiz_opt.item_count - 1, str(q))
 	_fill_maps()
 	_start_btn.pressed.connect(func():
-		var q_id = "" if _quiz_opt.selected <= 0 \
-				else _quiz_opt.get_item_text(_quiz_opt.selected)
+		var q_id := "" if _quiz_opt.selected <= 0 \
+				else str(_quiz_opt.get_item_metadata(_quiz_opt.selected))
 		_start(_sel_players, _sel_bots, _sel_diff, _sel_win,
 				int(_rounds_spin.value), q_id)
 	)

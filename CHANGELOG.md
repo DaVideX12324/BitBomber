@@ -6,6 +6,7 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 ## [Unreleased]
 
 ### Zmieniono
+- Wybór zestawu pytań w menu pokazuje nazwę zestawu zamiast nazwy pliku.
 - Odpowiedzi na pytania po śmierci (Last Chance, quiz odrodzenia) tylko klawiszami 1–4 (Gracz 2: Num 1–4) — klawisze ruchu już nie odpowiadają przypadkiem.
 
 ## [0.9.1-beta] — 2026-11-05
