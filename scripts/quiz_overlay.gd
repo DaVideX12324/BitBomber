@@ -13,6 +13,7 @@ signal quiz_result(winner_id: int)
 enum RivalMode { SOLO, VERSUS, DUEL_P1, DUEL_P2 }
 
 const BbQuestions = preload("bb_questions.gd")
+const FieldQuiz = preload("field_quiz.gd")
 const WORDS_PER_SEC   : float = 0.35
 const DIFF_STEP_SEC   : float = 3.0
 const TYPE_MULTIPLIER : Dictionary = {
@@ -266,14 +267,15 @@ func _build_ui() -> void:
 		"fill_text":  _lbl_question.text = _question.get("prompt", "")
 		_:            _lbl_question.text = _question.get("question", _question.get("prompt", ""))
 
+	var hint_keys := {"p1": " / ".join(_answer_keys(1)), "p2": " / ".join(_answer_keys(2))}
 	match qtype:
 		"multiple_choice", "true_false":
 			if _mode == RivalMode.VERSUS:
-				_lbl_hint.text = BbI18n.t("bb.quiz.hint_versus", "P1: W/S/A/D  |  P2: ↑↓←→")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_versus", hint_keys, "P1: {p1}  |  P2: {p2}")
 			elif _mode == RivalMode.DUEL_P2:
-				_lbl_hint.text = BbI18n.t("bb.quiz.hint_duel_p2", "P2: ↑↓←→  lub  LPM")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_duel_p2", hint_keys, "P2: {p2}  lub  LPM")
 			else:
-				_lbl_hint.text = BbI18n.t("bb.quiz.hint_p1", "P1: W/S/A/D  lub  LPM")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_p1", hint_keys, "P1: {p1}  lub  LPM")
 		"fill_text":
 			_lbl_hint.text = BbI18n.tf("bb.quiz.hint_fill_text", {"player": 2 if _mode == RivalMode.DUEL_P2 else 1})
 		"fill_tiles":
@@ -294,8 +296,8 @@ func _build_ui() -> void:
 func _build_mc() -> void:
 	_mc_box.visible = true
 	var answers : Array = _question.get("answers", [])
-	var keys_p1 : Array[String] = ["W", "S", "A", "D"]
-	var keys_p2 : Array[String] = ["↑", "↓", "←", "→"]
+	var keys_p1 := _answer_keys(1)
+	var keys_p2 := _answer_keys(2)
 	for i in _mc_btns.size():
 		var btn := _mc_btns[i]
 		if i < answers.size():
@@ -315,8 +317,8 @@ func _build_mc() -> void:
 # --- true_false ---
 func _build_tf() -> void:
 	_tf_box.visible = true
-	var k1 : Array[String] = ["W", "S"]
-	var k2 : Array[String] = ["↑", "↓"]
+	var k1 := _answer_keys(1)
+	var k2 := _answer_keys(2)
 	var labels := [BbI18n.t("bb.quiz.true", "Prawda"), BbI18n.t("bb.quiz.false", "Fałsz")]
 	for i in 2:
 		var btn := _tf_btns[i]
@@ -439,21 +441,31 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 
 
+## Odpowiedzi tylko akcjami quiz_pN_a..d (1–4 / Num 1–4) — klawisze ruchu, trzymane z rozpędu po śmierci,
+## nie odpowiadają.
 func _handle_key_choice(event: InputEvent) -> void:
-	if not (event is InputEventKey) or not (event as InputEventKey).pressed or (event as InputEventKey).is_echo():
+	if not event.is_pressed() or event.is_echo():
 		return
-	var ke := event as InputEventKey
 	var qtype : String = _question.get("type", "multiple_choice")
 	var count : int = (_question.get("answers", []) as Array).size() if qtype == "multiple_choice" else 2
-	var p1_keys : Array[Key] = [KEY_W, KEY_S, KEY_A, KEY_D]
-	var p2_keys : Array[Key] = [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT]
+	var p1_actions := FieldQuiz.answer_actions(1)
+	var p2_actions := FieldQuiz.answer_actions(2)
 	for i in range(min(count, 4)):
 		if _mode in [RivalMode.SOLO, RivalMode.VERSUS, RivalMode.DUEL_P1]:
-			if ke.keycode == p1_keys[i] and not _answered_p1:
+			if _is_action(event, p1_actions[i]) and not _answered_p1:
 				_submit_answer(1, i); get_viewport().set_input_as_handled(); return
 		if _mode in [RivalMode.VERSUS, RivalMode.DUEL_P2]:
-			if ke.keycode == p2_keys[i] and not _answered_p2:
+			if _is_action(event, p2_actions[i]) and not _answered_p2:
 				_submit_answer(2, i); get_viewport().set_input_as_handled(); return
+
+
+func _is_action(event: InputEvent, action: String) -> bool:
+	return InputMap.has_action(action) and event.is_action_pressed(action)
+
+
+## Nazwy klawiszy odpowiedzi gracza („1”, „Num 1”…) — wg aktualnego przypisania.
+func _answer_keys(pid: int) -> Array:
+	return FieldQuiz.answer_actions(pid).map(FieldQuiz.key_label)
 
 
 # ---------------------------------------------------------------------------

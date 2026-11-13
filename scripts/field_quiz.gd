@@ -6,8 +6,8 @@ extends Node
 ##  - zamknięty power-up (znaczek ❓): dobra odpowiedź = ten power-up, zła / brak = przepada;
 ##  - odrodzenie przez quiz (tryb KILL, ludzie): dobra = powrót od razu z tarczą, zła = 3 s czekania,
 ##    brak odpowiedzi = powrót po czasie pytania bez tarczy.
-## Ludzie odpowiadają w panelu HUD: pytanie-bonus klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4, bo
-## gracz biega), odrodzenie klawiszami ruchu jak ostatnia szansa (W/S/A/D, strzałki — martwy się nie rusza).
+## Ludzie odpowiadają w panelu HUD klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4) — nigdy klawiszami
+## ruchu: gracz biega, a po śmierci trzyma je z rozpędu i odpowiadałby przypadkiem.
 ## Boty „odpowiadają” po chwili z szansą zależną od trudności.
 
 const BbQuestions = preload("bb_questions.gd")
@@ -24,9 +24,8 @@ const WRONG_RESPAWN_DELAY : float = 3.0
 ## Boty: szansa na dobrą odpowiedź (łatwe / średnie / trudne) i czas „namysłu”
 const BOT_ACCURACY : Array[float] = [0.5, 0.65, 0.8]
 const BOT_THINK    := Vector2(2.0, 5.0)
-## Akcje odpowiedzi 1–4: pytanie-bonus / odrodzenie (kolejność jak w quiz_overlay: W, S, A, D)
+## Akcje odpowiedzi 1–4 (wszystkie pytania w grze, także quiz_overlay)
 const BONUS_ACTIONS   := ["quiz_p%d_a", "quiz_p%d_b", "quiz_p%d_c", "quiz_p%d_d"]
-const RESPAWN_ACTIONS := ["p%d_up", "p%d_down", "p%d_left", "p%d_right"]
 ## Nazwa power-upu nad graczem po zebraniu (zasady widać w grze, nie tylko w Instrukcji): typ -> [zapas PL]
 const PICKUP_NAMES := {
 	"bomb_up": ["+1 bomba"], "range_up": ["+1 zasięg"], "speed_up": ["Szybkość +"], "life_up": ["+1 życie"],
@@ -115,7 +114,7 @@ func ask(p: Node, kind: Kind, item: String = "") -> bool:
 				title = BbI18n.tf("bb.fq.title_unlock", {"name": GameManager.player_name(pid)}, "🔒 Odpowiedz, by zdobyć · {name}")
 			_:
 				title = BbI18n.tf("bb.fq.title_respawn", {"name": GameManager.player_name(pid)}, "💀 Odrodzenie · {name}")
-		var keys: Array = answer_actions(pid, kind).map(_key_label)
+		var keys: Array = answer_actions(pid).map(key_label)
 		panel.show_question(title, BbQuestions.text_of(q), BbQuestions.answers_of(q), keys,
 				BbQuestions.correct_index(q), hud.player_color(pid))
 	return true
@@ -145,7 +144,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var e: Dictionary = _active[pid]
 		if e["player"].is_bot:
 			continue
-		var actions := answer_actions(pid, e["kind"])
+		var actions := answer_actions(pid)
 		for i in mini(BbQuestions.answers_of(e["q"]).size(), actions.size()):
 			var action: String = actions[i]
 			if InputMap.has_action(action) and event.is_action_pressed(action):
@@ -154,12 +153,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 
 
-func answer_actions(pid: int, kind: Kind) -> Array:
-	return (RESPAWN_ACTIONS if kind == Kind.RESPAWN else BONUS_ACTIONS).map(func(a: String) -> String: return a % pid)
+static func answer_actions(pid: int) -> Array:
+	return BONUS_ACTIONS.map(func(a: String) -> String: return a % pid)
 
 
-## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „W”, „↑”, „1”, „Num 1”.
-func _key_label(action: String) -> String:
+## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „1”, „Num 1”, „↑”.
+static func key_label(action: String) -> String:
 	for ev in InputMap.action_get_events(action) if InputMap.has_action(action) else []:
 		if ev is InputEventKey:
 			var code: Key = ev.keycode if ev.keycode != KEY_NONE else DisplayServer.keyboard_get_keycode_from_physical(ev.physical_keycode)
