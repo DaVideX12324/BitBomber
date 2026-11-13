@@ -12,6 +12,7 @@ signal quiz_result(winner_id: int)
 
 enum RivalMode { SOLO, VERSUS, DUEL_P1, DUEL_P2 }
 
+const BbQuestions = preload("bb_questions.gd")
 const WORDS_PER_SEC   : float = 0.35
 const DIFF_STEP_SEC   : float = 3.0
 const TYPE_MULTIPLIER : Dictionary = {
@@ -575,11 +576,7 @@ func _submit_answer(player_id: int, answer_index: int) -> void:
 		return
 	_locked = true
 	var qtype : String = _question.get("type", "multiple_choice")
-	var is_correct : bool = false
-	if qtype == "multiple_choice":
-		is_correct = (answer_index == _question.get("correct_index", -1) as int)
-	elif qtype == "true_false":
-		is_correct = ((answer_index == 0) == _question.get("correct_answer", false) as bool)
+	var is_correct: bool = BbQuestions.is_correct(_question, answer_index)
 	_dbg("Gracz %d odpowiedział (idx: %d). Poprawnie? %s" % [player_id, answer_index, str(is_correct)])
 	var highlight_btns : Array[Button] = _mc_btns if qtype == "multiple_choice" else _tf_btns
 	if answer_index < highlight_btns.size():

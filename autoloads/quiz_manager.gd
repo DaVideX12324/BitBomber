@@ -209,6 +209,17 @@ func answer_current(player_answer: Dictionary) -> Dictionary:
 	}
 
 
+## Ocena odpowiedzi na pytanie spoza sesji (szybkie pytania w grze); w hoście przez QuizService.answer_question.
+func answer_question(question: Dictionary, player_answer: Dictionary) -> bool:
+	var correct := _check_answer(question, player_answer)
+	var qid = question.get("id", "unknown")
+	if not _answered_questions.has(qid):
+		_answered_questions[qid] = { "correct": 0, "wrong": 0 }
+	_answered_questions[qid]["correct" if correct else "wrong"] += 1
+	question_answered.emit(correct, question)
+	return correct
+
+
 ## Zwraca bieżące pytanie bez przesuwania indeksu.
 func get_current_question() -> Dictionary:
 	var host_quiz_service := _get_host_quiz_service()

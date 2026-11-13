@@ -73,7 +73,12 @@ static func correct_index(q: Dictionary) -> int:
 	return int(q.get("correct_index", -1))
 
 
+## Ocena odpowiedzi (indeks przycisku 0–3) — sprawdza i zapisuje QuizManager, nie moduł.
 static func is_correct(q: Dictionary, index: int) -> bool:
+	var qm := _node("QuizManager")
+	var answer := {"value": index == 0} if q.get("type", "") == "true_false" else {"index": index}
+	if qm and qm.has_method("answer_question"):
+		return bool(qm.answer_question(q, answer))
 	return index == correct_index(q)
 
 
@@ -82,32 +87,11 @@ static func choice_quiz_available() -> bool:
 	return not quizless_mode() and not pick(CHOICE_TYPES).is_empty()
 
 
-## Ustawienie „bez quizów” (host: SettingsService, samodzielnie: SettingsManager).
+## Ustawienie „bez quizów” (w hoście SettingsService; samodzielnie brak opcji = quizy włączone).
 static func quizless_mode() -> bool:
 	var host_settings: Node = _node("SettingsService")
-	if host_settings and host_settings.has_method("is_quizless_mode_enabled"):
-		return bool(host_settings.call("is_quizless_mode_enabled"))
-
-	for key_name: String in ["quizless_mode", "disable_quizzes", "skip_quizzes"]:
-		var value: Variant = null
-		if host_settings:
-			if host_settings.has_method("get_global"):
-				value = host_settings.call("get_global", key_name, null)
-			elif host_settings.has_method("get_module"):
-				value = host_settings.call("get_module", "bitbomber", key_name, null)
-			if value != null:
-				return bool(value)
-
-		var local_settings: Node = _node("SettingsManager")
-		if local_settings:
-			if local_settings.has_method("get_global"):
-				value = local_settings.call("get_global", key_name, null)
-			else:
-				value = local_settings.get(key_name)
-			if value != null:
-				return bool(value)
-
-	return false
+	return host_settings != null and host_settings.has_method("is_quizless_mode_enabled") \
+		and bool(host_settings.call("is_quizless_mode_enabled"))
 
 
 static func _node(node_name: String) -> Node:
