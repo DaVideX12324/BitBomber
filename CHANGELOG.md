@@ -6,6 +6,7 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 ## [Unreleased]
 
 ### Zmieniono
+- Boty łatwe i średnie słabsze, żeby dało się je pokonać: myślą rzadziej (co 0,3 / 0,15 s zamiast 0,04), wolniej chodzą, rzadziej atakują i przez chwilę (0,6 / 0,35 s) nie widzą świeżo położonej bomby przeciwnika — można je złapać w pułapkę. Trudne bez zmian.
 - Zasięg bomby rośnie najwyżej do 5 pól (było 7) — pod koniec rundy wybuchy nie zajmują całej planszy; po dojściu do limitu nad graczem „Zasięg maks.”.
 - Wybór zestawu pytań w menu pokazuje nazwę zestawu zamiast nazwy pliku.
 - Odpowiedzi na pytania po śmierci (Last Chance, quiz odrodzenia) tylko klawiszami 1–4 (Gracz 2: Num 1–4 lub 7–0) — klawisze ruchu już nie odpowiadają przypadkiem.

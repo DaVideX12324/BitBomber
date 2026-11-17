@@ -49,6 +49,8 @@ Bot (`scripts/bot_ai.gd`) to maszyna stanów jak `AIEngine` z Bomb It 7: co `ans
 w kolejności z profilu (każdy z szansą `chance`), pierwszy pasujący wygrywa, a gdy żaden — stan domyślny (spacer).
 Profile trudności dla obu trybów są w `resources/ai/bot_profiles.json` (liczby z `GameAI` Bomb It: czas reakcji,
 zasięg widzenia, szybkość, szanse stanów, unik / bomba w biegu na każdym kroku) — zmiana balansu botów = edycja JSON.
+Łatwe i średnie są słabsze niż w Bomb It: rzadziej myślą, wolniej chodzą i przez `reaction` sekund nie widzą świeżej
+bomby przeciwnika (da się je złapać w pułapkę).
 
 | Stan | Opis |
 |------|------|
@@ -63,6 +65,8 @@ Trasy: **`AStarGrid2D`** (pola w zasięgu bomb drogie); zatrzymany między polam
 Bot omija spadające bloki nagłej śmierci i tor kopniętych bomb, a pytania-bonus „odpowiada” z szansą wg trudności.
 Pomiar: `tests/bench_bots.gd` (4 boty w trybie Zabójstw, zabójstwa / samobójstwa; `BENCH_WHY=1` — stan bota przy
 samobójstwie, `BENCH_TRACE=1` — pełny log decyzji). Pojedyncza próbka to szum — porównywać 3 mapy × 600 s.
+Trudność: `tests/bench_vs.gd` — bot trudny (zastępca sprawnego gracza) kontra `BENCH_BOTS` botów `BENCH_DIFF` w trybie
+Ostatni żywy; wypisuje udział wygranych trudnego (2026-11-17, 2×20 rund: 1 na 1 łatwy ~85%, średni ~77%; 1 na 3 ~45% / ~32%).
 
 ---
 

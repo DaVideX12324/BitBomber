@@ -80,6 +80,9 @@ class StateEntry:
 static var _profiles: Dictionary = {}
 
 var find_range: int = 5
+## Sekundy, przez które bot nie widzi świeżo położonej cudzej bomby (profil "reaction"; 0 = od razu).
+## Własne bomby zna od razu. Łatwe / średnie boty dają się dzięki temu złapać w pułapkę.
+var reaction: float = 0.0
 var _entries: Array[StateEntry] = []
 var _default_entry: StateEntry
 ## Wpis, który uruchomił bieżący stan (jego dodge / attack działają na każdym kroku)
@@ -108,6 +111,7 @@ func _apply_profile() -> void:
 	var prof: Dictionary = list[clampi(int(difficulty), 0, list.size() - 1)]
 	ai_answer_time = float(prof.get("answer_time", 0.04))
 	find_range = int(prof.get("find_range", 5))
+	reaction = float(prof.get("reaction", 0.0))
 	for e in prof.get("states", []):
 		_entries.append(_make_entry(e))
 	_default_entry = _make_entry(prof.get("default", {"state": "free"}))
@@ -256,6 +260,8 @@ func _update_sense():
 
 	var bombs: Array[Dictionary] = []
 	for bomb in get_tree().get_nodes_in_group(GROUP_BOMB):
+		if reaction > 0.0 and bomb.get("owner_player") != bot_node and bomb.has_method("time_left") 				and BOMB_FUSE - float(bomb.time_left()) < reaction:
+			continue
 		bombs.append({
 			"cell": _cell(bomb.global_position),
 			"range": int(bomb.get("explosion_range")) if bomb.get("explosion_range") != null else 1,
