@@ -30,10 +30,11 @@ func _run() -> void:
 		var t: String = arena._roll_powerup_type()
 		counts[t] = counts.get(t, 0) + 1
 	var total := 0
+	# Wagi jak w arenie: ❓ ma 0, gdy nie ma pytań (test stawia arenę bez sesji i zestawu pytań).
 	for t in arena.POWERUP_WEIGHTS:
-		total += arena.POWERUP_WEIGHTS[t]
+		total += arena._weight(t)
 	for t in arena.POWERUP_WEIGHTS:
-		var want: float = 10000.0 * arena.POWERUP_WEIGHTS[t] / total
+		var want: float = 10000.0 * arena._weight(t) / total
 		_check(absf(counts.get(t, 0) - want) < want * 0.15 + 30, "%s: %d (≈%d)" % [t, counts.get(t, 0), want])
 
 	_check(arena.powerup_cells.is_empty(), "na starcie bez przedmiotów")
