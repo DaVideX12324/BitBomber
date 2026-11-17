@@ -47,6 +47,8 @@
   "bb.hud.player_title": "Player {player}",
   "bb.hud.round_title": "Round {round}",
   "bb.menu.quiz_all": "All",
+  "bb.menu.btn_quiz_editor": "✎ Edit",
+  "bb.menu.quiz_editor_tip": "Question editor: sets, your own questions, import",
   "bb.menu.rounds_to_win_x": "Rounds to win",
   "bb.menu.rounds_in_session_y": "Number of rounds",
   "bb.menu.btn_back_to_host": "✕ Back",

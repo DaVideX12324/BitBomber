@@ -5,6 +5,9 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 
 ## [Unreleased]
 
+### Dodano
+- Edytor pytań (przycisk „✎ Edytuj” przy wyborze pytań w menu): zestawy włączane „w grze”, własne pytania, import i eksport JSON — także bez Artefaktu Wiedzy (wybór zapisany w user://; domyślnie w grze tylko „Informatyka – szkoła podstawowa”).
+
 ## [1.0.0] — 2026-11-17
 
 Pierwsze stabilne wydanie: zakres gry meczowej (dwa tryby, 28 map, boty na 3 poziomach, quizy w grze, oprawa, sesja z hostem).

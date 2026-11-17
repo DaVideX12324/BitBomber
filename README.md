@@ -104,6 +104,7 @@ BitBomber/
 │   ├── i18n/               # Tłumaczenia PL / EN (sceny tłumaczone po polskim tekście źródłowym)
 │   └── quizzes/, fonts/    # Zestawy pytań (samodzielnie), fonty
 ├── shaders/                # Shader bomby
+├── shared/                 # Kopia edytora pytań hosta (QuestionBank + edytor); generuje host: tools/sync_shared_question_editor.gd — nie edytować ręcznie
 ├── tools/
 │   ├── import_bombit_maps.py  # TMX z Bomb It 7 → resources/maps/*.json
 │   ├── gen_sprites.py         # Pillow → resources/sprites/ (kafle, postacie, ogień, power-upy, UI) — zmiany wyglądu tutaj
@@ -132,7 +133,9 @@ Samodzielnie ta sama gra działa jako zwykły projekt Godota (`project.godot.off
 - **Ścieżki:** przez `BBRuntime.path("…")` (`scripts/bb_runtime.gd`), nigdy na twardo `res://modules/BitBomber/…`.
 - **Sterowanie:** akcje wejścia rejestruje `module_root.gd`, a ich opis dla zakładki „Sterowanie” w opcjach hosta jest
   w manifeście (`controls`, `action_labels`).
-- **Quizy:** samodzielnie `QuizManager` BitBombera ładuje zestawy z `resources/quizzes`; w hoście `QuizManager`,
+- **Quizy:** samodzielnie `QuizManager` BitBombera ładuje zestawy przez kopię `QuestionBank` (`shared/`): wbudowane
+  z `resources/quizzes`, własne z `user://quizzes`, tylko włączone „w grze” (`user://quiz_selection.json`). Edytor pytań:
+  przycisk „✎ Edytuj” w menu (ta sama kopia także w hoście); w hoście `QuizManager`,
   `SettingsManager`, `UIScaleManager` i `WindowManager` to usługi / adaptery hosta (`autoloads/compat/`), a BitBomber
   korzysta przez nie z `QuizService`. Ustawienie hosta „bez quizów” wyłącza wszystkie quizy (także ❓ i odrodzenie).
 - **Audio:** efekty przez `AudioService.play_sfx` (szyna SFX), muzyka przez `AudioService.register_music_track` +

@@ -1,6 +1,8 @@
 extends Node
 
-const BBRuntime = preload("../scripts/bb_runtime.gd")
+## Zestawy bez hosta: kopia QuestionBank hosta (shared/, tools/sync_shared_question_editor.gd w hoście) — wbudowane
+## z resources/quizzes, własne z user://quizzes, wybór „w grze” z user://quiz_selection.json (edytor pytań).
+const Bank = preload("../shared/scripts/core/question_bank.gd")
 
 ## Zarządza bazą pytań quizowych, ładowaniem z JSON i walidacją odpowiedzi.
 ## Oddziela warstwę merytoryczną od prezentacji — pytania ładowane z plików JSON.
@@ -42,47 +44,33 @@ func _ready() -> void:
 # Ładowanie quizów
 # ---------------------------------------------------------------------------
 
-## Ładuje wszystkie pliki .json z folderu res://resources/quizzes/
+## Zestawy włączone „w grze” (edytor pytań), bez wyłączonych pytań; zestaw bez pytań pomijany.
 func _load_all_quizzes() -> void:
-	var dir_path: String = BBRuntime.path("resources/quizzes/")
-	var dir = DirAccess.open(dir_path)
-	if not dir:
-		push_warning("QuizManager: Brak folderu quizzes!")
-		return
-
-	dir.list_dir_begin()
-	var file_name = dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".json"):
-			var quiz_id = file_name.get_basename()
-			_load_quiz_file(dir_path + "/" + file_name, quiz_id)
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	_quizzes.clear()
+	_quiz_names.clear()
+	var selection := Bank.load_selection()
+	for quiz_set in Bank.list_sets():
+		var quiz_id := str(quiz_set["id"])
+		if not Bank.is_set_enabled(quiz_id, selection):
+			continue
+		var questions: Array = []
+		for question: Variant in quiz_set.get("questions", []):
+			if question is Dictionary and Bank.is_question_enabled(quiz_id, str(question.get("id", "")), selection):
+				questions.append(question)
+		if questions.is_empty():
+			continue
+		_quizzes[quiz_id] = questions
+		var quiz_name := str(quiz_set.get("name", "")).strip_edges()
+		if quiz_name != "":
+			_quiz_names[quiz_id] = quiz_name
 	print("QuizManager: Załadowano %d quizów" % _quizzes.size())
 
 
-func _load_quiz_file(path: String, quiz_id: String) -> void:
-	var file = FileAccess.open(path, FileAccess.READ)
-	if not file:
-		push_warning("QuizManager: Nie można otworzyć %s" % path)
+## Po zmianach w edytorze pytań (bez hosta; w hoście edytor przeładowuje QuizService).
+func reload_all() -> void:
+	if _get_host_quiz_service():
 		return
-
-	var json = JSON.new()
-	var result = json.parse(file.get_as_text())
-	file.close()
-
-	if result != OK:
-		push_warning("QuizManager: Błąd parsowania %s" % path)
-		return
-
-	var data = json.data
-	if data is Dictionary and data.has("questions"):
-		_quizzes[quiz_id] = data["questions"]
-		var quiz_name := str(data.get("name", "")).strip_edges()
-		if quiz_name != "":
-			_quiz_names[quiz_id] = quiz_name
-	elif data is Array:
-		_quizzes[quiz_id] = data
+	_load_all_quizzes()
 
 
 # ---------------------------------------------------------------------------

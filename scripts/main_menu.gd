@@ -8,7 +8,8 @@ const G := V + "Grid/"
 @onready var _root     : Control         = $Root
 @onready var _ver_label : Label          = $Root/VerLabel
 @onready var _rounds_label  : Label        = get_node(G + "RoundsLabel")
-@onready var _quiz_opt      : OptionButton = get_node(G + "QuizOpt")
+@onready var _quiz_opt      : OptionButton = get_node(G + "HBoxQuiz/QuizOpt")
+@onready var _quiz_editor_btn : Button     = get_node(G + "HBoxQuiz/BtnQuizEditor")
 @onready var _map_opt       : OptionButton = get_node(G + "MapOpt")
 @onready var _rounds_spin   : SpinBox      = get_node(G + "RoundsSpin")
 @onready var _start_btn     : Button       = get_node(V + "BtnStart")
@@ -41,6 +42,9 @@ var _sel_win     : int = 0
 var _sel_mode    : int = 0
 
 var _options_menu: CanvasLayer
+## Edytor pytań hosta (kopia w shared/, działa też bez hosta); tworzony przy pierwszym otwarciu.
+var _quiz_editor: CanvasLayer
+const QuizEditorScene = preload("../shared/scenes/ui/question_editor.tscn")
 
 const HOST_OPTIONS_MENU_SCENE := "res://scenes/ui/options_menu.tscn"
 const Arena = preload("arena.gd")
@@ -109,13 +113,9 @@ func _ready() -> void:
 	_quit_btn.pressed.connect(_on_quit_pressed)
 	_help_btn.pressed.connect(_show_help)
 	_options_btn.pressed.connect(func(): _options_menu.open())
-	var qm := _qm()
-	var quizzes: Array = qm.get_quiz_ids() if qm else []
-	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
-	# Na liście nazwa zestawu, id (nazwa pliku) w metadanych pozycji.
-	for q in quizzes:
-		_quiz_opt.add_item(str(qm.get_quiz_title(q)) if qm.has_method("get_quiz_title") else str(q))
-		_quiz_opt.set_item_metadata(_quiz_opt.item_count - 1, str(q))
+	_quiz_editor_btn.tooltip_text = BbI18n.t("bb.menu.quiz_editor_tip", _quiz_editor_btn.tooltip_text)
+	_quiz_editor_btn.pressed.connect(_open_quiz_editor)
+	_fill_quizzes()
 	_fill_maps()
 	_start_btn.pressed.connect(func():
 		var q_id := "" if _quiz_opt.selected <= 0 \
@@ -269,6 +269,30 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 		else:
 			gm.max_rounds = rounds
 		gm.start_game(humans, bots)
+
+
+## „Wszystkie” + zestawy w grze; na liście nazwa zestawu, id (nazwa pliku) w metadanych. Zostawia wybrany zestaw,
+## jeśli nadal jest na liście (odświeżenie po edytorze pytań).
+func _fill_quizzes() -> void:
+	var previous := "" if _quiz_opt.selected <= 0 else str(_quiz_opt.get_item_metadata(_quiz_opt.selected))
+	_quiz_opt.clear()
+	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
+	var qm := _qm()
+	var quizzes: Array = qm.get_quiz_ids() if qm else []
+	for q in quizzes:
+		_quiz_opt.add_item(str(qm.get_quiz_title(q)) if qm.has_method("get_quiz_title") else str(q))
+		_quiz_opt.set_item_metadata(_quiz_opt.item_count - 1, str(q))
+		if str(q) == previous:
+			_quiz_opt.select(_quiz_opt.item_count - 1)
+
+
+func _open_quiz_editor() -> void:
+	if _quiz_editor == null:
+		_quiz_editor = QuizEditorScene.instantiate() as CanvasLayer
+		add_child(_quiz_editor)
+		_quiz_editor.connect("closed", _fill_quizzes)
+	_quiz_editor.layer = maxi(_quiz_editor.layer, layer + 1)
+	_quiz_editor.call("open")
 
 
 ## „Losowa” + mapy z resources/maps, np. „Las 2” (wariant 0 = bez numeru). Zaznacza ostatnio wybraną.

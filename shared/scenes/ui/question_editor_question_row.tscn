@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[node name="QuestionRow" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 50)
+mouse_filter = 0
+theme_type_variation = &"ListRow"
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="Toggle" type="CheckButton" parent="HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+tooltip_text = "Używane w grach"
+
+[node name="Text" type="Label" parent="HBox"]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+text = "Treść pytania"
+text_overrun_behavior = 3
+
+[node name="Chip" type="PanelContainer" parent="HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"Chip"
+
+[node name="Type" type="Label" parent="HBox/Chip"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+theme_override_font_sizes/font_size = 18
+text = "Wybór odpowiedzi"
+
+[node name="Diff" type="Label" parent="HBox"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+theme_override_font_sizes/font_size = 17
+text = "●●○○○"
+
+[node name="Menu" type="MenuButton" parent="HBox"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"GhostButton"
+text = "⋯"

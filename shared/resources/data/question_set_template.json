@@ -1,0 +1,54 @@
+{
+  "name": "Mój zestaw pytań",
+  "description": "Szablon: po jednym pytaniu każdego typu. Zmień treść, usuń niepotrzebne i zaimportuj w menu Pytania (Importuj). Pola: difficulty 1–5, category — dowolny tekst, id — opcjonalne (nadawane przy imporcie).",
+  "questions": [
+    {
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "ogolne",
+      "question": "Ile nóg ma pająk?",
+      "answers": ["6", "8", "10", "12"],
+      "correct_index": 1
+    },
+    {
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "ogolne",
+      "statement": "Woda wrze w temperaturze 100 °C przy ciśnieniu normalnym.",
+      "correct_answer": true
+    },
+    {
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "ogolne",
+      "prompt": "Stolica Polski to…",
+      "answer": "Warszawa",
+      "prefilled_pattern": "W_______",
+      "case_sensitive": false,
+      "accepted_alternatives": ["warszawa"]
+    },
+    {
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "ogolne",
+      "text_with_gaps": "Ziemia krąży wokół ___, a Księżyc wokół ___.",
+      "gaps": [
+        {"index": 0, "correct": "Słońca"},
+        {"index": 1, "correct": "Ziemi"}
+      ],
+      "tiles": ["Słońca", "Ziemi", "Marsa", "Jowisza"]
+    },
+    {
+      "type": "matching",
+      "difficulty": 2,
+      "category": "ogolne",
+      "left_items": ["Pies", "Orzeł", "Karp"],
+      "right_items": ["ryba", "ssak", "ptak"],
+      "pairs": [
+        {"left_index": 0, "right_index": 1},
+        {"left_index": 1, "right_index": 2},
+        {"left_index": 2, "right_index": 0}
+      ]
+    }
+  ]
+}

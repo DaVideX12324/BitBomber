@@ -1,0 +1,345 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="../../scripts/ui/question_editor.gd" id="1"]
+[ext_resource type="Theme" path="../../resources/ui/question_editor_theme.tres" id="2_theme"]
+
+[node name="QuestionEditor" type="CanvasLayer"]
+layer = 30
+visible = false
+script = ExtResource("1")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+
+[node name="Bg" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.04, 0.065, 0.98)
+
+[node name="Margin" type="MarginContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Root/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SetsPage" type="VBoxContainer" parent="Root/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Root/Margin/VBox/SetsPage"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BtnClose" type="Button" parent="Root/Margin/VBox/SetsPage/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"GhostButton"
+text = "← Wróć"
+
+[node name="TitleBox" type="VBoxContainer" parent="Root/Margin/VBox/SetsPage/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Root/Margin/VBox/SetsPage/Header/TitleBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+text = "Pytania"
+
+[node name="Subtitle" type="Label" parent="Root/Margin/VBox/SetsPage/Header/TitleBox"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Wybierz zestaw, żeby zobaczyć i edytować jego pytania. Przełącznik = zestaw używany w grach."
+text_overrun_behavior = 3
+
+[node name="BtnImport" type="MenuButton" parent="Root/Margin/VBox/SetsPage/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Importuj…"
+flat = false
+
+[node name="BtnNewSet" type="Button" parent="Root/Margin/VBox/SetsPage/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"AccentButton"
+text = "+ Nowy zestaw"
+
+[node name="SetsCard" type="PanelContainer" parent="Root/Margin/VBox/SetsPage"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Card"
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Margin/VBox/SetsPage/SetsCard"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="SetsList" type="VBoxContainer" parent="Root/Margin/VBox/SetsPage/SetsCard/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="QuestionsPage" type="VBoxContainer" parent="Root/Margin/VBox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="Root/Margin/VBox/QuestionsPage"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BtnBack" type="Button" parent="Root/Margin/VBox/QuestionsPage/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"GhostButton"
+text = "← Zestawy"
+
+[node name="TitleBox" type="VBoxContainer" parent="Root/Margin/VBox/QuestionsPage/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="SetName" type="Label" parent="Root/Margin/VBox/QuestionsPage/Header/TitleBox"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+text = "Zestaw"
+text_overrun_behavior = 3
+
+[node name="SetCount" type="Label" parent="Root/Margin/VBox/QuestionsPage/Header/TitleBox"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+
+[node name="SetMenu" type="MenuButton" parent="Root/Margin/VBox/QuestionsPage/Header"]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Zestaw: zmień nazwę, eksportuj, włącz / wyłącz pytania, usuń"
+theme_type_variation = &"GhostButton"
+text = "⋯"
+
+[node name="BtnAdd" type="Button" parent="Root/Margin/VBox/QuestionsPage/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"AccentButton"
+text = "+ Dodaj pytanie"
+
+[node name="Filters" type="HBoxContainer" parent="Root/Margin/VBox/QuestionsPage"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Search" type="LineEdit" parent="Root/Margin/VBox/QuestionsPage/Filters"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Szukaj w treści i kategorii…"
+clear_button_enabled = true
+
+[node name="TypeFilter" type="OptionButton" parent="Root/Margin/VBox/QuestionsPage/Filters"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+
+[node name="QuestionsCard" type="PanelContainer" parent="Root/Margin/VBox/QuestionsPage"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"Card"
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Margin/VBox/QuestionsPage/QuestionsCard"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="QuestionsList" type="VBoxContainer" parent="Root/Margin/VBox/QuestionsPage/QuestionsCard/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="Empty" type="Label" parent="Root/Margin/VBox/QuestionsPage/QuestionsCard/Scroll/QuestionsList"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Brak pytań — dodaj pierwsze przyciskiem „+ Dodaj pytanie”."
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="Root/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+theme_override_colors/font_color = Color(0.6, 0.85, 0.6, 1)
+text = "Przeciągnij plik .json na okno, żeby go zaimportować."
+autowrap_mode = 3
+
+[node name="EditDialog" type="Control" parent="Root"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root/EditDialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="Center" type="CenterContainer" parent="Root/EditDialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/EditDialog/Center"]
+custom_minimum_size = Vector2(1000, 700)
+layout_mode = 2
+theme_type_variation = &"DialogPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Root/EditDialog/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="DlgTitle" type="Label" parent="Root/EditDialog/Center/Panel/VBox"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+text = "Pytanie"
+text_overrun_behavior = 3
+
+[node name="Common" type="HBoxContainer" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LblType" type="Label" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Typ:"
+
+[node name="TypeOption" type="OptionButton" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="LblDiff" type="Label" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Trudność:"
+
+[node name="DiffSpin" type="SpinBox" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 5.0
+value = 1.0
+
+[node name="LblCategory" type="Label" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Kategoria:"
+
+[node name="CategoryEdit" type="LineEdit" parent="Root/EditDialog/Center/Panel/VBox/Common"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "np. sprzęt"
+
+[node name="SepForm" type="HSeparator" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Form" type="VBoxContainer" parent="Root/EditDialog/Center/Panel/VBox/Scroll"]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Error" type="Label" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
+autowrap_mode = 3
+
+[node name="DlgButtons" type="HBoxContainer" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="BtnCancel" type="Button" parent="Root/EditDialog/Center/Panel/VBox/DlgButtons"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "Anuluj"
+
+[node name="BtnSave" type="Button" parent="Root/EditDialog/Center/Panel/VBox/DlgButtons"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_type_variation = &"AccentButton"
+text = "Zapisz"
+
+[node name="ImportDialog" type="FileDialog" parent="."]
+title = "Importuj zestaw pytań (JSON)"
+size = Vector2i(900, 600)
+ok_button_text = "Importuj"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json ; Zestaw pytań JSON")
+
+[node name="ExportDialog" type="FileDialog" parent="."]
+title = "Eksportuj zestaw pytań (JSON)"
+size = Vector2i(900, 600)
+ok_button_text = "Zapisz"
+file_mode = 4
+access = 2
+filters = PackedStringArray("*.json ; Zestaw pytań JSON")
+
+[node name="ConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Potwierdź"
+size = Vector2i(560, 180)
+ok_button_text = "Tak"
+cancel_button_text = "Nie"
+dialog_autowrap = true
+
+[node name="NameDialog" type="ConfirmationDialog" parent="."]
+title = "Nazwa zestawu"
+size = Vector2i(560, 160)
+ok_button_text = "OK"
+cancel_button_text = "Anuluj"
+
+[node name="NameEdit" type="LineEdit" parent="NameDialog"]
+auto_translate_mode = 2
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 552.0
+offset_bottom = 111.0
+placeholder_text = "Nazwa zestawu"
+
+[node name="ReportDialog" type="AcceptDialog" parent="."]
+title = "Import"
+size = Vector2i(720, 420)
+dialog_autowrap = true
