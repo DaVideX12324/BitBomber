@@ -281,6 +281,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
+[node name="LblExplanation" type="Label" parent="Root/EditDialog/Center/Panel/VBox"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Wyjaśnienie (opcjonalne, pokazywane po odpowiedzi):"
+
+[node name="ExplanationEdit" type="TextEdit" parent="Root/EditDialog/Center/Panel/VBox"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+placeholder_text = "Dlaczego ta odpowiedź jest poprawna — 1–2 zdania"
+wrap_mode = 1
+
 [node name="Error" type="Label" parent="Root/EditDialog/Center/Panel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)

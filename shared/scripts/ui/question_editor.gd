@@ -41,6 +41,7 @@ const QuestionRowScene = preload("../../scenes/ui/question_editor_question_row.t
 @onready var _type_option: OptionButton = $Root/EditDialog/Center/Panel/VBox/Common/TypeOption
 @onready var _diff_spin: SpinBox = $Root/EditDialog/Center/Panel/VBox/Common/DiffSpin
 @onready var _category_edit: LineEdit = $Root/EditDialog/Center/Panel/VBox/Common/CategoryEdit
+@onready var _explanation_edit: TextEdit = $Root/EditDialog/Center/Panel/VBox/ExplanationEdit
 @onready var _form: VBoxContainer = $Root/EditDialog/Center/Panel/VBox/Scroll/Form
 @onready var _error: Label = $Root/EditDialog/Center/Panel/VBox/Error
 @onready var _btn_save: Button = $Root/EditDialog/Center/Panel/VBox/DlgButtons/BtnSave
@@ -733,6 +734,9 @@ func _open_edit(index: int) -> void:
 	_type_option.select(maxi(Bank.TYPES.find(t), 0))
 	_diff_spin.value = int(q.get("difficulty", 1))
 	_category_edit.text = str(q.get("category", ""))
+	_explanation_edit.text = str(q.get("explanation", ""))
+	# Pole nie tłumaczy się samo (treść gracza), więc podpowiedź ustawiamy z i18n.
+	_explanation_edit.placeholder_text = _t("host.question_editor.ph_explanation")
 	_build_form(t, q)
 	_error.text = ""
 	_edit_dialog.visible = true
@@ -1028,6 +1032,12 @@ func _question_from_form() -> Dictionary:
 			q["pairs"] = pairs
 	if q["category"] == "":
 		q.erase("category")
+	# Wyjaśnienie wspólne dla typów (zostaje przy zmianie typu); puste = bez klucza w JSON.
+	var explanation := _explanation_edit.text.strip_edges()
+	if explanation == "":
+		q.erase("explanation")
+	else:
+		q["explanation"] = explanation
 	return q
 
 

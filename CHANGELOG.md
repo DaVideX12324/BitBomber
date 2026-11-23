@@ -7,6 +7,7 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 
 ### Dodano
 - Edytor pytań (przycisk „✎ Edytuj” przy wyborze pytań w menu): zestawy włączane „w grze”, własne pytania, import i eksport JSON — także bez Artefaktu Wiedzy (wybór zapisany w user://; domyślnie w grze tylko „Informatyka – szkoła podstawowa”).
+- Wyjaśnienia pytań w quizie ostatniej szansy: po odpowiedzi pytanie może pokazać „Wyjaśnienie: …” (pole `explanation`, edytor pytań); pauza wydłuża się wg długości tekstu (do 8 s). Pytania na polu w trakcie gry — bez wyjaśnień.
 
 ## [1.0.0] — 2026-11-17
 

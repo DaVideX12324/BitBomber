@@ -10,6 +10,8 @@ extends RefCounted
 ##
 ## Format zestawu: {"name", "description", "questions": [...]} (albo sama tablica pytań). Typy pytań:
 ## multiple_choice, true_false, fill_text, fill_tiles, matching — pola jak w resources/quizzes.
+## Każdy typ może mieć opcjonalne "explanation" (string): krótkie wyjaśnienie pokazywane po odpowiedzi;
+## pusty tekst = brak wyjaśnienia (edytor wtedy usuwa klucz).
 
 const BUILTIN_DIR := "res://resources/quizzes"
 const USER_DIR := "user://quizzes"
@@ -222,6 +224,8 @@ static func validate_question(q: Dictionary) -> String:
 	var diff := int(q.get("difficulty", 1))
 	if diff < 1 or diff > 5:
 		return _t("host.quiz.err.diff_out_of_range")
+	if q.has("explanation") and not (q["explanation"] is String):
+		return _t("host.quiz.err.explanation_not_text")
 	match t:
 		"multiple_choice":
 			if str(q.get("question", "")).strip_edges() == "":

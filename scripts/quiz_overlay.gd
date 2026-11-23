@@ -32,6 +32,10 @@ const BASE_FS_HINT       := 15
 const BASE_FS_ANSWER_BTN := 20
 const BASE_FS_RESULT     := 22
 const BASE_FS_CORRECT    := 18
+const BASE_FS_EXPLANATION := 16
+## Wyjaśnienie pytania (pole "explanation"): dodatkowy czas na przeczytanie (na znak) i górna granica całej pauzy.
+const EXPLANATION_SEC_PER_CHAR := 0.05
+const EXPLANATION_MAX_DELAY := 8.0
 const BASE_FS_CONFIRM_MATCH := 18
 
 # Bazowe rozmiary panelu i separatorow z .tscn
@@ -50,6 +54,7 @@ const BASE_SEP_SUBBOX   := 6
 @onready var _timer_node   : Timer           = $Timer
 @onready var _result_label : Label           = $Panel/VBox/ResultLabel
 @onready var _correct_lbl  : Label           = $Panel/VBox/CorrectAnswer
+@onready var _explanation_lbl : Label        = $Panel/VBox/Explanation
 
 # multiple_choice
 @onready var _mc_box  : VBoxContainer = $Panel/VBox/MC_Box
@@ -178,6 +183,7 @@ func _on_scale_changed(_s: float) -> void:
 	_lbl_hint.add_theme_font_size_override("font_size",     _px(BASE_FS_HINT))
 	_result_label.add_theme_font_size_override("font_size", _px(BASE_FS_RESULT))
 	_correct_lbl.add_theme_font_size_override("font_size",  _px(BASE_FS_CORRECT))
+	_explanation_lbl.add_theme_font_size_override("font_size", _px(BASE_FS_EXPLANATION))
 	# Statyczne przyciski odpowiedzi (MC / TF)
 	var fs_btn := _px(BASE_FS_ANSWER_BTN)
 	for btn in _mc_btns:
@@ -234,6 +240,7 @@ func show_quiz(question: Dictionary, rival_mode: RivalMode, time_limit: float, d
 	_match_right_btns.clear()
 	_result_label.visible  = false
 	_correct_lbl.visible   = false
+	_explanation_lbl.visible = false
 	_build_ui()
 	visible = true
 	_timer_node.wait_time = time_limit
@@ -603,9 +610,22 @@ func _finish_complex(correct: bool) -> void:
 	_timer_node.stop()
 	RoundManager.record_answer(_answering_player(), correct)
 	_show_result_label(correct)
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(_show_explanation(2.0)).timeout
 	_locked = false
 	_route_duel_result(correct)
+
+
+## Pokazuje wyjaśnienie pytania (jeśli jest) i zwraca pauzę po odpowiedzi: base_delay, z wyjaśnieniem — dłuższą,
+## wg długości tekstu (najwyżej EXPLANATION_MAX_DELAY). Gra toczy się dalej sama, bez czekania na klawisz.
+func _show_explanation(base_delay: float) -> float:
+	var text := str(_question.get("explanation", "")).strip_edges()
+	if text == "":
+		_explanation_lbl.visible = false
+		return base_delay
+	_explanation_lbl.text = BbI18n.tf("bb.quiz.explanation", {"text": text})
+	_explanation_lbl.visible = true
+	var delay := base_delay + EXPLANATION_SEC_PER_CHAR * text.length()
+	return minf(delay, maxf(EXPLANATION_MAX_DELAY, base_delay))
 
 
 func _show_result_label(correct: bool) -> void:
@@ -671,12 +691,12 @@ func _check_versus_done() -> void:
 		RivalMode.SOLO, RivalMode.DUEL_P1, RivalMode.DUEL_P2:
 			var correct : bool = _correct_p2 if _mode == RivalMode.DUEL_P2 else _correct_p1
 			_timer_node.stop()
-			await get_tree().create_timer(2.0).timeout
+			await get_tree().create_timer(_show_explanation(2.0)).timeout
 			_locked = false
 			_route_duel_result(correct)
 		RivalMode.VERSUS:
 			_timer_node.stop()
-			await get_tree().create_timer(3.0).timeout
+			await get_tree().create_timer(_show_explanation(3.0)).timeout
 			_resolve_versus()
 
 
