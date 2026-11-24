@@ -8,7 +8,8 @@ const G := V + "Grid/"
 @onready var _root     : Control         = $Root
 @onready var _ver_label : Label          = $Root/VerLabel
 @onready var _rounds_label  : Label        = get_node(G + "RoundsLabel")
-@onready var _quiz_opt      : OptionButton = get_node(G + "HBoxQuiz/QuizOpt")
+@onready var _quiz_btn      : Button       = get_node(G + "HBoxQuiz/QuizBtn")
+@onready var _quiz_popup    : PopupMenu    = get_node(G + "HBoxQuiz/QuizBtn/QuizPopup")
 @onready var _quiz_editor_btn : Button     = get_node(G + "HBoxQuiz/BtnQuizEditor")
 @onready var _map_opt       : OptionButton = get_node(G + "MapOpt")
 @onready var _rounds_spin   : SpinBox      = get_node(G + "RoundsSpin")
@@ -16,6 +17,7 @@ const G := V + "Grid/"
 @onready var _help_btn      : Button       = get_node(V + "HBoxMeta/BtnHelp")
 @onready var _options_btn   : Button       = get_node(V + "HBoxMeta/BtnOptions")
 @onready var _quit_btn      : Button       = get_node(V + "HBoxMeta/BtnQuit")
+@onready var _controls_label : Label        = get_node(V + "Controls")
 @onready var _local_options_menu: CanvasLayer = $OptionsMenu
 @onready var _help_overlay  : Control       = $Root/HelpOverlay
 @onready var _help_body     : RichTextLabel = $Root/HelpOverlay/HelpPanel/VBox/Scroll/HelpBody
@@ -42,6 +44,8 @@ var _sel_win     : int = 0
 var _sel_mode    : int = 0
 
 var _options_menu: CanvasLayer
+## Wybrane zestawy pytań (pusta lista = wszystkie)
+var _quiz_selected: Array[String] = []
 ## Edytor pytań hosta (kopia w shared/, działa też bez hosta); tworzony przy pierwszym otwarciu.
 var _quiz_editor: CanvasLayer
 const QuizEditorScene = preload("../shared/scenes/ui/question_editor.tscn")
@@ -113,15 +117,15 @@ func _ready() -> void:
 	_quit_btn.pressed.connect(_on_quit_pressed)
 	_help_btn.pressed.connect(_show_help)
 	_options_btn.pressed.connect(func(): _options_menu.open())
+	if _options_menu.has_signal("closed"):
+		_options_menu.closed.connect(_refresh_controls_hint)
+	_refresh_controls_hint()
 	_quiz_editor_btn.tooltip_text = BbI18n.t("bb.menu.quiz_editor_tip", _quiz_editor_btn.tooltip_text)
 	_quiz_editor_btn.pressed.connect(_open_quiz_editor)
 	_fill_quizzes()
 	_fill_maps()
 	_start_btn.pressed.connect(func():
-		var q_id := "" if _quiz_opt.selected <= 0 \
-				else str(_quiz_opt.get_item_metadata(_quiz_opt.selected))
-		_start(_sel_players, _sel_bots, _sel_diff, _sel_win,
-				int(_rounds_spin.value), q_id)
+		_start(_sel_players, _sel_bots, _sel_diff, _sel_win, int(_rounds_spin.value))
 	)
 	_refresh_players()
 	_refresh_bots()
@@ -160,8 +164,10 @@ func _on_scale_changed(_s: float) -> void:
 		var base: Array = _base_sizes[c]
 		c.custom_minimum_size = _sz2(base[0].x, base[0].y)
 		c.add_theme_font_size_override(_font_key(c), _px(base[1]))
+		if c is RichTextLabel:
+			c.add_theme_font_size_override("bold_font_size", _px(base[1]))
 	_scale_popup_font(_map_opt, _px(19))
-	_scale_popup_font(_quiz_opt, _px(19))
+	_quiz_popup.add_theme_font_size_override("font_size", _px(19))
 	var spin_edit := _rounds_spin.get_line_edit()
 	if spin_edit:
 		spin_edit.add_theme_font_size_override("font_size", _px(19))
@@ -254,7 +260,7 @@ func _refresh_win() -> void:
 
 
 func _start(humans: int, bots: int, diff: int, win_mode: int,
-		rounds: int, quiz_id: String) -> void:
+		rounds: int) -> void:
 	var gm := _gm()
 	if gm:
 		gm.bot_difficulty   = diff
@@ -262,7 +268,7 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 		# Bomb It: skrzynki 0,6–0,8 w arcade, 0,5 w kill (więcej miejsca na walkę)
 		gm.box_density      = 0.5 if _sel_mode == gm.GameMode.KILL else 0.7
 		gm.win_condition    = win_mode
-		gm.selected_quiz_id = quiz_id
+		gm.selected_quiz_ids.assign(_quiz_selected)
 		gm.selected_map     = str(_map_opt.get_item_metadata(_map_opt.selected))
 		if win_mode == 0:
 			gm.rounds_to_win = rounds
@@ -271,19 +277,68 @@ func _start(humans: int, bots: int, diff: int, win_mode: int,
 		gm.start_game(humans, bots)
 
 
-## „Wszystkie” + zestawy w grze; na liście nazwa zestawu, id (nazwa pliku) w metadanych. Zostawia wybrany zestaw,
-## jeśli nadal jest na liście (odświeżenie po edytorze pytań).
+## Lista „Pytania”: „Wszystkie” + zestawy w grze (pola wyboru — jeden, kilka albo wszystkie).
+## Nazwa zestawu na liście, id (nazwa pliku) w metadanych. Wybór zostaje po odświeżeniu (edytor pytań),
+## o ile zestawy nadal są.
 func _fill_quizzes() -> void:
-	var previous := "" if _quiz_opt.selected <= 0 else str(_quiz_opt.get_item_metadata(_quiz_opt.selected))
-	_quiz_opt.clear()
-	_quiz_opt.add_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
+	if not _quiz_popup.index_pressed.is_connected(_on_quiz_item):
+		_quiz_popup.index_pressed.connect(_on_quiz_item)
+		_quiz_btn.pressed.connect(_open_quiz_popup)
+		var gm := _gm()
+		if gm and gm.get("selected_quiz_ids") != null:
+			_quiz_selected.assign(gm.selected_quiz_ids)
+	_quiz_popup.clear()
+	_quiz_popup.add_check_item(BbI18n.t("bb.menu.quiz_all", "Wszystkie"))
+	_quiz_popup.add_separator()
 	var qm := _qm()
 	var quizzes: Array = qm.get_quiz_ids() if qm else []
 	for q in quizzes:
-		_quiz_opt.add_item(str(qm.get_quiz_title(q)) if qm.has_method("get_quiz_title") else str(q))
-		_quiz_opt.set_item_metadata(_quiz_opt.item_count - 1, str(q))
-		if str(q) == previous:
-			_quiz_opt.select(_quiz_opt.item_count - 1)
+		_quiz_popup.add_check_item(str(qm.get_quiz_title(q)) if qm.has_method("get_quiz_title") else str(q))
+		_quiz_popup.set_item_metadata(_quiz_popup.item_count - 1, str(q))
+	var still_there: Array[String] = []
+	for id in _quiz_selected:
+		if quizzes.has(id):
+			still_there.append(id)
+	_quiz_selected = still_there
+	_refresh_quiz_checks()
+
+
+func _open_quiz_popup() -> void:
+	var xf := _quiz_btn.get_screen_transform()
+	var btn_size := _quiz_btn.size * xf.get_scale()
+	_quiz_popup.popup(Rect2i(Vector2i(xf.origin + Vector2(0, btn_size.y)), Vector2i(int(btn_size.x), 0)))
+
+
+## „Wszystkie” czyści wybór; zestaw się przełącza (z „Wszystkich” zostaje tylko on). Nic albo komplet = wszystkie.
+func _on_quiz_item(index: int) -> void:
+	if index == 0:
+		_quiz_selected.clear()
+	else:
+		var id := str(_quiz_popup.get_item_metadata(index))
+		if _quiz_selected.has(id):
+			_quiz_selected.erase(id)
+		else:
+			_quiz_selected.append(id)
+		var set_count := _quiz_popup.item_count - 2
+		if _quiz_selected.size() == set_count:
+			_quiz_selected.clear()
+	_refresh_quiz_checks()
+
+
+func _refresh_quiz_checks() -> void:
+	_quiz_popup.set_item_checked(0, _quiz_selected.is_empty())
+	var names: Array[String] = []
+	for i in range(2, _quiz_popup.item_count):
+		var checked := _quiz_selected.has(str(_quiz_popup.get_item_metadata(i)))
+		_quiz_popup.set_item_checked(i, checked)
+		if checked:
+			names.append(_quiz_popup.get_item_text(i))
+	var label := BbI18n.t("bb.menu.quiz_all", "Wszystkie")
+	if names.size() == 1:
+		label = names[0]
+	elif names.size() > 1:
+		label = BbI18n.plural("bb.menu.quiz_sets", names.size())
+	_quiz_btn.text = label + "  ▾"
 
 
 func _open_quiz_editor() -> void:
@@ -312,6 +367,20 @@ func _fill_maps() -> void:
 		_map_opt.set_item_metadata(_map_opt.item_count - 1, id)
 		if id == current:
 			_map_opt.select(_map_opt.item_count - 1)
+
+
+## Podpowiedź pod przyciskami wg aktualnych klawiszy (można je zmienić w Opcjach).
+func _refresh_controls_hint() -> void:
+	var p1 := "%s%s%s%s + %s" % [BbInput.key_label("p1_up"), BbInput.key_label("p1_left"),
+			BbInput.key_label("p1_down"), BbInput.key_label("p1_right"), BbInput.key_label("p1_bomb")]
+	var p2 := "%s + %s" % [BbI18n.t("bb.menu.controls_arrows", "Strzałki") if _p2_uses_arrows() else
+			"%s%s%s%s" % [BbInput.key_label("p2_up"), BbInput.key_label("p2_left"),
+			BbInput.key_label("p2_down"), BbInput.key_label("p2_right")], BbInput.key_label("p2_bomb")]
+	_controls_label.text = "P1: %s   |   P2: %s" % [p1, p2]
+
+
+func _p2_uses_arrows() -> bool:
+	return BbInput.keys_of("p2_up") == [KEY_UP] and BbInput.keys_of("p2_down") == [KEY_DOWN] 			and BbInput.keys_of("p2_left") == [KEY_LEFT] and BbInput.keys_of("p2_right") == [KEY_RIGHT]
 
 
 func _on_quit_pressed() -> void:

@@ -33,7 +33,8 @@ var num_human_players: int = 1
 var num_bots: int = 1
 var rounds_to_win: int = 3   ## Używane w trybie FIRST_TO_X
 var max_rounds: int = 5      ## Używane w trybie MOST_WINS_IN_Y (max 20)
-var selected_quiz_id: String = ""
+## Zestawy pytań wybrane w menu (pusta lista = wszystkie)
+var selected_quiz_ids: Array[String] = []
 ## Id mapy z resources/maps ("" = losowa co rundę)
 var selected_map: String = ""
 ## Szansa na skrzynkę na polu 'b' mapy (Bomb It: 0,6–0,8 arcade, 0,5 kill)
@@ -118,7 +119,11 @@ func start_from_config(config: Dictionary) -> void:
 	kills_to_win = maxi(int(config.get("kills_to_win", kills_to_win)), 1)
 	bot_difficulty = clampi(int(config.get("difficulty", bot_difficulty)), 0, 2)
 	selected_map = str(config.get("map", ""))
-	selected_quiz_id = str(config.get("quiz_id", selected_quiz_id))
+	if config.has("quiz_ids"):
+		selected_quiz_ids.assign((config["quiz_ids"] as Array).map(func(id: Variant) -> String: return str(id)))
+	elif config.has("quiz_id"):
+		var one := str(config["quiz_id"])
+		selected_quiz_ids.assign([] if one == "" else [one])
 	if config.has("max_rounds"):
 		win_condition = WinCondition.MOST_WINS_IN_Y
 		max_rounds = clampi(int(config["max_rounds"]), 1, 20)

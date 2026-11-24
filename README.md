@@ -157,7 +157,7 @@ po sesji wraca do hosta. Klucze (wszystkie opcjonalne):
 | `kills_to_win` | zabójstwa wygrywające rundę (Kill) | 5 |
 | `map` | id mapy z `resources/maps` (`""` = losowa) | `""` |
 | `difficulty` | boty 0 łatwe – 2 trudne | 0 |
-| `quiz_id` | zestaw pytań | ostatni |
+| `quiz_ids` | zestawy pytań (lista id; pusta = wszystkie); starszy klucz `quiz_id` = jeden zestaw | ostatnie |
 | `box_density` | szansa na skrzynkę | 0,7 (Kill 0,5) |
 
 Na koniec każdej sesji (także zaczętej z menu modułu) `module_root.report_session()` oddaje hostowi wynik

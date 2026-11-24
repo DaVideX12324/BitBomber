@@ -1,6 +1,6 @@
 extends RefCounted
 
-## Losowanie pytań z wybranego zestawu (GameManager.selected_quiz_id, "" = wszystkie) przez QuizManager.
+## Losowanie pytań z wybranych zestawów (GameManager.selected_quiz_ids, pusta lista = wszystkie) przez QuizManager.
 ## Zakres trudności zależy od trudności botów; łatwiejsze z zakresu wypadają częściej.
 
 ## Pytania „na szybko” w trakcie gry — da się odpowiedzieć klawiszem 1–4.
@@ -15,8 +15,11 @@ static func pick(allowed_types: Array = []) -> Dictionary:
 	if qm == null:
 		return {}
 	var range_v := diff_range()
-	var sel_id: String = gm.selected_quiz_id if gm else ""
-	var all_ids: Array = qm.get_quiz_ids() if sel_id == "" or sel_id == "Wszystkie" else [sel_id]
+	var all_ids: Array = qm.get_quiz_ids()
+	var selected: Array = gm.selected_quiz_ids if gm else []
+	var chosen: Array = all_ids.filter(func(id: Variant) -> bool: return str(id) in selected)
+	if not chosen.is_empty():   # wybrane zestawy zniknęły (edytor pytań) — wszystkie
+		all_ids = chosen
 	var valid_questions : Array = []
 	var diffs_available : Array[int] = []
 	for quiz_id in all_ids:
