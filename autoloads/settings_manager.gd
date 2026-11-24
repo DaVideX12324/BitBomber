@@ -6,6 +6,8 @@ extends Node
 
 const CONFIG_PATH := "user://settings.cfg"
 const SEC         := "display"
+const SEC_AUDIO   := "audio"
+const AUDIO_BUSES : Array[String] = ["Master", "Music", "SFX"]
 
 ## 0 = okienkowy, 1 = bez ramki, 2 = pełny ekran
 var window_mode_idx : int      = 2
@@ -16,7 +18,10 @@ signal resolution_changed(new_resolution: Vector2i)
 
 
 func _ready() -> void:
+	BbInput.ensure_actions()
+	BbInput.load_saved()
 	var cfg := _load()
+	_load_audio(cfg)
 	UIScaleManager.load_from_cfg(cfg)
 	resolution_changed.connect(UIScaleManager.on_resolution_changed)
 	monitor_idx = clampi(monitor_idx, 0, DisplayServer.get_screen_count() - 1)
@@ -132,6 +137,31 @@ func _save() -> void:
 	cfg.set_value(SEC, "monitor_idx",    monitor_idx)
 	UIScaleManager.save_to_cfg(cfg)
 	cfg.save(CONFIG_PATH)
+
+
+## Głośność szyn (Master / Music / SFX) z Opcji → Dźwięk.
+func save_audio() -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(CONFIG_PATH)
+	for bus in AUDIO_BUSES:
+		var idx := AudioServer.get_bus_index(bus)
+		if idx >= 0:
+			cfg.set_value(SEC_AUDIO, bus, db_to_linear(AudioServer.get_bus_volume_db(idx)))
+	cfg.save(CONFIG_PATH)
+
+
+## Samodzielnie nie ma układu szyn hosta — Music i SFX tworzymy sami (wpięte w Master), żeby suwaki działały.
+func _load_audio(cfg: ConfigFile) -> void:
+	for bus in AUDIO_BUSES:
+		if AudioServer.get_bus_index(bus) < 0:
+			AudioServer.add_bus()
+			var new_idx := AudioServer.bus_count - 1
+			AudioServer.set_bus_name(new_idx, bus)
+			AudioServer.set_bus_send(new_idx, "Master")
+	for bus in AUDIO_BUSES:
+		var idx := AudioServer.get_bus_index(bus)
+		if idx >= 0 and cfg.has_section_key(SEC_AUDIO, bus):
+			AudioServer.set_bus_volume_db(idx, linear_to_db(float(cfg.get_value(SEC_AUDIO, bus))))
 
 
 func _load() -> ConfigFile:

@@ -83,40 +83,4 @@ func request_exit() -> void:
 
 
 func _ensure_input_actions() -> void:
-	_ensure_key_action("p1_up", KEY_W)
-	_ensure_key_action("p1_down", KEY_S)
-	_ensure_key_action("p1_left", KEY_A)
-	_ensure_key_action("p1_right", KEY_D)
-	_ensure_key_action("p1_bomb", KEY_SPACE)
-	_ensure_key_action("p2_up", KEY_UP)
-	_ensure_key_action("p2_down", KEY_DOWN)
-	_ensure_key_action("p2_left", KEY_LEFT)
-	_ensure_key_action("p2_right", KEY_RIGHT)
-	_ensure_key_action("p2_bomb", KEY_ENTER)
-	_ensure_key_action("p2_bomb", KEY_KP_0)
-	_ensure_key_action("quiz_p1_a", KEY_1)
-	_ensure_key_action("quiz_p1_b", KEY_2)
-	_ensure_key_action("quiz_p1_c", KEY_3)
-	_ensure_key_action("quiz_p1_d", KEY_4)
-	_ensure_key_action("quiz_p2_a", KEY_KP_1)
-	_ensure_key_action("quiz_p2_b", KEY_KP_2)
-	_ensure_key_action("quiz_p2_c", KEY_KP_3)
-	_ensure_key_action("quiz_p2_d", KEY_KP_4)
-	_ensure_key_action("quiz_p2_a", KEY_7)
-	_ensure_key_action("quiz_p2_b", KEY_8)
-	_ensure_key_action("quiz_p2_c", KEY_9)
-	_ensure_key_action("quiz_p2_d", KEY_0)
-	_ensure_key_action("pause", KEY_ESCAPE)
-
-
-func _ensure_key_action(action_name: String, keycode: Key) -> void:
-	if not InputMap.has_action(action_name):
-		InputMap.add_action(action_name)
-
-	for existing_event in InputMap.action_get_events(action_name):
-		if existing_event is InputEventKey and (existing_event as InputEventKey).keycode == keycode:
-			return
-
-	var event := InputEventKey.new()
-	event.keycode = keycode
-	InputMap.action_add_event(action_name, event)
+	BbInput.ensure_actions()

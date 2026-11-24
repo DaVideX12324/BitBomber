@@ -76,7 +76,8 @@ func _on_scale_changed(_s: float) -> void:
 # ---------------------------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("ui_cancel"): return
+	var pause_key := event.is_action_pressed("pause") if InputMap.has_action("pause") else false
+	if not pause_key and not event.is_action_pressed("ui_cancel"): return
 	# Nie pauzuj jeśli gra nie jest w trybie PLAYING
 	if GameManager.current_state != GameManager.GameState.PLAYING: return
 	# Nie pauzuj jeśli death_screen jest widoczny
