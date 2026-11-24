@@ -274,15 +274,16 @@ func _build_ui() -> void:
 		"fill_text":  _lbl_question.text = _question.get("prompt", "")
 		_:            _lbl_question.text = _question.get("question", _question.get("prompt", ""))
 
-	var hint_keys := {"p1": " / ".join(_answer_keys(1)), "p2": " / ".join(_answer_keys(2))}
+	var answer_count := 2 if qtype == "true_false" else mini((_question.get("answers", []) as Array).size(), 4)
+	var hint_keys := {"p1": _keys_summary(1, answer_count), "p2": _keys_summary(2, answer_count)}
 	match qtype:
 		"multiple_choice", "true_false":
 			if _mode == RivalMode.VERSUS:
-				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_versus", hint_keys, "P1: {p1}  |  P2: {p2}")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_versus", hint_keys, "Gracz 1: {p1}     Gracz 2: {p2}")
 			elif _mode == RivalMode.DUEL_P2:
-				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_duel_p2", hint_keys, "P2: {p2}  lub  LPM")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_duel_p2", hint_keys, "Gracz 2: {p2}  ·  albo kliknij")
 			else:
-				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_p1", hint_keys, "P1: {p1}  lub  LPM")
+				_lbl_hint.text = BbI18n.tf("bb.quiz.hint_p1", hint_keys, "Gracz 1: {p1}  ·  albo kliknij")
 		"fill_text":
 			_lbl_hint.text = BbI18n.tf("bb.quiz.hint_fill_text", {"player": 2 if _mode == RivalMode.DUEL_P2 else 1})
 		"fill_tiles":
@@ -308,13 +309,7 @@ func _build_mc() -> void:
 	for i in _mc_btns.size():
 		var btn := _mc_btns[i]
 		if i < answers.size():
-			var txt := str(answers[i])
-			if _mode == RivalMode.VERSUS:
-				btn.text = "[%s/%s]  %s" % [keys_p1[i], keys_p2[i], txt]
-			elif _mode == RivalMode.DUEL_P2:
-				btn.text = "[%s]  %s" % [keys_p2[i], txt]
-			else:
-				btn.text = "[%s]  %s" % [keys_p1[i], txt]
+			btn.text = "%s  %s" % [_answer_badge(i, keys_p1, keys_p2), str(answers[i])]
 			btn.visible = true
 			btn.remove_theme_color_override("font_color")
 		else:
@@ -329,12 +324,7 @@ func _build_tf() -> void:
 	var labels := [BbI18n.t("bb.quiz.true", "Prawda"), BbI18n.t("bb.quiz.false", "Fałsz")]
 	for i in 2:
 		var btn := _tf_btns[i]
-		if _mode == RivalMode.VERSUS:
-			btn.text = "[%s/%s]  %s" % [k1[i], k2[i], labels[i]]
-		elif _mode == RivalMode.DUEL_P2:
-			btn.text = "[%s]  %s" % [k2[i], labels[i]]
-		else:
-			btn.text = "[%s]  %s" % [k1[i], labels[i]]
+		btn.text = "%s  %s" % [_answer_badge(i, k1, k2), labels[i]]
 		btn.remove_theme_color_override("font_color")
 
 
@@ -473,6 +463,51 @@ func _is_action(event: InputEvent, action: String) -> bool:
 ## Nazwy klawiszy odpowiedzi gracza („1”, „Num 1”…) — wg aktualnego przypisania.
 func _answer_keys(pid: int) -> Array:
 	return FieldQuiz.answer_actions(pid).map(FieldQuiz.key_label)
+
+
+## Znaczek przed odpowiedzią: przy rywalizacji numer odpowiedzi (klawisze obu graczy są w podpowiedzi nad
+## odpowiedziami), przy jednym graczu jego pierwszy klawisz.
+func _answer_badge(index: int, keys_p1: Array, keys_p2: Array) -> String:
+	if _mode == RivalMode.VERSUS:
+		return "[%d]" % (index + 1)
+	var keys: Array = keys_p2 if _mode == RivalMode.DUEL_P2 else keys_p1
+	return "[%s]" % str(keys[index]).split("/")[0]
+
+
+## Klawisze odpowiedzi 1..count w skrócie: „1–4”, „Num 1–4 lub 7–0”; klawisze nie po kolei — wymienione („Q W E R”).
+func _keys_summary(pid: int, count: int) -> String:
+	var per_answer: Array = []
+	for action in FieldQuiz.answer_actions(pid).slice(0, maxi(count, 1)):
+		per_answer.append(FieldQuiz.key_label(action).split("/"))
+	var alternatives: PackedStringArray = []
+	var first: PackedStringArray = per_answer[0]
+	for alt in first.size():
+		var names: Array[String] = []
+		for keys: PackedStringArray in per_answer:
+			if alt < keys.size():
+				names.append(keys[alt])
+		if names.size() == per_answer.size():
+			alternatives.append(_key_range(names))
+	return BbI18n.t("bb.quiz.keys_or", " lub ").join(alternatives)
+
+
+## „Num 1”, „Num 2”, „Num 3”, „Num 4” → „Num 1–4”; cyfry nie po kolei → nazwy po spacji.
+func _key_range(names: Array[String]) -> String:
+	if names.size() < 2:
+		return " ".join(names)
+	var prefix := ""
+	if names.all(func(n: String) -> bool: return n.begins_with("Num ")):
+		prefix = "Num "
+	var digits: Array[int] = []
+	for key_name in names:
+		var rest := key_name.substr(prefix.length())
+		if rest.length() != 1 or not rest.is_valid_int():
+			return " ".join(names)
+		digits.append(int(rest))
+	for i in range(1, digits.size()):
+		if (digits[i - 1] + 1) % 10 != digits[i]:
+			return " ".join(names)
+	return "%s%d–%d" % [prefix, digits[0], digits.back()]
 
 
 # ---------------------------------------------------------------------------
