@@ -90,6 +90,33 @@ func _run() -> void:
 	await _frames(120)
 	_check(not hud.get_quiz_panel(1).visible, "panel znika po wyniku")
 
+	# --- Kolejka: power-upy zebrane w trakcie pytania czekają na swoją kolej ---
+	p1.apply_powerup("quiz")
+	p1.locked_powerup_taken.emit(1, "kick")
+	p1.apply_powerup("quiz")
+	_check(fq._queue.get(1, []).size() == 2, "zamknięty power-up i drugi ❓ w kolejce (%d)" % fq._queue.get(1, []).size())
+	await process_frame
+	_answer(fq, 1, true)
+	await process_frame
+	_check(not fq.is_asking(1), "po odpowiedzi najpierw wynik")
+	await _frames(int(fq.RESULT_SHOW * 60) + 5)
+	_check(fq.is_asking(1) and fq._active[1]["kind"] == fq.Kind.UNLOCK and fq._active[1]["item"] == "kick",
+			"po wyniku pytanie o zamknięty power-up z kolejki")
+	_answer(fq, 1, true)
+	await process_frame
+	_check(p1.has_kick, "dobra odpowiedź → kopanie z kolejki")
+	await _frames(int(fq.RESULT_SHOW * 60) + 5)
+	_check(fq.is_asking(1) and fq._active[1]["kind"] == fq.Kind.BONUS, "potem drugie pytanie-bonus")
+	p1.locked_powerup_taken.emit(1, "shield")
+	p1.has_shield = false   # nagroda za bonus mogła dać tarczę albo gwiazdkę
+	p1._star_time = 0.0
+	p1.take_hit(2)
+	await process_frame
+	_check(fq._queue.get(1, []).is_empty() and fq._active[1]["kind"] == fq.Kind.RESPAWN,
+			"śmierć czyści kolejkę i daje pytanie odrodzenia")
+	_answer(fq, 1, true)
+	await _frames(40)
+
 	# --- Bot ---
 	bot.apply_powerup("quiz")
 	_check(fq.is_asking(3), "bot dostał pytanie-bonus")
@@ -97,7 +124,7 @@ func _run() -> void:
 	_check(not fq.is_asking(3), "bot odpowiedział sam")
 
 	var a: Dictionary = rm.get_answers(1)
-	_check(a["correct"] == 1 and a["wrong"] == 1 and rm.get_answers(3)["correct"] + rm.get_answers(3)["wrong"] == 0,
+	_check(a["correct"] == 4 and a["wrong"] == 1 and rm.get_answers(3)["correct"] + rm.get_answers(3)["wrong"] == 0,
 			"statystyki odpowiedzi tylko ludzi: P1 %s" % [a])
 
 	print("ALL OK" if _failed == 0 else "FAILED %d" % _failed)

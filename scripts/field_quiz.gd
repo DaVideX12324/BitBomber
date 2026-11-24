@@ -9,6 +9,7 @@ extends Node
 ## Ludzie odpowiadają w panelu HUD klawiszami quiz_pN_a..d (gracz 1: 1–4, gracz 2: Num 1–4 lub 7–0) — nigdy klawiszami
 ## ruchu: gracz biega, a po śmierci trzyma je z rozpędu i odpowiadałby przypadkiem.
 ## Boty „odpowiadają” po chwili z szansą zależną od trudności.
+## Pytania z power-upów zebranych w trakcie innego pytania czekają w kolejce gracza (po śmierci przepadają).
 
 const BbQuestions = preload("bb_questions.gd")
 const BbSfx = preload("bb_sfx.gd")
@@ -31,7 +32,6 @@ const PICKUP_NAMES := {
 	"bomb_up": ["+1 bomba"], "range_up": ["+1 zasięg"], "speed_up": ["Szybkość +"], "life_up": ["+1 życie"],
 	"kick": ["Kopanie bomb!"], "shield": ["Tarcza"], "star": ["Gwiazdka: nietykalność"],
 }
-const KEY_NAMES := {"Up": "↑", "Down": "↓", "Left": "←", "Right": "→"}
 
 var hud : CanvasLayer = null
 
@@ -39,6 +39,8 @@ var hud : CanvasLayer = null
 var _active  : Dictionary = {}
 ## player_id → sekundy do schowania panelu z wynikiem
 var _closing : Dictionary = {}
+## player_id → kolejka pytań z power-upów: [{kind, item, player}]
+var _queue   : Dictionary = {}
 
 
 func _ready() -> void:
@@ -50,14 +52,22 @@ func connect_player(p: Node) -> void:
 	p.powerup_collected.connect(_on_powerup.bind(p))
 	p.locked_powerup_taken.connect(_on_locked_powerup.bind(p))
 	p.killed.connect(_on_killed.bind(p))
-	p.died.connect(func(pid: int) -> void: cancel(pid))
+	p.died.connect(func(pid: int) -> void:
+		_queue.erase(pid)
+		cancel(pid))
 
 
 func is_asking(pid: int) -> bool:
 	return _active.has(pid)
 
 
+## Gracz ma pytanie na ekranie (też wynik poprzedniego) albo pytania w kolejce.
+func _is_busy(pid: int) -> bool:
+	return _active.has(pid) or _closing.has(pid) or not (_queue.get(pid, []) as Array).is_empty()
+
+
 func clear() -> void:
+	_queue.clear()
 	for pid in _active.keys() + _closing.keys():
 		cancel(pid)
 
@@ -77,18 +87,46 @@ func _on_powerup(_pid: int, type: String, p: Node) -> void:
 			_float_text(p, BbI18n.t("bb.pu.range_max", "Zasięg maks."), 22)
 		else:
 			_float_text(p, BbI18n.t("bb.pu." + type, n[0]), 22)
-	if type == "quiz" and not _active.has(p.player_id):
+	if type != "quiz":
+		return
+	if _is_busy(p.player_id):
+		_enqueue(p, Kind.BONUS)
+	else:
 		ask(p, Kind.BONUS)
 
 
 func _on_locked_powerup(_pid: int, type: String, p: Node) -> void:
-	# Już odpowiada na inne pytanie (albo brak pytań) — power-up bez pytania.
-	if _active.has(p.player_id) or not ask(p, Kind.UNLOCK, type):
-		p.apply_powerup(type)
+	if _is_busy(p.player_id):
+		_enqueue(p, Kind.UNLOCK, type)
+	elif not ask(p, Kind.UNLOCK, type):
+		p.apply_powerup(type)   # brak pytań — power-up bez pytania
+
+
+func _enqueue(p: Node, kind: Kind, item: String = "") -> void:
+	if not _queue.has(p.player_id):
+		_queue[p.player_id] = []
+	_queue[p.player_id].append({"kind": kind, "item": item, "player": p})
+	if not p.is_bot:
+		_float_text(p, BbI18n.t("bb.fq.queued", "❓ czeka w kolejce"), 22)
+
+
+## Następne pytanie z kolejki (gdy nie ma pytań do zadania, zamknięty power-up przechodzi bez pytania).
+func _ask_next(pid: int) -> void:
+	var queue: Array = _queue.get(pid, [])
+	while not queue.is_empty():
+		var e: Dictionary = queue.pop_front()
+		var p: Node = e["player"]
+		if not is_instance_valid(p) or not p.is_alive:
+			continue
+		if ask(p, e["kind"], e["item"]):
+			return
+		if e["kind"] == Kind.UNLOCK:
+			p.apply_powerup(e["item"])
 
 
 func _on_killed(_victim: int, _killer: int, p: Node) -> void:
-	cancel(p.player_id)   # przepada niedokończone pytanie-bonus
+	_queue.erase(p.player_id)   # przepadają pytania z kolejki…
+	cancel(p.player_id)         # …i niedokończone pytanie-bonus
 	if p.is_bot or BbQuestions.quizless_mode():
 		return
 	if ask(p, Kind.RESPAWN):
@@ -138,6 +176,7 @@ func _process(delta: float) -> void:
 		_closing[pid] -= delta
 		if _closing[pid] <= 0.0:
 			cancel(pid)
+			_ask_next(pid)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -163,15 +202,7 @@ static func answer_actions(pid: int) -> Array:
 ## Nazwa pierwszego klawisza akcji (po ewentualnej zmianie w ustawieniach): „1”, „Num 1”, „↑”.
 ## Wszystkie klawisze akcji, np. „Num 1/7” (gracz 2 bez klawiatury numerycznej ma też górny rząd).
 static func key_label(action: String) -> String:
-	var names: PackedStringArray = []
-	for ev in InputMap.action_get_events(action) if InputMap.has_action(action) else []:
-		if ev is InputEventKey:
-			var code: Key = ev.keycode if ev.keycode != KEY_NONE else DisplayServer.keyboard_get_keycode_from_physical(ev.physical_keycode)
-			var name := OS.get_keycode_string(code)
-			name = KEY_NAMES.get(name, name.replace("Kp ", "Num "))
-			if not names.has(name):
-				names.append(name)
-	return "/".join(names) if not names.is_empty() else "?"
+	return BbInput.key_label(action)
 
 
 func _resolve(pid: int, correct: bool, chosen: int) -> void:
@@ -216,7 +247,9 @@ func _resolve(pid: int, correct: bool, chosen: int) -> void:
 	var panel := _panel(pid)
 	if panel:
 		panel.show_result(chosen, text, correct)
-		_closing[pid] = RESULT_SHOW
+		_closing[pid] = RESULT_SHOW   # następne pytanie z kolejki po schowaniu wyniku
+	else:
+		_ask_next(pid)
 
 
 ## Nagroda za dobrą odpowiedź: tarcza (jeśli jeszcze nie ma), gwiazdka albo zasięg +2.
