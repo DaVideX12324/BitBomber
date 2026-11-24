@@ -5,9 +5,24 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-11-24
+
 ### Dodano
+- Zmiana klawiszy w Opcjach → Sterowanie (oba gracze, odpowiedzi i pauza; zajęty klawisz zamienia się miejscami, „Przywróć domyślne”). Zapis w user:// gry samodzielnej; w Artefakcie Wiedzy klawisze zmienia się w opcjach hosta.
+- Wybór kilku zestawów pytań naraz (pola wyboru: jeden, kilka albo wszystkie).
+- Pytania z power-upów czekają w kolejce: ❓ albo zamknięty power-up zebrany w trakcie innego pytania pojawia się po nim (wcześniej ❓ przepadał, a zamknięty power-up dawał się bez pytania). Kolejka przepada po śmierci.
 - Edytor pytań (przycisk „✎ Edytuj” przy wyborze pytań w menu): zestawy włączane „w grze”, własne pytania, import i eksport JSON — także bez Artefaktu Wiedzy (wybór zapisany w user://; domyślnie w grze tylko „Informatyka – szkoła podstawowa”).
 - Wyjaśnienia pytań w quizie ostatniej szansy: po odpowiedzi pytanie może pokazać „Wyjaśnienie: …” (pole `explanation`, edytor pytań); pauza wydłuża się wg długości tekstu (do 8 s). Pytania na polu w trakcie gry — bez wyjaśnień.
+
+### Zmieniono
+- Opcje gry samodzielnej w stylu menu (zakładki Ekran / Dźwięk / Sterowanie); głośność zapisuje się.
+- Podpowiedź sterowania pod menu pokazuje aktualne klawisze.
+
+### Naprawiono
+- Gra samodzielna: teksty z tłumaczeń (instrukcja, ekran końca rundy, HUD, opcje) pokazywały klucze typu `bb.help.body`.
+- Gra samodzielna: pauza nie miała przypisanego klawisza w opcjach (Esc działał tylko jako „wstecz”).
+- Gracz 2: odpowiedzi na klawiaturze numerycznej były przesunięte (Num 1 odpowiadał „C”), bomba była pod Ctrl zamiast Num 0; nazwy klawiszy numerycznych przy wyłączonym NumLocku (End, Insert…).
+- Instrukcja: pogrubione nagłówki mniejsze niż tekst.
 
 ## [1.0.0] — 2026-11-17
 
