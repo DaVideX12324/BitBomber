@@ -5,6 +5,15 @@ w repo hosta (Artefakt Wiedzy). Plany są w roadmapie README / liście zadań (n
 
 ## [Unreleased]
 
+## [1.0.2] — 2026-11-24
+
+### Dodano
+- Wszystkie zestawy pytań z Artefaktu Wiedzy także w grze samodzielnej: biologia, fizyka i chemia, geografia, historia Polski, język angielski, język polski, matematyka, wiedza ogólna (włącza się je w edytorze pytań).
+
+### Zmieniono
+- Gra samodzielna: domyślnie „w grze” oba zestawy informatyki (szkoła podstawowa i technikum / studia) — ustawienie projektu `application/quiz/default_active_sets`.
+- Quiz rywalizacji czytelniejszy: odpowiedzi oznaczone [1]–[4], a klawisze graczy w jednej linii w skrócie („Gracz 1: 1–4   Gracz 2: Num 1–4 lub 7–0”).
+
 ## [1.0.1] — 2026-11-24
 
 ### Dodano
