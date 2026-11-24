@@ -1,0 +1,631 @@
+{
+  "name": "Historia Polski",
+  "description": "Od Mieszka I po 1989 rok: daty, postacie i wydarzenia (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sredniowiecze",
+      "question": "W którym roku Mieszko I przyjął chrzest (chrzest Polski)?",
+      "answers": [
+        "966",
+        "1000",
+        "1025",
+        "1410"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "sredniowiecze",
+      "question": "Kto był pierwszym koronowanym królem Polski (1025)?",
+      "answers": [
+        "Bolesław Chrobry",
+        "Kazimierz Wielki",
+        "Mieszko I",
+        "Władysław Łokietek"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sredniowiecze",
+      "question": "W którym roku odbyła się bitwa pod Grunwaldem?",
+      "answers": [
+        "1410",
+        "1525",
+        "1385",
+        "1466"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "nowozytnosc",
+      "question": "Która dynastia rządziła Polską po Piastach, od końca XIV do XVI wieku?",
+      "answers": [
+        "Jagiellonowie",
+        "Habsburgowie",
+        "Wazowie",
+        "Romanowowie"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "nowozytnosc",
+      "question": "Kto dowodził wojskami polskimi w bitwie pod Wiedniem w 1683 roku?",
+      "answers": [
+        "Stefan Czarniecki",
+        "Jan Zamoyski",
+        "Stanisław Żółkiewski",
+        "Jan III Sobieski"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "nowozytnosc",
+      "question": "W którym roku uchwalono Konstytucję 3 maja?",
+      "answers": [
+        "1795",
+        "1791",
+        "1773",
+        "1807"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "xix_wiek",
+      "question": "Jak nazywa się powstanie, które wybuchło w 1830 roku?",
+      "answers": [
+        "powstanie wielkopolskie",
+        "powstanie kościuszkowskie",
+        "powstanie listopadowe",
+        "powstanie styczniowe"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "nowozytnosc",
+      "question": "Który rozbiór Polski odbył się w 1795 roku?",
+      "answers": [
+        "drugi",
+        "trzeci",
+        "pierwszy",
+        "czwarty"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "xx_wiek",
+      "question": "W którym roku Polska odzyskała niepodległość po I wojnie światowej?",
+      "answers": [
+        "1921",
+        "1918",
+        "1916",
+        "1914"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "xx_wiek",
+      "question": "Kto został Naczelnikiem Państwa w 1918 roku?",
+      "answers": [
+        "Ignacy Paderewski",
+        "Józef Piłsudski",
+        "Roman Dmowski",
+        "Wincenty Witos"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "question": "Jak nazywa się zwycięska bitwa z 1920 roku, określana mianem „Cudu nad Wisłą”?",
+      "answers": [
+        "Bitwa pod Płowcami",
+        "Bitwa o Anglię",
+        "Bitwa pod Monte Cassino",
+        "Bitwa Warszawska"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "question": "Który układ zawarty w sierpniu 1939 roku zawierał tajny protokół o podziale Europy Wschodniej?",
+      "answers": [
+        "układ w Locarno",
+        "układ jałtański",
+        "traktat wersalski",
+        "pakt Ribbentrop–Mołotow"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "question": "W którym roku wybuchło Powstanie Warszawskie?",
+      "answers": [
+        "1944",
+        "1943",
+        "1945",
+        "1939"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "question": "Jak nazywał się ruch społeczny założony w 1980 roku, na którego czele stanął Lech Wałęsa?",
+      "answers": [
+        "Solidarność",
+        "KOR",
+        "Wolność i Niezawisłość",
+        "PPR"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "nowozytnosc",
+      "question": "Która unia z 1569 roku połączyła Koronę i Wielkie Księstwo Litewskie w jedno państwo?",
+      "answers": [
+        "unia lubelska",
+        "unia horodelska",
+        "unia w Krewie",
+        "unia brzeska"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "nowozytnosc",
+      "question": "Jak nazywano zasadę w Rzeczypospolitej szlacheckiej, według której sprzeciw jednego posła mógł zerwać obrady sejmu?",
+      "answers": [
+        "konfederacja",
+        "rokosz",
+        "elekcja viritim",
+        "liberum veto"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "sredniowiecze",
+      "statement": "Gniezno było jedną z pierwszych stolic państwa Piastów.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "nowozytnosc",
+      "statement": "Mikołaj Kopernik stworzył teorię heliocentryczną.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sredniowiecze",
+      "statement": "W bitwie pod Grunwaldem Polacy i Litwini walczyli z Krzyżakami.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "sredniowiecze",
+      "statement": "Kazimierz Wielki założył Akademię Krakowską w 1364 roku.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "nowozytnosc",
+      "statement": "Konstytucja 3 maja była pierwszą konstytucją uchwaloną na świecie.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "xix_wiek",
+      "statement": "Księstwo Warszawskie powstało z inicjatywy Napoleona Bonapartego.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "xx_wiek",
+      "statement": "Bitwa pod Monte Cassino odbyła się podczas I wojny światowej.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "statement": "Stan wojenny w Polsce wprowadzono w grudniu 1981 roku.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "statement": "Obrady Okrągłego Stołu w 1989 roku doprowadziły do częściowo wolnych wyborów w Polsce.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "nowozytnosc",
+      "statement": "Konfederacja targowicka została zawiązana w obronie Konstytucji 3 maja.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "sredniowiecze",
+      "text_with_gaps": "Pierwszym historycznym władcą Polski był ___, który przyjął chrzest w roku ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Mieszko I"
+        },
+        {
+          "index": 1,
+          "correct": "966"
+        }
+      ],
+      "tiles": [
+        "Mieszko I",
+        "Bolesław Chrobry",
+        "966",
+        "1410",
+        "1025"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "sredniowiecze",
+      "text_with_gaps": "Bitwa pod ___ z roku ___ była wielkim zwycięstwem nad Krzyżakami.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Grunwaldem"
+        },
+        {
+          "index": 1,
+          "correct": "1410"
+        }
+      ],
+      "tiles": [
+        "1241",
+        "Płowcami",
+        "Grunwaldem",
+        "1410",
+        "Legnicą"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "xix_wiek",
+      "text_with_gaps": "Powstanie ___ wybuchło w roku ___ i było skierowane przeciw zaborcy rosyjskiemu.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "styczniowe"
+        },
+        {
+          "index": 1,
+          "correct": "1863"
+        }
+      ],
+      "tiles": [
+        "wielkopolskie",
+        "1905",
+        "styczniowe",
+        "1863",
+        "1830"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "xx_wiek",
+      "text_with_gaps": "Pakt ___ z sierpnia 1939 roku zawarły III Rzesza i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Ribbentrop–Mołotow"
+        },
+        {
+          "index": 1,
+          "correct": "ZSRR"
+        }
+      ],
+      "tiles": [
+        "Wielka Brytania",
+        "Wersalski",
+        "Ribbentrop–Mołotow",
+        "Francja",
+        "ZSRR"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "nowozytnosc",
+      "text_with_gaps": "Rozbiory Polski odbyły się w latach 1772, ___ i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "1793"
+        },
+        {
+          "index": 1,
+          "correct": "1795"
+        }
+      ],
+      "tiles": [
+        "1793",
+        "1791",
+        "1815",
+        "1807",
+        "1795"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "wspolczesnosc",
+      "prompt": "Jak nazywa się stolica Polski?",
+      "answer": "Warszawa",
+      "prefilled_pattern": "W______a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "nowozytnosc",
+      "prompt": "Jak nazywał się król, który w 1683 roku pokonał Turków pod Wiedniem? (podaj nazwisko)",
+      "answer": "Sobieski",
+      "prefilled_pattern": "S______i",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "xix_wiek",
+      "prompt": "Jak nazywa się polski hymn narodowy, którego początek brzmi „Jeszcze Polska nie zginęła”?",
+      "answer": "Mazurek Dąbrowskiego",
+      "prefilled_pattern": "M_____k D__________o",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Pieśń Legionów Polskich we Włoszech"
+      ]
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "wspolczesnosc",
+      "prompt": "Jak nazywał się pierwszy niekomunistyczny premier Polski po 1989 roku? (nazwisko)",
+      "answer": "Mazowiecki",
+      "prefilled_pattern": "M________i",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "sredniowiecze",
+      "prompt": "Jak nazywa się pokój z 1466 roku, który zakończył wojnę trzynastoletnią z zakonem krzyżackim — od nazwy miasta (przymiotnik)?",
+      "answer": "toruński",
+      "prefilled_pattern": "t______i",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "torunski",
+        "pokój toruński"
+      ]
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "postacie",
+      "left_items": [
+        "Mieszko I",
+        "Bolesław Chrobry",
+        "Kazimierz Wielki",
+        "Jan III Sobieski"
+      ],
+      "right_items": [
+        "Założenie Akademii Krakowskiej",
+        "Odsiecz Wiednia",
+        "Pierwszy król Polski",
+        "Chrzest Polski"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "daty",
+      "left_items": [
+        "966",
+        "1410",
+        "1791",
+        "1918"
+      ],
+      "right_items": [
+        "Konstytucja 3 maja",
+        "Odzyskanie niepodległości",
+        "Chrzest Polski",
+        "Bitwa pod Grunwaldem"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 3
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "postacie",
+      "left_items": [
+        "Józef Piłsudski",
+        "Tadeusz Kościuszko",
+        "Władysław Sikorski",
+        "Lech Wałęsa"
+      ],
+      "right_items": [
+        "Solidarność",
+        "Premier rządu na uchodźstwie",
+        "Insurekcja 1794 roku",
+        "Cud nad Wisłą"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "daty",
+      "left_items": [
+        "1939",
+        "1945",
+        "1980",
+        "1989"
+      ],
+      "right_items": [
+        "Okrągły Stół",
+        "Koniec II wojny światowej w Europie",
+        "Wybuch II wojny światowej",
+        "Powstanie Solidarności"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    }
+  ]
+}

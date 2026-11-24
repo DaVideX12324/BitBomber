@@ -1,0 +1,632 @@
+{
+  "name": "Wiedza ogólna",
+  "description": "Mieszanka: kosmos, kultura, sport, technika i ciekawostki (trudność 1-2 łatwe, 3-5 trudniejsze).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "ciekawostki",
+      "question": "Ile dni ma tydzień?",
+      "answers": [
+        "6",
+        "7",
+        "5",
+        "8"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "przyroda",
+      "question": "Jakiego koloru jest niebo w pogodny dzień?",
+      "answers": [
+        "żółtego",
+        "niebieskiego",
+        "zielonego",
+        "czerwonego"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "sport",
+      "question": "Ilu zawodników jednej drużyny jest jednocześnie na boisku w piłce nożnej?",
+      "answers": [
+        "12",
+        "9",
+        "10",
+        "11"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "kosmos",
+      "question": "Która planeta Układu Słonecznego jest najbliżej Słońca?",
+      "answers": [
+        "Wenus",
+        "Mars",
+        "Ziemia",
+        "Merkury"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "kultura",
+      "question": "Kto namalował „Mona Lisę”?",
+      "answers": [
+        "Rafael",
+        "Leonardo da Vinci",
+        "Michał Anioł",
+        "Vincent van Gogh"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "kosmos",
+      "question": "Jak nazywa się największa planeta Układu Słonecznego?",
+      "answers": [
+        "Saturn",
+        "Uran",
+        "Jowisz",
+        "Neptun"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "kosmos",
+      "question": "W którym roku człowiek po raz pierwszy stanął na Księżycu?",
+      "answers": [
+        "1961",
+        "1969",
+        "1957",
+        "1972"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "ciekawostki",
+      "question": "Ile wynosi suma oczek na przeciwległych ścianach standardowej kostki do gry?",
+      "answers": [
+        "7",
+        "6",
+        "9",
+        "8"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "swiat",
+      "question": "Jaka waluta obowiązuje w Wielkiej Brytanii?",
+      "answers": [
+        "dolar",
+        "funt szterling",
+        "euro",
+        "frank"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "kosmos",
+      "question": "Który pierwiastek jest głównym składnikiem Słońca?",
+      "answers": [
+        "żelazo",
+        "wodór",
+        "węgiel",
+        "tlen"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "kultura",
+      "question": "Kto skomponował „Cztery pory roku”?",
+      "answers": [
+        "Jan Sebastian Bach",
+        "Fryderyk Chopin",
+        "Antonio Vivaldi",
+        "Wolfgang Amadeus Mozart"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "kultura",
+      "question": "Jak nazywa się najsłynniejsza nagroda filmowa przyznawana przez Amerykańską Akademię Filmową?",
+      "answers": [
+        "Cezar",
+        "Złoty Glob",
+        "Złota Palma",
+        "Oscar"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "sport",
+      "question": "W którym mieście odbyły się pierwsze nowożytne igrzyska olimpijskie w 1896 roku?",
+      "answers": [
+        "Ateny",
+        "Rzym",
+        "Londyn",
+        "Paryż"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "technika",
+      "question": "Kto skomercjalizował żarówkę i jest z nią najczęściej kojarzony?",
+      "answers": [
+        "Alexander Graham Bell",
+        "Nikola Tesla",
+        "Thomas Edison",
+        "Guglielmo Marconi"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "kultura",
+      "question": "Który kompozytor urodził się w Żelazowej Woli?",
+      "answers": [
+        "Henryk Wieniawski",
+        "Karol Szymanowski",
+        "Stanisław Moniuszko",
+        "Fryderyk Chopin"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "kosmos",
+      "question": "Jak nazywa się największy księżyc Saturna?",
+      "answers": [
+        "Ganimedes",
+        "Tytan",
+        "Tryton",
+        "Europa"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "kosmos",
+      "statement": "Ziemia krąży wokół Słońca.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "przyroda",
+      "statement": "Pingwiny potrafią latać.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "kosmos",
+      "statement": "Księżyc jest planetą.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "ciekawostki",
+      "statement": "Jeden rok to około 365 dni.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "sport",
+      "statement": "Maraton ma długość około 42 kilometrów.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "nauka",
+      "statement": "Mikołaj Kopernik urodził się w Toruniu.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "ciekawostki",
+      "statement": "Wielki Mur Chiński jest widoczny gołym okiem z Księżyca.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "technika",
+      "statement": "Internet i World Wide Web to dokładnie to samo.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "kultura",
+      "statement": "Fryderyk Chopin był polskim kompozytorem i pianistą.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "ciekawostki",
+      "statement": "Rok przestępny ma 366 dni i występuje co cztery lata (z wyjątkami).",
+      "correct_answer": true
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "ciekawostki",
+      "text_with_gaps": "Doba ma ___ godziny, a godzina ma ___ minut.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "24"
+        },
+        {
+          "index": 1,
+          "correct": "60"
+        }
+      ],
+      "tiles": [
+        "100",
+        "12",
+        "30",
+        "60",
+        "24"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "kosmos",
+      "text_with_gaps": "Najbliższą nam gwiazdą jest ___, a naturalnym satelitą Ziemi jest ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Słońce"
+        },
+        {
+          "index": 1,
+          "correct": "Księżyc"
+        }
+      ],
+      "tiles": [
+        "Księżyc",
+        "Słońce",
+        "Mars",
+        "Wenus",
+        "Syriusz"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "ciekawostki",
+      "text_with_gaps": "Szachownica ma ___ pól, a standardowa talia kart ma ___ kart.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "64"
+        },
+        {
+          "index": 1,
+          "correct": "52"
+        }
+      ],
+      "tiles": [
+        "54",
+        "64",
+        "52",
+        "32",
+        "36"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "kosmos",
+      "text_with_gaps": "Pierwszym człowiekiem w kosmosie był ___ (1961), a pierwszym na Księżycu ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Jurij Gagarin"
+        },
+        {
+          "index": 1,
+          "correct": "Neil Armstrong"
+        }
+      ],
+      "tiles": [
+        "Buzz Aldrin",
+        "John Glenn",
+        "Aleksiej Leonow",
+        "Neil Armstrong",
+        "Jurij Gagarin"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "nauka",
+      "text_with_gaps": "Teorię względności sformułował ___, a prawo powszechnego ciążenia ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Albert Einstein"
+        },
+        {
+          "index": 1,
+          "correct": "Izaak Newton"
+        }
+      ],
+      "tiles": [
+        "Mikołaj Kopernik",
+        "Albert Einstein",
+        "Izaak Newton",
+        "Niels Bohr",
+        "Galileusz"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "ciekawostki",
+      "prompt": "Jak nazywa się pora roku następująca po zimie?",
+      "answer": "wiosna",
+      "prefilled_pattern": "w____a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "ciekawostki",
+      "prompt": "Jak nazywa się pierwszy miesiąc roku?",
+      "answer": "styczeń",
+      "prefilled_pattern": "s_____ń",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "styczen"
+      ]
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "kosmos",
+      "prompt": "Jak nazywa się planeta, którą nazywamy Czerwoną Planetą?",
+      "answer": "Mars",
+      "prefilled_pattern": "M__s",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "nauka",
+      "prompt": "Jak nazywa się dwukrotna laureatka Nagrody Nobla, która odkryła polon i rad? (nazwisko)",
+      "answer": "Curie",
+      "prefilled_pattern": "C___e",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Skłodowska-Curie",
+        "Skłodowska",
+        "Sklodowska-Curie"
+      ]
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "technika",
+      "prompt": "Jak nazywa się język programowania stworzony przez Guido van Rossuma, nazwany od brytyjskiej grupy komediowej?",
+      "answer": "Python",
+      "prefilled_pattern": "P____n",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "przyroda",
+      "left_items": [
+        "Pies",
+        "Kot",
+        "Krowa",
+        "Kura"
+      ],
+      "right_items": [
+        "muczy",
+        "miauczy",
+        "gdacze",
+        "szczeka"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "kosmos",
+      "left_items": [
+        "Merkury",
+        "Ziemia",
+        "Mars",
+        "Jowisz"
+      ],
+      "right_items": [
+        "najbliżej Słońca",
+        "nasz dom",
+        "największa planeta",
+        "Czerwona Planeta"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "kultura",
+      "left_items": [
+        "Leonardo da Vinci",
+        "Fryderyk Chopin",
+        "Wolfgang Amadeus Mozart",
+        "Jan Matejko"
+      ],
+      "right_items": [
+        "Bitwa pod Grunwaldem",
+        "Nokturny",
+        "Eine kleine Nachtmusik",
+        "Mona Lisa"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "technika",
+      "left_items": [
+        "Thomas Edison",
+        "Alexander Graham Bell",
+        "Johannes Gutenberg",
+        "Tim Berners-Lee"
+      ],
+      "right_items": [
+        "World Wide Web",
+        "telefon",
+        "druk ruchomą czcionką",
+        "żarówka"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    }
+  ]
+}

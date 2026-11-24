@@ -1,0 +1,627 @@
+{
+  "name": "Język angielski",
+  "description": "Słownictwo, czasy, formy nieregularne i idiomy (trudność 1-2 podstawowy, 3-5 średni i zaawansowany).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "question": "Jak po angielsku jest „pies”?",
+      "answers": [
+        "dog",
+        "cat",
+        "horse",
+        "pig"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "question": "Co oznacza słowo „apple”?",
+      "answers": [
+        "banan",
+        "gruszka",
+        "jabłko",
+        "pomarańcza"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "question": "Wybierz poprawną formę: „She ___ a student.”",
+      "answers": [
+        "is",
+        "are",
+        "be",
+        "am"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "question": "Jak po angielsku jest „dziękuję”?",
+      "answers": [
+        "thank you",
+        "please",
+        "hello",
+        "sorry"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "question": "Przeciwieństwem słowa „hot” jest:",
+      "answers": [
+        "dry",
+        "warm",
+        "big",
+        "cold"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Wybierz poprawny czas przeszły czasownika „go”:",
+      "answers": [
+        "gone",
+        "going",
+        "went",
+        "goed"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Wybierz poprawny przedimek: „I have ___ apple.”",
+      "answers": [
+        "a",
+        "an",
+        "—",
+        "the"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Jak brzmi liczba mnoga słowa „child”?",
+      "answers": [
+        "children",
+        "childs",
+        "childrens",
+        "childes"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Wybierz poprawne zdanie:",
+      "answers": [
+        "He doesn't like tea.",
+        "He not like tea.",
+        "He don't like tea.",
+        "He doesn't likes tea."
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "slownictwo",
+      "question": "Co oznacza angielskie słowo „library”?",
+      "answers": [
+        "biblioteka",
+        "księgarnia",
+        "libretto",
+        "licencja"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "question": "Wybierz poprawne zdanie w czasie Present Perfect:",
+      "answers": [
+        "I did seen him.",
+        "I has seen him.",
+        "I have seen him yesterday.",
+        "I have already seen him."
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "question": "Jaki jest stopień wyższy przymiotnika „good”?",
+      "answers": [
+        "better",
+        "more good",
+        "best",
+        "gooder"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "question": "Uzupełnij: „If it rains, we ___ at home.”",
+      "answers": [
+        "stayed",
+        "will stay",
+        "are staying",
+        "would stay"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "idiomy",
+      "question": "Co oznacza zwrot „break a leg” (przed występem)?",
+      "answers": [
+        "Uważaj!",
+        "Powodzenia!",
+        "Idź do lekarza!",
+        "Zrób przerwę!"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "gramatyka",
+      "question": "Wybierz poprawną formę strony biernej: „The letter ___ yesterday.”",
+      "answers": [
+        "wrote",
+        "has wrote",
+        "was written",
+        "is written"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "slownictwo",
+      "question": "Co znaczy angielskie słowo „actually”?",
+      "answers": [
+        "w rzeczywistości",
+        "ostatecznie",
+        "aktualnie",
+        "zwykle"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "statement": "„Cat” po polsku to „kot”.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "statement": "„Red” oznacza kolor niebieski.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "statement": "„Is” to forma czasownika „to be” dla trzeciej osoby liczby pojedynczej.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "statement": "Po angielsku „tydzień” to „month”.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "statement": "Liczba mnoga słowa „man” to „mans”.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "slownictwo",
+      "statement": "„Yesterday” oznacza „jutro”.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "statement": "Czasownik „to be” w czasie przeszłym ma formy „was” i „were”.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "statement": "„Information” jest rzeczownikiem niepoliczalnym.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "statement": "Zdanie „She can sings.” jest poprawne.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "idiomy",
+      "statement": "Zwrot „It's raining cats and dogs” oznacza, że z nieba spadają zwierzęta.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "text_with_gaps": "Po angielsku „dzień dobry” (rano) to „good ___”, a „dobranoc” to „good ___”.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "morning"
+        },
+        {
+          "index": 1,
+          "correct": "night"
+        }
+      ],
+      "tiles": [
+        "morning",
+        "evening",
+        "night",
+        "bye",
+        "afternoon"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "text_with_gaps": "I ___ a student, and she ___ a teacher.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "am"
+        },
+        {
+          "index": 1,
+          "correct": "is"
+        }
+      ],
+      "tiles": [
+        "was",
+        "is",
+        "are",
+        "am",
+        "be"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "text_with_gaps": "Czas przeszły czasownika „eat” to ___, a czasownika „write” to ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "ate"
+        },
+        {
+          "index": 1,
+          "correct": "wrote"
+        }
+      ],
+      "tiles": [
+        "eated",
+        "wrote",
+        "writed",
+        "written",
+        "ate"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "gramatyka",
+      "text_with_gaps": "If I ___ rich, I ___ buy a big house. (drugi tryb warunkowy)",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "were"
+        },
+        {
+          "index": 1,
+          "correct": "would"
+        }
+      ],
+      "tiles": [
+        "am",
+        "would",
+        "will",
+        "were",
+        "had"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "gramatyka",
+      "text_with_gaps": "He has lived here ___ 2010, and he has worked here ___ ten years.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "since"
+        },
+        {
+          "index": 1,
+          "correct": "for"
+        }
+      ],
+      "tiles": [
+        "since",
+        "during",
+        "from",
+        "for",
+        "ago"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "prompt": "Jak po angielsku jest „kot”?",
+      "answer": "cat",
+      "prefilled_pattern": "c_t",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "prompt": "Jak po angielsku jest „dom”?",
+      "answer": "house",
+      "prefilled_pattern": "h___e",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "home"
+      ]
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "slownictwo",
+      "prompt": "Jak po angielsku jest „książka”?",
+      "answer": "book",
+      "prefilled_pattern": "b__k",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "slownictwo",
+      "prompt": "Jak zapisujemy po angielsku liczbę 13 słownie?",
+      "answer": "thirteen",
+      "prefilled_pattern": "t______n",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "gramatyka",
+      "prompt": "Jak brzmi czas przeszły czasownika „to buy” (kupować)?",
+      "answer": "bought",
+      "prefilled_pattern": "b____t",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "slownictwo",
+      "left_items": [
+        "red",
+        "blue",
+        "green",
+        "yellow"
+      ],
+      "right_items": [
+        "zielony",
+        "czerwony",
+        "żółty",
+        "niebieski"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 3
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "left_items": [
+        "dog",
+        "cat",
+        "bird",
+        "fish"
+      ],
+      "right_items": [
+        "ryba",
+        "pies",
+        "kot",
+        "ptak"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "left_items": [
+        "go",
+        "see",
+        "take",
+        "have"
+      ],
+      "right_items": [
+        "saw",
+        "went",
+        "took",
+        "had"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "idiomy",
+      "left_items": [
+        "break a leg",
+        "piece of cake",
+        "once in a blue moon",
+        "under the weather"
+      ],
+      "right_items": [
+        "bułka z masłem",
+        "niedysponowany",
+        "powodzenia",
+        "bardzo rzadko"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    }
+  ]
+}

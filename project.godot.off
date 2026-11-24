@@ -19,6 +19,7 @@ config/description="Edukacyjna gra Bomberman — lokalny multiplayer z quizami"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="uid://c4bbicon7x2q"
+quiz/default_active_sets=PackedStringArray("inf_podst", "informatyka")
 
 [autoload]
 

@@ -6,7 +6,8 @@ extends RefCounted
 ## - Własne: user://quizzes/<id>.json — import, nowe zestawy i edycje wbudowanych (plik o tym samym id
 ##   przesłania wbudowany; „przywróć oryginał” = usunięcie pliku z user://).
 ## - Wybór aktywnych: user://quiz_selection.json — zestawy włączone / wyłączone i wyłączone pytania
-##   (globalnie, dla wszystkich modułów i zapisów). Domyślnie aktywne: własne zestawy i DEFAULT_ACTIVE_SETS.
+##   (globalnie, dla wszystkich modułów i zapisów). Domyślnie aktywne: własne zestawy i default_active_sets()
+##   (ustawienie projektu DEFAULT_SETS_SETTING, bez niego DEFAULT_ACTIVE_SETS — gra może mieć inne niż host).
 ##
 ## Format zestawu: {"name", "description", "questions": [...]} (albo sama tablica pytań). Typy pytań:
 ## multiple_choice, true_false, fill_text, fill_tiles, matching — pola jak w resources/quizzes.
@@ -17,6 +18,7 @@ const BUILTIN_DIR := "res://resources/quizzes"
 const USER_DIR := "user://quizzes"
 const SELECTION_PATH := "user://quiz_selection.json"
 const DEFAULT_ACTIVE_SETS: Array[String] = ["inf_podst"]
+const DEFAULT_SETS_SETTING := "application/quiz/default_active_sets"
 const GAP_MARK := "___"
 
 const TYPES: Array[String] = ["multiple_choice", "true_false", "fill_text", "fill_tiles", "matching"]
@@ -340,7 +342,15 @@ static func is_set_enabled(id: String, sel: Dictionary = {}) -> bool:
 		return true
 	if (sel["disabled_sets"] as Array).has(id):
 		return false
-	return DEFAULT_ACTIVE_SETS.has(id) or not is_builtin(id)
+	return default_active_sets().has(id) or not is_builtin(id)
+
+
+## Wbudowane zestawy aktywne bez wyboru gracza: z project.godot (DEFAULT_SETS_SETTING) albo DEFAULT_ACTIVE_SETS.
+static func default_active_sets() -> Array:
+	var from_project: Variant = ProjectSettings.get_setting(DEFAULT_SETS_SETTING, DEFAULT_ACTIVE_SETS)
+	if from_project is Array or from_project is PackedStringArray:
+		return Array(from_project)
+	return DEFAULT_ACTIVE_SETS
 
 
 static func set_set_enabled(id: String, enabled: bool) -> void:

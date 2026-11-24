@@ -1,0 +1,644 @@
+{
+  "name": "Fizyka i chemia",
+  "description": "Stany skupienia, siły, elektryczność, pierwiastki i reakcje chemiczne (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "fizyka",
+      "question": "W jakiej temperaturze wrze woda pod normalnym ciśnieniem?",
+      "answers": [
+        "120°C",
+        "90°C",
+        "50°C",
+        "100°C"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "fizyka",
+      "question": "Jak nazywa się siła, z jaką Ziemia przyciąga wszystkie ciała?",
+      "answers": [
+        "sprężystość",
+        "tarcie",
+        "magnetyzm",
+        "grawitacja"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "chemia",
+      "question": "Jaki jest wzór chemiczny wody?",
+      "answers": [
+        "H₂O",
+        "O₂",
+        "NaCl",
+        "CO₂"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "fizyka",
+      "question": "Jaka jest jednostka siły w układzie SI?",
+      "answers": [
+        "wat",
+        "niuton",
+        "paskal",
+        "dżul"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "chemia",
+      "question": "Który gaz stanowi największą część powietrza?",
+      "answers": [
+        "dwutlenek węgla",
+        "argon",
+        "azot",
+        "tlen"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "chemia",
+      "question": "Jaki symbol chemiczny ma żelazo?",
+      "answers": [
+        "Ir",
+        "F",
+        "Fe",
+        "Fr"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "chemia",
+      "question": "Jaki symbol chemiczny ma złoto?",
+      "answers": [
+        "Ag",
+        "Go",
+        "Gd",
+        "Au"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "fizyka",
+      "question": "Ile wynosi przyspieszenie ziemskie (w przybliżeniu)?",
+      "answers": [
+        "98 m/s²",
+        "1,6 m/s²",
+        "3,7 m/s²",
+        "9,8 m/s²"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "chemia",
+      "question": "Który pierwiastek ma liczbę atomową 1?",
+      "answers": [
+        "węgiel",
+        "wodór",
+        "hel",
+        "tlen"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "fizyka",
+      "question": "Jak nazywa się przejście ze stanu ciekłego w stały?",
+      "answers": [
+        "skraplanie",
+        "topnienie",
+        "krzepnięcie",
+        "parowanie"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "chemia",
+      "question": "Który metal jest w temperaturze pokojowej cieczą?",
+      "answers": [
+        "rtęć",
+        "ołów",
+        "miedź",
+        "cyna"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "fizyka",
+      "question": "Ile wynosi prędkość światła w próżni (w przybliżeniu)?",
+      "answers": [
+        "3000 km/s",
+        "300 000 km/s",
+        "3 000 000 km/s",
+        "30 000 km/s"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "chemia",
+      "question": "Jakie pH ma roztwór obojętny (w temperaturze 25°C)?",
+      "answers": [
+        "14",
+        "7",
+        "0",
+        "1"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "fizyka",
+      "question": "Który wzór opisuje drugą zasadę dynamiki Newtona?",
+      "answers": [
+        "p = F / S",
+        "F = m · a",
+        "U = I · R",
+        "E = m · c²"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "chemia",
+      "question": "Jak nazywa się wiązanie chemiczne, w którym atomy uwspólniają pary elektronów?",
+      "answers": [
+        "wiązanie wodorowe",
+        "wiązanie jonowe",
+        "wiązanie kowalencyjne",
+        "wiązanie metaliczne"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "fizyka",
+      "question": "Jaką jednostką mierzy się opór elektryczny?",
+      "answers": [
+        "woltem",
+        "amperem",
+        "watem",
+        "omem"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_017",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "fizyka",
+      "question": "Jak nazywa się zjawisko załamania światła przy przejściu z jednego ośrodka do drugiego?",
+      "answers": [
+        "interferencja",
+        "polaryzacja",
+        "dyfrakcja",
+        "refrakcja"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "fizyka",
+      "statement": "Lód jest wodą w stanie stałym.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "fizyka",
+      "statement": "Dźwięk rozchodzi się w próżni.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "fizyka",
+      "statement": "Magnes przyciąga wszystkie metale.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "chemia",
+      "statement": "Tlen jest potrzebny do spalania.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "chemia",
+      "statement": "Cząsteczka wody składa się z dwóch atomów wodoru i jednego atomu tlenu.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "fizyka",
+      "statement": "Światło porusza się szybciej niż dźwięk.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "chemia",
+      "statement": "W układzie okresowym pierwiastki są uporządkowane według rosnącej liczby atomowej.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "chemia",
+      "statement": "Kwas solny ma odczyn zasadowy.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "fizyka",
+      "statement": "Praca w fizyce jest iloczynem siły i drogi (gdy siła działa wzdłuż drogi).",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "fizyka",
+      "statement": "Neutron ma ładunek dodatni.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "fizyka",
+      "text_with_gaps": "Woda zamarza w temperaturze ___°C, a wrze w temperaturze ___°C.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "0"
+        },
+        {
+          "index": 1,
+          "correct": "100"
+        }
+      ],
+      "tiles": [
+        "−10",
+        "50",
+        "10",
+        "100",
+        "0"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "fizyka",
+      "text_with_gaps": "Podstawową jednostką masy w układzie SI jest ___, a podstawową jednostką długości ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "kilogram"
+        },
+        {
+          "index": 1,
+          "correct": "metr"
+        }
+      ],
+      "tiles": [
+        "metr",
+        "litr",
+        "kilometr",
+        "gram",
+        "kilogram"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "chemia",
+      "text_with_gaps": "Atom składa się z jądra, w którym są protony i ___, oraz z ___ krążących wokół jądra.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "neutrony"
+        },
+        {
+          "index": 1,
+          "correct": "elektronów"
+        }
+      ],
+      "tiles": [
+        "neutrony",
+        "jonów",
+        "fotony",
+        "elektronów",
+        "pozytonów"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "fizyka",
+      "text_with_gaps": "Natężenie prądu płynącego przez opornik wynosi I = ___, co wyraża prawo ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "U/R"
+        },
+        {
+          "index": 1,
+          "correct": "Ohma"
+        }
+      ],
+      "tiles": [
+        "Ohma",
+        "Kirchhoffa",
+        "U/R",
+        "U · R",
+        "Faradaya"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "chemia",
+      "text_with_gaps": "Reakcja kwasu z zasadą to reakcja ___, w której powstaje sól i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "zobojętniania"
+        },
+        {
+          "index": 1,
+          "correct": "woda"
+        }
+      ],
+      "tiles": [
+        "wodór",
+        "utleniania",
+        "woda",
+        "dwutlenek węgla",
+        "zobojętniania"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "chemia",
+      "prompt": "Jak nazywa się gaz, którym oddychamy i który jest potrzebny do spalania?",
+      "answer": "tlen",
+      "prefilled_pattern": "t__n",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "fizyka",
+      "prompt": "Jak nazywa się przyrząd do pomiaru temperatury?",
+      "answer": "termometr",
+      "prefilled_pattern": "t_______r",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "fizyka",
+      "prompt": "Jak nazywa się uczony, który sformułował prawo powszechnego ciążenia i trzy zasady dynamiki? (nazwisko)",
+      "answer": "Newton",
+      "prefilled_pattern": "N____n",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "chemia",
+      "prompt": "Jak nazywa się pierwiastek o symbolu Na?",
+      "answer": "sód",
+      "prefilled_pattern": "s_d",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "sod"
+      ]
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "fizyka",
+      "prompt": "Jak nazywa się siła skierowana do środka okręgu, która utrzymuje ciało w ruchu po okręgu? (przymiotnik)",
+      "answer": "dośrodkowa",
+      "prefilled_pattern": "d________a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "dosrodkowa"
+      ]
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "chemia",
+      "left_items": [
+        "Tlen",
+        "Wodór",
+        "Węgiel",
+        "Żelazo"
+      ],
+      "right_items": [
+        "O",
+        "H",
+        "C",
+        "Fe"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "fizyka",
+      "left_items": [
+        "Siła",
+        "Napięcie",
+        "Opór",
+        "Energia"
+      ],
+      "right_items": [
+        "om",
+        "dżul",
+        "wolt",
+        "niuton"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "fizyka",
+      "left_items": [
+        "Topnienie",
+        "Wrzenie",
+        "Skraplanie",
+        "Sublimacja"
+      ],
+      "right_items": [
+        "stałe → ciekłe",
+        "stałe → gazowe",
+        "ciekłe → gazowe",
+        "gazowe → ciekłe"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "chemia",
+      "left_items": [
+        "NaCl",
+        "H₂SO₄",
+        "NaOH",
+        "CO₂"
+      ],
+      "right_items": [
+        "kwas siarkowy",
+        "wodorotlenek sodu",
+        "sól kuchenna",
+        "dwutlenek węgla"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    }
+  ]
+}

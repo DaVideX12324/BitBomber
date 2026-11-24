@@ -1,0 +1,633 @@
+{
+  "name": "Matematyka — szkoła podstawowa i średnia",
+  "description": "Arytmetyka, geometria, algebra, funkcje i prawdopodobieństwo (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "arytmetyka",
+      "question": "Ile to 7 · 8?",
+      "answers": [
+        "56",
+        "54",
+        "64",
+        "58"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "liczby",
+      "question": "Która z liczb jest parzysta?",
+      "answers": [
+        "23",
+        "38",
+        "17",
+        "51"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "geometria",
+      "question": "Ile boków ma sześciokąt?",
+      "answers": [
+        "8",
+        "5",
+        "7",
+        "6"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "geometria",
+      "question": "Ile stopni wynosi suma kątów wewnętrznych trójkąta?",
+      "answers": [
+        "270°",
+        "90°",
+        "360°",
+        "180°"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "arytmetyka",
+      "question": "Ile wynosi 3/4 ze 100?",
+      "answers": [
+        "50",
+        "25",
+        "80",
+        "75"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "geometria",
+      "question": "Jakie pole ma prostokąt o bokach 6 cm i 9 cm?",
+      "answers": [
+        "54 cm²",
+        "30 cm²",
+        "15 cm²",
+        "45 cm²"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "algebra",
+      "question": "Rozwiązaniem równania 2x + 5 = 17 jest:",
+      "answers": [
+        "x = 11",
+        "x = 12",
+        "x = 6",
+        "x = 4"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "geometria",
+      "question": "Ile wynosi długość przeciwprostokątnej w trójkącie prostokątnym o przyprostokątnych 3 i 4?",
+      "answers": [
+        "√7",
+        "5",
+        "7",
+        "6"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "liczby",
+      "question": "Która z liczb jest liczbą pierwszą?",
+      "answers": [
+        "27",
+        "33",
+        "21",
+        "29"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "arytmetyka",
+      "question": "Ile wynosi 15% z 200?",
+      "answers": [
+        "30",
+        "45",
+        "20",
+        "15"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "funkcje",
+      "question": "Jakie jest miejsce zerowe funkcji f(x) = 3x − 12?",
+      "answers": [
+        "x = 4",
+        "x = 36",
+        "x = −4",
+        "x = 12"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "algebra",
+      "question": "Ile wynosi wyróżnik Δ równania x² − 5x + 6 = 0?",
+      "answers": [
+        "5",
+        "11",
+        "49",
+        "1"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "geometria",
+      "question": "Ile wynosi pole koła o promieniu 5?",
+      "answers": [
+        "10π",
+        "50π",
+        "5π",
+        "25π"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "prawdopodobienstwo",
+      "question": "Rzucamy raz symetryczną kostką. Jakie jest prawdopodobieństwo wyrzucenia więcej niż 4 oczek?",
+      "answers": [
+        "1/6",
+        "2/3",
+        "1/2",
+        "1/3"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "algebra",
+      "question": "Ile wynosi suma pierwiastków równania x² − 7x + 10 = 0?",
+      "answers": [
+        "−7",
+        "3",
+        "10",
+        "7"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "prawdopodobienstwo",
+      "question": "Na ile sposobów można ustawić w rzędzie 4 różne książki?",
+      "answers": [
+        "16",
+        "64",
+        "12",
+        "24"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "liczby",
+      "statement": "Liczba 0 jest liczbą parzystą.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "geometria",
+      "statement": "Kwadrat ma cztery boki równej długości.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "liczby",
+      "statement": "Liczba 1 jest liczbą pierwszą.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "geometria",
+      "statement": "Pole trójkąta oblicza się ze wzoru a · h (bez dzielenia przez 2).",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "geometria",
+      "statement": "Suma kątów wewnętrznych czworokąta wynosi 360°.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "liczby",
+      "statement": "Każda liczba pierwsza jest nieparzysta.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "arytmetyka",
+      "statement": "Pierwiastek kwadratowy z 49 wynosi 7.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "funkcje",
+      "statement": "Funkcja y = −2x + 1 jest rosnąca.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "geometria",
+      "statement": "Przekątne prostokąta mają taką samą długość.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "liczby",
+      "statement": "Liczba π jest liczbą wymierną.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "geometria",
+      "text_with_gaps": "Obwód kwadratu o boku a wynosi ___, a jego pole wynosi ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "4a"
+        },
+        {
+          "index": 1,
+          "correct": "a²"
+        }
+      ],
+      "tiles": [
+        "4a",
+        "a²",
+        "2a",
+        "a³"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "liczby",
+      "text_with_gaps": "Najmniejsza liczba pierwsza to ___, a najmniejsza liczba złożona to ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "2"
+        },
+        {
+          "index": 1,
+          "correct": "4"
+        }
+      ],
+      "tiles": [
+        "6",
+        "3",
+        "4",
+        "2",
+        "1"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "geometria",
+      "text_with_gaps": "Pole koła obliczamy ze wzoru P = ___, a obwód koła ze wzoru L = ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "πr²"
+        },
+        {
+          "index": 1,
+          "correct": "2πr"
+        }
+      ],
+      "tiles": [
+        "2πr²",
+        "2πr",
+        "πr²",
+        "πr"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "geometria",
+      "text_with_gaps": "Twierdzenie ___ mówi, że w trójkącie prostokątnym a² + b² = ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Pitagorasa"
+        },
+        {
+          "index": 1,
+          "correct": "c²"
+        }
+      ],
+      "tiles": [
+        "2c",
+        "Pitagorasa",
+        "c²",
+        "Talesa"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "funkcje",
+      "text_with_gaps": "Współrzędna x wierzchołka paraboli y = ax² + bx + c wynosi ___, a współrzędna y wynosi ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "−b/2a"
+        },
+        {
+          "index": 1,
+          "correct": "−Δ/4a"
+        }
+      ],
+      "tiles": [
+        "Δ/4a",
+        "−Δ/4a",
+        "b/2a",
+        "−b/2a",
+        "−b/a"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "arytmetyka",
+      "prompt": "Jak nazywa się wynik dodawania?",
+      "answer": "suma",
+      "prefilled_pattern": "s__a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "geometria",
+      "prompt": "Jak nazywa się wielokąt o pięciu bokach?",
+      "answer": "pięciokąt",
+      "prefilled_pattern": "p_______t",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "pieciokat"
+      ]
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "geometria",
+      "prompt": "Jak nazywa się najdłuższy bok trójkąta prostokątnego?",
+      "answer": "przeciwprostokątna",
+      "prefilled_pattern": "p________________a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "przeciwprostokatna"
+      ]
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "statystyka",
+      "prompt": "Jak nazywa się wartość występująca najczęściej w zestawie danych (statystyka)?",
+      "answer": "dominanta",
+      "prefilled_pattern": "d_______a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "moda"
+      ]
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "algebra",
+      "prompt": "Jak nazywa się działanie odwrotne do potęgowania, w którym szukamy wykładnika (np. log₂ 8 = 3)?",
+      "answer": "logarytmowanie",
+      "prefilled_pattern": "l____________e",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "logarytm"
+      ]
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "geometria",
+      "left_items": [
+        "Trójkąt",
+        "Czworokąt",
+        "Pięciokąt",
+        "Sześciokąt"
+      ],
+      "right_items": [
+        "6 boków",
+        "4 boki",
+        "5 boków",
+        "3 boki"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 0
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "arytmetyka",
+      "left_items": [
+        "1 km",
+        "1 m",
+        "1 kg",
+        "1 godzina"
+      ],
+      "right_items": [
+        "100 cm",
+        "1000 m",
+        "60 minut",
+        "1000 g"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "geometria",
+      "left_items": [
+        "Pole trójkąta",
+        "Pole prostokąta",
+        "Pole koła",
+        "Obwód koła"
+      ],
+      "right_items": [
+        "a · h / 2",
+        "πr²",
+        "a · b",
+        "2πr"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "trygonometria",
+      "left_items": [
+        "sin 30°",
+        "tg 45°",
+        "sin 60°",
+        "cos 90°"
+      ],
+      "right_items": [
+        "1",
+        "√3/2",
+        "0",
+        "1/2"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    }
+  ]
+}

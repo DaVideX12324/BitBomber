@@ -1,0 +1,632 @@
+{
+  "name": "Geografia — Polska i świat",
+  "description": "Kontynenty, państwa, stolice, rzeki, góry i klimat (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "europa",
+      "question": "Jaka jest stolica Francji?",
+      "answers": [
+        "Lyon",
+        "Bruksela",
+        "Marsylia",
+        "Paryż"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "swiat",
+      "question": "Który kontynent jest największy?",
+      "answers": [
+        "Europa",
+        "Afryka",
+        "Azja",
+        "Ameryka Północna"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "polska",
+      "question": "Jaka jest najdłuższa rzeka w Polsce?",
+      "answers": [
+        "Wisła",
+        "Bug",
+        "Warta",
+        "Odra"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "polska",
+      "question": "Jak nazywa się najwyższy szczyt Polski?",
+      "answers": [
+        "Śnieżka",
+        "Babia Góra",
+        "Giewont",
+        "Rysy"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "swiat",
+      "question": "Przez który kontynent przepływa Nil?",
+      "answers": [
+        "Azja",
+        "Europa",
+        "Ameryka Południowa",
+        "Afryka"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "polska",
+      "question": "Które morze leży na północy Polski?",
+      "answers": [
+        "Morze Śródziemne",
+        "Morze Czarne",
+        "Morze Północne",
+        "Bałtyk"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "swiat",
+      "question": "Jaka jest stolica Australii?",
+      "answers": [
+        "Canberra",
+        "Melbourne",
+        "Sydney",
+        "Perth"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "swiat",
+      "question": "Jak nazywa się najwyższy szczyt świata?",
+      "answers": [
+        "Kilimandżaro",
+        "K2",
+        "Mont Blanc",
+        "Mount Everest"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "swiat",
+      "question": "Które państwo jest największe na świecie pod względem powierzchni?",
+      "answers": [
+        "Kanada",
+        "Stany Zjednoczone",
+        "Chiny",
+        "Rosja"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "swiat",
+      "question": "Który ocean jest największy?",
+      "answers": [
+        "Ocean Atlantycki",
+        "Ocean Spokojny",
+        "Ocean Indyjski",
+        "Ocean Arktyczny"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "swiat",
+      "question": "Jak nazywa się najgłębsze miejsce oceanów, położone na Pacyfiku?",
+      "answers": [
+        "Rów Jawajski",
+        "Rów Atakamski",
+        "Rów Mariański",
+        "Rów Portorykański"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "europa",
+      "question": "Przez które z państw nie przepływa Dunaj?",
+      "answers": [
+        "Austria",
+        "Polska",
+        "Rumunia",
+        "Węgry"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "swiat",
+      "question": "Która pustynia jest największą pustynią gorącą na świecie?",
+      "answers": [
+        "Gobi",
+        "Atakama",
+        "Sahara",
+        "Kalahari"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "swiat",
+      "question": "Jaka jest stolica Kanady?",
+      "answers": [
+        "Ottawa",
+        "Montreal",
+        "Toronto",
+        "Vancouver"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "swiat",
+      "question": "Które pasmo górskie jest najdłuższym pasmem lądowym na świecie?",
+      "answers": [
+        "Andy",
+        "Alpy",
+        "Himalaje",
+        "Góry Skaliste"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "swiat",
+      "question": "Które państwo leży w całości na półkuli południowej?",
+      "answers": [
+        "Nowa Zelandia",
+        "Kenia",
+        "Indonezja",
+        "Brazylia"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "polska",
+      "statement": "Polska graniczy z Niemcami.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "swiat",
+      "statement": "Słońce wschodzi na zachodzie.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "swiat",
+      "statement": "Morze Martwe leży w Afryce.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "polska",
+      "statement": "Tatry są najwyższą częścią Karpat.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "swiat",
+      "statement": "Równik dzieli Ziemię na półkulę północną i południową.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "europa",
+      "statement": "Stolicą Włoch jest Mediolan.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "swiat",
+      "statement": "Wielkie Jeziora leżą w Ameryce Północnej.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "swiat",
+      "statement": "Amazonka jest rzeką w Afryce.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "swiat",
+      "statement": "Na Antarktydzie nie ma stałych mieszkańców, są tylko stacje badawcze.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "swiat",
+      "statement": "Cieśnina Beringa oddziela Azję od Ameryki Północnej.",
+      "correct_answer": true
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "polska",
+      "text_with_gaps": "Polska leży w ___, a jej stolicą jest ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Europie"
+        },
+        {
+          "index": 1,
+          "correct": "Warszawa"
+        }
+      ],
+      "tiles": [
+        "Afryce",
+        "Azji",
+        "Warszawa",
+        "Kraków",
+        "Europie"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "polska",
+      "text_with_gaps": "Największym jeziorem w Polsce są ___, a najdłuższą rzeką ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Śniardwy"
+        },
+        {
+          "index": 1,
+          "correct": "Wisła"
+        }
+      ],
+      "tiles": [
+        "Mamry",
+        "Wisła",
+        "Odra",
+        "Gopło",
+        "Śniardwy"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "swiat",
+      "text_with_gaps": "Równik ma szerokość geograficzną ___°, a południk zerowy przechodzi przez ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "0"
+        },
+        {
+          "index": 1,
+          "correct": "Greenwich"
+        }
+      ],
+      "tiles": [
+        "Berlin",
+        "Paryż",
+        "0",
+        "Greenwich",
+        "90"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "swiat",
+      "text_with_gaps": "Najwyższym szczytem Alp jest ___, a Kaukazu ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Mont Blanc"
+        },
+        {
+          "index": 1,
+          "correct": "Elbrus"
+        }
+      ],
+      "tiles": [
+        "Elbrus",
+        "Kilimandżaro",
+        "Aconcagua",
+        "Matterhorn",
+        "Mont Blanc"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "klimat",
+      "text_with_gaps": "Prąd morski ___ ogrzewa zachodnie wybrzeża Europy, a jego źródłem jest Zatoka ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Golfsztrom"
+        },
+        {
+          "index": 1,
+          "correct": "Meksykańska"
+        }
+      ],
+      "tiles": [
+        "Bengalska",
+        "Golfsztrom",
+        "Labradorski",
+        "Perska",
+        "Meksykańska"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "swiat",
+      "prompt": "Jak nazywa się największy ocean na Ziemi?",
+      "answer": "Spokojny",
+      "prefilled_pattern": "S______y",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Pacyfik",
+        "Ocean Spokojny"
+      ]
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "europa",
+      "prompt": "Jak nazywa się stolica Hiszpanii?",
+      "answer": "Madryt",
+      "prefilled_pattern": "M____t",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "swiat",
+      "prompt": "Jak nazywa się pasmo górskie, które umownie oddziela Europę od Azji?",
+      "answer": "Ural",
+      "prefilled_pattern": "U__l",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "Góry Uralskie",
+        "Uralu"
+      ]
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "swiat",
+      "prompt": "Jak nazywa się największa wyspa świata (nie licząc kontynentów)?",
+      "answer": "Grenlandia",
+      "prefilled_pattern": "G________a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "klimat",
+      "prompt": "Jak nazywa się strefa klimatyczna na północy Eurazji z wieloletnią zmarzliną i roślinnością złożoną głównie z mchów i porostów?",
+      "answer": "tundra",
+      "prefilled_pattern": "t____a",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "europa",
+      "left_items": [
+        "Polska",
+        "Niemcy",
+        "Francja",
+        "Włochy"
+      ],
+      "right_items": [
+        "Paryż",
+        "Berlin",
+        "Warszawa",
+        "Rzym"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "swiat",
+      "left_items": [
+        "Egipt",
+        "Brazylia",
+        "Japonia",
+        "Kanada"
+      ],
+      "right_items": [
+        "Ameryka Południowa",
+        "Afryka",
+        "Azja",
+        "Ameryka Północna"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "swiat",
+      "left_items": [
+        "Mount Everest",
+        "Mont Blanc",
+        "Rysy",
+        "Kilimandżaro"
+      ],
+      "right_items": [
+        "Alpy",
+        "Himalaje",
+        "Tatry",
+        "Tanzania"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "swiat",
+      "left_items": [
+        "Nil",
+        "Amazonka",
+        "Dunaj",
+        "Missisipi"
+      ],
+      "right_items": [
+        "Ameryka Południowa",
+        "Europa",
+        "Afryka",
+        "Ameryka Północna"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 1
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    }
+  ]
+}

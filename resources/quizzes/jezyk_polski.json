@@ -1,0 +1,627 @@
+{
+  "name": "Język polski — gramatyka i literatura",
+  "description": "Ortografia, części mowy, środki stylistyczne i lektury (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "ortografia",
+      "question": "Wskaż poprawną pisownię:",
+      "answers": [
+        "chleb",
+        "chlęb",
+        "hleb",
+        "chlep"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "literatura",
+      "question": "Kto napisał „Pana Tadeusza”?",
+      "answers": [
+        "Henryk Sienkiewicz",
+        "Juliusz Słowacki",
+        "Adam Mickiewicz",
+        "Bolesław Prus"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "question": "Który z wyrazów jest rzeczownikiem?",
+      "answers": [
+        "wolno",
+        "dom",
+        "szybki",
+        "biegać"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "ortografia",
+      "question": "Wskaż poprawną pisownię:",
+      "answers": [
+        "żółw",
+        "rzułw",
+        "żułw",
+        "rzółw"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "literatura",
+      "question": "Kto napisał „Lalkę”?",
+      "answers": [
+        "Henryk Sienkiewicz",
+        "Stefan Żeromski",
+        "Bolesław Prus",
+        "Władysław Reymont"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "stylistyka",
+      "question": "Jak nazywa się środek stylistyczny w zdaniu „Słońce się uśmiecha”?",
+      "answers": [
+        "anafora",
+        "personifikacja",
+        "porównanie",
+        "hiperbola"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Ile przypadków występuje w języku polskim?",
+      "answers": [
+        "7",
+        "6",
+        "5",
+        "8"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "literatura",
+      "question": "Kto napisał „Potop”?",
+      "answers": [
+        "Stefan Żeromski",
+        "Bolesław Prus",
+        "Henryk Sienkiewicz",
+        "Adam Mickiewicz"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "question": "Który przypadek odpowiada na pytania „kogo? czego?”?",
+      "answers": [
+        "mianownik",
+        "dopełniacz",
+        "celownik",
+        "biernik"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "literatura",
+      "question": "Do jakiej epoki literackiej należy twórczość Jana Kochanowskiego?",
+      "answers": [
+        "renesans",
+        "romantyzm",
+        "pozytywizm",
+        "barok"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "literatura",
+      "question": "Kto napisał „Wesele” (1901)?",
+      "answers": [
+        "Juliusz Słowacki",
+        "Stanisław Wyspiański",
+        "Stefan Żeromski",
+        "Adam Mickiewicz"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "literatura",
+      "question": "Który poeta jest autorem „Trenów”?",
+      "answers": [
+        "Mikołaj Rej",
+        "Ignacy Krasicki",
+        "Cyprian Norwid",
+        "Jan Kochanowski"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "literatura",
+      "question": "Kto otrzymał literacką Nagrodę Nobla w 1996 roku?",
+      "answers": [
+        "Zbigniew Herbert",
+        "Czesław Miłosz",
+        "Olga Tokarczuk",
+        "Wisława Szymborska"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "stylistyka",
+      "question": "Jak nazywa się środek stylistyczny polegający na wyolbrzymieniu, np. „milion razy ci to mówiłem”?",
+      "answers": [
+        "metafora",
+        "epitet",
+        "hiperbola",
+        "apostrofa"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "literatura",
+      "question": "Który utwór Adama Mickiewicza jest balladą?",
+      "answers": [
+        "Świteź",
+        "Pan Tadeusz",
+        "Dziady część III",
+        "Konrad Wallenrod"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "literatura",
+      "question": "Kto jest autorem dramatu romantycznego „Kordian”?",
+      "answers": [
+        "Zygmunt Krasiński",
+        "Adam Mickiewicz",
+        "Juliusz Słowacki",
+        "Cyprian Norwid"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "ortografia",
+      "statement": "Wyraz „chmura” pisze się przez „ch”.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "gramatyka",
+      "statement": "Zdanie oznajmujące kończy się znakiem zapytania.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "statement": "Czasownik oznacza czynność lub stan.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "statement": "Przymiotnik odpowiada na pytania „kto? co?”.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "literatura",
+      "statement": "„Pan Tadeusz” jest epopeją narodową.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "gramatyka",
+      "statement": "W liczbie pojedynczej w języku polskim występują trzy rodzaje gramatyczne.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "literatura",
+      "statement": "Autorem „Lalki” jest Henryk Sienkiewicz.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "stylistyka",
+      "statement": "Metafora jest porównaniem, w którym użyto słowa „jak”.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "literatura",
+      "statement": "Wisława Szymborska otrzymała literacką Nagrodę Nobla.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "literatura",
+      "statement": "„Dziady” część III powstały w epoce pozytywizmu.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "gramatyka",
+      "text_with_gaps": "Rzeczownik odpowiada na pytania „kto? ___?”, a czasownik na pytanie „co ___?”.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "co"
+        },
+        {
+          "index": 1,
+          "correct": "robi"
+        }
+      ],
+      "tiles": [
+        "robi",
+        "co",
+        "gdzie",
+        "kiedy",
+        "jaki"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "text_with_gaps": "Przymiotnik odpowiada na pytanie ___, a przysłówek na pytanie ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "jaki?"
+        },
+        {
+          "index": 1,
+          "correct": "jak?"
+        }
+      ],
+      "tiles": [
+        "jaki?",
+        "jak?",
+        "gdzie?",
+        "kto?",
+        "co?"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "literatura",
+      "text_with_gaps": "Autorem „Pana Tadeusza” jest ___, a epoka, w której żył, to ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "Adam Mickiewicz"
+        },
+        {
+          "index": 1,
+          "correct": "romantyzm"
+        }
+      ],
+      "tiles": [
+        "romantyzm",
+        "barok",
+        "Juliusz Słowacki",
+        "Adam Mickiewicz",
+        "pozytywizm"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "stylistyka",
+      "text_with_gaps": "Nadanie cech ludzkich przedmiotom lub zjawiskom nazywamy ___, a wyolbrzymienie ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "personifikacją"
+        },
+        {
+          "index": 1,
+          "correct": "hiperbolą"
+        }
+      ],
+      "tiles": [
+        "anaforą",
+        "personifikacją",
+        "epitetem",
+        "hiperbolą",
+        "metaforą"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "literatura",
+      "text_with_gaps": "W epoce ___ powstały „Treny”, a ich autorem jest ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "renesansu"
+        },
+        {
+          "index": 1,
+          "correct": "Jan Kochanowski"
+        }
+      ],
+      "tiles": [
+        "renesansu",
+        "Jan Kochanowski",
+        "Mikołaj Rej",
+        "baroku",
+        "Jan Chryzostom Pasek"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "gramatyka",
+      "prompt": "Jak nazywa się część mowy oznaczająca nazwę osoby, rzeczy lub zwierzęcia?",
+      "answer": "rzeczownik",
+      "prefilled_pattern": "r________k",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "slownictwo",
+      "prompt": "Jak brzmi przeciwieństwo wyrazu „wysoki”?",
+      "answer": "niski",
+      "prefilled_pattern": "n___i",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "literatura",
+      "prompt": "Jak nazywa się obszerny utwór epicki opowiadający o dziejach narodu, taki jak „Pan Tadeusz”?",
+      "answer": "epopeja",
+      "prefilled_pattern": "e_____a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "stylistyka",
+      "prompt": "Jak nazywa się określenie rzeczownika, np. „czarna rozpacz”, „złoty zachód”?",
+      "answer": "epitet",
+      "prefilled_pattern": "e____t",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "literatura",
+      "prompt": "Kto jest autorem „Syzyfowych prac”? (nazwisko)",
+      "answer": "Żeromski",
+      "prefilled_pattern": "Ż______i",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "zeromski"
+      ]
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "literatura",
+      "left_items": [
+        "Adam Mickiewicz",
+        "Henryk Sienkiewicz",
+        "Bolesław Prus",
+        "Juliusz Słowacki"
+      ],
+      "right_items": [
+        "Potop",
+        "Pan Tadeusz",
+        "Lalka",
+        "Kordian"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 2
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "gramatyka",
+      "left_items": [
+        "Rzeczownik",
+        "Czasownik",
+        "Przymiotnik",
+        "Przysłówek"
+      ],
+      "right_items": [
+        "zielony",
+        "biegać",
+        "szybko",
+        "dom"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 3
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "stylistyka",
+      "left_items": [
+        "Epitet",
+        "Porównanie",
+        "Personifikacja",
+        "Hiperbola"
+      ],
+      "right_items": [
+        "wiatr zawodzi",
+        "złoty zachód",
+        "biały jak śnieg",
+        "tysiąc razy"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "literatura",
+      "left_items": [
+        "Jan Kochanowski",
+        "Ignacy Krasicki",
+        "Stanisław Wyspiański",
+        "Wisława Szymborska"
+      ],
+      "right_items": [
+        "Treny",
+        "Bajki",
+        "Nagroda Nobla 1996",
+        "Wesele"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    }
+  ]
+}

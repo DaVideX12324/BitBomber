@@ -1,0 +1,629 @@
+{
+  "name": "Biologia — człowiek, rośliny, zwierzęta",
+  "description": "Budowa organizmów, fotosynteza, genetyka i ekologia (trudność 1-2 szkoła podstawowa, 3-5 liceum).",
+  "questions": [
+    {
+      "id": "mc_001",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "czlowiek",
+      "question": "Który narząd pompuje krew w organizmie człowieka?",
+      "answers": [
+        "płuca",
+        "serce",
+        "żołądek",
+        "wątroba"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_002",
+      "type": "multiple_choice",
+      "difficulty": 1,
+      "category": "zwierzeta",
+      "question": "Które z tych zwierząt jest ssakiem?",
+      "answers": [
+        "rekin",
+        "delfin",
+        "żaba",
+        "orzeł"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_003",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "rosliny",
+      "question": "Jak nazywa się proces, w którym rośliny wytwarzają glukozę z dwutlenku węgla i wody przy udziale światła?",
+      "answers": [
+        "transpiracja",
+        "oddychanie",
+        "fermentacja",
+        "fotosynteza"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_004",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "czlowiek",
+      "question": "Ile kości ma dorosły człowiek (w przybliżeniu)?",
+      "answers": [
+        "206",
+        "306",
+        "406",
+        "106"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_005",
+      "type": "multiple_choice",
+      "difficulty": 2,
+      "category": "czlowiek",
+      "question": "Który gaz z powietrza jest potrzebny człowiekowi do oddychania?",
+      "answers": [
+        "wodór",
+        "hel",
+        "azot",
+        "tlen"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_006",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "komorka",
+      "question": "Jak nazywa się podstawowa jednostka budowy organizmów?",
+      "answers": [
+        "narząd",
+        "tkanka",
+        "układ",
+        "komórka"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_007",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "czlowiek",
+      "question": "Które składniki krwi odpowiadają za transport tlenu?",
+      "answers": [
+        "osocze",
+        "leukocyty",
+        "erytrocyty",
+        "trombocyty"
+      ],
+      "correct_index": 2
+    },
+    {
+      "id": "mc_008",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "komorka",
+      "question": "Jak nazywa się cząsteczka przechowująca informację genetyczną w komórce?",
+      "answers": [
+        "chlorofil",
+        "DNA",
+        "glukoza",
+        "ATP"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_009",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "komorka",
+      "question": "W których organellach komórki roślinnej zachodzi fotosynteza?",
+      "answers": [
+        "w rybosomach",
+        "w chloroplastach",
+        "w mitochondriach",
+        "w jądrze komórkowym"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "mc_010",
+      "type": "multiple_choice",
+      "difficulty": 3,
+      "category": "zwierzeta",
+      "question": "Do jakiej gromady zwierząt należy żaba?",
+      "answers": [
+        "ryby",
+        "gady",
+        "ssaki",
+        "płazy"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_011",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "genetyka",
+      "question": "Ile par chromosomów ma człowiek?",
+      "answers": [
+        "46",
+        "21",
+        "22",
+        "23"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_012",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "question": "Która witamina jest wytwarzana w skórze pod wpływem promieni słonecznych?",
+      "answers": [
+        "witamina D",
+        "witamina A",
+        "witamina C",
+        "witamina K"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_013",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "ekologia",
+      "question": "Jak nazywamy organizmy, które same wytwarzają związki organiczne ze związków nieorganicznych (np. rośliny)?",
+      "answers": [
+        "saprotrofy",
+        "pasożyty",
+        "heterotrofy",
+        "autotrofy"
+      ],
+      "correct_index": 3
+    },
+    {
+      "id": "mc_014",
+      "type": "multiple_choice",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "question": "Który hormon obniża poziom glukozy we krwi?",
+      "answers": [
+        "insulina",
+        "adrenalina",
+        "testosteron",
+        "tyroksyna"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_015",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "komorka",
+      "question": "W których organellach zachodzi oddychanie tlenowe, w którym powstaje większość ATP?",
+      "answers": [
+        "w mitochondriach",
+        "w aparacie Golgiego",
+        "w chloroplastach",
+        "w rybosomach"
+      ],
+      "correct_index": 0
+    },
+    {
+      "id": "mc_016",
+      "type": "multiple_choice",
+      "difficulty": 5,
+      "category": "ekologia",
+      "question": "Jak nazywa się zależność, w której oba gatunki odnoszą korzyść (np. rośliny motylkowe i bakterie brodawkowe)?",
+      "answers": [
+        "pasożytnictwo",
+        "mutualizm",
+        "konkurencja",
+        "drapieżnictwo"
+      ],
+      "correct_index": 1
+    },
+    {
+      "id": "tf_001",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "zwierzeta",
+      "statement": "Pszczoły wytwarzają miód.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_002",
+      "type": "true_false",
+      "difficulty": 1,
+      "category": "zwierzeta",
+      "statement": "Wieloryb jest rybą.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_003",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "rosliny",
+      "statement": "W procesie fotosyntezy rośliny pobierają dwutlenek węgla.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_004",
+      "type": "true_false",
+      "difficulty": 2,
+      "category": "zwierzeta",
+      "statement": "Pająki są owadami.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_005",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "czlowiek",
+      "statement": "Krew w organizmie człowieka jest tłoczona przez płuca.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_006",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "komorka",
+      "statement": "Komórki roślinne mają ścianę komórkową, a komórki zwierzęce jej nie mają.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_007",
+      "type": "true_false",
+      "difficulty": 3,
+      "category": "komorka",
+      "statement": "Wirusy zbudowane są z komórek.",
+      "correct_answer": false
+    },
+    {
+      "id": "tf_008",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "statement": "Człowiek jest zwierzęciem stałocieplnym.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_009",
+      "type": "true_false",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "statement": "Osoby z grupą krwi 0 Rh− mogą być uniwersalnymi dawcami krwinek czerwonych.",
+      "correct_answer": true
+    },
+    {
+      "id": "tf_010",
+      "type": "true_false",
+      "difficulty": 5,
+      "category": "genetyka",
+      "statement": "W wyniku mitozy powstają cztery komórki haploidalne.",
+      "correct_answer": false
+    },
+    {
+      "id": "ft_001",
+      "type": "fill_tiles",
+      "difficulty": 1,
+      "category": "rosliny",
+      "text_with_gaps": "W fotosyntezie rośliny pobierają ___ i wodę, a wytwarzają glukozę i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "dwutlenek węgla"
+        },
+        {
+          "index": 1,
+          "correct": "tlen"
+        }
+      ],
+      "tiles": [
+        "wodór",
+        "dwutlenek węgla",
+        "azot",
+        "tlen",
+        "hel"
+      ]
+    },
+    {
+      "id": "ft_002",
+      "type": "fill_tiles",
+      "difficulty": 2,
+      "category": "komorka",
+      "text_with_gaps": "Najmniejszą jednostką budowy żywych organizmów jest ___, a informacja genetyczna zapisana jest w cząsteczce ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "komórka"
+        },
+        {
+          "index": 1,
+          "correct": "DNA"
+        }
+      ],
+      "tiles": [
+        "DNA",
+        "białko",
+        "tłuszcz",
+        "komórka"
+      ]
+    },
+    {
+      "id": "ft_003",
+      "type": "fill_tiles",
+      "difficulty": 3,
+      "category": "zwierzeta",
+      "text_with_gaps": "Ryby, płazy, gady, ptaki i ssaki to kręgowce, ale stałocieplne są tylko ___ i ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "ptaki"
+        },
+        {
+          "index": 1,
+          "correct": "ssaki"
+        }
+      ],
+      "tiles": [
+        "płazy",
+        "ssaki",
+        "ryby",
+        "ptaki",
+        "gady"
+      ]
+    },
+    {
+      "id": "ft_004",
+      "type": "fill_tiles",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "text_with_gaps": "Insulina jest wytwarzana przez ___, a jej niedobór powoduje ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "trzustkę"
+        },
+        {
+          "index": 1,
+          "correct": "cukrzycę"
+        }
+      ],
+      "tiles": [
+        "cukrzycę",
+        "anemię",
+        "nerki",
+        "wątrobę",
+        "trzustkę"
+      ]
+    },
+    {
+      "id": "ft_005",
+      "type": "fill_tiles",
+      "difficulty": 5,
+      "category": "genetyka",
+      "text_with_gaps": "Gamety są komórkami ___, a zygota powstaje w wyniku ___.",
+      "gaps": [
+        {
+          "index": 0,
+          "correct": "haploidalnymi"
+        },
+        {
+          "index": 1,
+          "correct": "zapłodnienia"
+        }
+      ],
+      "tiles": [
+        "diploidalnymi",
+        "mitozy",
+        "zapłodnienia",
+        "fotosyntezy",
+        "haploidalnymi"
+      ]
+    },
+    {
+      "id": "ftext_001",
+      "type": "fill_text",
+      "difficulty": 1,
+      "category": "rosliny",
+      "prompt": "Jak nazywa się część rośliny, która pobiera wodę z gleby?",
+      "answer": "korzeń",
+      "prefilled_pattern": "k____ń",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "korzen"
+      ]
+    },
+    {
+      "id": "ftext_002",
+      "type": "fill_text",
+      "difficulty": 2,
+      "category": "rosliny",
+      "prompt": "Jak nazywa się zielony barwnik w liściach roślin?",
+      "answer": "chlorofil",
+      "prefilled_pattern": "c_______l",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_003",
+      "type": "fill_text",
+      "difficulty": 3,
+      "category": "genetyka",
+      "prompt": "Jak nazywa się nauka o dziedziczeniu cech?",
+      "answer": "genetyka",
+      "prefilled_pattern": "g______a",
+      "case_sensitive": false
+    },
+    {
+      "id": "ftext_004",
+      "type": "fill_text",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "prompt": "Jak nazywa się największy narząd człowieka, okrywający ciało?",
+      "answer": "skóra",
+      "prefilled_pattern": "s___a",
+      "case_sensitive": false,
+      "accepted_alternatives": [
+        "skora"
+      ]
+    },
+    {
+      "id": "ftext_005",
+      "type": "fill_text",
+      "difficulty": 5,
+      "category": "komorka",
+      "prompt": "Jak nazywa się podział komórki, w którym powstają dwie identyczne komórki potomne?",
+      "answer": "mitoza",
+      "prefilled_pattern": "m____a",
+      "case_sensitive": false
+    },
+    {
+      "id": "match_001",
+      "type": "matching",
+      "difficulty": 1,
+      "category": "zwierzeta",
+      "left_items": [
+        "Pies",
+        "Orzeł",
+        "Karp",
+        "Żaba"
+      ],
+      "right_items": [
+        "ryba",
+        "ssak",
+        "płaz",
+        "ptak"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 3
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    },
+    {
+      "id": "match_002",
+      "type": "matching",
+      "difficulty": 2,
+      "category": "czlowiek",
+      "left_items": [
+        "Serce",
+        "Płuca",
+        "Mózg",
+        "Żołądek"
+      ],
+      "right_items": [
+        "wymiana gazowa",
+        "trawienie",
+        "pompuje krew",
+        "układ nerwowy"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 2
+        },
+        {
+          "left_index": 1,
+          "right_index": 0
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 1
+        }
+      ]
+    },
+    {
+      "id": "match_003",
+      "type": "matching",
+      "difficulty": 3,
+      "category": "czlowiek",
+      "left_items": [
+        "Witamina C",
+        "Witamina D",
+        "Witamina A",
+        "Witamina K"
+      ],
+      "right_items": [
+        "wzrok",
+        "zapobiega szkorbutowi",
+        "wapń i kości",
+        "krzepnięcie krwi"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 1
+        },
+        {
+          "left_index": 1,
+          "right_index": 2
+        },
+        {
+          "left_index": 2,
+          "right_index": 0
+        },
+        {
+          "left_index": 3,
+          "right_index": 3
+        }
+      ]
+    },
+    {
+      "id": "match_004",
+      "type": "matching",
+      "difficulty": 4,
+      "category": "czlowiek",
+      "left_items": [
+        "Erytrocyty",
+        "Leukocyty",
+        "Trombocyty",
+        "Osocze"
+      ],
+      "right_items": [
+        "transport tlenu",
+        "obrona organizmu",
+        "płynna część krwi",
+        "krzepnięcie krwi"
+      ],
+      "pairs": [
+        {
+          "left_index": 0,
+          "right_index": 0
+        },
+        {
+          "left_index": 1,
+          "right_index": 1
+        },
+        {
+          "left_index": 2,
+          "right_index": 3
+        },
+        {
+          "left_index": 3,
+          "right_index": 2
+        }
+      ]
+    }
+  ]
+}
